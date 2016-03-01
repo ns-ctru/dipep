@@ -361,7 +361,7 @@ master$pregnancy.immobility <- read_dipep("This Pregnancy - Immobility.csv",
 #######################################################################
 ## This Pregnancy - Long-haul travel.csv                             ##
 #######################################################################
-master$preganancy.long.haul <- read_dipep("This Pregnancy - Long-haul travel.csv",
+master$pregnancy.long.haul <- read_dipep("This Pregnancy - Long-haul travel.csv",
                                           header           = TRUE,
                                           sep              = ',',
                                           convert.dates    = TRUE,
@@ -409,7 +409,7 @@ master$womans.details <- read_dipep("Womans details.csv",
 ## but that is highly unlikely to happen).                           ##
 #######################################################################
 ## Subset variables from each dataframe
-dplyr:;select(womans.details,
+dplyr::select(master$womans.details,
               screening,
               site,
               group,
@@ -421,7 +421,7 @@ dplyr:;select(womans.details,
               height,
               weight,
               smoking)
-dplyr:;select(previous.pregnancies,
+dplyr::select(master$previous.pregnancies,
               pregnancies.over,
               pregnancies.under,
               prev.preg.problem)
@@ -459,15 +459,58 @@ fields$variable <- gsub('_', '.', fields$variable)
 
 
 #######################################################################
-## Data Dictaionary for R objects                                    ##
+## Data Dictionary for R objects                                    ##
 #######################################################################
-README <- data.frame(ls())
+README <- names(master) %>%
+          data.frame()
 README$description <- ''
-README$is.function <- FALSE
-names(README) <- c('data.frame', 'description', 'is.function')
+names(README) <- c('data.frame', 'description')
 README <- within(README,{
-                 description[data.frame == 'baseline']    <- 'Baseline Clinical Assessement'
+                 description[data.frame == 'data.dictionary']                <- 'Data Dictionary - Factor variables'
+                 description[data.frame == 'follow.up.30.day']               <- '30-day Follow-Up'
+                 description[data.frame == 'annotations']                    <- ''
+                 description[data.frame == 'blood.sample']                   <- 'Details of Blood Sample'
+                 description[data.frame == 'service.receipt']                <- ''
+                 description[data.frame == 'service.receipt.hospital']       <- ''
+                 description[data.frame == 'completion']                     <- ''
+                 description[data.frame == 'contact']                        <- 'Study Completion'
+                 description[data.frame == 'delivery']                       <- 'Details of Birth'
+                 description[data.frame == 'discrepancies']                  <- ''
+                 description[data.frame == 'eq5d']                           <- 'EQ5D Quality of Life'
+                 description[data.frame == 'events']                         <- 'Date of Events (Redundant - does not contain dates)'
+                 description[data.frame == 'follow.up.sent']                 <- 'Follow-Up Forms Sent'
+                 description[data.frame == 'forms']                          <- 'Study Forms/Prospect Tables'
+                 description[data.frame == 'individuals']                    <- 'Recruited Patients'
+                 description[data.frame == 'investigations']                 <- 'Investigations (Broad)'
+                 description[data.frame == 'investigations.investigation']   <- 'Investigations (Detailed)'
+                 description[data.frame == 'med.hist']                       <- 'Medical History (Broad)'
+                 description[data.frame == 'med.hist.problems']              <- 'Medical History (Detailed)'
+                 description[data.frame == 'med.hist.thrombophilia']         <- 'Medical History (Thrombophilia)'
+                 description[data.frame == 'outcome.infant']                 <- 'Outcome for Infant (Broad)'
+                 description[data.frame == 'outcome.infant.infant']          <- 'Outcome for Infant (Broad)'
+                 description[data.frame == 'outcome.woman']                  <- 'Outcome for Woman (Broad)'
+                 description[data.frame == 'outcome.woman.morbidity']        <- 'Outcome for Woman (Detailed)'
+                 description[data.frame == 'presenting.features']            <- 'Presenting Features'
+                 description[data.frame == 'previous.pregnancies']           <- 'Previous Pregnancies'
+                 description[data.frame == 'previous.pregnancies.problems']  <- 'Previous Pregnancies - Problems'
+                 description[data.frame == 'questionnaire.contact']          <- ''
+                 description[data.frame == 'screening.dvt']                  <- 'Screening - Deep Vein Thrombosis Group'
+                 description[data.frame == 'screening.non.recruited']        <- 'Screening - Non Recruited Group'
+                 description[data.frame == 'screening.suspected.pe']         <- 'Screening - Suspected Pulmonary Embolism Group'
+                 description[data.frame == 'sign.off']                       <- ''
+                 description[data.frame == 'sites']                          <- 'Deatils of Study Sites'
+                 description[data.frame == 'therapy']                        <- 'Therapy Details'
+                 description[data.frame == 'pregnancy']                      <- 'Pregnancy (Broad)'
+                 description[data.frame == 'pregnancy.continued']            <- 'Pregnancy - Continued or Not'
+                 description[data.frame == 'pregnancy.problems']             <- 'Pregnancy - Problems'
+                 description[data.frame == 'pregnancy.immobility']           <- 'Pregnancy - Immobility Details'
+                 description[data.frame == 'pregnancy.long.haul']            <- 'Pregnancy - Long Haul Flights'
+                 description[data.frame == 'thromboprophylaxis']             <- 'Thromboprophylaxis'
+                 description[data.frame == 'thrombotic.events']              <- 'Details of '
+                 description[data.frame == 'unavailable.forms']              <- 'Unavailable Forms'
+                 description[data.frame == 'womans.details']                 <- 'Womands Details'
 })
+
 #######################################################################
 ## Data Dictaionary for each data frame                              ##
 #######################################################################
