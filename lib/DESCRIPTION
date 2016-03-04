@@ -2,25 +2,30 @@ Package: dipep
 Title: Predicting Pulmonary Embolisms in Pregnant Women (DiPEP)
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: Summarises, plots and analyses data collected for the DiPEP study investigating improving prediction rules for Pulmonary Embolisms in Pregnant Women
-Depends: R (>= 3.2.3),
-	 dplyr(>= 0.4.1),
-	 ggplot2 (>= 1.0.1),
-	 haven (>= 0.2.0),
-	 Hmisc (>= 3.17-1),
-	 knitr (>= 1.11),
-	 lars (>= 1.2),
-	 lubridate (>= 1.5.0),
-	 magrittr (>= 1.5),
-         reshape2 (>= 1.4.1),
-	 rms (>= 4.4-2),
-	 rpart (>= 4.1-10),
-	 shiny(>= 0.13.0),
-         stargazer(>= 5.1),
-	 stringr (>= 1.0.0),
-	 survival (>= 2.38-3),
-         texreg (>= 1.35),
-         tidyr (>= 0.3.1),
-         xtable (>= 1.7-4)
+Description: Summarises, plots and analyses data collected for the DiPEP study
+    investigating improving prediction rules for Pulmonary Embolisms in Pregnant
+    Women
+Depends:
+    R (>= 3.2.3),
+    dplyr(>= 0.4.1),
+    glmnet (>= 2.0-3),
+    ggplot2 (>= 1.0.1),
+    haven (>= 0.2.0),
+    Hmisc (>= 3.17-1),
+    knitr (>= 1.11),
+    lars (>= 1.2),
+    lubridate (>= 1.5.0),
+    magrittr (>= 1.5),
+    reshape2 (>= 1.4.1),
+    rms (>= 4.4-2),
+    rpart (>= 4.1-10),
+    shiny(>= 0.13.0),
+    stargazer(>= 5.1),
+    stringr (>= 1.0.0),
+    survival (>= 2.38-3),
+    texreg (>= 1.35),
+    tidyr (>= 0.3.1),
+    xtable (>= 1.7-4)
 License: GPL-2
 LazyData: true
+RoxygenNote: 5.0.1
