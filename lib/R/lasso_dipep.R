@@ -52,8 +52,10 @@ lasso_dipep <- function(df          = dipep,
                   as.matrix()
     ## Fit the LASSO by either method
     ## See following sites for useful information/guidance on using these functions...
+    ##
     ## https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log
     ## http://rpackages.ianhowson.com/cran/broom/man/cv.glmnet_tidiers.html
+    ## https://stats.stackexchange.com/questions/72251/an-example-lasso-regression-using-glmnet-for-binary-outcome
     ## 
     ## Fit and cross-validate the model
     results$cv.fit <- cv.glmnet(x      = predictors,
