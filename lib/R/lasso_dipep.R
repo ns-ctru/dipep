@@ -1,17 +1,14 @@
-#' Read DiPEP Files
+#' Run LASSO Regression on DiPEP
 #'
-#' @description Read in the raw CSV files exported from Prospect for the DiPEP Study
+#' @description Perform LASSO regression on DiPEP study
 #'
 #' @details
-#' Case Report Forms are stored in the Prospect Database (https://www.ctru-prospect.shef.ac.uk/)
-#' and are exported as CSV files (see \code{README} in this directory for export options).  These
-#' need reading into R for linking and analysing (it would be nice if the relational database
-#' that underpins Prospect could be queried directly but thats not going to happen in the
-#' foreseeable future).
 #'
-#' When using this function the _first_ file that should be converted is 'Lookups.csv' as this
-#' is the dictionary file that can be used to automatically encode all factor variables across
-#' all subsequent files.
+#' Least Absolute Shrinkage and Selection Operator (LASSO) Regression is one of the methods of
+#' testing for predictors of pulmonary embolism in pregnant women that are to be tested as
+#' part of the DiPEP study.  This function serves as a wrapper, allowing the user to choose which
+#' variables to include in the model, between the LASSO method implemented in the \code{lars}
+#' package or that in the \code{glmnet} package.
 #'
 #' @param df Data frame with all variables
 #' @param outcome Outcome variable.
@@ -24,6 +21,8 @@
 #' @param ascii Produce ASCII summary.
 #' @param caption Caption for table summary.
 #' @param label Label for table summary.
+#'
+#' @return List containing the results and diagnostic plots of the LASSO fit.
 #'
 #' @export
 lasso_dipep <- function(df          = dipep,
