@@ -26,7 +26,7 @@
 #' @param label Label for table summary.
 #'
 #' @export
-lasso_dipep <- function(df            = 'Lookups.csv',
+lasso_dipep <- function(df          = dipep,
                         outcome     = 'group',
                         predictors  = c('age'),
                         lasso       = 'glmnet',
