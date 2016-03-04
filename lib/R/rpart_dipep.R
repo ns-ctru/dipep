@@ -60,6 +60,7 @@ rpart_dipep <- function(df          = dipep,
                            minsplit  = minsplit,
                            xval      = xval)
     ## Generate a dendogram?
+    ## See https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html
     if(plot == TRUE){
         results$ddata <- dendro_data(results$model)
         results$plot <- ggplot() +
