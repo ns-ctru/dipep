@@ -4,10 +4,10 @@
 #'
 #' @details
 #' Case Report Forms are stored in the Prospect Database (https://www.ctru-prospect.shef.ac.uk/)
-#' and are exported as CSV files (see \code{README} in this directory for export options).  These
-#' need reading into R for linking and analysing (it would be nice if the relational database
-#' that underpins Prospect could be queried directly but thats not going to happen in the
-#' foreseeable future).
+#' and individual tables are exported as CSV files (see \code{README} in this directory for
+#' export options).  These need reading into R for linking and analysing (it would be nice if
+#' the relational database that underpins Prospect could be queried directly so as to avoid
+#' reinventing the wheel but thats not going to happen in the foreseeable future if at all).
 #'
 #' When using this function the _first_ file that should be converted is 'Lookups.csv' as this
 #' is the dictionary file that can be used to automatically encode all factor variables across
@@ -26,7 +26,8 @@ read_dipep <- function(file            = 'Lookups.csv',
                        sep             = ',',
                        convert.dates   = TRUE,
                        date.format     = 'ymd',
-                       dictionary      = data.dictionary){
+                       dictionary      = data.dictionary,
+                       ...){
     # Read in the file
     new <- read.csv(file     = file,
                     header   = header,
