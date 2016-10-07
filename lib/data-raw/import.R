@@ -114,6 +114,45 @@ master$eq5d <- read_dipep(file   = "EQ-5D-5L.csv",
                           sep              = ',',
                           convert.dates    = TRUE,
                           dictionary       = master$data.dictionary)
+## Non-standard responses have been used, convert these to the standard
+## responses
+master$eq5d <- mutate(master$eq5d,
+                      mobility_ = ifelse(mobility == 'I have no problems in walking about', 'None',
+                                   ifelse(mobility == 'I have slight problems in walking about', 'Slight',
+                                    ifelse(mobility == 'I have moderate problems in walking about', 'Moderate',
+                                     ifelse(mobility == 'I have severe problems in walking about', 'Severe',
+                                      ifelse(mobility == 'I am unable to walk about', 'Extreme', NA))))),
+                      self.care_ = ifelse(self.care == 'I have no problems washing or dressing myself', 'None',
+                                    ifelse(self.care == 'I have slight problems washing or dressing myself', 'Slight',
+                                     ifelse(self.care == 'I have moderate problems washing or dressing myself', 'Moderate',
+                                      ifelse(self.care == 'I have severe problems washing or dressing myself', 'Severe',
+                                       ifelse(self.care == 'I am unable to wash or dress myself', 'Extreme', NA))))),
+                      usual.activity_ = ifelse(usual.activity == 'I have no problems doing my usual activities', 'None',
+                                         ifelse(usual.activity == 'I have slight problems doing my usual activities', 'Slight',
+                                          ifelse(usual.activity == 'I have moderate problems doing my usual activities', 'Moderate',
+                                           ifelse(usual.activity == 'I have severe problems doing my usual activities', 'Severe',
+                                            ifelse(usual.activity == 'I am unable to do my usual activities', 'Extreme', NA))))),
+                      pain.discomfort_ = ifelse(pain.discomfort == 'I have no pain or discomfort', 'None',
+                                         ifelse(pain.discomfort == 'I have slight pain or discomfort', 'Slight',
+                                          ifelse(pain.discomfort == 'I have moderate pain or discomfort', 'Moderate',
+                                           ifelse(pain.discomfort == 'I have severe pain or discomfort', 'Severe',
+                                            ifelse(pain.discomfort == 'I have extreme pain or discomfort', 'Extreme', NA))))),
+                      anxiety.depression_ = ifelse(anxiety.depression == 'I am not anxious or depressed', 'None',
+                                         ifelse(anxiety.depression == 'I am slightly anxious or depressed', 'Slight',
+                                          ifelse(anxiety.depression == 'I am moderately anxious or depressed', 'Moderate',
+                                           ifelse(anxiety.depression == 'I am severely anxious or depressed', 'Severe',
+                                           ifelse(anxiety.depression == 'I am extremely anxious or depressed', 'Extreme', NA))))))
+master$eq5d <- dplyr::select(master$eq5d, -mobility, -self.care, -usual.activity, -pain.discomfort, -anxiety.depression)
+names(master$eq5d) <- gsub('_', '', names(master$eq5d))
+## Derive EQ5D-5L Scores
+## ToDo - Why isn't eq5d_score() functioning?
+## master$eq5d <- eq5d_score(master$eq5d,
+##                           mobility.response = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'),
+##                           self.response     = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'),
+##                           activity.response = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'),
+##                           pain.response     = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'),
+##                           anxiety.response  = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
+
 
 #######################################################################
 ## Events.csv                                                        ##
@@ -402,6 +441,8 @@ master$womans.details <- read_dipep("Womans details.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
+## Derive BMI
+master$womans.details$bmi <- master$womans.details$weight / (master$womans.details$height / 100)^2
 
 #######################################################################
 ## Combine required variables into one coherent data frame (would be ##
@@ -409,22 +450,97 @@ master$womans.details <- read_dipep("Womans details.csv",
 ## but that is highly unlikely to happen).                           ##
 #######################################################################
 ## Subset variables from each dataframe
-dplyr::select(master$womans.details,
-              screening,
-              site,
-              group,
-              event.name,
-              year.of.birth,
-              ethnicity,
-              marital.status,
-              employment,
-              height,
-              weight,
-              smoking)
-dplyr::select(master$previous.pregnancies,
-              pregnancies.over,
-              pregnancies.under,
-              prev.preg.problem)
+##
+## Demographics
+t1 <- dplyr::select(master$womans.details,
+                    screening,
+                    site,
+                    group,
+                    event.name,
+                    year.of.birth,
+                    ethnicity,
+                    marital.status,
+                    employment,
+                    height,
+                    weight,
+                    smoking)
+## Previous Pregnancies
+t2 <- dplyr::select(master$previous.pregnancies,
+                    screening,
+                    group,
+                    pregnancies.over,
+                    pregnancies.under,
+                    prev.preg.problem)
+## Presenting Features
+t3 <- dplyr::select(master$presenting.features,
+                    screening,
+                    group,
+                    presenting.features.pleuritic,
+                    presenting.features.non.pleuritic,
+                    presenting.features.sob.exertion,
+                    presenting.features.sob.rest,
+                    presenting.features.haemoptysis,
+                    presenting.features.cough,
+                    presenting.features.syncope,
+                    presenting.features.palpitations,
+                    presenting.features.other,
+                    other.symptoms.specify,
+                    incidental,
+                    heart.rate,
+                    respiratory.rate,
+                    o2.saturation,
+                    bp.systolic,
+                    bp.diastolic,
+                    temperature,
+                    dvt,
+                    ecg,
+                    ecg.specify,
+                    xray,
+                    xray.specify,
+                    life.support.presentation,
+                    diagnosis.post,
+                    d.dimer.performed,
+                    d.dimer.not.recorded,
+                    d.dimer.unt,
+                    d.dimer.ugl,
+                    d.dimer,
+                    d.dimer.low,
+                    d.dimer.high)
+## Thrombotic Event
+t4 <- dplyr::select(master$thrombotic.events,
+                    screening,
+                    group,
+                    thromb.event)
+## Thromboprophylaxis
+t5 <- dplyr::select(master$thromboprophylaxis,
+                    screening,
+                    group,
+                    thromboprophylaxis)
+## EQ5D
+t6 <- dplyr::select(master$eq5d,
+                    screening,
+                    group,
+                    site,
+                    event.name,
+                    mobility,
+                    self.care,
+                    usual.activity,
+                    pain.discomfort,
+                    anxiety.depression,
+                    health.scale.number) ## ,
+                    ## eq5d)
+## Merge the subsets
+merge.by <- c('screening', 'group')
+dipep <- merge(t1,
+               t2,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t3,
+               by    = merge.by,
+               all   = TRUE)
+rm(t1, t2, t3)
+
 
 #######################################################################
 ## Database Specification                                            ##
