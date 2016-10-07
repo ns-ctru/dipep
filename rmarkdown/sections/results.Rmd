@@ -1,7 +1,8 @@
+### Recruitment
 ```{r child = 'subsections/recruitment.Rmd', eval = TRUE}
 ```
 
-Results will be here!
+### Adverse Events
 <!--- Summarise Adverse Events --->
 ```{r child = 'subsections/results_adverse_events.Rmd', eval = TRUE}
 ```
