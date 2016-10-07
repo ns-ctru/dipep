@@ -2,6 +2,10 @@
 ```{r child = 'subsections/recruitment.Rmd', eval = TRUE}
 ```
 
+### Demographics
+```{r child = 'subsections/demograhpics.Rmd', eval = TRUE}
+```
+
 ### Adverse Events
 <!--- Summarise Adverse Events --->
 ```{r child = 'subsections/results_adverse_events.Rmd', eval = TRUE}
