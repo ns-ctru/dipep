@@ -18,7 +18,7 @@
 dipep_summarise <- function(df              = .data,
                             grouping        = group,
                             to.sum          = 'respiratory.rate',
-                            ## na.rm           = TRUE,
+                            na.rm           = 'TRUE',
                             ## mean            = TRUE,
                             ## sd              = TRUE,
                             ## p25             = TRUE,
@@ -32,8 +32,9 @@ dipep_summarise <- function(df              = .data,
     head(df) %>% print()
     ## Overall
     overall <- summarise_(df,
-                          mean   = mean(~to.sum, na.rm = TRUE))
+                          n = ~n(),
+                          mean   = ~mean(to.sum, na.rm = na.rm))
     overall %>% print()
     ## By Group
-    return(summary)
+    return(results)
 }
