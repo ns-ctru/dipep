@@ -533,8 +533,7 @@ t6 <- dplyr::select(master$eq5d,
                     usual.activity,
                     pain.discomfort,
                     anxiety.depression,
-                    health.scale.number) ## ,
-## eq5d)
+                    health.scale.number)
 ## Medical History
 t7 <- dplyr::select(master$med.hist,
                     screening,
@@ -606,10 +605,22 @@ dipep <- merge(t1,
                by    = merge.by,
                all   = TRUE) %>%
          merge(.,
+               t7,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t8,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t9,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
                event.date,
                by    = c('screening', 'group', 'site'),
                all   = TRUE)
-rm(t1, t2, t3, t4, t5, t6, event.date)
+rm(t1, t2, t3, t4, t5, t6, t7, t8, t9, event.date)
 
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
