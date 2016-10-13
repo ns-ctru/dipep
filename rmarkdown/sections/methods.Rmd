@@ -1,4 +1,4 @@
-Detailed description of the proposed analyses were formulated and signed-off in the Statistical Analysis Plan (SAP) as prescribed by the CTRUs *ST001 - The Statistical Analysis Plan* Standard Operatin Procedure (SOP), this document can be viewed [online](https://www.overleaf.com/read/rdyrzjmxxghz).  The methods described below are for the most part lifted directly from the SAP but has where necessary been modified to reflect what has actually been requested and performed.
+Detailed description of the proposed analyses were formulated and signed-off in the Statistical Analysis Plan (SAP) as prescribed by the CTRUs *ST001 - The Statistical Analysis Plan* Standard Operatin Procedure (SOP), this document can be viewed [online](https://www.overleaf.com/read/rdyrzjmxxghz).  The methods described below are for the most part lifted directly from the SAP but have where necessary been modified to reflect what has actually been requested and performed as the analyses progressed.
 
 ### Data Sources
 
@@ -70,7 +70,7 @@ The number of individuals with and without PE will be calculated and their basel
 
 ### Missing and Spurious Data
 
-There will be no missing data for the reference standard because all women will be classified as having or not having PE based on the available data.  However, for the predictor variables there is scope for missing data if the attending clinician fails to measure or record the data.  This is most likely to happen when the variable is anticipated to be or recorded as negative or normal, and thus unlikely to change clinical care.  To address this missing values will be imputed based on clinically determined "normal" values defined by \href{mailto:s.goodacre@sheffield.ac.uk}{Prof Steve Goodacre} and \href{mailto:g.fuller@sheffield.ac.uk}{Dr Gordon Fuller}.  Sensitivity will be assessed by comparing these results to complete cases and a multiple imputation approach to imputing missing values based on the observed patterns from individuals who do have all data.
+There will be no missing data for the reference standard because all women will be classified as having or not having PE based on the available data.  However, for the predictor variables there is scope for missing data if the attending clinician fails to measure or record the data.  This is most likely to happen when the variable is anticipated to be or recorded as negative or normal, and thus unlikely to change clinical care.  To address this missing values will be imputed based on clinically determined "normal" values defined by [Prof Steve Goodacre](mailto:s.goodacre@sheffield.ac.uk) and [Dr Gordon Fuller](mailto:g.fuller@sheffield.ac.uk).  Sensitivity will be assessed by comparing these results to complete cases and a multiple imputation approach to imputing missing values based on the observed patterns from individuals who do have all data.
 
 #### Withdrawals
 
@@ -87,115 +87,115 @@ The blood biomarkers that are to be assayed and analysed for their predictive va
 
 ### Risk Variables
 
-Risk variables are detailed in the following table, many of the continuous variables where the risk is non-linear are to be categorised, despite the reduction in prognostic accuracy this results in @steyerberg2001 and the rules for doing so are shown in table below.
+Risk variables are detailed in the following table, many of the continuous variables where the risk is non-linear are to be categorised, despite the reduction in prognostic accuracy this results in (@steyerberg2001) and the rules for doing so are shown in table below.
 
-Variable											| Boundry              | Classification/Risk
-------------------------------------------------	|----------------------|--------------------------
-Age													| $\le 35$             | 0
-Age													| $>35$                | 1
-BMI													| $< 30$               | 0
-BMI													| $\ge 30$             | 1
-Smoking												| Not Current Smoker   | 0
-Smoking												| Current Smoker       | 1
-Previous Pregnancy									| None                 | 0
-Previous Pregnancy									| Any                  | 1
-Previous Pregnancy Problems							| None                 | 0
-Previous Pregnancy Problems							| Any                  | 1
-History of thombosis in $1^o$ relatives				| None                 | 0
-History of thombosis in $1^o$ relatives				| None                 | 1
-History of Varicose Veins							| None                 | 0
-History of Varicose Veins							| Any                  | 1
-History of Intravenous drug use						| None                 | 0
-History of Intravenous drug use						| Any                  | 1
-History of thrombophilia							| None                 | 0
-History of thrombophilia							| Any                  | 1
-Surgery in last 4 weeks								| None                 | 0
-Surgery in last 4 weeks								| Any                  | 1
-Significant Injury in last 4 weeks                  | None                 | 0
-Significant Injury in last 4 weeks                  | Any                  | 1
-Past History of Thrombosis							| None                 | 0
-Past History of Thrombosis							| Any                  | 1
-Other Previous/Pre-existing Medical Problems        | None                 | 0
-Other Previous/Pre-existing Medical Problems        | Any                  | 1
-Pre or Post Partum									| Prepartum (i.e. pregnant)   | 0
-Pre or Post Partum									| Postpartum                  | 1
-Trimester											| $1^{st}$ or $2^{nd}$                 | 0
-Trimester											| $3^{rd}$                             | 1
-Multiple Pregnancy									| None                 | 0
-Multiple Pregnancy									| Any (i.e. $\ge 2$)   | 1
-Long haul Travel during Pregnancy                   | None                 | 0
-Long haul Travel during Pregnancy                   | Any                  | 1
-Period of Immobility/Bed Rest during pregnancy      | None                 | 0
-Period of Immobility/Bed Rest during pregnancy      | Any                  | 1
-Prior Thrombotic Event								| None                 | 0
-Prior Thrombotic Event								| Any                  | 1
-Pleuritic Chest Pain								| None                 | 0
-Pleuritic Chest Pain								| Any                  | 1
-Other (non-Pleuritic) Chest Pain                    | None                 | 0
-Other (non-Pleuritic) Chest Pain                    | Any                  | 1
-Shortness of Breath on Exertion                     | None                 | 0
-Shortness of Breath on Exertion                     | Any                  | 1
-Shortness of Breath at Rest							| None                 | 0
-Shortness of Breath at Rest							| Any                  | 1
-Haemoptysis											| None                 | 0
-Haemoptysis											| Any                  | 1
-Other Productive Cough								| None                 | 0
-Other Productive Cough								| Any                  | 1
-Syncope												| None                 | 0
-Syncope												| Any                  | 1
-Palpitations										| None                 | 0
-Palpitations										| Any                  | 1
-Other Symptoms										| None                 | 0
-Other Symptoms										| Any                  | 1
-Clinical Signs of Deep Vein Thrombosis              | None                 | 0
-Clinical Signs of Deep Vein Thrombosis              | Any                  | 1
-Pulmonary Embolism related ECG abnormality          | None                 | 0
-Pulmonary Embolism related ECG abnormality          | Any                  | 1
-Pulmonary Embolism related CXR abnormality          | None                 | 0
-Pulmonary Embolism related CXR abnormality          | Any                  | 1
-CXR shows alternative diagnosis                     | None                 | 0
-CXR shows alternative diagnosis                     | Any                  | 1
-Likely Diagnosis									| Not Pulmonary Embolism                                   | 0
-Likely Diagnosis									| Pulmonary Embolism                                       | 1
-D-Dimer												| Normal Range                                             | 0
-D-Dimer												| Exceeds Normal Range                                     | 1
-D-Dimer                                         | More than double the upper normal range                  | 2
-Heart Rate										| $\le 100$ ($1^{st}$ or $2^{nd}$ trimester or postpartum) | 0
-Heart Rate										| $\le 110$ ($3^{rd}$ trimester)                           | 0
-Heart Rate										| $> 100$ ($1^{st}$ or $2^{nd}$ trimester or postpartum)   | 1
-Heart Rate										| $> 110$ ($3^{rd}$ trimester)                             | 1
-Respiratory Rate 								| $\le 24$                                                 | 0
-Respiratory Rate (Tachypnea)                    | $> 24$                                                   | 1
-Oxygen Saturation								| $\ge 94$                                                 | 0
-Oxygen Saturation								| $< 94$                                                   | 1
-Systolic Blood Pressure							| $\ge 90$                                                 | 0
-Systolic Blood Pressure							| $< 90$                                                   | 1
-Diastolic Blood Pressure						| $\ge 60$                                                 | 0
-Diastolic Blood Pressure						| $< 60$                                                   | 1
-Temperature										| $\le 37.4$                                               | 0
-Temperature										| $> 37.4$                                                 | 1
-D-Dimers (ELISA)								|  $< X$  | 0
-D-Dimers (ELISA)								| $>= X $ | 1
-D-Dimers (latex agglutination)					| $< X$   | 0
-D-Dimers (latex agglutination)					| $>= X $ | 1
-Plasmin-antiplasmin Assay (PAP)					| $< X$   | 0
-Plasmin-antiplasmin Assay (PAP)					| $>= X $ | 1
-Prothombin Fragmen 1+2 (PF 1+2)					| $< X$   | 0
-Prothombin Fragmen 1+2 (PF 1+2)					| $>= X $ | 1
-Thrombin Generation								| $< X$   | 0
-Thrombin Generation								| $>= X $ | 1
-Prothombin Time (PT)							| $< X$   | 0
-Prothombin Time (PT)							| $>= X $ | 1
-Activated Partial Thromboplastin Time (APTT)	| $< X$   | 0
-Activated Partial Thromboplastin Time (APTT)    | $>= X $ | 1
-Clauss Fibrinogen								| $< X$   | 0
-Clauss Fibrinogen								| $>= X $ | 1
-Soluble Tissue Factor (sTF)						| $< X$   | 0
-Soluble Tissue Factor (sTF)						| $>= X $ | 1
-Troponin I										| $< X$   | 0
-Troponin I										| $>= X $ | 1
-B-Type Natriuretic Peptide						| $< X$   | 0
-B-Type Natriuretic Peptide						| $>= X $ | 1
+Variable Description                    			| Boundry              | Classification/Risk | Data
+----------------------------------------------------|----------------------|---------------------|--------------
+Age													| $\le 35$             | 0                   | `age`
+Age													| $>35$                | 1                   | `age`
+BMI													| $< 30$               | 0                   | `bmi`
+BMI													| $\ge 30$             | 1                   | `bmi`
+Smoking												| Not Current Smoker   | 0                   | `smoking`
+Smoking												| Current Smoker       | 1                   | `smoking`
+Previous Pregnancy									| None                 | 0                   | `pregnancies.over`
+Previous Pregnancy									| Any                  | 1                   | `pregnancies.over`
+Previous Pregnancy Problems							| None                 | 0                   | `prev.preg.problem`
+Previous Pregnancy Problems							| Any                  | 1                   | `prev.preg.problem`
+History of thombosis in $1^o$ relatives				| None                 | 0                   | `history.thrombosis`
+History of thombosis in $1^o$ relatives				| None                 | 1                   | `history.thrombosis`
+History of Varicose Veins							| None                 | 0                   | `history.veins`
+History of Varicose Veins							| Any                  | 1                   | `history.veins`
+History of Intravenous drug use						| None                 | 0                   | `history.iv.drugs`
+History of Intravenous drug use						| Any                  | 1                   | `history.iv.drugs`
+History of thrombophilia							| None                 | 0                   | `thrombo`
+History of thrombophilia							| Any                  | 1                   | `thrombo`
+Surgery in last 4 weeks								| None                 | 0                   | `surgery`
+Surgery in last 4 weeks								| Any                  | 1                   | `surgery`
+Significant Injury in last 4 weeks                  | None                 | 0                   | `injury`
+Significant Injury in last 4 weeks                  | Any                  | 1                   | `injury`
+Past History of Thrombosis							| None                 | 0                   | `thrombosis`
+Past History of Thrombosis							| Any                  | 1                   | `thrombosis`
+Other Previous/Pre-existing Medical Problems        | None                 | 0                   | `medical.probs`
+Other Previous/Pre-existing Medical Problems        | Any                  | 1                   | `medical.probs`
+Pre or Post Partum									| Prepartum (i.e. pregnant)| 0               | `preg.post`
+Pre or Post Partum									| Postpartum               | 1               | `preg.post`
+Trimester											| $1^{st}$ or $2^{nd}$     | 0               | `trimester` (`edd`)
+Trimester											| $3^{rd}$                 | 1               | `trimester` (`edd`)
+Multiple Pregnancy									| None                 | 0                   | `multiple.preg`
+Multiple Pregnancy									| Any (i.e. $\ge 2$)   | 1                   | `multiple.preg`
+Long haul Travel during Pregnancy                   | None                 | 0                   | `travel`
+Long haul Travel during Pregnancy                   | Any                  | 1                   | `travel`
+Period of Immobility/Bed Rest during pregnancy      | None                 | 0                   | `immobil`
+Period of Immobility/Bed Rest during pregnancy      | Any                  | 1                   | `immobil`
+Prior Thrombotic Event								| None                 | 0                   | `thromb_event`
+Prior Thrombotic Event								| Any                  | 1                   | `thromb_event`
+Pleuritic Chest Pain								| None                 | 0                   | `?`
+Pleuritic Chest Pain								| Any                  | 1                   | `?`
+Other (non-Pleuritic) Chest Pain                    | None                 | 0                   | `?`
+Other (non-Pleuritic) Chest Pain                    | Any                  | 1                   | `?`
+Shortness of Breath on Exertion                     | None                 | 0                   | `?`
+Shortness of Breath on Exertion                     | Any                  | 1                   | `?`
+Shortness of Breath at Rest							| None                 | 0                   | `?`
+Shortness of Breath at Rest							| Any                  | 1                   | `?`
+Haemoptysis											| None                 | 0                   | `?`
+Haemoptysis											| Any                  | 1                   | `?`
+Other Productive Cough								| None                 | 0                   | `?`
+Other Productive Cough								| Any                  | 1                   | `?`
+Syncope												| None                 | 0                   | `?`
+Syncope												| Any                  | 1                   | `?`
+Palpitations										| None                 | 0                   | `?`
+Palpitations										| Any                  | 1                   | `?`
+Other Symptoms										| None                 | 0                   | `?`
+Other Symptoms										| Any                  | 1                   | `?`
+Clinical Signs of Deep Vein Thrombosis              | None                 | 0                   | `?`
+Clinical Signs of Deep Vein Thrombosis              | Any                  | 1                   | `?`
+Pulmonary Embolism related ECG abnormality          | None                 | 0                   | `ecg`
+Pulmonary Embolism related ECG abnormality          | Any                  | 1                   | `ecg`
+Pulmonary Embolism related CXR abnormality          | None                 | 0                   | `xray`  (`xray.specify`)
+Pulmonary Embolism related CXR abnormality          | Any                  | 1                   | `xray` (`xray.specify`)
+CXR shows alternative diagnosis                     | None                 | 0                   | `xray`  (`xray.specify`)
+CXR shows alternative diagnosis                     | Any                  | 1                   | `xray`  (`xray.specify`)
+Likely Diagnosis									| Not Pulmonary Embolism | 0                   | `?`
+Likely Diagnosis									| Pulmonary Embolism     | 1                   | `?`
+D-Dimer												| Normal Range           | 0                   | `?`
+D-Dimer												| Exceeds Normal Range   | 1                   | `?`
+D-Dimer                                         | More than double the upper normal range | 2      | `?`
+Heart Rate										| $\le 100$ ($1^{st}$ or $2^{nd}$ trimester or postpartum) | 0                   | `heart.rate`
+Heart Rate										| $\le 110$ ($3^{rd}$ trimester)                           | 0                   | `heart.rate`
+Heart Rate										| $> 100$ ($1^{st}$ or $2^{nd}$ trimester or postpartum)   | 1                   | `heart.rate`
+Heart Rate										| $> 110$ ($3^{rd}$ trimester)                             | 1                   | `heart.rate`
+Respiratory Rate 								| $\le 24$                                                 | 0                   | `respiratory.rate`
+Respiratory Rate (Tachypnea)                    | $> 24$                                                   | 1                   | `respiratory.rate`
+Oxygen Saturation								| $\ge 94$                                                 | 0                   | `o2.saturation`
+Oxygen Saturation								| $< 94$                                                   | 1                   | `o2.saturation`
+Systolic Blood Pressure							| $\ge 90$                                                 | 0                   | `bp.systolic`
+Systolic Blood Pressure							| $< 90$                                                   | 1                   | `bp.systolic`
+Diastolic Blood Pressure						| $\ge 60$                                                 | 0                   | `bp.diastolic`
+Diastolic Blood Pressure						| $< 60$                                                   | 1                   | `bp.diastolic`
+Temperature										| $\le 37.4$                                               | 0                   | `temperature`
+Temperature										| $> 37.4$                                                 | 1                   | `temperature`
+D-Dimers (ELISA)								| $< X$   | 0                   | `?`
+D-Dimers (ELISA)								| $\ge X$ | 1                   | `?`
+D-Dimers (latex agglutination)					| $< X$   | 0                   | `?`
+D-Dimers (latex agglutination)					| $\ge X$ | 1                   | `?`
+Plasmin-antiplasmin Assay (PAP)					| $< X$   | 0                   | `?`
+Plasmin-antiplasmin Assay (PAP)					| $\ge X$ | 1                   | `?`
+Prothombin Fragmen 1+2 (PF 1+2)					| $< X$   | 0                   | `?`
+Prothombin Fragmen 1+2 (PF 1+2)					| $\ge X$ | 1                   | `?`
+Thrombin Generation								| $< X$   | 0                   | `?`
+Thrombin Generation								| $\ge X$ | 1                   | `?`
+Prothombin Time (PT)							| $< X$   | 0                   | `?`
+Prothombin Time (PT)							| $\ge X$ | 1                   | `?`
+Activated Partial Thromboplastin Time (APTT)	| $< X$   | 0                   | `?`
+Activated Partial Thromboplastin Time (APTT)    | $\ge X$ | 1                   | `?`
+Clauss Fibrinogen								| $< X$   | 0                   | `?`
+Clauss Fibrinogen								| $\ge X$ | 1                   | `?`
+Soluble Tissue Factor (sTF)						| $< X$   | 0                   | `?`
+Soluble Tissue Factor (sTF)						| $\ge X$ | 1                   | `?`
+Troponin I										| $< X$   | 0                   | `?`
+Troponin I										| $\ge X$ | 1                   | `?`
+B-Type Natriuretic Peptide						| $< X$   | 0                   | `?`
+B-Type Natriuretic Peptide						| $\ge X$ | 1                   | `?`
 
 
 
