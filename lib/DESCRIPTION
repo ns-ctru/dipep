@@ -18,7 +18,7 @@ Depends:
     Hmisc (>= 3.17-1),
     knitr (>= 1.11),
     lars (>= 1.2),
-    lazyeval (>- 0.2.0),
+    lazyeval (>= 0.2.0),
     lubridate (>= 1.5.0),
     magrittr (>= 1.5),
     reshape2 (>= 1.4.1),
