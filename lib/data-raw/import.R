@@ -441,8 +441,6 @@ master$womans.details <- read_dipep("Womans details.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
-## Derive BMI
-master$womans.details$bmi <- master$womans.details$weight / (master$womans.details$height / 100)^2
 
 #######################################################################
 ## Combine required variables into one coherent data frame (would be ##
@@ -454,8 +452,8 @@ master$womans.details$bmi <- master$womans.details$weight / (master$womans.detai
 ## Demographics
 t1 <- dplyr::select(master$womans.details,
                     screening,
-                    site,
                     group,
+                    site,
                     event.name,
                     year.of.birth,
                     ethnicity,
@@ -468,6 +466,8 @@ t1 <- dplyr::select(master$womans.details,
 t2 <- dplyr::select(master$previous.pregnancies,
                     screening,
                     group,
+                    site,
+                    event.name,
                     pregnancies.over,
                     pregnancies.under,
                     prev.preg.problem)
@@ -475,6 +475,8 @@ t2 <- dplyr::select(master$previous.pregnancies,
 t3 <- dplyr::select(master$presenting.features,
                     screening,
                     group,
+                    site,
+                    event.name,
                     presenting.features.pleuritic,
                     presenting.features.non.pleuritic,
                     presenting.features.sob.exertion,
@@ -510,11 +512,15 @@ t3 <- dplyr::select(master$presenting.features,
 t4 <- dplyr::select(master$thrombotic.events,
                     screening,
                     group,
+                    site,
+                    event.name,
                     thromb.event)
 ## Thromboprophylaxis
 t5 <- dplyr::select(master$thromboprophylaxis,
                     screening,
                     group,
+                    site,
+                    event.name,
                     thromboprophylaxis)
 ## EQ5D
 t6 <- dplyr::select(master$eq5d,
@@ -528,9 +534,57 @@ t6 <- dplyr::select(master$eq5d,
                     pain.discomfort,
                     anxiety.depression,
                     health.scale.number) ## ,
-                    ## eq5d)
+## eq5d)
+## Medical History
+t7 <- dplyr::select(master$med.hist,
+                    screening,
+                    group,
+                    site,
+                    event.name,
+                    history.thrombosis,
+                    injury,
+                    thrombosis,
+                    medical.probs)
+## This Pregnancy
+t8 <- dplyr::select(master$pregnancy,
+                    screening,
+                    group,
+                    site,
+                    event.name,
+                    preg.post,
+                    edd,
+                    multiple.preg,
+                    num.fetus,
+                    travel,
+                    immobil)
+## Thrombotic Events
+t9 <- dplyr::select(master$thrombotic.events,
+                    screening,
+                    group,
+                    site,
+                    event.name,
+                    thromb.event)
+## Extract the event date from the screening froms as
+## for some reason the event.date is not recorded in any
+## form and instead the consent.date is to be used as a
+## proxy for baseline
+event.date.dvt <- dplyr::select(master$screening.dvt,
+                                screening,
+                                group,
+                                site,
+                                consent.date)
+event.date.suspected.pe <- dplyr::select(master$screening.suspected.pe,
+                                         screening,
+                                         group,
+                                         site,
+                                         consent.date)
+event.date <- rbind(event.date.dvt,
+                    event.date.suspected.pe)
+rm(event.date.dvt, event.date.suspected.pe)
+names(event.date) <- gsub('consent', 'event', names(event.date))
+
 ## Merge the subsets
-merge.by <- c('screening', 'group')
+merge.by <- c('screening', 'group', 'site', 'event.name')
 dipep <- merge(t1,
                t2,
                by    = merge.by,
@@ -538,8 +592,55 @@ dipep <- merge(t1,
          merge(.,
                t3,
                by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t4,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t5,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t6,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               event.date,
+               by    = c('screening', 'group', 'site'),
                all   = TRUE)
-rm(t1, t2, t3)
+rm(t1, t2, t3, t4, t5, t6, event.date)
+
+#######################################################################
+## Derive variables (something it would be nice if Data Management   ##
+## could do in Prospect as then BMI, age, etc. would all be          ##
+## standardised and reusable).                                       ##
+#######################################################################
+## Derive BMI and age
+## Categorisation of continuous variables
+dipep <- mutate(dipep,
+                bmi = weight / (height / 100)^2,
+                age = 2016 - year.of.birth,
+                temperature.cat = ifelse(temperature <= 37.4,
+                                         yes = 0,
+                                         no  = 1),
+                bp.diastolic.cat = ifelse(bp.diastolic >= 60,
+                                          yes = 0,
+                                          no  = 1),
+                bp.systolic.cat = ifelse(bp.systolic >= 80,
+                                         yes = 0,
+                                         no  = 1),
+                o2.saturation.cat = ifelse(o2.saturation >= 95,
+                                           yes = 0,
+                                           no  = 1),
+                respiratory.rate.cat = ifelse(respiratory.rate <= 24,
+                                              yes = 0,
+                                              no  = 1),
+                ## heart.rate.cat = ifelse(),
+                bmi.cat = ifelse(bmi >= 30,
+                                 yes = 1,
+                                 no  = 0)
+                )
 
 
 #######################################################################
@@ -705,7 +806,7 @@ README.variables$pregnancy                      <- fields_dipep(df     = master$
                                                                 fields = fields)
 README.variables$pregnancy.immobility           <- fields_dipep(df     = master$pregnancy.immobility,
                                                                 fields = fields)
-README.variables$pregnancy.long.haul            <- fields_dipep(df     = master$preganancy.long.haul,
+README.variables$pregnancy.long.haul            <- fields_dipep(master$pregnancy.long.haul,
                                                                 fields = fields)
 README.variables$thromboprophylaxis             <- fields_dipep(df     = master$thromboprophylaxis,
                                                                 fields = fields)
@@ -720,6 +821,7 @@ README.variables$womans.details                 <- fields_dipep(df     = master$
 ## Save all data frames                                              ##
 #######################################################################
 save(master,
+     dipep,
      ## follow.up.30.day,
      ## blood.sample,
      ## service.receipt,
