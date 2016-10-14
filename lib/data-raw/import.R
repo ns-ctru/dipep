@@ -556,13 +556,6 @@ t8 <- dplyr::select(master$pregnancy,
                     num.fetus,
                     travel,
                     immobil)
-## Thrombotic Events
-t9 <- dplyr::select(master$thrombotic.events,
-                    screening,
-                    group,
-                    site,
-                    event.name,
-                    thromb.event)
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
@@ -581,7 +574,6 @@ event.date <- rbind(event.date.dvt,
                     event.date.suspected.pe)
 rm(event.date.dvt, event.date.suspected.pe)
 names(event.date) <- gsub('consent', 'event', names(event.date))
-
 ## Merge the subsets
 merge.by <- c('screening', 'group', 'site', 'event.name')
 dipep <- merge(t1,
@@ -613,14 +605,10 @@ dipep <- merge(t1,
                by    = merge.by,
                all   = TRUE) %>%
          merge(.,
-               t9,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
                event.date,
                by    = c('screening', 'group', 'site'),
                all   = TRUE)
-rm(t1, t2, t3, t4, t5, t6, t7, t8, t9, event.date)
+rm(t1, t2, t3, t4, t5, t6, t7, t8, event.date)
 
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
@@ -653,7 +641,13 @@ dipep <- mutate(dipep,
                                  no  = 0)
                 )
 
-
+#######################################################################
+## Derive an imputed data set                                        ##
+## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
+##                   only works on the dichotomised values           ##
+#######################################################################
+dipep.imputed <- mutate(dipep,
+                        )
 #######################################################################
 ## Database Specification                                            ##
 #######################################################################
@@ -737,6 +731,8 @@ README <- within(README,{
                  description[data.frame == 'thrombotic.events']              <- 'Details of '
                  description[data.frame == 'unavailable.forms']              <- 'Unavailable Forms'
                  description[data.frame == 'womans.details']                 <- 'Womands Details'
+                 description[data.frame == 'dipep']                          <- 'Combined data set for analysis (no imputation)'
+                 description[data.frame == 'dipep.imputed']                  <- 'Combined data set for analysis (imputed missing values)'
 })
 
 #######################################################################
