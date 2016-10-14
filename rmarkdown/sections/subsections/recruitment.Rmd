@@ -1,0 +1,49 @@
+```{r recruitment_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Save useful numbers for use in text
+n_centers       <- unique(master$womans.details$site) %>% length()
+n_screened      <- nrow(master$womans.details)
+n_diagnosed_dvt <- filter(master$womans.details, group == 'Diagnosed DVT') %>% nrow()
+n_non_recruited <- filter(master$womans.details, group == 'Non recruited') %>% nrow()
+n_suspected_pe  <- filter(master$womans.details, group == 'Suspected PE') %>% nrow()
+n_missing_recruitment_date <- filter(master$womans.details, is.na(event.date)) %>% nrow()
+```
+Patients were recruited `r n_centers` across the UK.  Of these `r n_diagnosed_dvt` were diagnosed with DVT, `r n_suspected_pe` were suspected of having PE and `r n_non_recruited` were not recruited.  Table  shows the numbers by center and these are shown graphically in figure
+
+```{r recrutiment_by_center, echo = FALSE, cache = FALSE, results = 'markup', eval = FALSE}
+table(master$womans.details$site, master$womans.details$group) %>%
+kable()
+```
+
+```{r recrutiment_by_center, echo = FALSE, cache = FALSE, results = 'markup', fig.width = 10, eval = TRUE}
+## Subset out data for plotting
+dplyr::select(master$womans.details, site, group) %>%
+    ggplot(aes(x    = group,
+               fill = group)) +
+    geom_bar() +
+    xlab('') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    facet_wrap(~site, ncol = 3) +
+    theme_bw()
+
+```
+
+**NB** It is not possible to screening rates of non-recruited individuals since the date is not recorded (`event.dates` are acutally missing and instead baseline date is the `consent.date`).
+
+```{r recrutiment_rate_by_center, echo = FALSE, cache = FALSE, results = 'markup', fig.width = 10, eval = TRUE}
+dplyr::select(dipep, event.date, group, site) %>%
+    group_by(site, group) %>%
+    arrange(site, group, event.date) %>%
+    mutate(n = 1,
+           recruited = cumsum(n)) %>%
+    filter(group != 'Non recruited') %>%
+    ggplot(aes(x     = event.date,
+               y     = recruited,
+               color = group)) +
+    geom_line() +
+    xlab('Date') + ylab('N') +
+    guides(fill = guide_legend('Group')) +
+    facet_wrap(~site, ncol = 3)
+
+```
+
+**TODO** Rotate x-axis labels
