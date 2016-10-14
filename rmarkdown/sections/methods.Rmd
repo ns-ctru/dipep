@@ -1,4 +1,4 @@
-Detailed description of the proposed analyses were formulated and signed-off in the Statistical Analysis Plan (SAP) as prescribed by the CTRUs *ST001 - The Statistical Analysis Plan* Standard Operatin Procedure (SOP), this document can be viewed [online](https://www.overleaf.com/read/rdyrzjmxxghz).  The methods described below are for the most part lifted directly from the SAP but have where necessary been modified to reflect what has actually been requested and performed as the analyses progressed.
+Detailed description of the proposed analyses were formulated and signed-off in the Statistical Analysis Plan (SAP) as prescribed by the CTRUs *ST001 - The Statistical Analysis Plan* Standard Operating Procedure (SOP), this document can be viewed [online](https://www.overleaf.com/read/rdyrzjmxxghz).  The methods described below are for the most part lifted directly from the SAP but have where necessary been modified to reflect what has actually been requested and performed as the analyses progressed.
 
 ### Data Sources
 
