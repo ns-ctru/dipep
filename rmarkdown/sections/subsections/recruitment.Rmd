@@ -9,12 +9,12 @@ n_missing_recruitment_date <- filter(master$womans.details, is.na(event.date)) %
 ```
 Patients were recruited `r n_centers` across the UK.  Of these `r n_diagnosed_dvt` were diagnosed with DVT, `r n_suspected_pe` were suspected of having PE and `r n_non_recruited` were not recruited.  Table  shows the numbers by center and these are shown graphically in figure
 
-```{r recrutiment_by_center, echo = FALSE, cache = FALSE, results = 'markup', eval = FALSE}
+```{r recrutiment_by_center_table, echo = FALSE, cache = FALSE, results = 'markup', eval = FALSE}
 table(master$womans.details$site, master$womans.details$group) %>%
 kable()
 ```
 
-```{r recrutiment_by_center, echo = FALSE, cache = FALSE, results = 'markup', fig.width = 10, eval = TRUE}
+```{r recrutiment_by_center_plot, echo = FALSE, cache = FALSE, results = 'markup', fig.width = 10, eval = TRUE}
 ## Subset out data for plotting
 dplyr::select(master$womans.details, site, group) %>%
     ggplot(aes(x    = group,
@@ -26,10 +26,11 @@ dplyr::select(master$womans.details, site, group) %>%
     theme_bw()
 
 ```
+**TODO** Rotate x-axis labels
 
-**NB** It is not possible to screening rates of non-recruited individuals since the date is not recorded (`event.dates` are acutally missing and instead baseline date is the `consent.date`).
+**NB** It is not possible to plot screening rates of non-recruited individuals for the simple reason that no `consent.date` is recorded as they were not recruited and there is no `screening.date` field (in fact in the data exported from Prospect `event.dates` are acutally missing and instead baseline date is the `consent.date`).
 
-```{r recrutiment_rate_by_center, echo = FALSE, cache = FALSE, results = 'markup', fig.width = 10, eval = TRUE}
+```{r recrutiment_rate_by_center_plot, echo = FALSE, cache = FALSE, results = 'markup', fig.width = 10, eval = TRUE}
 dplyr::select(dipep, event.date, group, site) %>%
     group_by(site, group) %>%
     arrange(site, group, event.date) %>%
@@ -42,8 +43,7 @@ dplyr::select(dipep, event.date, group, site) %>%
     geom_line() +
     xlab('Date') + ylab('N') +
     guides(fill = guide_legend('Group')) +
-    facet_wrap(~site, ncol = 3)
+    facet_wrap(~site, ncol = 3) +
+    theme_bw()
 
 ```
-
-**TODO** Rotate x-axis labels
