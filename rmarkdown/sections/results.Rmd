@@ -1,6 +1,7 @@
 ### Recruitment
 ```{r child = 'subsections/recruitment.Rmd', eval = TRUE}
 ```
+
 ### Data Completeness
 ```{r child = 'subsections/missing_data.Rmd', eval = TRUE}
 ```
