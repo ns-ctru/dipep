@@ -144,6 +144,17 @@ master$eq5d <- mutate(master$eq5d,
                                            ifelse(anxiety.depression == 'I am extremely anxious or depressed', 'Extreme', NA))))))
 master$eq5d <- dplyr::select(master$eq5d, -mobility, -self.care, -usual.activity, -pain.discomfort, -anxiety.depression)
 names(master$eq5d) <- gsub('_', '', names(master$eq5d))
+## Make sure they all have the same levels
+master$eq5d$mobility           <- ordered(master$eq5d$mobility,
+                                          levels = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
+master$eq5d$self.care          <- ordered(master$eq5d$self.care,
+                                          levels = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
+master$eq5d$usual.activity     <- ordered(master$eq5d$usual.activity,
+                                          levels = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
+master$eq5d$pain.discomfort    <- ordered(master$eq5d$pain.discomfort,
+                                          levels = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
+master$eq5d$anxiety.depression <- ordered(master$eq5d$anxiety.depression,
+                                          levels = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
 ## Derive EQ5D-5L Scores
 ## ToDo - Why isn't eq5d_score() functioning?
 ## master$eq5d <- eq5d_score(master$eq5d,
