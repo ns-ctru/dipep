@@ -1,0 +1,52 @@
+```{r results_lasso, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## All covariates
+covars <- c(age, smoking, pregnancies.over, pregnancies.under, prev.preg.problem,
+            presenting.features.pleuritic, presenting.features.non.pleuritic,
+            presenting.features.sob.exertion, presenting.features.sob.rest,
+            presenting.features.haemoptysis, presenting.features.cough,
+            presenting.features.syncope, presenting.features.palpitations,
+            presenting.features.other, thromb.event, thromboprophylaxis,
+            history.thrombosis, injury, medical.probs, preg.post,
+            bmi.cat, temperature.cat, bp.diastolic.cat, bp.systolic.cat)
+covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
+         ## dplyr::select(age, smoking, pregnancies.over, pregnancies.under, prev.preg.problem,
+         ##        presenting.features.pleuritic, presenting.features.non.pleuritic,
+         ##        presenting.features.sob.exertion, presenting.features.sob.rest,
+         ##        presenting.features.haemoptysis, presenting.features.cough,
+         ##        presenting.features.syncope, presenting.features.palpitations,
+         ##        presenting.features.other, thromb.event, thromboprophylaxis,
+         ##        history.thrombosis, injury, medical.probs, preg.post,
+         ##        bmi.cat, temperature.cat, bp.diastolic.cat, bp.systolic.cat) %>%
+         dplyr::select(age, smoking) %>%
+         mutate(use = complete.cases(.)) %>%
+         filter(use == TRUE) %>%
+         dplyr::select(-use) %>%
+         as.matrix()
+## Classification of Pulmonary Embolism
+## TODO - Get true status
+n.suspected.pe <- nrow(covar)
+status <- ifelse(runif(n = n.suspected.pe) > 0.8, 1, 0) %>%
+          factor(levels = c(0,1))
+## LASSO
+lasso <- glmnet(x = covar,
+                y = status,
+                family = 'binomial')
+
+
+
+```
+
+The [LASSO (Least Absolute Shrinkage and Selection Operator)](https://en.wikipedia.org/wiki/Lasso_(statistics)) is a method of automated selection of covariates/predictor variables that maximises the accuracy of the model without inflating the estimated coefficients for each variable.  The [R](https://www.r-project.org/) package [glmnet](https://cran.r-project.org/web/packages/glmnet/) has been used to fit a model using the LASSO and if you are interested in learning about the LASSO or fitting with this model it is recommended you read the packages [vignette](https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet\_beta.html), in particular the section on logistic regression.
+
+#### Model
+
+The model that has been fitted uses the outcome variable of the observed events of Pulmonary Embolisms in the recruited cohort of Suspected PE individuals.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the form...
+
+$$
+pulmonary.embolism ~ `R covars`
+$$
+
+#### Results
+
+
+#### Cross-Validation
