@@ -1,5 +1,6 @@
 ---
 title: DiPEP - Predicting Pulmonary Embolisms in Pregnant Women
+runtime: shiny
 output: html_document
 bibliography: sections/bibliography.bib
 ---
@@ -10,18 +11,24 @@ opts_chunk$set(cache.path = 'cache/',
                width    = 200,
                fig.height = 8,
                fig.width  = 8)
+## Ensure anchors are assessed first
+## opts_knit$set(eval.after = 'echo')
 ## Hooks
-knit_hooks$set(anchor = hook_anchor)
+## knit_hooks$set(anchor = hook_anchor)
 ## Set a seed
 set.seed(69027181)
+## Set sensible defaults
+ggplot2.opts <- list()
+ggplot2.opts$binwidth <- 30
+
 ```
-# {.tabset}
+# {.tabset .tabset-fade .tabset-pills}
 ## Overview
 
 ```{r child = 'sections/overview.Rmd', eval = TRUE}
 ```
 
-## Methods
+## Methods {.tabset .tabset-fade .tabset-pills}
 
 ```{r child = 'sections/methods.Rmd', eval = TRUE}
 ```
@@ -30,8 +37,12 @@ set.seed(69027181)
 ```{r child = 'sections/analysis.Rmd', eval = FALSE}
 ```
 
-## Results {.tabset .tabset-fade}
+## Results {.tabset .tabset-fade .tabset-pills}
 ```{r child = 'sections/results.Rmd', eval = TRUE}
+```
+
+## Playground {.tabset .tabset-fade .tabset-pills}
+```{r child = 'sections/playground.Rmd', eval = TRUE}
 ```
 
 ## Software
