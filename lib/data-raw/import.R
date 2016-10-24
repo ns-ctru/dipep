@@ -628,6 +628,7 @@ rm(t1, t2, t3, t4, t5, t6, t7, t8, event.date)
 #######################################################################
 ## Derive BMI and age
 ## Categorisation of continuous variables
+## Gestational period based on Expected Due Date (edd) and event date (event.date copied from consent.date)
 dipep <- mutate(dipep,
                 bmi = weight / (height / 100)^2,
                 age = 2016 - year.of.birth,
@@ -650,15 +651,40 @@ dipep <- mutate(dipep,
                 bmi.cat = ifelse(bmi >= 30,
                                  yes = 1,
                                  no  = 0)
+                gestation = ymd(edd) - ymd(event.date)
+                ## elapsed.ge
                 )
-
+## Ensure everything is a factor
+dipep <- mutate(dipep,
+                bmi.cat = factor(bmi.cat,
+                                 levels = c(0, 1),
+                                 labels = c('Low', 'High')),
+                temperature.cat = factor(temperature.cat,
+                                         levels = c(0, 1),
+                                         labels = c('Low', 'High')),
+                ## heart.rate.cat = factor(heart.rate.cat,
+                ##                         levels = c(0, 1),
+                ##                         labels = c('Low', 'High')),
+                bp.diastolic.cat = factor(bp.diastolic.cat,
+                                          levels = c(0, 1),
+                                          labels = c('Low', 'High')),
+                bp.systolic.cat = factor(bp.systolic.cat,
+                                         levels = c(0, 1),
+                                         labels = c('Low', 'High')),
+                o2.saturation.cat.cat = factor(o2.saturation.cat.cat,
+                                               levels = c(0, 1),
+                                               labels = c('Low', 'High')),
+                respiratory.rate.cat = factor(respiratory.rate.cat,
+                                              levels = c(0, 1),
+                                              labels = c('Low', 'High'))
+                )
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
 ##                   only works on the dichotomised values           ##
 #######################################################################
-dipep.imputed <- mutate(dipep,
-                        )
+## dipep.imputed <- mutate(dipep,
+##                         )
 #######################################################################
 ## Database Specification                                            ##
 #######################################################################
