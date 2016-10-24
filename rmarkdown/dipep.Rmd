@@ -41,9 +41,9 @@ ggplot2.opts$binwidth <- 30
 ```{r child = 'sections/results.Rmd', eval = TRUE}
 ```
 
-## Playground {.tabset .tabset-fade .tabset-pills}
-```{r child = 'sections/playground.Rmd', eval = TRUE}
-```
+<!-- ## Playground {.tabset .tabset-fade .tabset-pills} -->
+<!-- ```{r child = 'sections/playground.Rmd', eval = FALSE} -->
+<!-- ``` -->
 
 ## Software
 ```{r child = 'sections/software.Rmd', eval = TRUE}
