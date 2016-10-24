@@ -8,6 +8,7 @@ Description: Summarises, plots and analyses data collected for the DiPEP study
 Depends:
     R (>= 3.2.3),
     broom (>= 0.4.1),
+    caret (>= 6.0-71),
     ctru (>= 0.0.0.9001),
     dplyr(>= 0.4.1),
     forcats (>= 0.1.1),
@@ -28,7 +29,6 @@ Depends:
     shiny(>= 0.13.0),
     stargazer(>= 5.1),
     stringr (>= 1.0.0),
-    survival (>= 2.38-3),
     texreg (>= 1.35),
     tidyr (>= 0.3.1),
     xtable (>= 1.7-4)
