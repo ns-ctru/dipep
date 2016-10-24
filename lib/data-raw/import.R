@@ -650,7 +650,7 @@ dipep <- mutate(dipep,
                 ## heart.rate.cat = ifelse(),
                 bmi.cat = ifelse(bmi >= 30,
                                  yes = 1,
-                                 no  = 0)
+                                 no  = 0),
                 gestation = ymd(edd) - ymd(event.date)
                 ## elapsed.ge
                 )
@@ -671,9 +671,9 @@ dipep <- mutate(dipep,
                 bp.systolic.cat = factor(bp.systolic.cat,
                                          levels = c(0, 1),
                                          labels = c('Low', 'High')),
-                o2.saturation.cat.cat = factor(o2.saturation.cat.cat,
-                                               levels = c(0, 1),
-                                               labels = c('Low', 'High')),
+                o2.saturation.cat = factor(o2.saturation.cat,
+                                           levels = c(0, 1),
+                                           labels = c('Low', 'High')),
                 respiratory.rate.cat = factor(respiratory.rate.cat,
                                               levels = c(0, 1),
                                               labels = c('Low', 'High'))
