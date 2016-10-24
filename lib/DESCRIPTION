@@ -1,18 +1,18 @@
 Package: dipep
 Title: Predicting Pulmonary Embolisms in Pregnant Women (DiPEP)
-Version: 0.0.0.1021
+Version: 0.0.0.1024
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: Summarises, plots and analyses data collected for the DiPEP study
     investigating improving prediction rules for Pulmonary Embolisms in Pregnant
     Women
 Depends:
     R (>= 3.2.3),
-    broom (>= 0.4.0),
+    broom (>= 0.4.1),
     ctru (>= 0.0.0.9001),
     dplyr(>= 0.4.1),
     forcats (>= 0.1.1),
     glmnet (>= 2.0-5),
-    ggdendro (>= 0.1-18),
+    ggdendro (>= 0.1-20),
     ggplot2 (>= 1.0.1),
     haven (>= 0.2.0),
     Hmisc (>= 3.17-1),
