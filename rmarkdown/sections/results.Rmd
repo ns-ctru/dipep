@@ -14,14 +14,22 @@
 ```{r child = 'subsections/results_adverse_events.Rmd', eval = TRUE}
 ```
 
+### EQ-5D-5L
+```{r child = 'subsections/results_eq5d5l.Rmd', eval = TRUE}
+```
+
 ### Clinical Opinion
 ```{r child = 'subsections/results_clinical_opinion.Rmd', eval = FALSE}
 ```
 
 ### Recursive Partitioning
-```{r child = 'subsections/results_recursive_partitioning.Rmd', eval = FALSE}
+```{r child = 'subsections/results_rpart.Rmd', eval = TRUE}
 ```
 
 ### LASSO
-```{r child = 'subsections/results_lasso.Rmd', eval = FALSE}
+```{r child = 'subsections/results_lasso.Rmd', eval = TRUE}
+```
+
+### Logistic Regression
+```{r child = 'subsections/results_logistic.Rmd', eval = TRUE}
 ```
