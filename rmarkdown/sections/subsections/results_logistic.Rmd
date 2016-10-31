@@ -1,0 +1,202 @@
+Its is not advisable to use the results of univariable regression to shape your choice of variables to include in multi-variable models for the simple reason that the coefficients obtained for a variable in isolation will not be the same as those from a multi-variable model.  Thus something that appears to be significant under univariable analysis may well not be under multi-variable analysis.  A better strategy is to use expert clinical knowledge as to what factors are important to determine which variables are included in a multi-variable model.
+
+Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.
+
+```{r results_logistic_regression, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Add a dummy variable to the data for now
+dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
+dipep$pe <- factor(dipep$pe,
+                   levels = c(0, 1),
+                   labels = c('No PE', 'PE'))
+## Test each outcome for association, then gather them *using broom) into one dataset for summarisation
+## Age
+logistic.age <- dipep_glm(df = dipep,
+                          predictor = 'age')
+## Smoking
+logistic.smoking <- dipep_glm(df = dipep,
+                          predictor = 'smoking')
+## Temperature (Categorised)
+logistic.temperature.cat <- dipep_glm(df = dipep,
+                          predictor = 'temperature.cat')
+## Temperature
+logistic.temperature <- dipep_glm(df = dipep,
+                          predictor = 'temperature')
+## BP Diastolic (Categorised)
+logistic.bp.diastolic.cat <- dipep_glm(df = dipep,
+                          predictor = 'bp.diastolic.cat')
+## BP Diastolic
+logistic.bp.diastolic <- dipep_glm(df = dipep,
+                          predictor = 'bp.diastolic')
+## BP Systolic (Categorised)
+## logistic.bp.systolic.cat <- dipep_glm(df = dipep,
+##                           predictor = 'bp.systolic.cat')
+## BP Systolic
+logistic.bp.systolic <- dipep_glm(df = dipep,
+                          predictor = 'bp.systolic')
+## O2 Saturation (Categorised)
+logistic.o2.saturation.cat <- dipep_glm(df = dipep,
+                          predictor = 'o2.saturation.cat')
+## O2 Saturation
+logistic.o2.saturation <- dipep_glm(df = dipep,
+                          predictor = 'o2.saturation')
+## Respiratory Rate (Categorised)
+logistic.respiratory.rate.cat <- dipep_glm(df = dipep,
+                          predictor = 'respiratory.rate.cat')
+## Respiratory Rate
+logistic.respiratory.rate <- dipep_glm(df = dipep,
+                          predictor = 'respiratory.rate')
+## BMI (Categorised)
+logistic.bmi.cat <- dipep_glm(df = dipep,
+                          predictor = 'bmi.cat')
+## BMI
+logistic.bmi <- dipep_glm(df = dipep,
+                          predictor = 'bmi')
+## Previous Pregnancies < 24 weeks
+logistic.pregnancies.under <- dipep_glm(df = dipep,
+                          predictor = 'pregnancies.under')
+## Previous Pregnancies > 24 weeks
+logistic.pregnancies.over <- dipep_glm(df = dipep,
+                          predictor = 'pregnancies.over')
+## Previous Pregnancy Problems
+logistic.prev.preg.problem <- dipep_glm(df = dipep,
+                          predictor = 'prev.preg.problem')
+## Pleuritic
+logistic.presenting.features.pleuritic <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.pleuritic')
+## Non-Pleuritic
+logistic.presenting.features.non.pleuritic <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.non.pleuritic')
+## Shortness of Breath (Exertion)
+logistic.presenting.features.sob.exertion <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.sob.exertion')
+## Shortness of Breath (Rest)
+logistic.presenting.features.sob.rest <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.sob.rest')
+## Haemoptysis
+logistic.presenting.features.haemoptysis <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.haemoptysis')
+## Cough
+logistic.presenting.features.cough <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.cough')
+## Syncope
+logistic.presenting.features.syncope <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.syncope')
+## Palpitations
+logistic.presenting.features.palpitations <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.palpitations')
+## Other Features on Presentation
+logistic.presenting.features.other <- dipep_glm(df = dipep,
+                          predictor = 'presenting.features.other')
+
+## Combine all three sets of tidied output from each model
+logistic.tidied <- rbind(logistic.age$tidied,
+                         logistic.smoking$tidied,
+                         logistic.temperature.cat$tidied,
+                         logistic.temperature$tidied,
+                         logistic.bp.diastolic.cat$tidied,
+                         logistic.bp.diastolic$tidied,
+                         ## logistic.bp.systolic.cat$tidied,
+                         logistic.bp.systolic$tidied,
+                         logistic.o2.saturation.cat$tidied,
+                         logistic.o2.saturation$tidied,
+                         logistic.respiratory.rate.cat$tidied,
+                         logistic.respiratory.rate$tidied,
+                         logistic.bmi.cat$tidied,
+                         logistic.bmi$tidied,
+                         logistic.pregnancies.under$tidied,
+                         logistic.pregnancies.over$tidied,
+                         logistic.prev.preg.problem$tidied,
+                         logistic.presenting.features.pleuritic$tidied,
+                         logistic.presenting.features.non.pleuritic$tidied,
+                         logistic.presenting.features.sob.exertion$tidied,
+                         logistic.presenting.features.haemoptysis$tidied,
+                         logistic.presenting.features.sob.rest$tidied,
+                         logistic.presenting.features.cough$tidied,
+                         logistic.presenting.features.syncope$tidied,
+                         logistic.presenting.features.palpitations$tidied,
+                         logistic.presenting.features.other$tidied) %>%
+                    mutate(term = gsub('smokinggave', 'gave', term),
+                           term = gsub('smokingcurrent', 'current', term),
+                           term = gsub('temperature.catHigh', 'High', term),
+                           term = gsub('bp.diastolic.catHigh', 'High', term),
+                           term = gsub('bp.systolic.catHigh', 'High', term),
+                           term = gsub('o2.saturation.catHigh', 'High', term),
+                           term = gsub('bmi.catHigh', 'High', term),
+                           term = gsub('Ticked', '', term))
+
+logistic.glance <- rbind(logistic.age$glance,
+                         logistic.smoking$glance,
+                         logistic.temperature.cat$glance,
+                         logistic.temperature$glance,
+                         logistic.bp.diastolic.cat$glance,
+                         logistic.bp.diastolic$glance,
+                         ## logistic.bp.systolic.cat$glance,
+                         logistic.bp.systolic$glance,
+                         logistic.o2.saturation.cat$glance,
+                         logistic.o2.saturation$glance,
+                         logistic.respiratory.rate.cat$glance,
+                         logistic.respiratory.rate$glance,
+                         logistic.bmi.cat$glance,
+                         logistic.bmi$glance,
+                         logistic.pregnancies.under$glance,
+                         logistic.pregnancies.over$glance,
+                         logistic.prev.preg.problem$glance,
+                         logistic.presenting.features.pleuritic$glance,
+                         logistic.presenting.features.non.pleuritic$glance,
+                         logistic.presenting.features.sob.exertion$glance,
+                         logistic.presenting.features.sob.rest$glance,
+                         logistic.presenting.features.haemoptysis$glance,
+                         logistic.presenting.features.cough$glance,
+                         logistic.presenting.features.syncope$glance,
+                         logistic.presenting.features.palpitations$glance,
+                         logistic.presenting.features.other$glance)
+## Get all predicted values
+logistic.predicted <- cbind(predict(logistic.age$fitted),
+                            predict(logistic.smoking$fitted),
+                            predict(logistic.temperature.cat$fitted),
+                            predict(logistic.temperature$fitted),
+                            predict(logistic.bp.diastolic.cat$fitted),
+                            predict(logistic.bp.diastolic$fitted),
+                            ## predict(logistic.bp.systolic.cat$fitted),
+                            predict(logistic.bp.systolic$fitted),
+                            predict(logistic.o2.saturation.cat$fitted),
+                            predict(logistic.o2.saturation$fitted),
+                            predict(logistic.respiratory.rate.cat$fitted),
+                            predict(logistic.respiratory.rate$fitted),
+                            predict(logistic.bmi.cat$fitted),
+                            predict(logistic.bmi$fitted),
+                            predict(logistic.pregnancies.under$fitted),
+                            predict(logistic.pregnancies.over$fitted),
+                            predict(logistic.prev.preg.problem$fitted),
+                            predict(logistic.presenting.features.pleuritic$fitted),
+                            predict(logistic.presenting.features.non.pleuritic$fitted),
+                            predict(logistic.presenting.features.sob.exertion$fitted),
+                            predict(logistic.presenting.features.sob.rest$fitted),
+                            predict(logistic.presenting.features.haemoptysis$fitted),
+                            predict(logistic.presenting.features.cough$fitted),
+                            predict(logistic.presenting.features.syncope$fitted),
+                            predict(logistic.presenting.features.palpitations$fitted),
+                            predict(logistic.presenting.features.other$fitted)) %>%
+                      data.frame()
+names(logistic.predicted) <- c('age', 'smoking', 'temperature.cat', 'temperature',
+                               'bp.diastolic.cat', 'bp.diastolic',
+                               ## 'bp.systolic.cat',
+                               'bp.systolic',
+                               'o2.saturation.cat', 'o2.saturation',
+                               'respiratory.rate.cat', 'respiratory.rate',
+                               'bmi.cat', 'bmi',
+                               'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
+                               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+                               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+                               'presenting.features.haemoptysis', 'presenting.features.cough',
+                               'presenting.features.syncope', 'presenting.features.palpitations',
+                               'presenting.features.other')
+
+## ToDo - Bind in the observed value and calculate the sensitivity and specificity
+
+## ToDo - Possibly add in descriptive labels (perhaps build a dataframe with these to make it easy)
+```
+
+```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
+
+```
