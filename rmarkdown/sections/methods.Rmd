@@ -225,7 +225,7 @@ $$
 
 Assessing the combined sensitivity and specificity of each method of classification will be performed by plotting [Receiver Operating Characteristic (ROC) curves](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and quantified by the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve).
 
-### Positive & Negative Predictive Value
+#### Positive & Negative Predictive Value
 
 Related to the sensitivity and specificity the [positive and negative predictive value](https://en.wikipedia.org/wiki/Positive\_and\_negative\_predictive\_values) (PPV and NPV respectively) are the proportions of positive and negative predictions that are correct.
 
@@ -236,6 +236,11 @@ $$
 $$
 NPV = \frac{TN}{TN + FN}
 $$
+
+#### Possible Alternatives
+
+I recently came across a paper discussing alternatives to Area Under the ROC curve (@pencina2008) and proposes two new measures which offer improvements, one based on both the sensitivity and specificity, the other based on reclassification tables.  The approach has been implemented in the `Hmisc` package for R (see [comment from packages author on R-help](http://r.789695.n4.nabble.com/Calculating-Sensitivity-Specificity-and-Agreement-from-Logistics-Regression-Model-td874453.html)) and if the limited time available permits these will be investigated.
+
 
 ### Adverse Events
 
