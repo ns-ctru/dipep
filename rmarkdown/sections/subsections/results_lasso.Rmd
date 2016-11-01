@@ -1,36 +1,70 @@
-```{r results_lasso, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-## All covariates
-covars <- c(age, smoking, pregnancies.over, pregnancies.under, prev.preg.problem,
-            presenting.features.pleuritic, presenting.features.non.pleuritic,
-            presenting.features.sob.exertion, presenting.features.sob.rest,
-            presenting.features.haemoptysis, presenting.features.cough,
-            presenting.features.syncope, presenting.features.palpitations,
-            presenting.features.other, thromb.event, thromboprophylaxis,
-            history.thrombosis, injury, medical.probs, preg.post,
-            bmi.cat, temperature.cat, bp.diastolic.cat, bp.systolic.cat)
+```{r results_lasso_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Categorised variables
+## Covariates
 covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-         ## dplyr::select(age, smoking, pregnancies.over, pregnancies.under, prev.preg.problem,
-         ##        presenting.features.pleuritic, presenting.features.non.pleuritic,
-         ##        presenting.features.sob.exertion, presenting.features.sob.rest,
-         ##        presenting.features.haemoptysis, presenting.features.cough,
-         ##        presenting.features.syncope, presenting.features.palpitations,
-         ##        presenting.features.other, thromb.event, thromboprophylaxis,
-         ##        history.thrombosis, injury, medical.probs, preg.post,
-         ##        bmi.cat, temperature.cat, bp.diastolic.cat, bp.systolic.cat) %>%
-         dplyr::select(age, smoking) %>%
+         dplyr::select(age, smoking, pregnancies.over, pregnancies.under, prev.preg.problem,
+                       presenting.features.pleuritic, presenting.features.non.pleuritic,
+                       presenting.features.sob.exertion, presenting.features.sob.rest,
+                       presenting.features.haemoptysis, presenting.features.cough,
+                       presenting.features.syncope, presenting.features.palpitations,
+                       presenting.features.other, thromb.event, thromboprophylaxis,
+                       history.thrombosis, injury, medical.probs, preg.post,
+                       bmi.cat, temperature.cat, bp.diastolic.cat, bp.systolic.cat,
+                       surgery, cesarean, thromb.event,
+                       thromboprophylaxis, thrombosis, preg.post, num.fetus) %>%
+         ## dplyr::select(age, smoking) %>%
          mutate(use = complete.cases(.)) %>%
          filter(use == TRUE) %>%
          dplyr::select(-use) %>%
-         as.matrix()
+         data.matrix()
 ## Classification of Pulmonary Embolism
 ## TODO - Get true status
 n.suspected.pe <- nrow(covar)
 status <- ifelse(runif(n = n.suspected.pe) > 0.8, 1, 0) %>%
           factor(levels = c(0,1))
 ## LASSO
-lasso <- glmnet(x = covar,
-                y = status,
-                family = 'binomial')
+## Worked example at https://stats.stackexchange.com/questions/72251/an-example-lasso-regression-using-glmnet-for-binary-outcome
+lasso.categorical <- glmnet(x      = covar,
+                            y      = status,
+                            family = 'binomial')
+cv.lasso.categorical <- cv.glmnet(x      = covar,
+                                  y      = status,
+                                  family = 'binomial',
+                                  nfolds = length(status))
+```
+```{r results_lasso_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Continuous variables
+## Covariates
+covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
+         dplyr::select(age, smoking, pregnancies.over, pregnancies.under, prev.preg.problem,
+                       presenting.features.pleuritic, presenting.features.non.pleuritic,
+                       presenting.features.sob.exertion, presenting.features.sob.rest,
+                       presenting.features.haemoptysis, presenting.features.cough,
+                       presenting.features.syncope, presenting.features.palpitations,
+                       presenting.features.other, thromb.event, thromboprophylaxis,
+                       history.thrombosis, injury, medical.probs, preg.post,
+                       bmi, temperature, bp.diastolic, bp.systolic,
+                       surgery, cesarean, thromb.event,
+                       thromboprophylaxis, thrombosis, preg.post, num.fetus) %>%
+         ## dplyr::select(age, smoking) %>%
+         mutate(use = complete.cases(.)) %>%
+         filter(use == TRUE) %>%
+         dplyr::select(-use) %>%
+         data.matrix()
+## Classification of Pulmonary Embolism
+## TODO - Get true status
+n.suspected.pe <- nrow(covar)
+status <- ifelse(runif(n = n.suspected.pe) > 0.8, 1, 0) %>%
+          factor(levels = c(0,1))
+## LASSO
+## Worked example at https://stats.stackexchange.com/questions/72251/an-example-lasso-regression-using-glmnet-for-binary-outcome
+lasso.continuous <- glmnet(x      = covar,
+                           y      = status,
+                           family = 'binomial')
+cv.lasso.continuous <- cv.glmnet(x      = covar,
+                                 y      = status,
+                                 family = 'binomial',
+                                 nfolds = length(status))
 
 
 
@@ -43,10 +77,93 @@ The [LASSO (Least Absolute Shrinkage and Selection Operator)](https://en.wikiped
 The model that has been fitted uses the outcome variable of the observed events of Pulmonary Embolisms in the recruited cohort of Suspected PE individuals.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the form...
 
 $$
-pulmonary.embolism ~ `R covars`
+pulmonary.embolism ~
 $$
 
-#### Results
+The plot below shows the change in the coefficients for each predictor variable over iterations of estimation via LASSO. L1 Norm is a constraint placed on the analsyis for the sum of all coefficients and is one of the unique features of the LASSO.  For further details on L1 normalisation please refer to [this article](http://people.duke.edu/~hpgavin/SystemID/References/Schmidt-LASSO-2005.pdf).
 
+#### Pre-Categorised Continuous Variables
 
-#### Cross-Validation
+** ToDo** - Get values of coefficients printed on graph (perhaps use `ggrepel` to avoid overlapping)
+```{r results_lasso_categorical_plot, echo = FALSE, cache = FALSE, fig.width = 10, fig.height = 10, results = 'asis', eval = TRUE}
+## Plot the change in coefficients over time
+autoplot(lasso.categorical) + theme_bw()
+## Get the coefficients from the last step.
+## coef.glmnet() doesn't work properly as the option 's' to select a specific
+## set of coefficients is not honored.
+lambda.min <- which(cv.lasso.categorical$lambda == cv.lasso.categorical$lambda %>% min())
+beta.coef <- coef.glmnet(lasso.categorical, s = lambda.min) %>% as.data.frame()
+## Instead we extract them manually, pulling out the last set of values
+lambda.min <- lasso.categorical$beta %>% ncol()
+beta.coef  <- lasso.categorical$beta[,lambda.min] %>% as.data.frame()
+names(beta.coef) <- c('beta')
+beta.coef$term <- rownames(beta.coef)
+dplyr::filter(beta.coef, beta != 0) %>%
+    dplyr::select(term, beta) %>%
+    kable(caption = 'Coefficients from LASSO')
+
+```
+
+##### Cross-Validation
+
+[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised to check the predictive value of the model.  The plot below shows the results of the cross-validation
+**ToDo** - Explanation
+<!-- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
+
+```{r results_lasso_categorical_cross_validation_plot, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+autoplot(cv.lasso.categorical) + theme_bw()
+```
+
+##### Sensitivity and Specificity
+
+An optimal value for lambda, the regularisation parameter, needs to be selected, the recommended advice is to choose a value that is within one standard error of
+
+```{r results_lasso_categorical_roc, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+## Obtain predictions
+lambda.1se <- which(cv.lasso.categorical$lambda == cv.lasso.categorical$lambda.1se)
+lambda.min <- which(cv.lasso.categorical$lambda == cv.lasso.categorical$lambda.min)
+
+```
+
+#### Continuous Variables
+
+** ToDo** - Get values of coefficients printed on graph (perhaps use `ggrepel` to avoid overlapping)
+```{r results_lasso_continuous_plot, echo = FALSE, cache = FALSE, fig.width = 10, fig.height = 10, results = 'asis', eval = TRUE}
+## Plot the change in coefficients over time
+autoplot(lasso.continuous) + theme_bw()
+## Get the coefficients from the last step.
+## coef.glmnet() doesn't work properly as the option 's' to select a specific
+## set of coefficients is not honored.
+lambda.min <- which(cv.lasso.continuous$lambda == cv.lasso.continuous$lambda %>% min())
+beta.coef <- coef.glmnet(lasso.continuous, s = lambda.min) %>% as.data.frame()
+## Instead we extract them manually, pulling out the last set of values
+lambda.min <- lasso.continuous$beta %>% ncol()
+beta.coef  <- lasso.continuous$beta[,lambda.min] %>% as.data.frame()
+names(beta.coef) <- c('beta')
+beta.coef$term <- rownames(beta.coef)
+dplyr::filter(beta.coef, beta != 0) %>%
+    dplyr::select(term, beta) %>%
+    kable(caption = 'Coefficients from LASSO')
+
+```
+
+##### Cross-Validation
+
+[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised to check the predictive value of the model.  The plot below shows the results of the cross-validation
+**ToDo** - Explanation
+<!-- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
+
+```{r results_lasso_continuous_cross_validation_plot, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+autoplot(cv.lasso.continuous) + theme_bw()
+```
+
+##### Sensitivity and Specificity
+
+An optimal value for lambda, the regularisation parameter, needs to be selected, the recommended advice is to choose a value that is within one standard error of
+
+```{r results_lasso_continuous_roc, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+## Obtain predictions
+lambda.1se <- which(cv.lasso.continuous$lambda == cv.lasso.continuous$lambda.1se)
+lambda.min <- which(cv.lasso.continuous$lambda == cv.lasso.continuous$lambda.min)
+
+```
