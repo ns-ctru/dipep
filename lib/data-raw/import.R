@@ -512,13 +512,7 @@ t3 <- dplyr::select(master$presenting.features,
                     xray.specify,
                     life.support.presentation,
                     diagnosis.post,
-                    d.dimer.performed,
-                    d.dimer.not.recorded,
-                    d.dimer.unt,
-                    d.dimer.ugl,
-                    d.dimer,
-                    d.dimer.low,
-                    d.dimer.high)
+                    d.dimer)
 ## Thrombotic Event
 t4 <- dplyr::select(master$thrombotic.events,
                     screening,
@@ -552,9 +546,15 @@ t7 <- dplyr::select(master$med.hist,
                     site,
                     event.name,
                     history.thrombosis,
+                    history.veins,
+                    history.iv.drug,
                     injury,
+                    thrombo,
                     thrombosis,
-                    medical.probs)
+                    medical.probs,
+                    surgery,
+                    surgery.other,
+                    injury)
 ## This Pregnancy
 t8 <- dplyr::select(master$pregnancy,
                     screening,
@@ -651,8 +651,15 @@ dipep <- mutate(dipep,
                 bmi.cat = ifelse(bmi >= 30,
                                  yes = 1,
                                  no  = 0),
-                gestation = ymd(edd) - ymd(event.date)
-                ## elapsed.ge
+                gestation = ymd(edd) - ymd(event.date),
+                ## elapsed.gestation
+                ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
+                cesarean = ifelse(grepl('c*esarian|c*section|caesarean|emcs|lscs', surgery.other, ignore.case = TRUE),
+                                  yes = 1,
+                                  no  = 0)
+                smoking.cat = ifelse(smoking == 'current' | smoking == 'gave up during pregnancy',
+                                     yes = 1,
+                                     no  = 0)
                 )
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
@@ -676,15 +683,25 @@ dipep <- mutate(dipep,
                                            labels = c('Low', 'High')),
                 respiratory.rate.cat = factor(respiratory.rate.cat,
                                               levels = c(0, 1),
-                                              labels = c('Low', 'High'))
+                                              labels = c('Low', 'High')),
+                cesarean = factor(cesarean,
+                                  levels = c(0, 1),
+                                  labels = c('No Cesarean', 'Cesarean'))
                 )
+## Add a dummy for PE for now
+dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
+dipep$pe <- factor(dipep$pe,
+                   levels = c(0, 1),
+                   labels = c('No PE', 'PE'))
+
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
 ##                   only works on the dichotomised values           ##
 #######################################################################
-## dipep.imputed <- mutate(dipep,
-##                         )
+dipep.imputed <- mutate(dipep,
+                        surgery = ifelse(is.na(surgery), yes = 0, no = surgery)
+                        )
 #######################################################################
 ## Database Specification                                            ##
 #######################################################################
@@ -720,11 +737,11 @@ fields$variable <- gsub('_', '.', fields$variable)
 #######################################################################
 ## Data Dictionary for R objects                                    ##
 #######################################################################
-README <- names(master) %>%
+dipep.README <- names(master) %>%
           data.frame()
-README$description <- ''
-names(README) <- c('data.frame', 'description')
-README <- within(README,{
+dipep.README$description <- ''
+names(dipep.README) <- c('data.frame', 'description')
+dipep.README <- within(dipep.README,{
                  description[data.frame == 'data.dictionary']                <- 'Data Dictionary - Factor variables'
                  description[data.frame == 'follow.up.30.day']               <- '30-day Follow-Up'
                  description[data.frame == 'annotations']                    <- ''
@@ -775,90 +792,90 @@ README <- within(README,{
 #######################################################################
 ## Data Dictaionary for each data frame                              ##
 #######################################################################
-README.variables <- list()
-README.variables$follow.up.30.day               <- fields_dipep(df     = master$follow.up.30.day,
+dipep.README.variables <- list()
+dipep.README.variables$follow.up.30.day               <- fields_dipep(df     = master$follow.up.30.day,
                                                                 fields = fields)
-README.variables$annotations                    <- fields_dipep(df     = master$annotations,
+dipep.README.variables$annotations                    <- fields_dipep(df     = master$annotations,
                                                                 fields = fields)
-README.variables$blood.sample                   <- fields_dipep(df     = master$blood.sample,
+dipep.README.variables$blood.sample                   <- fields_dipep(df     = master$blood.sample,
                                                                 fields = fields)
-README.variables$service.receipt                <- fields_dipep(df     = master$service.receipt,
+dipep.README.variables$service.receipt                <- fields_dipep(df     = master$service.receipt,
                                                                 fields = fields)
-README.variables$service.receipt.hospital       <- fields_dipep(df     = master$service.receipt.hospital,
+dipep.README.variables$service.receipt.hospital       <- fields_dipep(df     = master$service.receipt.hospital,
                                                                 fields = fields)
-README.variables$completion                     <- fields_dipep(df     = master$completion,
+dipep.README.variables$completion                     <- fields_dipep(df     = master$completion,
                                                                 fields = fields)
-README.variables$contact                        <- fields_dipep(df     = master$contact,
+dipep.README.variables$contact                        <- fields_dipep(df     = master$contact,
                                                                 fields = fields)
-README.variables$delivery                       <- fields_dipep(df     = master$delivery,
+dipep.README.variables$delivery                       <- fields_dipep(df     = master$delivery,
                                                                 fields = fields)
-README.variables$discrepancies                  <- fields_dipep(df     = master$discrepancies,
+dipep.README.variables$discrepancies                  <- fields_dipep(df     = master$discrepancies,
                                                                 fields = fields)
-README.variables$eq5d                           <- fields_dipep(df     = master$eq5d,
+dipep.README.variables$eq5d                           <- fields_dipep(df     = master$eq5d,
                                                                 fields = fields)
-README.variables$events                         <- fields_dipep(df     = master$events,
+dipep.README.variables$events                         <- fields_dipep(df     = master$events,
                                                                 fields = fields)
-README.variables$follow.up.sent                 <- fields_dipep(df     = master$follow.up.sent,
+dipep.README.variables$follow.up.sent                 <- fields_dipep(df     = master$follow.up.sent,
                                                                 fields = fields)
-README.variables$forms                          <- fields_dipep(df     = master$forms,
+dipep.README.variables$forms                          <- fields_dipep(df     = master$forms,
                                                                 fields = fields)
-README.variables$individuals                    <- fields_dipep(df     = master$individuals,
+dipep.README.variables$individuals                    <- fields_dipep(df     = master$individuals,
                                                                 fields = fields)
-README.variables$investigations                 <- fields_dipep(df     = master$investigations,
+dipep.README.variables$investigations                 <- fields_dipep(df     = master$investigations,
                                                                 fields = fields)
-README.variables$investigations.investigation   <- fields_dipep(df     = master$investigations.investigation,
+dipep.README.variables$investigations.investigation   <- fields_dipep(df     = master$investigations.investigation,
                                                                 fields = fields)
-README.variables$med.hist                       <- fields_dipep(df     = master$med.hist,
+dipep.README.variables$med.hist                       <- fields_dipep(df     = master$med.hist,
                                                                 fields = fields)
-README.variables$med.hist.problems              <- fields_dipep(df     = master$med.hist.problems,
+dipep.README.variables$med.hist.problems              <- fields_dipep(df     = master$med.hist.problems,
                                                                 fields = fields)
-README.variables$med.hist.thrombophilia         <- fields_dipep(df     = master$med.hist.thrombophilia,
+dipep.README.variables$med.hist.thrombophilia         <- fields_dipep(df     = master$med.hist.thrombophilia,
                                                                 fields = fields)
-README.variables$outcome.infant                 <- fields_dipep(df     = master$outcome.infant,
+dipep.README.variables$outcome.infant                 <- fields_dipep(df     = master$outcome.infant,
                                                                 fields = fields)
-README.variables$outcome.infant.infant          <- fields_dipep(df     = master$outcome.infant.infant,
+dipep.README.variables$outcome.infant.infant          <- fields_dipep(df     = master$outcome.infant.infant,
                                                                 fields = fields)
-README.variables$outcome.woman                  <- fields_dipep(df     = master$outcome.woman,
+dipep.README.variables$outcome.woman                  <- fields_dipep(df     = master$outcome.woman,
                                                                 fields = fields)
-README.variables$outcome.woman.morbidity        <- fields_dipep(df     = master$outcome.woman.morbidity,
+dipep.README.variables$outcome.woman.morbidity        <- fields_dipep(df     = master$outcome.woman.morbidity,
                                                                 fields = fields)
-README.variables$presenting.features            <- fields_dipep(df     = master$presenting.features,
+dipep.README.variables$presenting.features            <- fields_dipep(df     = master$presenting.features,
                                                                 fields = fields)
-README.variables$previous.pregnancies           <- fields_dipep(df     = master$previous.pregnancies,
+dipep.README.variables$previous.pregnancies           <- fields_dipep(df     = master$previous.pregnancies,
                                                                 fields = fields)
-README.variables$previous.pregnancies.problems  <- fields_dipep(df     = master$previous.pregnancies.problems,
+dipep.README.variables$previous.pregnancies.problems  <- fields_dipep(df     = master$previous.pregnancies.problems,
                                                                 fields = fields)
-README.variables$questionnaire.contact          <- fields_dipep(df     = master$questionnaire.contact,
+dipep.README.variables$questionnaire.contact          <- fields_dipep(df     = master$questionnaire.contact,
                                                                 fields = fields)
-README.variables$screening.dvt                  <- fields_dipep(df     = master$screening.dvt,
+dipep.README.variables$screening.dvt                  <- fields_dipep(df     = master$screening.dvt,
                                                                 fields = fields)
-README.variables$screening.non.recruited        <- fields_dipep(df     = master$screening.non.recruited,
+dipep.README.variables$screening.non.recruited        <- fields_dipep(df     = master$screening.non.recruited,
                                                                 fields = fields)
-README.variables$screening.suspected.pe         <- fields_dipep(df     = master$screening.suspected.pe,
+dipep.README.variables$screening.suspected.pe         <- fields_dipep(df     = master$screening.suspected.pe,
                                                                 fields = fields)
-README.variables$sign.off                       <- fields_dipep(df     = master$sign.off,
+dipep.README.variables$sign.off                       <- fields_dipep(df     = master$sign.off,
                                                                 fields = fields)
-README.variables$sites                          <- fields_dipep(df     = master$sites,
+dipep.README.variables$sites                          <- fields_dipep(df     = master$sites,
                                                                 fields = fields)
-README.variables$therapy                        <- fields_dipep(df     = master$therapy,
+dipep.README.variables$therapy                        <- fields_dipep(df     = master$therapy,
                                                                 fields = fields)
-README.variables$pregnancy.continued            <- fields_dipep(df     = master$pregnancy.continued,
+dipep.README.variables$pregnancy.continued            <- fields_dipep(df     = master$pregnancy.continued,
                                                                 fields = fields)
-README.variables$pregnancy.problems             <- fields_dipep(df     = master$pregnancy.problems,
+dipep.README.variables$pregnancy.problems             <- fields_dipep(df     = master$pregnancy.problems,
                                                                 fields = fields)
-README.variables$pregnancy                      <- fields_dipep(df     = master$pregnancy,
+dipep.README.variables$pregnancy                      <- fields_dipep(df     = master$pregnancy,
                                                                 fields = fields)
-README.variables$pregnancy.immobility           <- fields_dipep(df     = master$pregnancy.immobility,
+dipep.README.variables$pregnancy.immobility           <- fields_dipep(df     = master$pregnancy.immobility,
                                                                 fields = fields)
-README.variables$pregnancy.long.haul            <- fields_dipep(master$pregnancy.long.haul,
+dipep.README.variables$pregnancy.long.haul            <- fields_dipep(master$pregnancy.long.haul,
                                                                 fields = fields)
-README.variables$thromboprophylaxis             <- fields_dipep(df     = master$thromboprophylaxis,
+dipep.README.variables$thromboprophylaxis             <- fields_dipep(df     = master$thromboprophylaxis,
                                                                 fields = fields)
-README.variables$thrombotic.events              <- fields_dipep(df     = master$thrombotic.events,
+dipep.README.variables$thrombotic.events              <- fields_dipep(df     = master$thrombotic.events,
                                                                 fields = fields)
-README.variables$unavailable.forms              <- fields_dipep(df     = master$unavailable.forms,
+dipep.README.variables$unavailable.forms              <- fields_dipep(df     = master$unavailable.forms,
                                                                 fields = fields)
-README.variables$womans.details                 <- fields_dipep(df     = master$womans.details,
+dipep.README.variables$womans.details                 <- fields_dipep(df     = master$womans.details,
                                                                 fields = fields)
 
 #######################################################################
@@ -908,3 +925,10 @@ save(master,
      ## unavailable.forms,
      ## womans.details,
      file   = '../data/dipep.RData')
+
+## Write a dataset in Stata format for Mike Bradburn to QC
+## dplyr::select(dipep, -life.support.presentation, -incidental) %>%
+##     write.dta(file = 'dipep.dta')
+names(dipep) <- gsub("\\.", "_", names(dipep))
+names(dipep) <- gsub("presenting_features", "presenting_", names(dipep))
+write_dta(dipep, version = 14, path = 'dipep.dta')
