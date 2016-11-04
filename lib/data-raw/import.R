@@ -567,6 +567,22 @@ t8 <- dplyr::select(master$pregnancy,
                     num.fetus,
                     travel,
                     immobil)
+## Details of medical history problems
+t9 <- dplyr::select(master$med.hist.problems,
+                    screening,
+                    group,
+                    site,
+                    event.name,
+                    medical.specify,
+                    medical.other)
+## Details of medical history problems
+t10 <- dplyr::select(master$pregnancy.problems,
+                     screening,
+                     group,
+                     site,
+                     event.name,
+                     this.preg.problem.specify,
+                     this.preg.problem.other)
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
@@ -616,10 +632,18 @@ dipep <- merge(t1,
                by    = merge.by,
                all   = TRUE) %>%
          merge(.,
+               t9,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
+               t10,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
                event.date,
                by    = c('screening', 'group', 'site'),
                all   = TRUE)
-rm(t1, t2, t3, t4, t5, t6, t7, t8, event.date)
+rm(t1, t2, t3, t4, t5, t6, t7, t8, t9, event.date)
 
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
@@ -632,6 +656,12 @@ rm(t1, t2, t3, t4, t5, t6, t7, t8, event.date)
 dipep <- mutate(dipep,
                 bmi = weight / (height / 100)^2,
                 age = 2016 - year.of.birth,
+                pregnancies.over.cat = ifelse(pregnancies.over == 0,
+                                             yes = 0,
+                                             no  = 1),
+                pregnancies.under.cat = ifelse(pregnancies.under == 0,
+                                              yes = 0,
+                                              no  = 1),
                 temperature.cat = ifelse(temperature <= 37.4,
                                          yes = 0,
                                          no  = 1),
@@ -651,21 +681,74 @@ dipep <- mutate(dipep,
                 bmi.cat = ifelse(bmi >= 30,
                                  yes = 1,
                                  no  = 0),
-                gestation = ymd(edd) - ymd(event.date),
-                ## elapsed.gestation
+                gestation = 280 - (ymd(edd) - ymd(event.date)),
+                trimester = ifelse(gestation < 98,
+                                   yes = 0,
+                                   no  = ifelse(gestation > 98 & gestation < 196,
+                                                yes = 1,
+                                                no  = 2)),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
-                cesarean = ifelse(grepl('c*esarian|c*section|caesarean|emcs|lscs', surgery.other, ignore.case = TRUE),
+                cesarean = ifelse(grepl('c*esarian|c*section|caesarean|emcs|lscs|c/s', surgery.other, ignore.case = TRUE),
                                   yes = 1,
-                                  no  = 0)
+                                  no  = 0),
                 smoking.cat = ifelse(smoking == 'current' | smoking == 'gave up during pregnancy',
                                      yes = 1,
-                                     no  = 0)
+                                     no  = 0),
+                age.cat = ifelse(age > 35,
+                                 yes = 1,
+                                 no  = 0),
+                ecg.cat = ifelse(ecg == 'Abnormal',
+                                 yes = 1,
+                                 no  = 0),
+                xray.cat = ifelse(xray == 'Abnormal',
+                                  yes = 1,
+                                  no  = 0),
+                existing.medical = ifelse(medical.specify == 'Autoimmune diseases' |
+                                          medical.specify == 'Cancer' |
+                                          medical.specify == 'Cardiac disease (congenital or acquired)' |
+                                          medical.specify == 'Diabetes' |
+                                          medical.specify == 'Gross varicose veins' |
+                                          medical.specify == 'Haematological disorders e.g. sickle cell disease' |
+                                          medical.specify == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                          medical.specify == 'Malignancy within 6 months' |
+                                          medical.specify == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera'  |
+                                          medical.specify == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease',
+                                          yes = 1,
+                                          no  = 0),
+                this.pregnancy.problems = ifelse(this.preg.problem.specify == 'Dehydration requiring admission' |
+                                                 this.preg.problem.specify == 'Eclampsia' |
+                                                 this.preg.problem.specify == 'Gestational diabetes' |
+                                                 this.preg.problem.specify == 'Haemorrhage' |
+                                                 this.preg.problem.specify == 'Hyperemesis requiring admission' |
+                                                 this.preg.problem.specify == 'Ovarian hyperstimulation syndrome' |
+                                                 this.preg.problem.specify == 'Post-partum haemorrhage requiring transfusion' |
+                                                 this.preg.problem.specify == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                 this.preg.problem.specify == 'Preterm birth or mid trimester loss' |
+                                                 this.preg.problem.specify == 'Severe infection e.g. pyelonephritis' |
+                                                 this.preg.problem.specify == 'Stillbirth',
+                                                 yes = 1,
+                                                 no  = 0) ##,
+                ## ToDo - Thresholds
+                ## d.dimer.high = ifelse(d.dimer > ,
+                ##                       yes = 1,
+                ##                       no  = 0),
+                ## d.dimer.very.high = ifelse(d.dimer > ,
+                ##                            yes = 1,
+                ##                            no  = 0)
                 )
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
                                  levels = c(0, 1),
                                  labels = c('Low', 'High')),
+                pregnancies.under.cat = factor(pregnancies.under.cat,
+                                                levels = c(0, 1),
+                                                labels = c('No previous pregnancies < 24 weeks',
+                                                           '>= 1 previous pregnancy < 24 weeks')),
+                pregnancies.over.cat = factor(pregnancies.over.cat,
+                                               levels = c(0, 1),
+                                               labels = c('No previous pregnancies < 24 weeks',
+                                                          '>o= 1 previous pregnancy < 24 weeks')),
                 temperature.cat = factor(temperature.cat,
                                          levels = c(0, 1),
                                          labels = c('Low', 'High')),
@@ -686,7 +769,35 @@ dipep <- mutate(dipep,
                                               labels = c('Low', 'High')),
                 cesarean = factor(cesarean,
                                   levels = c(0, 1),
-                                  labels = c('No Cesarean', 'Cesarean'))
+                                  labels = c('No Cesarean', 'Cesarean')),
+                smoking = factor(smoking,
+                                 levels = c(0, 1),
+                                 labels = c('Non-smoker', 'Smoker')),
+                age.cat = factor(age.cat,
+                                 levels = c(0, 1),
+                                 labels = c('Young', 'Old')),
+                ecg.cat = factor(ecg.cat,
+                                 levels = c(0, 1),
+                                 labels = c('Normal ECG', 'Abnormal ECG')),
+                xray.cat = factor(xray.cat,
+                                  levels = c(0, 1),
+                                  labels = c('Normal ECG', 'Abnormal ECG')),
+                trimester = factor(trimester,
+                                   levels = c(0, 1, 2),
+                                   labels = c('1st Trimester', '2nd Trimester', '3rd Trimester')),
+                existing.medical = factor(existing.medical,
+                                          levels = c(0, 1),
+                                          labels = c('No', 'Yes')),
+                this.pregnancy.problems = factor(this.pregnancy.problems,
+                                                 levels = c(0, 1),
+                                                 labels = c('No', 'Yes')) ##,
+                ## ToDo - Thresholds
+                ## d.dimer.high = factor(d.dimer.high,
+                ##                       levels = c(0, 1),
+                ##                       labels = c('Normal', 'High')),
+                ## d.dimer.very.high = ifelse(d.dimer.very.high,
+                ##                            levels = c(0, 1),
+                ##                            labels = c('Normal', 'Very High'))
                 )
 ## Add a dummy for PE for now
 dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
@@ -930,5 +1041,7 @@ save(master,
 ## dplyr::select(dipep, -life.support.presentation, -incidental) %>%
 ##     write.dta(file = 'dipep.dta')
 names(dipep) <- gsub("\\.", "_", names(dipep))
-names(dipep) <- gsub("presenting_features", "presenting_", names(dipep))
+names(dipep) <- gsub("presenting_features", "presenting", names(dipep))
 write_dta(dipep, version = 14, path = 'dipep.dta')
+names(dipep) <- gsub("_", ".", names(dipep))
+names(dipep) <- gsub("presenting", "presenting.features", names(dipep))
