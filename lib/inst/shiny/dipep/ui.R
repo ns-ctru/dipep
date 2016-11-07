@@ -88,10 +88,10 @@ shinyUI(
                                                                    plotOutput('lasso.plot'),
                                                                    plotOutput('cv.lasso.plot')
                                                                    ),
-                                                          tabPanel('Saturated Regression',
-                                                                   p('Whilst parsimony in modelling can be useful in situations such as the current scenario where the most accurate prediction is required it makes sense to use as much available information as possible rather than having a trade-off in the amount of information used and a reduction in accuracy as the subset of predictors is redcuded by the LASSO.  Practically this makes sense too, in A&E clinicians will have all of the information available on which to make a decision, there seems little value in ignoring some of it when it can all be used to inform the decision of how to treat the patient.  It has even been indicated that there is a website (MD Calc) for calculating scores which removes all of the burden for individuals to have to remember and apply the rules.',
-                                                                     verbatimTextOutput(saturated.model))))
-                                              ),
+                                              ##             tabPanel('Saturated Regression',
+                                              ##                      p('Whilst parsimony in modelling can be useful in situations such as the current scenario where the most accurate prediction is required it makes sense to use as much available information as possible rather than having a trade-off in the amount of information used and a reduction in accuracy as the subset of predictors is redcuded by the LASSO.  Practically this makes sense too, in A&E clinicians will have all of the information available on which to make a decision, there seems little value in ignoring some of it when it can all be used to inform the decision of how to treat the patient.  It has even been indicated that there is a website (MD Calc) for calculating scores which removes all of the burden for individuals to have to remember and apply the rules.',
+                                              ##                        verbatimTextOutput('saturated.model'))))
+                                              ## ),
                                      tabPanel('Biomarkers & Clinical Predictors',
                                               p('Summary tables.')
                                               ),
@@ -106,19 +106,17 @@ shinyUI(
                                                       <li> Area under ROC
                                                     </ul>')
                                               ),
-                                     tabPanel("ToDo",
-                                              fluidRow(p("Everything needs doing, this list isn't exhaustive..."),
-                                                       HTML("<ul>
-                                                              <li> Data import and cleaning.
-                                                              <li> Derivation of classification based on existing and new rules (refer to articles).
+                                     tabPanel('ToDo',
+                                              fluidRow(p('Everything needs doing, this list is not exhaustive...'),
+                                                       HTML('<ul>
                                                               <li> Recursive Partitioning (dendogram in ggplot2; summary table).
-                                                              <li> Regression (LASSO regression results; summary table).
-                                                              <li> Summary table of biomarkers and other clinical predictor.
-                                                              <li> Table comparing the utility (sensitivity, specificity, PPV, NPV, ROC AUC, pseudo-R2, etc.).
+                                                              <li> LASSO regression results; summary table of coefficients.
+                                                              <li> Saturated regression show all coefficients/model summary.
+                                                              <li> Table comparing the utility (sensitivity, specificity, PPV, NPV, ROC AUC, pseudo-R2, etc.) of all models.
                                                               <li> Finish of References list (include R packages used)
-                                                            </ul>"))
+                                                            </ul>'))
                                               ),
-                                     tabPanel("References",
+                                     tabPanel('References',
                                               fluidRow(h2('Pulmonary Embolism Classification'),
                                                        HTML('<ul>
                                                               <li> Leung A.N. <i>et al.</i> (2012) Evaluation of Suspected Pulmonary Embolism in Pregnancy. <i>Radiology</i>, <b>262</b>:635–646. ISSN 15271315. <a href="http://dx.doi.org/10.1148/radiol.11114045" target="_blank">DOI: 10.1148/radiol.11114045</a>.
