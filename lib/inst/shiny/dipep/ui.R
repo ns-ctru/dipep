@@ -87,14 +87,14 @@ shinyUI(
                                                           tabPanel('LASSO Regression',
                                                                    plotOutput('lasso.plot'),
                                                                    plotOutput('cv.lasso.plot')
-                                                                   ),
+                                                                   ))
                                               ##             tabPanel('Saturated Regression',
                                               ##                      p('Whilst parsimony in modelling can be useful in situations such as the current scenario where the most accurate prediction is required it makes sense to use as much available information as possible rather than having a trade-off in the amount of information used and a reduction in accuracy as the subset of predictors is redcuded by the LASSO.  Practically this makes sense too, in A&E clinicians will have all of the information available on which to make a decision, there seems little value in ignoring some of it when it can all be used to inform the decision of how to treat the patient.  It has even been indicated that there is a website (MD Calc) for calculating scores which removes all of the burden for individuals to have to remember and apply the rules.',
                                               ##                        verbatimTextOutput('saturated.model'))))
-                                              ## ),
-                                     tabPanel('Biomarkers & Clinical Predictors',
-                                              p('Summary tables.')
                                               ),
+                                     ## tabPanel('Biomarkers & Clinical Predictors',
+                                     ##          p('Summary tables.')
+                                     ##          ),
                                      tabPanel('Comparison of Methods',
                                               p('Comparing the different approaches'),
                                               p('Table comparing...'),
