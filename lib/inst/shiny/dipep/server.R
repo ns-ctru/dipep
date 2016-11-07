@@ -94,20 +94,20 @@ shinyServer(function(input, output){
     ## Model
     ## Plot?
     ## Table
-    model <- reformulate(response = 'pe',
-                         termlabels = c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
-                                       'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-                                       'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
-                                       'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-                                       'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-                                       'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-                                       'presenting.features.haemoptysis', 'presenting.features.cough',
-                                       'presenting.features.syncope', 'presenting.features.palpitations',
-                                       'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
-                                       'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat'))
-    output$saturated.model <- renderPrint(
-        saturated <- glm(data = filter(dipep, group == 'Suspected PE'),
-                         formula = model(),
-                         family  = 'binomial')
-    )
+    ## model <- reformulate(response = 'pe',
+    ##                      termlabels = c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
+    ##                                    'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
+    ##                                    'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
+    ##                                    'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
+    ##                                    'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+    ##                                    'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+    ##                                    'presenting.features.haemoptysis', 'presenting.features.cough',
+    ##                                    'presenting.features.syncope', 'presenting.features.palpitations',
+    ##                                    'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
+    ##                                    'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat'))
+    ## output$saturated.model <- renderPrint(
+    ##     saturated <- glm(data = filter(dipep, group == 'Suspected PE'),
+    ##                      formula = model(),
+    ##                      family  = 'binomial')
+    ## )
 })
