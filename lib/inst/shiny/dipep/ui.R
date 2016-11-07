@@ -3,14 +3,14 @@ shinyUI(
         titlePanel(title       = "DiPEP - Predicting Pulmonary Embolism in Pregnant Women",
                    windowTitle = "DiPEP - Predicting Pulmonary Embolism in Pregnant Women"),
         sidebarPanel(width = 3,
-                     h2('Options...'),
-                     p("Welcome, you are viewing the results of the DiPEP study which seeks to predict Pulmonary Embolism in Pregnant Women."),
+                     h2('Co-variates'),
+                     p('Select co-variates to include in your model...'),
                      sliderInput('digits',
                                  'Decimal Places',
                                  min   = 1,
                                  max   = 5,
                                  value = 2),
-                     checkboxGroupInput('demog','Demograhpics (Continuous)...',
+                     checkboxGroupInput('demog','Demographics (Continuous)...',
                                         choices = c('Age'                                         = 'age',
                                                     'Smoking'                                     = 'smoking',
                                                     'Temperature'                                 = 'temperature',
@@ -20,7 +20,7 @@ shinyUI(
                                                     'Respiratory Rate'                            = 'respiratory.rate',
                                                     'BMI'                                         = 'bmi'),
                                         selected = c('age', 'smoking', 'temperature')),
-                     checkboxGroupInput('demog.cat','Demograhpics (Categorical)...',
+                     checkboxGroupInput('demog.cat','Demographics (Categorical)...',
                                         choices = c('Age (Binary)'                                = 'age.cat',
                                                     'Smoking (Binary)'                            = 'smoking.cat',
                                                     'Temperature (Binary)'                        = 'temperature.cat',
@@ -35,9 +35,8 @@ shinyUI(
                                                     'Previous Pregnancy < 24 weeks' = 'pregnancies.under.cat',
                                                     'History of Thrombosis in 1st-degree relatives' = 'history.thrombosis',
                                                     'History of Varicose Veins' = 'history.veins',
-                                                    'History of IV Drug use' = 'history.iv.drug',
-                                                    ),
-                                        selected = c()
+                                                    'History of IV Drug use' = 'history.iv.drug'),
+                                        selected = c('pregnancies.over.cat')
                                         ),
                      checkboxGroupInput('presenting','Presenting Features...',
                                         choices = c('Pleuritic'                      = 'presenting.features.pleuritic',
@@ -78,8 +77,10 @@ shinyUI(
                                               ),
                                      tabPanel('Recursive Partitioning',
                                               p('Results of Recursive Partitioning'),
-                                              plotOutput('part.plot'),
-                                              renderTable('part.cp')
+                                              plotOutput('part.plot',
+                                                         width  = '100%',
+                                                         height = '100%'),
+                                              verbatimTextOutput('part.cp')
                                               ),
                                      tabPanel('Regression',
                                               tabsetPanel(type = 'pills',
@@ -88,7 +89,8 @@ shinyUI(
                                                                    plotOutput('cv.lasso.plot')
                                                                    ),
                                                           tabPanel('Saturated Regression',
-                                                                   p('Whilst parsimony in modelling can be useful in situations such as the current scenario where the most accurate prediction is required it makes sense to use as much available information as possible rather than having a trade-off in the amount of information used and a reduction in accuracy as the subset of predictors is redcuded by the LASSO.  Practically this makes sense too, in A&E clinicians will have all of the information available on which to make a decision, there seems little value in ignoring some of it when it can all be used to inform the decision of how to treat the patient.  It has even been indicated that there is a website (MD Calc) for calculating scores which removes all of the burden for individuals to have to remember and apply the rules.')))
+                                                                   p('Whilst parsimony in modelling can be useful in situations such as the current scenario where the most accurate prediction is required it makes sense to use as much available information as possible rather than having a trade-off in the amount of information used and a reduction in accuracy as the subset of predictors is redcuded by the LASSO.  Practically this makes sense too, in A&E clinicians will have all of the information available on which to make a decision, there seems little value in ignoring some of it when it can all be used to inform the decision of how to treat the patient.  It has even been indicated that there is a website (MD Calc) for calculating scores which removes all of the burden for individuals to have to remember and apply the rules.',
+                                                                     verbatimTextOutput(saturated.model))))
                                               ),
                                      tabPanel('Biomarkers & Clinical Predictors',
                                               p('Summary tables.')
