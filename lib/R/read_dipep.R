@@ -34,6 +34,7 @@ read_dipep <- function(file            = 'Lookups.csv',
                     sep      = sep)
     ## Lowercase and convert variable names
     names(new) <- gsub("_", ".", names(new)) %>%
+                  gsub("participant\\.no\\.", "screening", names(new))
                   tolower()
     ## If this is the data dictionary convert '_' in field to '.' so that
     ## we can use it subsequently for labelling variables
