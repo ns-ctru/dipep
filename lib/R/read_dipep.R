@@ -36,6 +36,7 @@ read_dipep <- function(file            = 'Lookups.csv',
     names(new) <- gsub("_", ".", names(new)) %>%
         tolower()
     names(new) <- gsub("participant.no.", "screening", names(new))
+    names(new) <- gsub("\\.o$", "", names(new))
     ## If this is the data dictionary convert '_' in field to '.' so that
     ## we can use it subsequently for labelling variables
     if(file == 'Lookups.csv'){
