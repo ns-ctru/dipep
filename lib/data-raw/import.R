@@ -512,7 +512,8 @@ t3 <- dplyr::select(master$presenting.features,
                     xray.specify,
                     life.support.presentation,
                     diagnosis.post,
-                    d.dimer)
+                    d.dimer,
+                    d.dimer.high)
 ## Thrombotic Event
 t4 <- dplyr::select(master$thrombotic.events,
                     screening,
@@ -532,7 +533,7 @@ t6 <- dplyr::select(master$eq5d,
                     screening,
                     group,
                     site,
-                    event.name,
+                    ## event.name,
                     mobility,
                     self.care,
                     usual.activity,
@@ -583,6 +584,14 @@ t10 <- dplyr::select(master$pregnancy.problems,
                      event.name,
                      this.preg.problem.specify,
                      this.preg.problem.other)
+## Details of medication (required for derivation of PERC score)
+t11 <- dplyr::select(master$therapy,
+                     screening,
+                     group,
+                     site,
+                     event.name,
+                     other.medication,
+                     other.medication.specify)
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
@@ -603,6 +612,7 @@ rm(event.date.dvt, event.date.suspected.pe)
 names(event.date) <- gsub('consent', 'event', names(event.date))
 ## Merge the subsets
 merge.by <- c('screening', 'group', 'site', 'event.name')
+
 dipep <- merge(t1,
                t2,
                by    = merge.by,
@@ -621,7 +631,7 @@ dipep <- merge(t1,
                all   = TRUE) %>%
          merge(.,
                t6,
-               by    = merge.by,
+               by    = c('screening', 'group', 'site'),
                all   = TRUE) %>%
          merge(.,
                t7,
@@ -640,10 +650,14 @@ dipep <- merge(t1,
                by    = merge.by,
                all   = TRUE) %>%
          merge(.,
+               t11,
+               by    = merge.by,
+               all   = TRUE) %>%
+         merge(.,
                event.date,
                by    = c('screening', 'group', 'site'),
                all   = TRUE)
-rm(t1, t2, t3, t4, t5, t6, t7, t8, t9, event.date)
+rm(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
 
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
@@ -720,7 +734,7 @@ dipep <- mutate(dipep,
                                           medical.specify == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera'  |
                                           medical.specify == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease',
                                           yes = 1,
-                                          no  = 0),
+                                          no  = 0) ,
                 this.pregnancy.problems = ifelse(this.preg.problem.specify == 'Dehydration requiring admission' |
                                                  this.preg.problem.specify == 'Eclampsia' |
                                                  this.preg.problem.specify == 'Gestational diabetes' |
@@ -733,8 +747,18 @@ dipep <- mutate(dipep,
                                                  this.preg.problem.specify == 'Severe infection e.g. pyelonephritis' |
                                                  this.preg.problem.specify == 'Stillbirth',
                                                  yes = 1,
-                                                 no  = 0) ##,
-                ## ToDo - Thresholds
+                                                 no  = 0) ,
+                diagnosis.post.pe = ifelse(grepl('pe', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('pulmonary embo', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('p\\.e\\.', diagnosis.post, ignore.case = TRUE),
+                                           yes = 1,
+                                           no  = 0),
+                ## ## Some really unhelpful entry that needs correcting
+                diagnosis.post.pe = ifelse(grepl('UNLIKELY P\\.E\\.', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('rule out PE', diagnosis.post, ignore.case = TRUE),
+                                           yes = 0,
+                                           no  = 1)
+                ## D-Dimer
                 ## d.dimer.high = ifelse(d.dimer > ,
                 ##                       yes = 1,
                 ##                       no  = 0),
@@ -767,6 +791,9 @@ dipep <- mutate(dipep,
                 bp.systolic.cat = factor(bp.systolic.cat,
                                          levels = c(0, 1),
                                          labels = c('Low', 'High')),
+                heart.rate.cat = factor(heart.rate.cat,
+                                        levels = c(0, 1),
+                                        labels = c('Low', 'High')),
                 o2.saturation.cat = factor(o2.saturation.cat,
                                            levels = c(0, 1),
                                            labels = c('Low', 'High')),
@@ -796,7 +823,10 @@ dipep <- mutate(dipep,
                                           labels = c('No', 'Yes')),
                 this.pregnancy.problems = factor(this.pregnancy.problems,
                                                  levels = c(0, 1),
-                                                 labels = c('No', 'Yes')) ##,
+                                                 labels = c('No', 'Yes')),
+                diagnosis.post.pe = factor(diagnosis.post.pe,
+                                           levels = c(0, 1),
+                                           labels = c('No PE', 'PE')) ##,
                 ## ToDo - Thresholds
                 ## d.dimer.high = factor(d.dimer.high,
                 ##                       levels = c(0, 1),
@@ -818,159 +848,154 @@ dipep$pe <- factor(dipep$pe,
 ## PERC (http://dx.doi.org/10.1111/j.1538-7836.2004.00790.x)         ##
 ## Wells (http://dx.doi.org/10.7326/0003-4819-135-2-200107170-00010) ##
 #######################################################################
-## Geneva points
-## dipep <- mutate(dipep,
-##                 geneva.age      = ifelse(age > 60 & age < 80,
-##                                          yes = 1,
-##                                          no  = ifelse(age >= 80,
-##                                                       yes = 2,
-##                                                       no  = 0)),
-##                 ## geneva.previous = ifelse(,
-##                 ##                          yes = 2,
-##                 ##                          no  = 0),
-##                 geneva.surgery  = ifelse(surgery,
-##                                         yes = 3,
-##                                         no  = 0),
-##                 geneva.pulse    = ifelse(heart.rate > 100,
-##                                         yes = 1,
-##                                         no  = 0),
-##                 ## geneva.co2      = ifelse(co2.saturation < 4.8,
-##                 ##                          yes = 2,
-##                 ##                          no  = ifelse(co2.saturation >= 4.8 & co2.saturation <= 5.19,
-##                 ##                                       yes = 1,
-##                 ##                                       no  = 0)),
-##                 ## geneva.xray     = ifelse(xray.specify == '',
-##                 ##                          yes = 1,
-##                 ##                          no  = ifelse(xray.specify == '',
-##                 ##                                       yes = 1,
-##                 ##                                       no  = 0))
-##                 geneva.o2       = ifelse(o2.saturation < 6.5,
-##                                          yes = 4,
-##                                          no  = ifelse(o2.saturation >= 6.5 & o2.saturation < 8,
-##                                                       yes = 3,
-##                                                       no  = ifelse(o2.saturation >= 8 & o2.saturation < 9.5,
-##                                                                    yes = 2,
-##                                                                    no  = ifelse(o2.saturation >= 9.5 & o2.saturation < 11,
-##                                                                                 yes = 1,
-##                                                                                 no  = 0))))
-##                 geneva = sum(geneva.age,
-##                              ## geneva.previous,
-##                              geneva.surgery,
-##                              geneva.pulse,
-##                              ## geneva.co2,
-##                              ## geneva.xray,
-##                              geneva.o2)
-##                 )
 ## Simplified Geneva
-## dipep <- mutate(dipep,
-##                 simplified.age = ifelse(age > 65,
-##                                         yes = 1,
-##                                         no  = 0),
-##                 simplified.previous = ifelse(,
-##                                              yes = 1,
-##                                              no  = 0),
-##                 simplified.malignancy = ifelse(,
-##                                                yes = 1,
-##                                                no  = 0),
-##                 simplified.lower.limb.unilateral.pain = ifelse(,
-##                                                     yes = 1,
-##                                                     no  = 0),
-##                 simplified.hemoptysis = ifelse(,
-##                                                yes = 1,
-##                                                no  = 0),
-##                 simplified.heart.rate = ifelse(heart.rate > 75,
-##                                                yes = 1,
-##                                                no  = 0),
-##                 simplified.lower.limb.pain = ifelse(,
-##                                                     yes = 1,
-##                                                     no  = 0)
-##                 simplified = sum(simplified.age,
-##                                  simplified.previous,
-##                                  simplified.malignancy,
-##                                  simplified.lower.limb.unilateral.pain,
-##                                  simplified.hemoptysis,
-##                                  simplified.heart.rate,
-##                                  simplified.lower.limb.pain))
+dipep <- mutate(dipep,
+                simplified.age = ifelse(age > 65,
+                                        yes = 1,
+                                        no  = 0),
+                ## ToDo - Check how to define previous PE
+                simplified.previous = ifelse(dvt == 'Yes',
+                                             yes = 1,
+                                             no  = 0),
+                simplified.surgery = ifelse(surgery == 'Yes',
+                                            yes = 1,
+                                            no  = 0),
+                simplified.neoplasm = ifelse(medical.specify == 'Cancer',
+                                             yes = 1,
+                                             no  = 0),
+                simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE),
+                                                    yes = 1,
+                                                    no  = 0),
+                ## There are however entries of 'Bilateral lower leg pain' which need correcting
+                simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE),
+                                                    yes = 0,
+                                                    no  = simplified.lower.limb.unilateral.pain),
+                simplified.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                yes = 1,
+                                                no  = 0),
+                simplified.heart.rate = ifelse(heart.rate > 75,
+                                               yes = 1,
+                                               no  = 0),
+                simplified.lower.limb.pain = ifelse(grepl('bilateral lower leg pain', other.symptoms.specify, ignore.case = TRUE) |
+                                                    grepl('pain in legs', other.symptoms.specify, ignore.case = TRUE),
+                                                    yes = 1,
+                                                    no  = 0),
+                simplified = simplified.age +
+                             simplified.previous +
+                             simplified.neoplasm +
+                             simplified.lower.limb.unilateral.pain +
+                             simplified.haemoptysis +
+                             simplified.heart.rate +
+                             simplified.lower.limb.pain)
 ## PERC
-## dipep <- mutate(dipep,
-##                 perc.age = ifelse(age > 50,
-##                                   yes = 1,
-##                                   no  = 0),
-##                 perc.heart.rate = ifelse(heart.rate > 100,
-##                                          yes = 1,
-##                                          no  = 0),
-##                 perc.o2 = ifelse(o2.saturation < 95,
-##                                          yes = 1,
-##                                          no  = 0),
-##                 perc.cough = ifelse(presenting.features.cough == 'Ticked',
-##                                     yes = 1,
-##                                     no  = 0),
-##                 perc.hemoptysis = ifelse(,
-##                                          yes = 1,
-##                                          no  = 0),
-##                 perc.leg.swelling = ifelse(,
-##                                            yes = 1,
-##                                            no  = 0),
-##                 perc.surgery = ifelse(surgery.specify == ,
-##                                       yes = 1,
-##                                       no  = 0),
-##                 perc.embolism = ifelse(,
-##                                        yes = 1,
-##                                        no  = 0),
-##                 perc.dvt = ifelse(,
-##                                   yes = 1,
-##                                   no  = 0),
-##                 perc.hormone = ifelse(,
-##                                       yes = 1,
-##                                       no  = 0)
-##                 perc = sum(perc.age,
-##                            perc.heart.rate,
-##                            perc.o2
-##                            perc.cough,
-##                            perc.hemoptysis,
-##                            perc.leg.swelling,
-##                            perc.surgery,
-##                            perc.embolism,
-##                            perc.dvt,
-##                            perc.hormone))
+dipep <- mutate(dipep,
+                perc.age = ifelse(age > 50,
+                                  yes = 1,
+                                  no  = 0),
+                perc.heart.rate = ifelse(heart.rate > 100,
+                                         yes = 1,
+                                         no  = 0),
+                perc.o2 = ifelse(o2.saturation < 95,
+                                         yes = 1,
+                                         no  = 0),
+                perc.cough = ifelse(presenting.features.cough == 'Ticked',
+                                    yes = 1,
+                                    no  = 0),
+                perc.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                         yes = 1,
+                                         no  = 0),
+                perc.leg.swelling = ifelse(grepl('leg swelling', other.symptoms.specify, ignore.case = TRUE) |
+                                           grepl('legs swelling', other.symptoms.specify, ignore.case = TRUE),
+                                           yes = 1,
+                                           no  = 0),
+                perc.surgery = ifelse(surgery == 'Yes',
+                                      yes = 1,
+                                      no  = 0),
+                ## perc.embolism = ifelse(,
+                ##                        yes = 1,
+                ##                        no  = 0),
+                perc.hormone = ifelse(other.medication.specify == 'hrt',
+                                      yes = 1,
+                                      no  = 0),
+                perc.dvt = ifelse(dvt == 'Yes',
+                                  yes = 1,
+                                  no  = 0),
+                perc = perc.age +
+                       perc.heart.rate +
+                       perc.o2 +
+                       perc.cough +
+                       perc.haemoptysis +
+                       perc.leg.swelling +
+                       perc.surgery +
+                       ## perc.embolism +
+                       perc.hormone +
+                       perc.dvt)
 ## Wells
-## dipep <- mutate(dipep,
-##                 wells.dvt = ifelse(dvt == 'Yes',
-##                                    yes = 3,
-##                                    no  = 0),
-##                 ## wells.alternative = ifelse(,
-##                 ##                            yes = 3,
-##                 ##                            no  = 0),
-##                 wells.heart.rate = ifelse(heart.rate > 100,
-##                                           yes = 1.5,
-##                                           no  = 0),
-##                 wells.surgery.immobil = ifelse(surgery == 'Yes' | immobil == 'Yes',
-##                                                yes = 1.5,
-##                                                no  = 0),
-##                 wells.previous.dvt.pe = ifelse(thrombosis == 'Yes',
-##                                                yes = 1.5,
-##                                                no  = 0),
-##                 ## wells.hemoptysis = ifelse(,
-##                 ##                           yes = 3,
-##                 ##                           no  = 0),
-##                 wells.neoplasm = ifelse(,
-##                                         yes = 3,
-##                                         no  = 0),
-##                 wells = sum(wells.dvt,
-##                             wells.alternative,
-##                             wells.heart.rate,
-##                             wells.surgery.immobil,
-##                             wells.previous.dvt.pe,
-##                             wells.hemoptysis,
-##                             wells.neoplasm))
+dipep <- mutate(dipep,
+                wells.dvt = ifelse(dvt == 'Yes',
+                                   yes = 3,
+                                   no  = 0),
+                ## wells.alternative = ifelse(,
+                ##                            yes = 3,
+                ##                            no  = 0),
+                wells.heart.rate = ifelse(heart.rate > 100,
+                                          yes = 1.5,
+                                          no  = 0),
+                wells.surgery.immobil = ifelse(surgery == 'Yes' | immobil == 'Yes',
+                                               yes = 1.5,
+                                               no  = 0),
+                wells.previous.dvt.pe = ifelse(thrombosis == 'Yes',
+                                               yes = 1.5,
+                                               no  = 0),
+                wells.hemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                          yes = 3,
+                                          no  = 0),
+                wells.neoplasm = ifelse(medical.specify == 'Cancer',
+                                        yes = 3,
+                                        no  = 0),
+                wells = wells.dvt +
+                        ## wells.alternative +
+                        wells.heart.rate +
+                        wells.surgery.immobil +
+                        wells.previous.dvt.pe +
+                        wells.hemoptysis +
+                        wells.neoplasm)
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
 ##                   only works on the dichotomised values           ##
 #######################################################################
+missing.data <- do.call(rbind, sapply(dipep, function(i) is.na(i) %>% table())) %>%
+    as.data.frame()
+missing.data$variable <- rownames(missing.data)
+names(missing.data) <- c('Present', 'Missing', 'variable')
+missing.data <- mutate(missing.data,
+                       Missing = ifelse(Missing == 482,
+                                        yes = 0,
+                                        no  = Missing)) %>%
+                arrange(variable, Present, Missing)
+write.csv(missing.data, file = '../../tmp/missing.data.csv')
+
 dipep.imputed <- mutate(dipep,
-                        surgery = ifelse(is.na(surgery), yes = 0, no = surgery)
+                        surgery   = ifelse(is.na(surgery), yes = 'No', no = surgery),
+                        travel    = ifelse(is.na(travel), yes = 'No', no = travel),
+                        immobil   = ifelse(is.na(immobil), yes = 'No', no = travel),
+                        pregnancies.over.cat = ifelse(is.na(pregnancies.over.cat),
+                                                      yes = 'No previous pregnancies < 24 weeks',
+                                                      no = pregnancies.over.cat),
+                        pregnancies.under.cat = ifelse(is.na(pregnancies.under.cat),
+                                                       yes = 'No previous pregnancies < 24 weeks',
+                                                       no = pregnancies.under.cat),
+                        bp.diastolic.cat = ifelse(is.na(bp.diastolic.cat), yes = 'Low', no = bp.diastolic.cat),
+                        bp.systolic.cat = ifelse(is.na(bp.systolic.cat), yes = 'Low', no = bp.systolic.cat),
+                        heart.rate.cat = ifelse(is.na(heart.rate.cat), yes = 'Low', no = heart.rate.cat),
+                        bmi.cat = ifelse(is.na(bmi.cat), yes = 'Low', no = bmi.cat),
+                        smoking.cat = ifelse(is.na(smoking.cat), yes = 'Non-smoker', no = smoking.cat),
+                        age.cat = ifelse(is.na(age.cat), yes = 'Young', no = age.cat),
+                        ## heart.rate.cat = ifelse(is.na(), yes = , no = ),
+                        ## heart.rate.cat = ifelse(is.na(), yes = , no = )
                         )
+
 #######################################################################
 ## Database Specification                                            ##
 #######################################################################
@@ -1056,6 +1081,7 @@ dipep.README <- within(dipep.README,{
                  description[data.frame == 'womans.details']                 <- 'Womands Details'
                  description[data.frame == 'dipep']                          <- 'Combined data set for analysis (no imputation)'
                  description[data.frame == 'dipep.imputed']                  <- 'Combined data set for analysis (imputed missing values)'
+                 description[data.frame == 'missing.data'] <- 'Summary of data completeness (FALSE == Not Missing; TRUE == Missing)'
 })
 
 #######################################################################
