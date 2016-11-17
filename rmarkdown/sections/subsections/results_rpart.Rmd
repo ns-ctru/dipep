@@ -1,12 +1,7 @@
-```{r results_rpart, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+```{r results_rpart_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
 ## Useful reading...
 ##
 ## http://gormanalysis.com/decision-trees-in-r-using-rpart/
-## Add a dummy variable to the data for now
-dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
-dipep$pe <- factor(dipep$pe,
-                   levels = c(0, 1),
-                   labels = c('No PE', 'PE'))
 model <- reformulate(response = 'pe',
                      termlabels = c('age', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
                                     'o2.saturation.cat', 'respiratory.rate.cat', 'bmi.cat',
@@ -25,6 +20,9 @@ categorical <- rpart(model,
                 minsplit = 2,
                 minbucket = 2,
                 cp = -1)    ## NB - Make sure 'pe' is a factor!
+
+```
+```{r results_rpart_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
 ## Repeat using continuous variables
 model <- reformulate(response = 'pe',
                      termlabels = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
@@ -44,6 +42,15 @@ continuous <- rpart(model,
               minsplit = 2,
               minbucket = 2,
               cp = -1)    ## NB - Make sure 'pe' is a factor!
+
+```
+
+```{r results_rpart_save, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
+save(continuous, categorical,
+     file = '../../data/results/rpart.RData')
+```
+```{r results_rpart_load, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+load(file = '../../data/results/rpart.RData')
 
 
 ```
@@ -66,9 +73,9 @@ Control Parameter | Value     | Explanation
 ------------------|-----------|---------------------------------------------------------
 `minsplit`        | 4         | The minimum number of observations that must exist in a node in order for a split to be attempted.
 `minbucket`       | 4         | The mimimum number of observations in any terminal node.
-`cp`              | -1        | The Complexity Parameter, a negative value ensures a full model is fitted.
+`cp`              | -1        | The Complexity Parameter, a negative value ensures a full model is fitted where everyone is classified.
 
-#### Results
+#### Results  {.tabset .tabset-fade .tabset-pills}
 
 Dendrograms are a simple and natural method of visualising the results of recursive partitioning and are created using the `rpart.plot` (@rpart.plotpackage).  For those unfamiliar with them for each node (split) the variable is listed on the left along with the threshold, the same side as the consequences of a positive repsonse to this variable.  Each leaf (the result of a split) has a box which indicates the probability of the second class and the percentage of observations within this classification.  Currently the graphs are crude and use the variable names used in the Prospect database which do not always align with clear informative descriptions but should be sufficiently useful.  This can be addressed when preparing figures for publication but will not be altered in this report as there is insufficient time to spend tweaking such visual
 
@@ -76,10 +83,14 @@ Dendrograms are a simple and natural method of visualising the results of recurs
 
 The results below are from applying recursive partitioning per-protocol approach of pre-dichotomised covariates.
 
-```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'asis', eval = FALSE}
+Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`) **TODO** finish off explanation.
+
+```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 printcp(categorical)
 
 ```
+
+The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
 
 ```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, eval = TRUE}
 prp(categorical,
@@ -91,11 +102,13 @@ prp(categorical,
     faclen = 0)
 
 ```
+
 This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).
 
-```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 10, fig_height = 10, eval = TRUE}
 cp <- 0.0084270
 categorical_prune <- prune(categorical, cp = cp)
+printcp(categorical_prune)
 prp(categorical_prune,
     type   = 4,
     extra  = 106,
@@ -108,19 +121,17 @@ prp(categorical_prune,
 
 We now need to calculate the sensitivity and specificity.  There is no single value since the cut-point for classifying can vary depending on the complexity value we wish to use, i.e. do we favour sensitivity over specificity or vice-versa.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).
 
-```{r results_rpart_categorical_roc, echo = FALSE, cache = FALSE, results = 'asis', eval = FALSE}
+```{r results_rpart_categorical_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
 ## Extract the predicted values and bind to the observed
 ## https://stackoverflow.com/questions/31094473/r-how-to-calculate-sensitivity-and-specificity-of-rpart-tree
 ## xpred.rpart(categorical_prune)
 .predict <- predict(categorical_prune, type = 'prob')
-pe <- filter(dipep, group == 'Suspected PE') %>% dplyr::select(pe)
-.predicted <- prediction(.predict[,2] %>% as.vector(), pe)
-performance(.predicted, measure = 'tpr', x.measure = 'fpr') %>% plot()
-pred.obs <- cbind(.predict[,2] %>% as.vector(), pe)
+.predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
+pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y)
 names(pred.obs) <- c('predicted', 'obs')
 ggplot(pred.obs, aes(d = pe, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
-    ggtitle(paste0('ROC Curve for Pruned Categorical Tree CP = ', cp, ')'))
+    ggtitle(paste0('ROC Curve for Pruned Categorical Tree (CP = ', cp, ')'))
 
 ```
 
@@ -129,6 +140,12 @@ ggplot(pred.obs, aes(d = pe, m = predicted)) +
 
 Because recursive partitioning seeks to optimaise the cut-point for continuous variables it is perhaps sub-optimal to pre-specify cut-points aprior to testing the model.  To this end the models have been tested using the raw underlying continuous data (which contains more fine-grained information than the dichotomised variables) and the models re-run allowing the algorithms to choose cut-points for partitioning.
 
+Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`)
+
+```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+printcp(continuous)
+
+```
 The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
 
 ```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, eval = TRUE}
@@ -144,20 +161,12 @@ prp(continuous,
 
 
 
-
-Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`)
-
-
-```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'asis', eval = FALSE}
-printcp(continuous)
-
-```
-
 In addition to the problem described above for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets severly limited, because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror`.
 
-```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, results = 'rmarkdown', eval = TRUE}
 cp <- 0.016854
 continuous_prune <- prune(continuous, cp = cp)
+printcp(continuous_prune)
 prp(continuous_prune,
     type   = 4,
     extra  = 106,
@@ -168,15 +177,13 @@ prp(continuous_prune,
 
 ```
 
-```{r results_rpart_continuous_roc, echo = FALSE, cache = FALSE, results = 'asis', eval = FALSE}
-.predict <- predict(categorical_prune, type = 'prob')
-pe <- filter(dipep, group == 'Suspected PE') %>% dplyr::select(pe)
-.predicted <- prediction(.predict[,2] %>% as.vector(), pe)
-performance(.predicted, measure = 'tpr', x.measure = 'fpr') %>% plot()
-pred.obs <- cbind(.predict[,2] %>% as.vector(), pe)
+```{r results_rpart_continuous_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = FALSE}
+.predict <- predict(continuous_prune, type = 'prob')
+.predicted <- prediction(.predict[,2] %>% as.vector(), continuous_prune$y)
+pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y)
 names(pred.obs) <- c('predicted', 'obs')
 ggplot(pred.obs, aes(d = pe, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
-    ggtitle(paste0('ROC Curve for Pruned Continuous Tree CP = ', cp, ')'))
+    ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', cp, ')'))
 
 ```
