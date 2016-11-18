@@ -3,11 +3,6 @@ Its is not advisable to use the results of univariable regression to shape your 
 Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.
 
 ```{r results_logistic_regression, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-## Add a dummy variable to the data for now
-dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
-dipep$pe <- factor(dipep$pe,
-                   levels = c(0, 1),
-                   labels = c('No PE', 'PE'))
 ## Test each outcome for association, then gather them *using broom) into one dataset for summarisation
 ## Age
 logistic.age <- dipep_glm(df = dipep,
@@ -59,7 +54,36 @@ logistic.pregnancies.over <- dipep_glm(df = dipep,
                           predictor = 'pregnancies.over')
 ## Previous Pregnancy Problems
 logistic.prev.preg.problem <- dipep_glm(df = dipep,
-                          predictor = 'prev.preg.problem')
+                             predictor = 'prev.preg.problem')
+## For now fill in missing, will switch to using 'imputed' data set later
+dipep <- mutate(dipep,
+                presenting.features.pleuritic = ifelse(is.na(presenting.features.pleuritic),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.pleuritic),
+                presenting.features.non.pleuritic = ifelse(is.na(presenting.features.non.pleuritic),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.non.pleuritic),
+                presenting.features.sob.exertion = ifelse(is.na(presenting.features.sob.exertion),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.sob.exertion),
+                presenting.features.sob.rest = ifelse(is.na(presenting.features.sob.rest),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.sob.rest),
+                presenting.features.haemoptysis = ifelse(is.na(presenting.features.haemoptysis),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.haemoptysis),
+                presenting.features.cough = ifelse(is.na(presenting.features.cough),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.cough),
+                presenting.features.syncope = ifelse(is.na(presenting.features.syncope),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.syncope),
+                presenting.features.palpitations = ifelse(is.na(presenting.features.palpitations),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.palpitations),
+                presenting.features.other = ifelse(is.na(presenting.features.other),
+                                                       yes = 'Not Ticked',
+                                                       no  = presenting.features.other))
 ## Pleuritic
 logistic.presenting.features.pleuritic <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.pleuritic')
@@ -105,24 +129,43 @@ logistic.tidied <- rbind(logistic.age$tidied,
                          logistic.bmi$tidied,
                          logistic.pregnancies.under$tidied,
                          logistic.pregnancies.over$tidied,
-                         logistic.prev.preg.problem$tidied,
-                         logistic.presenting.features.pleuritic$tidied,
-                         logistic.presenting.features.non.pleuritic$tidied,
-                         logistic.presenting.features.sob.exertion$tidied,
-                         logistic.presenting.features.haemoptysis$tidied,
-                         logistic.presenting.features.sob.rest$tidied,
-                         logistic.presenting.features.cough$tidied,
-                         logistic.presenting.features.syncope$tidied,
-                         logistic.presenting.features.palpitations$tidied,
-                         logistic.presenting.features.other$tidied) %>%
+                         logistic.prev.preg.problem$tidied) %>%
+                         ## logistic.presenting.features.pleuritic$tidied,
+                         ## logistic.presenting.features.non.pleuritic$tidied,
+                         ## logistic.presenting.features.sob.exertion$tidied,
+                         ## logistic.presenting.features.sob.rest$tidied,
+                         ## logistic.presenting.features.haemoptysis$tidied,
+                         ## logistic.presenting.features.cough$tidied,
+                         ## logistic.presenting.features.syncope$tidied,
+                         ## logistic.presenting.features.palpitations$tidied,
+                         ## logistic.presenting.features.other$tidied) %>%
                     mutate(term = gsub('smokinggave', 'gave', term),
                            term = gsub('smokingcurrent', 'current', term),
                            term = gsub('temperature.catHigh', 'High', term),
                            term = gsub('bp.diastolic.catHigh', 'High', term),
                            term = gsub('bp.systolic.catHigh', 'High', term),
                            term = gsub('o2.saturation.catHigh', 'High', term),
+                           term = gsub('respiratory.rate.catHigh', 'High', term),
                            term = gsub('bmi.catHigh', 'High', term),
-                           term = gsub('Ticked', '', term))
+                           term = gsub('Ticked', '', term),
+                           term = gsub('.cat', ' (Categorised)', term),
+                           term = gsub('age', '(Continuous)', term),
+                           term = ifelse(term == 'bp.diastolic' & term == 'bp.diastolic', '(Continuous)', term),
+                           term = ifelse(term == 'bp.systolic' & term == 'bp.systolic', '(Continuous)', term),
+                           term = ifelse(term == 'o2.saturation' & term == 'o2.saturation', '(Continuous)', term),
+                           term = ifelse(term == 'respiratory.rate' & term == 'respiratory.rate', '(Continuous)', term),
+                           term = ifelse(term == 'bmi' & term == 'bmi', '(Continuous)', term)) %>%
+                           ## term = gsub('presenting.features.pleuritic', 'True', term),
+                           ## term = gsub('presenting.features.non.pleuritic', 'True', term),
+                           ## term = gsub('presenting.features.sob.exertion', 'True', term),
+                           ## term = gsub('presenting.features.sob.rest', 'True', term),
+                           ## term = gsub('presenting.features.haemoptysis', 'True', term),
+                           ## term = gsub('presenting.features.cough', 'True', term),
+                           ## term = gsub('presenting.features.syncope', 'True', term),
+                           ## term = gsub('presenting.features.palpitations', 'True', term),
+                           ## term = gsub('presenting.features.other', 'True', term)) %>%
+                    mutate(lower = estimate - 1.96 * std.error,
+                           upper = estimate + 1.96 * std.error)
 
 logistic.glance <- rbind(logistic.age$glance,
                          logistic.smoking$glance,
@@ -167,16 +210,16 @@ logistic.predicted <- cbind(predict(logistic.age$fitted),
                             predict(logistic.bmi$fitted),
                             predict(logistic.pregnancies.under$fitted),
                             predict(logistic.pregnancies.over$fitted),
-                            predict(logistic.prev.preg.problem$fitted),
-                            predict(logistic.presenting.features.pleuritic$fitted),
-                            predict(logistic.presenting.features.non.pleuritic$fitted),
-                            predict(logistic.presenting.features.sob.exertion$fitted),
-                            predict(logistic.presenting.features.sob.rest$fitted),
-                            predict(logistic.presenting.features.haemoptysis$fitted),
-                            predict(logistic.presenting.features.cough$fitted),
-                            predict(logistic.presenting.features.syncope$fitted),
-                            predict(logistic.presenting.features.palpitations$fitted),
-                            predict(logistic.presenting.features.other$fitted)) %>%
+                            predict(logistic.prev.preg.problem$fitted)) %>%
+                            ## predict(logistic.presenting.features.pleuritic$fitted),
+                            ## predict(logistic.presenting.features.non.pleuritic$fitted),
+                            ## predict(logistic.presenting.features.sob.exertion$fitted),
+                            ## predict(logistic.presenting.features.sob.rest$fitted),
+                            ## predict(logistic.presenting.features.haemoptysis$fitted),
+                            ## predict(logistic.presenting.features.cough$fitted),
+                            ## predict(logistic.presenting.features.syncope$fitted),
+                            ## predict(logistic.presenting.features.palpitations$fitted),
+                            ## predict(logistic.presenting.features.other$fitted)) %>%
                       data.frame()
 names(logistic.predicted) <- c('age', 'smoking', 'temperature.cat', 'temperature',
                                'bp.diastolic.cat', 'bp.diastolic',
@@ -185,18 +228,40 @@ names(logistic.predicted) <- c('age', 'smoking', 'temperature.cat', 'temperature
                                'o2.saturation.cat', 'o2.saturation',
                                'respiratory.rate.cat', 'respiratory.rate',
                                'bmi.cat', 'bmi',
-                               'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
-                               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-                               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-                               'presenting.features.haemoptysis', 'presenting.features.cough',
-                               'presenting.features.syncope', 'presenting.features.palpitations',
-                               'presenting.features.other')
-
+                               'pregnancies.under', 'pregnancies.over', 'prev.preg.problem')
+                               ## 'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+                               ## 'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+                               ## 'presenting.features.haemoptysis', 'presenting.features.cough',
+                               ## 'presenting.features.syncope', 'presenting.features.palpitations',
+                               ## 'presenting.features.other')
+logistic.predicted <-
 ## ToDo - Bind in the observed value and calculate the sensitivity and specificity
 
 ## ToDo - Possibly add in descriptive labels (perhaps build a dataframe with these to make it easy)
 ```
 
-```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
+#### Point Estimates
+
+The point-estimate and
+```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+to.sum <- dplyr::filter(logistic.tidied, term != '(Intercept)') %>%
+    dplyr::select(predictor, term, estimate, lower, upper, p.value)
+ggplot(to.sum, aes(predictor, estimate, colour = predictor)) +
+    geom_point() + geom_errorbar(aes(ymin =lower, ymax = upper)) +
+    coord_flip() +
+    xlab('Predictor') + ylab('Estimate') +
+    ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression') +
+    theme_bw() + theme(legend.position = 'none')
+names(to.sum) <- c('Predictor', 'Level', ' Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+kable(to.sum,
+      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
+rm(to.sum)
+
+```
+#### ROC Curves
+
+[Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
+
+```{r results_logistic_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 
 ```
