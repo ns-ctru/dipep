@@ -49,6 +49,7 @@ dipep_glm <- function(df              = .data,
     results$predicted <- merge(dplyr::select(results$df, obs, pe),
                                results$predicted,
                                by = c('obs'))
+    names(results$predicted) <- c('obs', paste0('pe.', predictor), paste0('pred.', predictor))
     ## Calculate : Sensitivity, Specificity, ppv and npv (uses ROCR functions)
     results$pred <- prediction(results$predicted$pred, results$predicted$pe)
     ## Standard ROC x = FPR; y = TPR
