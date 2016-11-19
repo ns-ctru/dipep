@@ -17,7 +17,7 @@
 #'
 #' @export
 dipep_glm <- function(df              = .data,
-                      predictor       = 'age',
+                      predictor       = c('age'),
                       model           = 'age',
                       ...){
     results <- list()
@@ -29,9 +29,9 @@ dipep_glm <- function(df              = .data,
     to.select <- c('pe', predictor)
     print(to.select)
     results$df <- dplyr::filter(df, group == 'Suspected PE') %>%
+        ## ToDo - FIX THIS!!!
           ## dplyr::select_('pe', substitute(predictor)) %>%
-          ## dplyr::select_('pe', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic', 'o2.saturation') %>%
-          dplyr::select_(to.select) %>%
+          dplyr::select_('pe', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic', 'o2.saturation') %>%
           mutate(obs = rownames(.),
                  use = complete.cases(.)) %>%
           dplyr::filter(use == TRUE) %>%
