@@ -18,12 +18,16 @@
 #' @export
 dipep_glm <- function(df              = .data,
                       predictor       = 'age',
-                      model           = 'age',
+                      model           = NULL,
                       ...){
     results <- list()
     ## Build the formula
     .formula <- reformulate(response = 'pe',
                             termlabels = predictor)
+    ## Make the model equal the predictor if none is supplied
+    if(is.null(model)){
+        model <- predictor
+    }
     ## Filter the data frame
     results$df <- dplyr::filter(df, group == 'Suspected PE') %>%
                   dplyr::select_(.dots = c('pe', predictor)) %>%
