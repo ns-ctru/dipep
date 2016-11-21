@@ -613,51 +613,59 @@ names(event.date) <- gsub('consent', 'event', names(event.date))
 ## Merge the subsets
 merge.by <- c('screening', 'group', 'site', 'event.name')
 
-dipep <- merge(t1,
-               t2,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t3,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t4,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t5,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t6,
-               by    = c('screening', 'group', 'site'),
-               all   = TRUE) %>%
-         merge(.,
-               t7,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t8,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t9,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t10,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
-               t11,
-               by    = merge.by,
-               all   = TRUE) %>%
-         merge(.,
+t <- merge(t1,
+           t2,
+           by    = merge.by,
+           all   = TRUE) %>%
+    merge(.,
+          t3,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t4,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t5,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t6,
+          by    = c('screening', 'group', 'site'),
+          all   = TRUE) %>%
+    merge(.,
+          t7,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t8,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t9,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t10,
+          by    = merge.by,
+          all   = TRUE) %>%
+    merge(.,
+          t11,
+          by    = merge.by,
+          all   = TRUE)
+## Now do two merges with the event.date, one to get a master dataset...
+dipep <- merge(t,
                event.date,
                by    = c('screening', 'group', 'site'),
-               all   = TRUE)
-rm(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
+               all.x = TRUE)
+## ...and one to get the IDs of those who have an event.date but nothing else...
+master$missing <- merge(t,
+                        event.date,
+                        by  = c('screening', 'group', 'site'),
+                        all.y = TRUE) %>%
+                  filter(is.na(year.of.birth)) %>%
+                  dplyr::select(screening, event.date, group, site, year.of.birth)
+rm(t, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
 
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
@@ -757,7 +765,60 @@ dipep <- mutate(dipep,
                 diagnosis.post.pe = ifelse(grepl('UNLIKELY P\\.E\\.', diagnosis.post, ignore.case = TRUE) |
                                            grepl('rule out PE', diagnosis.post, ignore.case = TRUE),
                                            yes = 0,
-                                           no  = 1)
+                                           no  = 1),
+
+                ## NEW
+                presenting.features.pleuritic = ifelse(is.na(presenting.features.pleuritic),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.pleuritic)),
+                presenting.features.non.pleuritic = ifelse(is.na(presenting.features.non.pleuritic),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.non.pleuritic)),
+                presenting.features.sob.exertion = ifelse(is.na(presenting.features.sob.exertion),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.sob.exertion)),
+                presenting.features.sob.rest = ifelse(is.na(presenting.features.sob.rest),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.sob.rest)),
+                presenting.features.haemoptysis = ifelse(is.na(presenting.features.haemoptysis),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.haemoptysis)),
+                presenting.features.cough = ifelse(is.na(presenting.features.cough),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.cough)),
+                presenting.features.syncope = ifelse(is.na(presenting.features.syncope),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.syncope)),
+                presenting.features.palpitations = ifelse(is.na(presenting.features.palpitations),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.palpitations)),
+                presenting.features.other = ifelse(is.na(presenting.features.other),
+                                                       yes = 'Not Ticked',
+                                                       no  = as.character(presenting.features.other)),
+                history.thrombosis = ifelse(is.na(history.thrombosis),
+                                            yes = 'No',
+                                            no  = history.thrombosis),
+                history.veins = ifelse(is.na(history.veins),
+                                            yes = 'No',
+                                            no  = history.veins),
+                history.iv.drug = ifelse(is.na(history.iv.drug),
+                                            yes = 'No',
+                                            no  = history.iv.drug),
+                thrombo = ifelse(is.na(thrombo),
+                                            yes = 'No',
+                                            no  = thrombo),
+                multiple.preg = ifelse(is.na(multiple.preg),
+                                            yes = 'No',
+                                            no  = multiple.preg),
+                travel = ifelse(is.na(travel),
+                                            yes = 'No',
+                                            no  = travel),
+                immobil = ifelse(is.na(immobil),
+                                            yes = 'No',
+                                            no  = immobil),
+                immobil = ifelse(is.na(ecg),
+                                            yes = 'Not performed',
+                                            no  = ecg)
                 ## D-Dimer
                 ## d.dimer.high = ifelse(d.dimer > ,
                 ##                       yes = 1,
@@ -826,7 +887,19 @@ dipep <- mutate(dipep,
                                                  labels = c('No', 'Yes')),
                 diagnosis.post.pe = factor(diagnosis.post.pe,
                                            levels = c(0, 1),
-                                           labels = c('No PE', 'PE')) ##,
+                                           labels = c('No PE', 'PE')),
+                presenting.features.pleuritic  = factor(presenting.features.pleuritic,
+                                                        'Not Ticked', 'Ticked'),
+                presenting.features.non.pleuritic  = factor(presenting.features.non.pleuritic,
+                                                        'Not Ticked', 'Ticked'),
+                presenting.features.sob.exertion  = factor(presenting.features.sob.exertion,
+                                                        'Not Ticked', 'Ticked'),
+                presenting.features.sob.rest  = factor(presenting.features.sob.rest,
+                                                        'Not Ticked', 'Ticked'),
+                presenting.features.cough  = factor(presenting.features.cough,
+                                                        'Not Ticked', 'Ticked'),
+                presenting.features.haemoptysis  = factor(presenting.features.haemoptysis,
+                                                        'Not Ticked', 'Ticked')
                 ## ToDo - Thresholds
                 ## d.dimer.high = factor(d.dimer.high,
                 ##                       levels = c(0, 1),
@@ -991,7 +1064,7 @@ dipep.imputed <- mutate(dipep,
                         heart.rate.cat = ifelse(is.na(heart.rate.cat), yes = 'Low', no = heart.rate.cat),
                         bmi.cat = ifelse(is.na(bmi.cat), yes = 'Low', no = bmi.cat),
                         smoking.cat = ifelse(is.na(smoking.cat), yes = 'Non-smoker', no = smoking.cat),
-                        age.cat = ifelse(is.na(age.cat), yes = 'Young', no = age.cat),
+                        age.cat = ifelse(is.na(age.cat), yes = 'Young', no = age.cat)
                         ## heart.rate.cat = ifelse(is.na(), yes = , no = ),
                         ## heart.rate.cat = ifelse(is.na(), yes = , no = )
                         )
@@ -1226,6 +1299,8 @@ save(master,
 ##     write.dta(file = 'dipep.dta')
 names(dipep) <- gsub("\\.", "_", names(dipep))
 names(dipep) <- gsub("presenting_features", "presenting", names(dipep))
+names(dipep) <- gsub("simplified_", "simp_", names(dipep))
 write_dta(dipep, version = 14, path = 'dipep.dta')
 names(dipep) <- gsub("_", ".", names(dipep))
 names(dipep) <- gsub("presenting", "presenting.features", names(dipep))
+names(dipep) <- gsub("simp_", "simplified_", names(dipep))
