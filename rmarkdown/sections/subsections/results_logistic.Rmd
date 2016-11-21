@@ -110,6 +110,40 @@ logistic.presenting.features.palpitations <- dipep_glm(df = dipep,
 ## Other Features on Presentation
 logistic.presenting.features.other <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.other')
+## Family history of thrombosis
+logistic.history.thrombosis <- dipep_glm(df = dipep,
+                          predictor = 'history.thrombosis')
+## Family history of veins
+logistic.history.veins <- dipep_glm(df = dipep,
+                          predictor = 'history.veins')
+## Family history of IV Drug use
+logistic.history.iv.drug <- dipep_glm(df = dipep,
+                          predictor = 'history.iv.drug')
+## Trimester
+logistic.trimester <- dipep_glm(df = dipep,
+                          predictor = 'trimester')
+## Problems with this pregnancy
+logistic.this.pregnancy.problems <- dipep_glm(df = dipep,
+                          predictor = 'this.pregnancy.problems')
+## Thrombo
+logistic.thrombo <- dipep_glm(df = dipep,
+                          predictor = 'thrombo')
+## Multiple Pregnancy
+logistic.multiple.preg <- dipep_glm(df = dipep,
+                          predictor = 'multiple.preg')
+## Travel
+logistic.travel <- dipep_glm(df = dipep,
+                          predictor = 'travel')
+## Immobility
+logistic.immobil <- dipep_glm(df = dipep,
+                          predictor = 'immobil')
+## ECG (Categorised)
+logistic.ecg.cat <- dipep_glm(df = dipep,
+                          predictor = 'ecg.cat')
+## ECG
+logistic.ecg <- dipep_glm(df = dipep,
+                          predictor = 'ecg')
+
 
 ## Combine all three sets of tidied output from each model
 logistic.tidied <- rbind(logistic.age$tidied,
@@ -138,36 +172,19 @@ logistic.tidied <- rbind(logistic.age$tidied,
                          logistic.presenting.features.cough$tidied,
                          logistic.presenting.features.syncope$tidied,
                          logistic.presenting.features.palpitations$tidied,
-                         logistic.presenting.features.other$tidied) %>%
-                    ## mutate(term = gsub('age.catOld', 'Age (Old)', term),
-                    ##        term = gsub('smokinggave up prior to pregnancy', 'Ex-smoker (Prior)', term),
-                    ##        term = gsub('smokinggave up during pregnancy', 'Ex-smoker (During)', term),
-                    ##        term = gsub('smokingcurrent', 'Current Smoker', term),
-                    ##        term = gsub('temperature.catHigh', 'Temperature (High)', term),
-                    ##        term = gsub('bp.diastolic.catHigh', 'Diastolic (High)', term),
-                    ##        term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
-                    ##        term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
-                    ##        term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
-                    ##        term = gsub('bmi.catHigh', 'BMI (High)', term),
-                    ##        term = gsub('Ticked', '', term),
-                    ##        ## term = gsub('.cat', ' (Categorised)', term),
-                    ##        term = gsub('age', 'Age (Continuous)', term),
-                    ##        term = gsub('bp.diastolic', 'Diastolic (Continuous)', term),
-                    ##        term = gsub('bp.systolic', 'Systolic (Continuous)', term),
-                    ##        term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
-                    ##        term = gsub('bmi', 'BMI (Continuous)', term),
-                    ##        term = gsub('presenting.features.pleuriticNot ', 'Presenting : Pleuritic', term),
-                    ##        term = gsub('presenting.features.non.pleuriticNot ', 'Presenting : Non-Pleuritic', term),
-                    ##        term = gsub('presenting.features.sob.exertionNot ', 'Presenting : Shortness of Breath (Exertion)', term),
-                    ##        term = gsub('presenting.features.sob.rest', 'Presenting : Shortness of Breath (Rest)', term),
-                    ##        term = gsub('presenting.features.haemoptysis', 'Presenting : Haemoptysis', term),
-                    ##        term = gsub('presenting.features.cough', 'Presenting : Cough', term),
-                    ##        term = gsub('presenting.features.syncope', 'Presenting : Syncope', term),
-                    ##        term = gsub('presenting.features.palpitations', 'Presenting : Palpitations', term),
-                    ##        term = gsub('presenting.features.other', 'Presenting : Other', term),
-                    ##        term = gsub('preganancies.under', 'Pregnancies < 24 weeks', term),
-                    ##        term = gsub('preganancies.over', 'Pregnancies > 24 weeks', term),
-                    ##        term = gsub('prev.preg.problemNo', 'No Previous Pregnancy Problems', term) %>%
+                         logistic.presenting.features.other$tidied,
+
+                         logistic.history.thrombosis$tidied,
+                         logistic.history.veins$tidied,
+                         logistic.history.iv.drug$tidied,
+                         logistic.trimester$tidied,
+                         logistic.this.pregnancy.problems$tidied,
+                         logistic.thrombo$tidied$tidied,
+                         logistic.multiple.preg$tidied,
+                         logistic.travel$tidied,
+                         logistic.immobil$tidied,
+                         logistic.ecg.cat$tidied,
+                         logistic.ecg$tidied) %>%
                     mutate(lower = estimate - 1.96 * std.error,
                            upper = estimate + 1.96 * std.error)
 logistic.glance <- rbind(logistic.age$glance,
@@ -195,7 +212,18 @@ logistic.glance <- rbind(logistic.age$glance,
                          logistic.presenting.features.cough$glance,
                          logistic.presenting.features.syncope$glance,
                          logistic.presenting.features.palpitations$glance,
-                         logistic.presenting.features.other$glance)
+                         logistic.presenting.features.other$glance,
+                         logistic.history.thrombosis$glance,
+                         logistic.history.veins$glance,
+                         logistic.history.iv.drug$glance,
+                         logistic.trimester$glance,
+                         logistic.this.pregnancy.problems$glance,
+                         logistic.thrombo$glance$glance,
+                         logistic.multiple.preg$glance,
+                         logistic.travel$glance,
+                         logistic.immobil$glance,
+                         logistic.ecg.cat$glance,
+                         logistic.ecg$glance)
 
 ## Get all predicted values
 logistic.predicted <- merge(logistic.age$predicted,
@@ -302,6 +330,50 @@ logistic.predicted <- merge(logistic.age$predicted,
                             logistic.presenting.features.other$predicted,
                             by = 'obs',
                             all = TRUE) %>%
+                      merge(.,
+                            logistic.history.thrombosis$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.history.veins$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.history.iv.drug$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.trimester$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.this.pregnancy.problems$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.thrombo$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.multiple.preg$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.travel$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.immobil$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.ecg.cat$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic.ecg$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
                       ## Age is complete, use observed values from that, remove all others
                       dplyr::select(pe.age, pred.age, pred.age.cat, pred.smoking,
                                     pred.temperature, pred.temperature.cat,
@@ -315,7 +387,11 @@ logistic.predicted <- merge(logistic.age$predicted,
                                     pred.presenting.features.sob.rest, pred.presenting.features.sob.exertion,
                                     pred.presenting.features.cough, pred.presenting.features.haemoptysis,
                                     pred.presenting.features.syncope, pred.presenting.features.palpitations,
-                                    pred.presenting.features.other)
+                                    pred.presenting.features.other, pred.history.thrombosis,
+                                    pred.history.veins, pred.history.iv.drug,
+                                    pred.trimester, pred.this.pregnancy.problems,
+                                    pred.thrombo, pred.multiple.preg, pred.travel, pred.immobil,
+                                    pred.ecg.cat, pred.ecg)
 ## Sort out names
 names(logistic.predicted) <- gsub('pe.age', 'pe', names(logistic.predicted))
 names(logistic.predicted) <- gsub('pred.', '', names(logistic.predicted))
@@ -328,7 +404,11 @@ saturated <- dipep_glm(df = dipep,
                                      'presenting.features.sob.rest', 'presenting.features.sob.exertion',
                                      'presenting.features.cough', 'presenting.features.haemoptysis',
                                      'presenting.features.syncope', 'presenting.features.palpitations',
-                                     'presenting.features.other'),
+                                     'presenting.features.other','pred.history.thrombosis',
+                                     'pred.history.veins', 'pred.history.iv.drug',
+                                     'pred.trimester', 'pred.this.pregnancy.problems',
+                                     'pred.thrombo', 'pred.multiple.preg', 'pred.travel', 'pred.immobil',
+                                     'pred.ecg.cat', 'pred.ecg'),
                        model = 'saturated multivariable logistic model')
 
 
