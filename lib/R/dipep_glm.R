@@ -45,21 +45,19 @@ dipep_glm <- function(df              = .data,
     results$glance$model    <- model
     ## Get predicted probabilities
     results$predicted <- results$fitted %>% predict() %>% as.data.frame()
-    ## names(results$predicted) <- paste0(predictor, '.predicted')
     names(results$predicted) <- c('pred')
     results$predicted$obs <- rownames(results$predicted)
     results$predicted <- merge(dplyr::select(results$df, obs, pe),
                                results$predicted,
                                by = c('obs'))
+    ## Return ROC curve for this model
+    results$roc <- ggplot(results$predicted,
+                          aes(d = pe, m = pred)) +
+                   geom_roc() +
+                   guides(guide = guide_legend(title = '')) +
+                   ggtitle(paste0('ROC curve for ', model)) +
+                   style_roc() + theme_bw()
+    ## Rename predicted df for ease of subsequent use
     names(results$predicted) <- c('obs', paste0('pe.', model), paste0('pred.', model))
-    ## Calculate : Sensitivity, Specificity, ppv and npv (uses ROCR functions)
-    ## results$pred <- prediction(results$predicted$pred, results$predicted$pe)
-    ## Standard ROC x = FPR; y = TPR
-    ## results$roc.fpr.tpr     <- performance(results$pred, measure = 'tpr', x.measure = 'fpr')
-    ## x = Specificity; y = Sensitivity
-    ## results$roc.sens.spec   <- performance(results$pred, measure = 'sens', x.measure = 'spec')
-    ##
-    ## ToDo : Generat ROC plot internally for inclusion in an Appendix
-    ## By Group
     return(results)
 }
