@@ -1,7 +1,3 @@
-Its is not advisable to use the results of univariable regression to shape your choice of variables to include in multi-variable models for the simple reason that the coefficients obtained for a variable in isolation will not be the same as those from a multi-variable model.  Thus something that appears to be significant under univariable analysis may well not be under multi-variable analysis.  A better strategy is to use expert clinical knowledge as to what factors are important to determine which variables are included in a multi-variable model.
-
-Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.
-
 ```{r results_logistic_regression, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Test each outcome for association, then gather them *using broom) into one dataset for summarisation
 ## Age
@@ -143,35 +139,37 @@ logistic.tidied <- rbind(logistic.age$tidied,
                          logistic.presenting.features.syncope$tidied,
                          logistic.presenting.features.palpitations$tidied,
                          logistic.presenting.features.other$tidied) %>%
-                    mutate(term = gsub('age.catOld', 'Age (Old)', term),
-                           term = gsub('smokinggave up prior to pregnancy', 'Ex-smoker (Prior)', term),
-                           term = gsub('smokinggave up during pregnancy', 'Ex-smoker (During)', term),
-                           term = gsub('smokingcurrent', 'Current Smoker', term),
-                           term = gsub('temperature.catHigh', 'Temperature (High)', term),
-                           term = gsub('bp.diastolic.catHigh', 'Diastolic (High)', term),
-                           term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
-                           term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
-                           term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
-                           term = gsub('bmi.catHigh', 'BMI (High)', term),
-                           term = gsub('Ticked', '', term),
-                           ## term = gsub('.cat', ' (Categorised)', term),
-                           term = gsub('age', 'Age (Continuous)', term),
-                           term = gsub('bp.diastolic', 'Diastolic (Continuous)', term),
-                           term = gsub('bp.systolic', 'Systolic (Continuous)', term),
-                           term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
-                           term = gsub('bmi', 'BMI (Continuous)', term),
-                           term = gsub('presenting.features.pleuritic', 'True', term),
-                           term = gsub('presenting.features.non.pleuritic', 'True', term),
-                           term = gsub('presenting.features.sob.exertion', 'True', term),
-                           term = gsub('presenting.features.sob.rest', 'True', term),
-                           term = gsub('presenting.features.haemoptysis', 'True', term),
-                           term = gsub('presenting.features.cough', 'True', term),
-                           term = gsub('presenting.features.syncope', 'True', term),
-                           term = gsub('presenting.features.palpitations', 'True', term),
-                           term = gsub('presenting.features.other', 'True', term)) %>%
+                    ## mutate(term = gsub('age.catOld', 'Age (Old)', term),
+                    ##        term = gsub('smokinggave up prior to pregnancy', 'Ex-smoker (Prior)', term),
+                    ##        term = gsub('smokinggave up during pregnancy', 'Ex-smoker (During)', term),
+                    ##        term = gsub('smokingcurrent', 'Current Smoker', term),
+                    ##        term = gsub('temperature.catHigh', 'Temperature (High)', term),
+                    ##        term = gsub('bp.diastolic.catHigh', 'Diastolic (High)', term),
+                    ##        term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
+                    ##        term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
+                    ##        term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
+                    ##        term = gsub('bmi.catHigh', 'BMI (High)', term),
+                    ##        term = gsub('Ticked', '', term),
+                    ##        ## term = gsub('.cat', ' (Categorised)', term),
+                    ##        term = gsub('age', 'Age (Continuous)', term),
+                    ##        term = gsub('bp.diastolic', 'Diastolic (Continuous)', term),
+                    ##        term = gsub('bp.systolic', 'Systolic (Continuous)', term),
+                    ##        term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
+                    ##        term = gsub('bmi', 'BMI (Continuous)', term),
+                    ##        term = gsub('presenting.features.pleuriticNot ', 'Presenting : Pleuritic', term),
+                    ##        term = gsub('presenting.features.non.pleuriticNot ', 'Presenting : Non-Pleuritic', term),
+                    ##        term = gsub('presenting.features.sob.exertionNot ', 'Presenting : Shortness of Breath (Exertion)', term),
+                    ##        term = gsub('presenting.features.sob.rest', 'Presenting : Shortness of Breath (Rest)', term),
+                    ##        term = gsub('presenting.features.haemoptysis', 'Presenting : Haemoptysis', term),
+                    ##        term = gsub('presenting.features.cough', 'Presenting : Cough', term),
+                    ##        term = gsub('presenting.features.syncope', 'Presenting : Syncope', term),
+                    ##        term = gsub('presenting.features.palpitations', 'Presenting : Palpitations', term),
+                    ##        term = gsub('presenting.features.other', 'Presenting : Other', term),
+                    ##        term = gsub('preganancies.under', 'Pregnancies < 24 weeks', term),
+                    ##        term = gsub('preganancies.over', 'Pregnancies > 24 weeks', term),
+                    ##        term = gsub('prev.preg.problemNo', 'No Previous Pregnancy Problems', term) %>%
                     mutate(lower = estimate - 1.96 * std.error,
                            upper = estimate + 1.96 * std.error)
-
 logistic.glance <- rbind(logistic.age$glance,
                          logistic.smoking$glance,
                          logistic.temperature.cat$glance,
@@ -198,6 +196,7 @@ logistic.glance <- rbind(logistic.age$glance,
                          logistic.presenting.features.syncope$glance,
                          logistic.presenting.features.palpitations$glance,
                          logistic.presenting.features.other$glance)
+
 ## Get all predicted values
 logistic.predicted <- merge(logistic.age$predicted,
                             logistic.age.cat$predicted,
@@ -321,16 +320,34 @@ logistic.predicted <- merge(logistic.age$predicted,
 names(logistic.predicted) <- gsub('pe.age', 'pe', names(logistic.predicted))
 names(logistic.predicted) <- gsub('pred.', '', names(logistic.predicted))
 
-## ToDo - Possibly add in descriptive labels (perhaps build a dataframe with these to make it easy)
+## Saturated
+saturated <- dipep_glm(df = dipep,
+                       predictor = c('age', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic', 'o2.saturation', 'respiratory.rate',
+                                     'smoking', 'prev.preg.problem', 'pregnancies.under', 'pregnancies.over',
+                                     'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+                                     'presenting.features.sob.rest', 'presenting.features.sob.exertion',
+                                     'presenting.features.cough', 'presenting.features.haemoptysis',
+                                     'presenting.features.syncope', 'presenting.features.palpitations',
+                                     'presenting.features.other'),
+                       model = 'saturated multivariable logistic model')
+
+
 ```
 
-#### Point Estimates
+#### Univariable Regression
+Its is not advisable to use the results of univariable regression to shape your choice of variables to include in multi-variable models for the simple reason that the coefficients obtained for a variable in isolation will not be the same as those from a multi-variable model.  Thus something that appears to be significant under univariable analysis may well not be under multi-variable analysis.  A better strategy is to use expert clinical knowledge as to what factors are important to determine which variables are included in a multi-variable model.
 
-The point-estimate and
+Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.
+
+
+##### Point Estimates
+
+The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.  Both raw continuous and categorised variables are included to provide comparison.
+
 ```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(logistic.tidied, term != '(Intercept)') %>%
-    dplyr::select(predictor, term, estimate, lower, upper, p.value)
-ggplot(to.sum, aes(predictor, estimate, colour = predictor)) +
+    dplyr::select(term, estimate, lower, upper, p.value)
+ggplot(to.sum, aes(term, estimate, colour = tern=m)) +
     geom_point() + geom_errorbar(aes(ymin =lower, ymax = upper)) +
     coord_flip() +
     xlab('Predictor') + ylab('Estimate') +
@@ -342,7 +359,7 @@ kable(to.sum,
 rm(to.sum)
 
 ```
-#### ROC Curves
+##### ROC Curves
 
 [Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
 
@@ -392,4 +409,12 @@ ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
     ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
     style_roc() + theme_bw()
 
+```
+
+#### Saturated Regression
+
+In a situation where you are likely to have information on all possible variables to hand it makes little sense in disregarding some of that information even if it only improves the overall fit of a model by a small fraction.  To this end a saturated logistic regression model including all variables in their raw, uncategroised format (which preserves the maximum amount of information) has been tested for its performance.
+
+```{r results_logistic_regression_multi_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+saturated$roc
 ```
