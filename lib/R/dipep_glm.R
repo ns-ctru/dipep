@@ -40,7 +40,38 @@ dipep_glm <- function(df              = .data,
     results$fitted <- glm(.formula,
                           data   = results$df,
                           family = 'binomial')
+    ## Use Broom to sweep up/tidy the results
     results$tidied    <- broom::tidy(results$fitted)
+    results$tidied <- mutate(results$tidied,
+                             term = gsub('age.catOld', 'Age (Old)', term),
+                             term = gsub('smokinggave up prior to pregnancy', 'Ex-smoker (Prior)', term),
+                             term = gsub('smokinggave up during pregnancy', 'Ex-smoker (During)', term),
+                             term = gsub('smokingcurrent', 'Current Smoker', term),
+                             term = gsub('temperature.catHigh', 'Temperature (High)', term),
+                             term = gsub('bp.diastolic.catHigh', 'Diastolic (High)', term),
+                             term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
+                             term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
+                             term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
+                             term = gsub('bmi.catHigh', 'BMI (High)', term),
+                             term = gsub('Ticked', '', term),
+                             ## term = gsub('.cat', ' (Categorised)', term),
+                             term = gsub('age', 'Age (Continuous)', term),
+                             term = gsub('bp.diastolic', 'Diastolic (Continuous)', term),
+                             term = gsub('bp.systolic', 'Systolic (Continuous)', term),
+                             term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
+                             term = gsub('bmi', 'BMI (Continuous)', term),
+                             term = gsub('presenting.features.pleuriticNot ', 'Presenting : Pleuritic', term),
+                             term = gsub('presenting.features.non.pleuriticNot ', 'Presenting : Non-Pleuritic', term),
+                             term = gsub('presenting.features.sob.exertionNot ', 'Presenting : Shortness of Breath (Exertion)', term),
+                             term = gsub('presenting.features.sob.restNot ', 'Presenting : Shortness of Breath (Rest)', term),
+                             term = gsub('presenting.features.haemoptysisNot ', 'Presenting : Haemoptysis', term),
+                             term = gsub('presenting.features.coughNot ', 'Presenting : Cough', term),
+                             term = gsub('presenting.features.syncopeNot ', 'Presenting : Syncope', term),
+                             term = gsub('presenting.features.palpitationsNot ', 'Presenting : Palpitations', term),
+                             term = gsub('presenting.features.otherNot ', 'Presenting : Other', term),
+                             term = gsub('preganancies.under', 'Pregnancies < 24 weeks', term),
+                             term = gsub('preganancies.over', 'Pregnancies > 24 weeks', term),
+                             term = gsub('prev.preg.problemNo', 'No Previous Pregnancy Problems', term))
     results$augmented <- broom::augment(results$fitted)
     results$glance    <- broom::glance(results$fitted)
     ## Add the predictor to each to make it easier combining
