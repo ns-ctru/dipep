@@ -25,7 +25,6 @@ master$data.dictionary <- read_dipep(file       = "Lookups.csv",
                                      sep        = ',',
                                      dictionary = NULL)
 
-
 #######################################################################
 ## 30 day follow-up.csv                                              ##
 #######################################################################
@@ -34,7 +33,6 @@ master$follow.up.30.day <- read_dipep(file             = "30 day follow-up.csv",
                                       sep              = ',',
                                       convert.dates    = TRUE,
                                       dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Annotations.csv                                                   ##
 #######################################################################
@@ -43,7 +41,6 @@ master$annotations <- read_dipep(file   = "Annotations.csv",
                                  sep              = ',',
                                  convert.dates    = TRUE,
                                  dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Blood sample.csv                                                  ##
 #######################################################################
@@ -51,7 +48,6 @@ master$blood.sample <- read_dipep(file       = "Blood sample.csv",
                                   header     = TRUE,
                                   sep        = ',',
                                   dictionary = master$data.dictionary)
-
 #######################################################################
 ## Client Service Receipt Inventory.csv                              ##
 #######################################################################
@@ -60,7 +56,6 @@ master$service.receipt <- read_dipep(file   = "Client Service Receipt Inventory.
                                      sep              = ',',
                                      convert.dates    = TRUE,
                                      dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Client Service Receipt Inventory - Hospital.csv                   ##
 #######################################################################
@@ -69,7 +64,6 @@ master$service.receipt.hospital <- read_dipep(file   = "Client Service Receipt I
                                               sep              = ',',
                                               convert.dates    = TRUE,
                                               dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Completion.csv                                                    ##
 #######################################################################
@@ -78,7 +72,6 @@ master$completion <- read_dipep(file   = "Completion.csv",
                                 sep              = ',',
                                 convert.dates    = TRUE,
                                 dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Contact.csv                                                       ##
 #######################################################################
@@ -87,7 +80,6 @@ master$contact <- read_dipep(file   = "Contact.csv",
                              sep              = ',',
                              convert.dates    = TRUE,
                              dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Delivery.csv                                                      ##
 #######################################################################
@@ -96,7 +88,6 @@ master$delivery <- read_dipep(file   = "Delivery.csv",
                               sep              = ',',
                               convert.dates    = TRUE,
                               dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Discrepancies.csv                                                 ##
 #######################################################################
@@ -105,7 +96,6 @@ master$discrepancies <- read_dipep(file   = "Discrepancies.csv",
                                    sep              = ',',
                                    convert.dates    = TRUE,
                                    dictionary       = master$data.dictionary)
-
 #######################################################################
 ## EQ-5D-5L.csv                                                      ##
 #######################################################################
@@ -173,7 +163,6 @@ master$events <- read_dipep(file   = "Events.csv",
                             sep              = ',',
                             convert.dates    = TRUE,
                             dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Follow-up sent.csv                                                ##
 #######################################################################
@@ -182,7 +171,6 @@ master$follow.up.sent <- read_dipep(file   = "Follow-up sent.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Forms.csv                                                         ##
 #######################################################################
@@ -191,7 +179,6 @@ master$forms <- read_dipep(file   = "Forms.csv",
                            sep              = ',',
                            convert.dates    = TRUE,
                            dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Individuals.csv                                                   ##
 #######################################################################
@@ -200,7 +187,6 @@ master$individuals <- read_dipep("Individuals.csv",
                                  sep              = ',',
                                  convert.dates    = TRUE,
                                  dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Investigations.csv                                                ##
 #######################################################################
@@ -209,7 +195,6 @@ master$investigations <- read_dipep("Investigations.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Investigations - Investigation.csv                                ##
 #######################################################################
@@ -218,7 +203,6 @@ master$investigations.investigation <- read_dipep("Investigations - Investigatio
                                                   sep              = ',',
                                                   convert.dates    = TRUE,
                                                   dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Medical History.csv                                               ##
 #######################################################################
@@ -227,7 +211,6 @@ master$med.hist <- read_dipep("Medical History.csv",
                               sep              = ',',
                               convert.dates    = TRUE,
                               dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Medical History - Medical problems.csv                            ##
 #######################################################################
@@ -236,7 +219,6 @@ master$med.hist.problems <- read_dipep("Medical History - Medical problems.csv",
                                        sep              = ',',
                                        convert.dates    = TRUE,
                                        dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Medical History - Thrombophilia.csv                               ##
 #######################################################################
@@ -245,7 +227,6 @@ master$med.hist.thrombophilia <- read_dipep("Medical History - Thrombophilia.csv
                                             sep              = ',',
                                             convert.dates    = TRUE,
                                             dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Outcomes - infant.csv                                             ##
 #######################################################################
@@ -254,7 +235,6 @@ master$outcome.infant <- read_dipep("Outcomes - infant.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Outcomes - infant - Infant.csv                                    ##
 #######################################################################
@@ -263,7 +243,6 @@ master$outcome.infant.infant <- read_dipep("Outcomes - infant - Infant.csv",
                                            sep              = ',',
                                            convert.dates    = TRUE,
                                            dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Outcomes - woman.csv                                              ##
 #######################################################################
@@ -272,7 +251,6 @@ master$outcome.woman <- read_dipep("Outcomes - woman.csv",
                                    sep              = ',',
                                    convert.dates    = TRUE,
                                    dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Outcomes - woman - Maternal morbidity.csv                         ##
 #######################################################################
@@ -281,7 +259,6 @@ master$outcome.woman.morbidity <- read_dipep("Outcomes - woman - Maternal morbid
                                              sep              = ',',
                                              convert.dates    = TRUE,
                                              dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Presenting features.csv                                           ##
 #######################################################################
@@ -290,7 +267,6 @@ master$presenting.features <- read_dipep("Presenting features.csv",
                                          sep              = ',',
                                          convert.dates    = TRUE,
                                          dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Previous pregnancies.csv                                          ##
 #######################################################################
@@ -299,7 +275,6 @@ master$previous.pregnancies <- read_dipep("Previous pregnancies.csv",
                                           sep              = ',',
                                           convert.dates    = TRUE,
                                           dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Previous pregnancies - Previous pregnancy problems.csv            ##
 #######################################################################
@@ -308,7 +283,6 @@ master$previous.pregnancies.problems <- read_dipep("Previous pregnancies - Previ
                                                    sep              = ',',
                                                    convert.dates    = TRUE,
                                                    dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Questionnaire Contact.csv                                         ##
 #######################################################################
@@ -317,7 +291,6 @@ master$questionnaire.contact <- read_dipep("Questionnaire Contact.csv",
                                            sep              = ',',
                                            convert.dates    = TRUE,
                                            dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Screening DVT.csv                                                 ##
 #######################################################################
@@ -326,7 +299,6 @@ master$screening.dvt <- read_dipep("Screening DVT.csv",
                                    sep              = ',',
                                    convert.dates    = TRUE,
                                    dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Screening non recruited.csv                                       ##
 #######################################################################
@@ -335,7 +307,6 @@ master$screening.non.recruited <- read_dipep("Screening non recruited.csv",
                                              sep              = ',',
                                              convert.dates    = TRUE,
                                              dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Screening Suspected PE.csv                                        ##
 #######################################################################
@@ -344,7 +315,6 @@ master$screening.suspected.pe <- read_dipep("Screening Suspected PE.csv",
                                             sep              = ',',
                                             convert.dates    = TRUE,
                                             dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Sign off.csv                                                      ##
 #######################################################################
@@ -353,7 +323,6 @@ master$sign.off <- read_dipep("Sign off.csv",
                               sep              = ',',
                               convert.dates    = TRUE,
                               dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Sites.csv                                                         ##
 #######################################################################
@@ -362,7 +331,6 @@ master$sites <- read_dipep("Sites.csv",
                            sep              = ',',
                            convert.dates    = TRUE,
                            dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Therapy.csv                                                       ##
 #######################################################################
@@ -371,7 +339,6 @@ master$therapy <- read_dipep("Therapy.csv",
                              sep              = ',',
                              convert.dates    = TRUE,
                              dictionary       = master$data.dictionary)
-
 #######################################################################
 ## This Pregnancy continued.csv                                      ##
 #######################################################################
@@ -380,7 +347,6 @@ master$pregnancy.continued <- read_dipep("This Pregnancy continued.csv",
                                          sep              = ',',
                                          convert.dates    = TRUE,
                                          dictionary       = master$data.dictionary)
-
 #######################################################################
 ## This Pregnancy continued - Problems during this pregnancy.csv     ##
 #######################################################################
@@ -389,7 +355,6 @@ master$pregnancy.problems <- read_dipep("This Pregnancy continued - Problems dur
                                         sep              = ',',
                                         convert.dates    = TRUE,
                                         dictionary       = master$data.dictionary)
-
 #######################################################################
 ## This Pregnancy.csv                                                ##
 #######################################################################
@@ -398,7 +363,6 @@ master$pregnancy <- read_dipep("This Pregnancy.csv",
                                sep              = ',',
                                convert.dates    = TRUE,
                                dictionary       = master$data.dictionary)
-
 #######################################################################
 ## This Pregnancy - Immobility.csv                                   ##
 #######################################################################
@@ -407,7 +371,6 @@ master$pregnancy.immobility <- read_dipep("This Pregnancy - Immobility.csv",
                                           sep              = ',',
                                           convert.dates    = TRUE,
                                           dictionary       = master$data.dictionary)
-
 #######################################################################
 ## This Pregnancy - Long-haul travel.csv                             ##
 #######################################################################
@@ -416,7 +379,6 @@ master$pregnancy.long.haul <- read_dipep("This Pregnancy - Long-haul travel.csv"
                                           sep              = ',',
                                           convert.dates    = TRUE,
                                           dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Thromboprophylaxis.csv                                            ##
 #######################################################################
@@ -425,7 +387,6 @@ master$thromboprophylaxis <- read_dipep("Thromboprophylaxis.csv",
                                         sep              = ',',
                                         convert.dates    = TRUE,
                                         dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Thrombotic event.csv                                              ##
 #######################################################################
@@ -434,7 +395,6 @@ master$thrombotic.events <- read_dipep("Thrombotic event.csv",
                                        sep              = ',',
                                        convert.dates    = TRUE,
                                        dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Unavailable Forms.csv                                             ##
 #######################################################################
@@ -443,7 +403,6 @@ master$unavailable.forms <- read_dipep("Unavailable Forms.csv",
                                        sep              = ',',
                                        convert.dates    = TRUE,
                                        dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Womans details.csv                                                ##
 #######################################################################
@@ -452,7 +411,6 @@ master$womans.details <- read_dipep("Womans details.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
-
 #######################################################################
 ## Combine required variables into one coherent data frame (would be ##
 ## nice if data management provided this functionality in Prospect   ##
@@ -670,38 +628,60 @@ rm(t, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
 ## could do in Prospect as then BMI, age, etc. would all be          ##
-## standardised and reusable).                                       ##
+## standardised and reusable and whoever does the QA will not have to##
+## duplicate the work of deriving variables).                        ##
 #######################################################################
-## Derive BMI and age
-## Categorisation of continuous variables
-## Gestational period based on Expected Due Date (edd) and event date (event.date copied from consent.date)
 dipep <- mutate(dipep,
                 bmi = weight / (height / 100)^2,
                 age = 2016 - year.of.birth,
                 pregnancies.over.cat = ifelse(pregnancies.over == 0,
                                              yes = 0,
                                              no  = 1),
+                pregnancies.over.cat = ifelse(is.na(pregnancies.over.cat),
+                                              yes = 0,
+                                              no  = pregnancies.over.cat),
                 pregnancies.under.cat = ifelse(pregnancies.under == 0,
                                               yes = 0,
                                               no  = 1),
+                pregnancies.under.cat = ifelse(is.na(pregnancies.under.cat),
+                                              yes = 0,
+                                              no  = pregnancies.under.cat),
                 temperature.cat = ifelse(temperature <= 37.4,
                                          yes = 0,
                                          no  = 1),
+                temperature.cat = ifelse(is.na(temperature.cat),
+                                         yes = 0,
+                                         no  = temperature.cat),
                 bp.diastolic.cat = ifelse(bp.diastolic >= 60,
                                           yes = 0,
                                           no  = 1),
+                bp.diastolic.cat = ifelse(is.na(bp.diastolic.cat),
+                                          yes = 0,
+                                          no  = bp.diastolic.cat),
                 bp.systolic.cat = ifelse(bp.systolic >= 80,
                                          yes = 0,
                                          no  = 1),
+                bp.systolic.cat = ifelse(is.na(bp.systolic.cat),
+                                          yes = 0,
+                                          no  = bp.systolic.cat),
                 o2.saturation.cat = ifelse(o2.saturation >= 95,
                                            yes = 0,
                                            no  = 1),
+                o2.saturation.cat = ifelse(is.na(o2.saturation),
+                                           yes = 0,
+                                           no  = o2.saturation.cat),
                 respiratory.rate.cat = ifelse(respiratory.rate <= 24,
                                               yes = 0,
                                               no  = 1),
+                respiratory.rate.cat = ifelse(is.na(respiratory.rate),
+                                              yes = 0,
+                                              no  = respiratory.rate.cat),
                 bmi.cat = ifelse(bmi >= 30,
                                  yes = 1,
                                  no  = 0),
+                bmi.cat = ifelse(is.na(bmi),
+                                 yes = 0,
+                                 no  = bmi.cat),
                 gestation = 280 - (ymd(edd) - ymd(event.date)),
                 trimester = ifelse(gestation < 98,
                                    yes = 0,
@@ -710,27 +690,48 @@ dipep <- mutate(dipep,
                                                 ifelse(gestation >= 196 & preg.post == 'Pregnant',
                                                        yes = 2,
                                                        no  = 3))),
+                trimester = ifelse(is.na(trimester),
+                                   yes = 0,
+                                   no  = trimester),
                 heart.rate.cat = ifelse(trimester != 2 & heart.rate > 100,
                                         yes = 1,
                                         no  = ifelse(trimester == 2 & heart.rate > 110,
                                                      yes = 1,
                                                      no  = 0)),
+                heart.rate.cat = ifelse(is.na(heart.rate.cat),
+                                        yes = 0,
+                                        no  = heart.rate.cat),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
                 cesarean = ifelse(grepl('c*esarian|c*section|caesarean|emcs|lscs|c/s', surgery.other, ignore.case = TRUE),
                                   yes = 1,
                                   no  = 0),
+                cesarean = ifelse(is.na(cesarean),
+                                  yes = 0,
+                                  no  = cesarean),
                 smoking.cat = ifelse(smoking == 'current' | smoking == 'gave up during pregnancy',
                                      yes = 1,
                                      no  = 0),
+                smoking.cat = ifelse(is.na(smoking.cat),
+                                     yes = 0,
+                                     no  = smoking.cat),
                 age.cat = ifelse(age > 35,
                                  yes = 1,
                                  no  = 0),
+                age.cat = ifelse(is.na(age.cat),
+                                 yes = 0,
+                                 no  = age.cat),
                 ecg.cat = ifelse(ecg == 'Abnormal',
                                  yes = 1,
                                  no  = 0),
+                ecg.cat = ifelse(is.na(ecg.cat),
+                                 yes = 0,
+                                 no  = ecg.cat),
                 xray.cat = ifelse(xray == 'Abnormal',
                                   yes = 1,
                                   no  = 0),
+                xray.cat = ifelse(is.na(xray.cat),
+                                  yes = 0,
+                                  no  = xray.cat),
                 existing.medical = ifelse(medical.specify == 'Autoimmune diseases' |
                                           medical.specify == 'Cancer' |
                                           medical.specify == 'Cardiac disease (congenital or acquired)' |
@@ -742,7 +743,10 @@ dipep <- mutate(dipep,
                                           medical.specify == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera'  |
                                           medical.specify == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease',
                                           yes = 1,
-                                          no  = 0) ,
+                                          no  = 0),
+                existing.medical = ifelse(is.na(existing.medical),
+                                          yes = 0,
+                                          no  = existing.medical),
                 this.pregnancy.problems = ifelse(this.preg.problem.specify == 'Dehydration requiring admission' |
                                                  this.preg.problem.specify == 'Eclampsia' |
                                                  this.preg.problem.specify == 'Gestational diabetes' |
@@ -755,7 +759,10 @@ dipep <- mutate(dipep,
                                                  this.preg.problem.specify == 'Severe infection e.g. pyelonephritis' |
                                                  this.preg.problem.specify == 'Stillbirth',
                                                  yes = 1,
-                                                 no  = 0) ,
+                                                 no  = 0),
+                this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
+                                                 yes = 0,
+                                                 no  = this.pregnancy.problems),
                 diagnosis.post.pe = ifelse(grepl('pe', diagnosis.post, ignore.case = TRUE) |
                                            grepl('pulmonary embo', diagnosis.post, ignore.case = TRUE) |
                                            grepl('p\\.e\\.', diagnosis.post, ignore.case = TRUE),
@@ -766,7 +773,6 @@ dipep <- mutate(dipep,
                                            grepl('rule out PE', diagnosis.post, ignore.case = TRUE),
                                            yes = 0,
                                            no  = 1),
-
                 ## NEW
                 presenting.features.pleuritic = ifelse(is.na(presenting.features.pleuritic),
                                                        yes = 'Not Ticked',
@@ -797,28 +803,28 @@ dipep <- mutate(dipep,
                                                        no  = as.character(presenting.features.other)),
                 history.thrombosis = ifelse(is.na(history.thrombosis),
                                             yes = 'No',
-                                            no  = history.thrombosis),
+                                            no  = as.character(history.thrombosis)),
                 history.veins = ifelse(is.na(history.veins),
                                             yes = 'No',
-                                            no  = history.veins),
+                                            no  = as.character(history.veins)),
                 history.iv.drug = ifelse(is.na(history.iv.drug),
                                             yes = 'No',
-                                            no  = history.iv.drug),
+                                            no  = as.character(history.iv.drug)),
                 thrombo = ifelse(is.na(thrombo),
                                             yes = 'No',
-                                            no  = thrombo),
+                                            no  = as.character(thrombo)),
                 multiple.preg = ifelse(is.na(multiple.preg),
                                             yes = 'No',
-                                            no  = multiple.preg),
+                                            no  = as.character(multiple.preg)),
                 travel = ifelse(is.na(travel),
                                             yes = 'No',
-                                            no  = travel),
+                                            no  = as.character(travel)),
                 immobil = ifelse(is.na(immobil),
                                             yes = 'No',
-                                            no  = immobil),
-                immobil = ifelse(is.na(ecg),
+                                            no  = as.character(immobil)),
+                ecg = ifelse(is.na(ecg),
                                             yes = 'Not performed',
-                                            no  = ecg)
+                                            no  = as.character(ecg))
                 ## D-Dimer
                 ## d.dimer.high = ifelse(d.dimer > ,
                 ##                       yes = 1,
@@ -827,6 +833,7 @@ dipep <- mutate(dipep,
                 ##                            yes = 1,
                 ##                            no  = 0)
                 )
+
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -889,17 +896,47 @@ dipep <- mutate(dipep,
                                            levels = c(0, 1),
                                            labels = c('No PE', 'PE')),
                 presenting.features.pleuritic  = factor(presenting.features.pleuritic,
-                                                        'Not Ticked', 'Ticked'),
+                                                        levels = c(0, 1),
+                                                        labels = c('Not Ticked', 'Ticked')),
                 presenting.features.non.pleuritic  = factor(presenting.features.non.pleuritic,
-                                                        'Not Ticked', 'Ticked'),
+                                                        levels = c(0, 1),
+                                                        labels = c('Not Ticked', 'Ticked')),
                 presenting.features.sob.exertion  = factor(presenting.features.sob.exertion,
-                                                        'Not Ticked', 'Ticked'),
+                                                        levels = c(0, 1),
+                                                        labels = c('Not Ticked', 'Ticked')),
                 presenting.features.sob.rest  = factor(presenting.features.sob.rest,
-                                                        'Not Ticked', 'Ticked'),
+                                                        levels = c(0, 1),
+                                                        labels = c('Not Ticked', 'Ticked')),
                 presenting.features.cough  = factor(presenting.features.cough,
-                                                        'Not Ticked', 'Ticked'),
+                                                        levels = c(0, 1),
+                                                        labels = c('Not Ticked', 'Ticked')),
                 presenting.features.haemoptysis  = factor(presenting.features.haemoptysis,
-                                                        'Not Ticked', 'Ticked')
+                                                        levels = c(0, 1),
+                                                        labels = c('Not Ticked', 'Ticked')),
+                history.thrombosis = factor(history.thrombosis,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                history.veins = factor(history.veins,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                history.iv.drug = factor(history.iv.drug,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                thrombo = factor(thrombo,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                multiple.preg = factor(multiple.preg,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                travel = factor(travel,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                immobil = factor(immobil,
+                                            levels = c(0, 1),
+                                            labels = c('No', 'Yes')),
+                ecg = factor(ecg,
+                                            levels = c(0, 1, 2),
+                                            labels = c('Not performed', 'Normal', 'Abnormal'))
                 ## ToDo - Thresholds
                 ## d.dimer.high = factor(d.dimer.high,
                 ##                       levels = c(0, 1),
@@ -908,6 +945,7 @@ dipep <- mutate(dipep,
                 ##                            levels = c(0, 1),
                 ##                            labels = c('Normal', 'Very High'))
                 )
+
 ## Add a dummy for PE for now
 dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
 dipep$pe <- factor(dipep$pe,
