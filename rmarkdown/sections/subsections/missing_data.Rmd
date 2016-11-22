@@ -1,0 +1,22 @@
+The following table details the pattern of missing data across the variables that are to be used in the statistical analysis.
+
+```{r missing_data_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+## Count the number of observations of each
+n.diagnosed.dvt <- filter(dipep, group == 'Diagnosed DVT') %>%
+                   nrow()
+n.non.recruited <- filter(dipep, group == 'Non recruited') %>%
+                   nrow()
+n.suspected.pe  <- filter(dipep, group == 'Suspected PE') %>%
+                   nrow()
+missing <-  group_by(dipep, group) %>%
+            summarise_each(funs(sum(is.na(.)))) %>%
+            t() %>%
+            as.data.frame()
+names(missing) <- c(paste0('Diagnosed DVT (N = ', n.diagnosed.dvt, ')'),
+                    paste0('Non recruited (N = ', n.non.recruited, ')'),
+                    paste0('Suspected PE (N = ', n.suspected.pe, ')'))
+missing[!rownames(missing) %in% 'group',] %>%
+    kable()
+rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, missing)
+
+```

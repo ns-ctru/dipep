@@ -1,0 +1,50 @@
+```{r eq5d5l_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Number of completed and unavailable EQ5D-5L responses
+n_eq5d5l_complete <- filter(dipep,
+                            !is.na(mobility) &
+                            !is.na(anxiety.depression) &
+                            !is.na(self.care) &
+                            !is.na(usual.activity) &
+                            !is.na(pain.discomfort) &
+                            !is.na(health.scale.number)) %>% nrow()
+n_eq5d5l_missing <- filter(dipep,
+                           is.na(mobility) &
+                           is.na(anxiety.depression) &
+                           is.na(self.care) &
+                           is.na(usual.activity) &
+                           is.na(pain.discomfort) &
+                           is.na(health.scale.number)) %>% nrow()
+## Data frame to summarise
+eq5d <- filter(dipep,
+               !is.na(mobility) &
+               !is.na(anxiety.depression) &
+               !is.na(self.care) &
+               !is.na(usual.activity) &
+               !is.na(pain.discomfort) &
+               !is.na(health.scale.number)) %>%
+        dplyr::select(screening,
+                      group,
+                      mobility,
+                      self.care,
+                      anxiety.depression,
+                      usual.activity,
+                      pain.discomfort,
+                      health.scale.number)
+
+```
+The vast majority of study participants `r n_eq5d5l_missing`did not complete the [EQ-5D-5L](http://www.euroqol.org/eq-5d-products/eq-5d-5l.html) questionnaire and there are only `r n_eq5d5l_complete` complete responses across all six fields all of whom are individuals with Suspected Pulmonary Embolisms.  These responses are summarised in the tables and figures below.
+
+```{r eq5d5l_plot, echo = FALSE, cache = FALSE, results = 'hide', dev = 'png', eval = TRUE}
+to.plot <- dplyr::select(eq5d,
+                         mobility,
+                         self.care,
+                         anxiety.depression,
+                         usual.activity,
+                         pain.discomfort)
+names(to.plot) <- c("Mobility", "Self Care", "Anxiety/Depression", "Usual Activity", "Pain/Discomfort")
+likert(to.plot, grouping = eq5d$group) %>%
+    plot(centered = FALSE) + ggtitle(paste0('EQ-5D-5L Scores repsonses for ',
+                                            n_eq5d5l_complete,
+                                            ' individuals with Suspected PE'))
+
+```

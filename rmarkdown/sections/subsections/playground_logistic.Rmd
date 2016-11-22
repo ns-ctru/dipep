@@ -1,0 +1,1 @@
+Play around with the co-variates used in simple [Logistic  Regression](https://en.wikipedia.org/wiki/Logistic_regression) and see the results updated below.

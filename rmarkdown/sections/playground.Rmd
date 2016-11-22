@@ -1,0 +1,9 @@
+There is the desire to test out models with different covariates, to this end the sections below allow the user to specify a set of predictors/co-variates to fit using the different statistical methods.  The results are updated in real time and displayed below.
+
+### Recursive Partitioning
+```{r child = 'subsections/playground_recursive_partitioning.Rmd', eval = FALSE}
+```
+
+### LASSO
+```{r child = 'subsections/playground_lasso.Rmd', eval = FALSE}
+```

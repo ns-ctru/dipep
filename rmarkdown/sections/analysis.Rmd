@@ -1,0 +1,3 @@
+<!--- Summarise Adverse Events --->
+```{r child = 'subsections/analysis_adverse_events.Rmd', eval = TRUE}
+```

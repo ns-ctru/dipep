@@ -1,0 +1,110 @@
+---
+title: DiPEP - Predicting Pulmonary Embolisms in Pregnant Women
+runtime: shiny
+output: html_document
+bibliography: sections/bibliography.bib
+---
+
+```{r setup, include=FALSE}
+##opts_chunk$set(dev = 'pdf')
+opts_chunk$set(cache.path = 'cache/',
+               width    = 200,
+               fig.height = 8,
+               fig.width  = 8)
+## Ensure anchors are assessed first
+## opts_knit$set(eval.after = 'echo')
+## Hooks
+## knit_hooks$set(anchor = hook_anchor)
+## Set a seed
+set.seed(69027181)
+## Set sensible defaults
+ggplot2.opts <- list()
+ggplot2.opts$binwidth <- 30
+
+```
+
+This is a playground where you can look at the effects of changing the covariates that enter the different modelling methods.  Select your covariates from the list below.  Be wary of those that may be [colinear](https://en.wikipedia.org/wiki/Multicollinearity)) and mindful that the available sample size is 316 and simulations have shown you need between 10-15 observations per covariate.
+
+```{r covariate_selection, echo = FALSE, eval = TRUE}
+inputPanel({
+  checkboxGroupInput('demog', 'Demograhpics...',
+                     c('Age'                                         = 'age',
+                       'Smoking'                                     = 'smoking',
+                       'Temperature'                                 = 'temperature',
+                       'Diastolic BP'                                = 'bp.diastolic',
+                       'Systolic BP'                                 = 'bp.systolic',
+                       'Oxygen Saturation'                           = 'o2.saturation',
+                       'Respiratory Rate'                            = 'respiratory.rate',
+                       'BMI'                                         = 'bmi'))
+  checkboxGroupInput('presenting', 'Presenting Features...',
+                     c('Presenting : Pleuritic'                      = 'presenting.features.pleuritic',
+                     'Presenting : Non-Pleuritic'                  = 'presenting.features.non.pleuritic',
+                     'Presenting : Shortness of Breath (Exertion)' = 'presenting.features.sob.exertion',
+                     'Presenting : Shortness of Breath (Rest)'     = 'presenting.features.sob.rest',
+                     'Presenting : Haemoptysis'                    = 'presenting.features.haemoptysis',
+                     'Presenting : Cough'                          = 'presenting.features.cough',
+                     'Presenting : Syncope'                        = 'presenting.features.syncope',
+                     'Presenting : Palpitations'                   = 'presenting.features.palpitations',
+                     'Presenting : Other'                          = 'presenting.features.other'))
+  checkboxGroupInput('history', 'Medical History...',
+                     c('Previous Pregnancy Problems'                 = 'prev.preg.problem',
+                     'Pregnancies < 24 weeks'                      = 'pregnancies.under',
+                     'Pregnancies > 24 weeks'                      = 'pregnancies.over'))
+})
+```
+
+# {.tabset .tabset-fade .tabset-pills}
+```{r setup_model, echo = FALSE, eval = TRUE}
+model <- reactive({
+    ## Build the covariates
+    if(input$age == TRUE){
+        covars <- c('age')
+    }
+    if(input$smoking == TRUE){
+        covars <- c(covars, 'smoking')
+    }
+    if(input$temperature == TRUE){
+        covars <- c(covars, 'temperature')
+    }
+    if(input$bp.diastolic == TRUE){
+        covars <- c(covars, 'bp.diastolic')
+    }
+    if(input$bp.systolic == TRUE){
+        covars <- c(covars, 'bp.systolic')
+    }
+})
+
+```
+
+## Logistic Regression
+
+```{r logistic, echo = FALSE, eval = TRUE}
+```
+
+## Recursive Partionining
+
+```{r rpart, echo = FALSE, fig_height = 10, eval = TRUE}
+renderPlot({
+  ## print(covar)
+  model <- reformulate(response = 'pe',
+                       termlabels = model$covars)
+  ## model <- reformulate(response = 'pe',
+  ##                      termlabels = c('age', 'smoking', 'bmi'))
+  ## print(model)
+  fitted <- rpart(formula  = model,
+                  data   = filter(dipep, group == 'Suspected PE'),
+                  method = 'class')
+  prp(fitted,
+      type   = 4,
+      extra  = 106,
+      yesno  = 1,
+      branch = 1,
+      varlen = 0,
+      faclen = 0)
+})
+
+```
+
+## LASSO
+```{r lasso, echo = FALSE, eval = TRUE}
+```
