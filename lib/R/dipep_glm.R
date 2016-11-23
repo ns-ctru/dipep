@@ -13,17 +13,25 @@
 #' @param df Data frame to analyse (default is \code{dipep} and shouldn't need changing)
 #' @param predictor Predictor variable(s) to test.
 #' @param model Name/label of your model.
+#' @param relevel Reference level for logistic regression if different from default.
 #'
 #'
 #' @export
 dipep_glm <- function(df              = .data,
                       predictor       = 'age',
                       model           = NULL,
+                      relevel         = NULL,
                       ...){
     results <- list()
     ## Build the formula
     .formula <- reformulate(response = 'pe',
                             termlabels = predictor)
+    ## Relevel if asked
+    ## ToDo - Check this, may not work correctly (usual NSE issues)
+    if(!is.null(relevel)){
+        df$predictor <- relevel(df$predictor,
+                                ref = relevel)
+    }
     ## Make the model equal the predictor if none is supplied
     if(is.null(model)){
         model <- predictor
@@ -72,11 +80,11 @@ dipep_glm <- function(df              = .data,
                              term = gsub('presenting.features.other', 'Presenting : Other', term),
                              term = gsub('pregnancies.under', 'Pregnancies < 24 weeks', term),
                              term = gsub('pregnancies.over', 'Pregnancies > 24 weeks', term),
-                             term = gsub('prev.preg.problemNo', 'No Previous Pregnancy Problems', term),
+                             term = gsub('prev.preg.problemYes', 'Previous Pregnancy Problems', term),
                              term = gsub('history.thrombosisYes', 'Family History of Thrombosis', term),
                              term = gsub('history.veinsYes', 'History of Varicose Veins', term),
                              term = gsub('history.iv.drugYes', 'History of IV Drug use', term),
-                             term = gsub('thrombosis', 'History of Thrombosis', term),
+                             term = gsub('thrombosisYes', 'History of Thrombosis', term),
                              term = gsub('trimester2nd Trimester', '2nd Trimester', term),
                              term = gsub('trimester3rd Trimester', '3rd Trimester', term),
                              term = gsub('trimesterPost-Partum', 'Post-Partum', term),
