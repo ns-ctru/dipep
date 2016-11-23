@@ -1,365 +1,366 @@
 ```{r results_logistic_regression, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Test each outcome for association, then gather them *using broom) into one dataset for summarisation
+logistic <- list()
 ## Age
-logistic.age <- dipep_glm(df = dipep,
+logistic$age <- dipep_glm(df = dipep,
                           predictor = 'age')
 ## Age (Categorised)
-logistic.age.cat <- dipep_glm(df = dipep,
+logistic$age.cat <- dipep_glm(df = dipep,
                           predictor = 'age.cat')
 ## Smoking
-logistic.smoking <- dipep_glm(df = dipep,
+logistic$smoking <- dipep_glm(df = dipep,
                           predictor = 'smoking')
 ## Temperature (Categorised)
-logistic.temperature.cat <- dipep_glm(df = dipep,
+logistic$temperature.cat <- dipep_glm(df = dipep,
                           predictor = 'temperature.cat')
 ## Temperature
-logistic.temperature <- dipep_glm(df = dipep,
+logistic$temperature <- dipep_glm(df = dipep,
                           predictor = 'temperature')
 ## BP Diastolic (Categorised)
-logistic.bp.diastolic.cat <- dipep_glm(df = dipep,
+logistic$bp.diastolic.cat <- dipep_glm(df = dipep,
                           predictor = 'bp.diastolic.cat')
 ## BP Diastolic
-logistic.bp.diastolic <- dipep_glm(df = dipep,
+logistic$bp.diastolic <- dipep_glm(df = dipep,
                           predictor = 'bp.diastolic')
 ## BP Systolic (Categorised)
-## logistic.bp.systolic.cat <- dipep_glm(df = dipep,
+## logistic$bp.systolic.cat <- dipep_glm(df = dipep,
 ##                           predictor = 'bp.systolic.cat')
 ## BP Systolic
-logistic.bp.systolic <- dipep_glm(df = dipep,
+logistic$bp.systolic <- dipep_glm(df = dipep,
                           predictor = 'bp.systolic')
 ## O2 Saturation (Categorised)
-logistic.o2.saturation.cat <- dipep_glm(df = dipep,
+logistic$o2.saturation.cat <- dipep_glm(df = dipep,
                           predictor = 'o2.saturation.cat')
 ## O2 Saturation
-logistic.o2.saturation <- dipep_glm(df = dipep,
+logistic$o2.saturation <- dipep_glm(df = dipep,
                           predictor = 'o2.saturation')
 ## Respiratory Rate (Categorised)
-logistic.respiratory.rate.cat <- dipep_glm(df = dipep,
+logistic$respiratory.rate.cat <- dipep_glm(df = dipep,
                           predictor = 'respiratory.rate.cat')
 ## Respiratory Rate
-logistic.respiratory.rate <- dipep_glm(df = dipep,
+logistic$respiratory.rate <- dipep_glm(df = dipep,
                           predictor = 'respiratory.rate')
 ## BMI (Categorised)
-logistic.bmi.cat <- dipep_glm(df = dipep,
+logistic$bmi.cat <- dipep_glm(df = dipep,
                           predictor = 'bmi.cat')
 ## BMI
-logistic.bmi <- dipep_glm(df = dipep,
+logistic$bmi <- dipep_glm(df = dipep,
                           predictor = 'bmi')
 ## Previous Pregnancies < 24 weeks
-logistic.pregnancies.under <- dipep_glm(df = dipep,
+logistic$pregnancies.under <- dipep_glm(df = dipep,
                           predictor = 'pregnancies.under')
 ## Previous Pregnancies > 24 weeks
-logistic.pregnancies.over <- dipep_glm(df = dipep,
+logistic$pregnancies.over <- dipep_glm(df = dipep,
                           predictor = 'pregnancies.over')
 ## Previous Pregnancy Problems
-logistic.prev.preg.problem <- dipep_glm(df = dipep,
+logistic$prev.preg.problem <- dipep_glm(df = dipep,
                              predictor = 'prev.preg.problem')
 ## Pleuritic
-logistic.presenting.features.pleuritic <- dipep_glm(df = dipep,
+logistic$presenting.features.pleuritic <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.pleuritic')
 ## Non-Pleuritic
-logistic.presenting.features.non.pleuritic <- dipep_glm(df = dipep,
+logistic$presenting.features.non.pleuritic <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.non.pleuritic')
 ## Shortness of Breath (Exertion)
-logistic.presenting.features.sob.exertion <- dipep_glm(df = dipep,
+logistic$presenting.features.sob.exertion <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.sob.exertion')
 ## Shortness of Breath (Rest)
-logistic.presenting.features.sob.rest <- dipep_glm(df = dipep,
+logistic$presenting.features.sob.rest <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.sob.rest')
 ## Haemoptysis
-logistic.presenting.features.haemoptysis <- dipep_glm(df = dipep,
+logistic$presenting.features.haemoptysis <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.haemoptysis')
 ## Cough
-logistic.presenting.features.cough <- dipep_glm(df = dipep,
+logistic$presenting.features.cough <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.cough')
 ## Syncope
-logistic.presenting.features.syncope <- dipep_glm(df = dipep,
+logistic$presenting.features.syncope <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.syncope')
 ## Palpitations
-logistic.presenting.features.palpitations <- dipep_glm(df = dipep,
+logistic$presenting.features.palpitations <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.palpitations')
 ## Other Features on Presentation
-logistic.presenting.features.other <- dipep_glm(df = dipep,
+logistic$presenting.features.other <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.other')
 ## Other Features on Presentation
-logistic.surgery <- dipep_glm(df = dipep,
+logistic$surgery <- dipep_glm(df = dipep,
                           predictor = 'surgery')
 ## Family history of thrombosis
-logistic.history.thrombosis <- dipep_glm(df = dipep,
+logistic$history.thrombosis <- dipep_glm(df = dipep,
                           predictor = 'history.thrombosis')
 ## History of varicoseveins
-logistic.history.veins <- dipep_glm(df = dipep,
+logistic$history.veins <- dipep_glm(df = dipep,
                           predictor = 'history.veins')
 ## History of IV Drug use
-logistic.history.iv.drug <- dipep_glm(df = dipep,
+logistic$history.iv.drug <- dipep_glm(df = dipep,
                           predictor = 'history.iv.drug')
 ## Thrombosis
-logistic.thrombosis <- dipep_glm(df = dipep,
+logistic$thrombosis <- dipep_glm(df = dipep,
                           predictor = 'thrombosis')
 ## Trimester
-logistic.trimester <- dipep_glm(df = dipep,
+logistic$trimester <- dipep_glm(df = dipep,
                           predictor = 'trimester')
 ## Problems with this pregnancy
-logistic.this.pregnancy.problems <- dipep_glm(df = dipep,
+logistic$this.pregnancy.problems <- dipep_glm(df = dipep,
                           predictor = 'this.pregnancy.problems')
 ## Thrombo
-logistic.thrombo <- dipep_glm(df = dipep,
+logistic$thrombo <- dipep_glm(df = dipep,
                           predictor = 'thrombo')
 ## Multiple Pregnancy
-logistic.multiple.preg <- dipep_glm(df = dipep,
+logistic$multiple.preg <- dipep_glm(df = dipep,
                           predictor = 'multiple.preg')
 ## Travel
-logistic.travel <- dipep_glm(df = dipep,
+logistic$travel <- dipep_glm(df = dipep,
                           predictor = 'travel')
 ## Immobility
-logistic.immobil <- dipep_glm(df = dipep,
+logistic$immobil <- dipep_glm(df = dipep,
                           predictor = 'immobil')
 ## ECG (Categorised)
-logistic.ecg.cat <- dipep_glm(df = dipep,
+logistic$ecg.cat <- dipep_glm(df = dipep,
                           predictor = 'ecg.cat')
 ## ECG
-logistic.ecg <- dipep_glm(df = dipep,
+logistic$ecg <- dipep_glm(df = dipep,
                           predictor = 'ecg')
 
 
 ## Combine all three sets of tidied output from each model
-logistic.tidied <- rbind(logistic.age$tidied,
-                         logistic.age.cat$tidied,
-                         logistic.smoking$tidied,
-                         logistic.temperature.cat$tidied,
-                         logistic.temperature$tidied,
-                         logistic.bp.diastolic.cat$tidied,
-                         logistic.bp.diastolic$tidied,
-                         ## logistic.bp.systolic.cat$tidied,
-                         logistic.bp.systolic$tidied,
-                         logistic.o2.saturation.cat$tidied,
-                         logistic.o2.saturation$tidied,
-                         logistic.respiratory.rate.cat$tidied,
-                         logistic.respiratory.rate$tidied,
-                         logistic.bmi.cat$tidied,
-                         logistic.bmi$tidied,
-                         logistic.pregnancies.under$tidied,
-                         logistic.pregnancies.over$tidied,
-                         logistic.prev.preg.problem$tidied,
-                         logistic.presenting.features.pleuritic$tidied,
-                         logistic.presenting.features.non.pleuritic$tidied,
-                         logistic.presenting.features.sob.exertion$tidied,
-                         logistic.presenting.features.sob.rest$tidied,
-                         logistic.presenting.features.haemoptysis$tidied,
-                         logistic.presenting.features.cough$tidied,
-                         logistic.presenting.features.syncope$tidied,
-                         logistic.presenting.features.palpitations$tidied,
-                         logistic.presenting.features.other$tidied,
-                         logistic.surgery$tidied,
-                         logistic.history.thrombosis$tidied,
-                         logistic.history.veins$tidied,
-                         ## logistic.history.iv.drug$tidied,
-                         logistic.thrombosis$tidied,
-                         logistic.trimester$tidied,
-                         logistic.this.pregnancy.problems$tidied,
-                         logistic.thrombo$tidied$tidied,
-                         logistic.multiple.preg$tidied,
-                         logistic.travel$tidied,
-                         logistic.immobil$tidied,
-                         logistic.ecg.cat$tidied,
-                         logistic.ecg$tidied) %>%
+logistic$tidied <- rbind(logistic$age$tidied,
+                         logistic$age.cat$tidied,
+                         logistic$smoking$tidied,
+                         logistic$temperature.cat$tidied,
+                         logistic$temperature$tidied,
+                         logistic$bp.diastolic.cat$tidied,
+                         logistic$bp.diastolic$tidied,
+                         ## logistic$bp.systolic.cat$tidied,
+                         logistic$bp.systolic$tidied,
+                         logistic$o2.saturation.cat$tidied,
+                         logistic$o2.saturation$tidied,
+                         logistic$respiratory.rate.cat$tidied,
+                         logistic$respiratory.rate$tidied,
+                         logistic$bmi.cat$tidied,
+                         logistic$bmi$tidied,
+                         logistic$pregnancies.under$tidied,
+                         logistic$pregnancies.over$tidied,
+                         logistic$prev.preg.problem$tidied,
+                         logistic$presenting.features.pleuritic$tidied,
+                         logistic$presenting.features.non.pleuritic$tidied,
+                         logistic$presenting.features.sob.exertion$tidied,
+                         logistic$presenting.features.sob.rest$tidied,
+                         logistic$presenting.features.haemoptysis$tidied,
+                         logistic$presenting.features.cough$tidied,
+                         logistic$presenting.features.syncope$tidied,
+                         logistic$presenting.features.palpitations$tidied,
+                         logistic$presenting.features.other$tidied,
+                         logistic$surgery$tidied,
+                         logistic$history.thrombosis$tidied,
+                         logistic$history.veins$tidied,
+                         ## logistic$history.iv.drug$tidied,
+                         logistic$thrombosis$tidied,
+                         logistic$trimester$tidied,
+                         logistic$this.pregnancy.problems$tidied,
+                         logistic$thrombo$tidied$tidied,
+                         logistic$multiple.preg$tidied,
+                         logistic$travel$tidied,
+                         logistic$immobil$tidied,
+                         logistic$ecg.cat$tidied,
+                         logistic$ecg$tidied) %>%
                     mutate(lower = estimate - 1.96 * std.error,
                            upper = estimate + 1.96 * std.error)
-logistic.glance <- rbind(logistic.age$glance,
-                         logistic.smoking$glance,
-                         logistic.temperature.cat$glance,
-                         logistic.temperature$glance,
-                         logistic.bp.diastolic.cat$glance,
-                         logistic.bp.diastolic$glance,
-                         ## logistic.bp.systolic.cat$glance,
-                         logistic.bp.systolic$glance,
-                         logistic.o2.saturation.cat$glance,
-                         logistic.o2.saturation$glance,
-                         logistic.respiratory.rate.cat$glance,
-                         logistic.respiratory.rate$glance,
-                         logistic.bmi.cat$glance,
-                         logistic.bmi$glance,
-                         logistic.pregnancies.under$glance,
-                         logistic.pregnancies.over$glance,
-                         logistic.prev.preg.problem$glance,
-                         logistic.presenting.features.pleuritic$glance,
-                         logistic.presenting.features.non.pleuritic$glance,
-                         logistic.presenting.features.sob.exertion$glance,
-                         logistic.presenting.features.sob.rest$glance,
-                         logistic.presenting.features.haemoptysis$glance,
-                         logistic.presenting.features.cough$glance,
-                         logistic.presenting.features.syncope$glance,
-                         logistic.presenting.features.palpitations$glance,
-                         logistic.presenting.features.other$glance,
-                         logistic.surgery$glance,
-                         logistic.history.thrombosis$glance,
-                         logistic.history.veins$glance,
-                         ## logistic.history.iv.drug$glance,
-                         logistic.thrombosis$glance,
-                         logistic.trimester$glance,
-                         logistic.this.pregnancy.problems$glance,
-                         logistic.thrombo$glance$glance,
-                         logistic.multiple.preg$glance,
-                         logistic.travel$glance,
-                         logistic.immobil$glance,
-                         logistic.ecg.cat$glance,
-                         logistic.ecg$glance)
+logistic$glance <- rbind(logistic$age$glance,
+                         logistic$smoking$glance,
+                         logistic$temperature.cat$glance,
+                         logistic$temperature$glance,
+                         logistic$bp.diastolic.cat$glance,
+                         logistic$bp.diastolic$glance,
+                         ## logistic$bp.systolic.cat$glance,
+                         logistic$bp.systolic$glance,
+                         logistic$o2.saturation.cat$glance,
+                         logistic$o2.saturation$glance,
+                         logistic$respiratory.rate.cat$glance,
+                         logistic$respiratory.rate$glance,
+                         logistic$bmi.cat$glance,
+                         logistic$bmi$glance,
+                         logistic$pregnancies.under$glance,
+                         logistic$pregnancies.over$glance,
+                         logistic$prev.preg.problem$glance,
+                         logistic$presenting.features.pleuritic$glance,
+                         logistic$presenting.features.non.pleuritic$glance,
+                         logistic$presenting.features.sob.exertion$glance,
+                         logistic$presenting.features.sob.rest$glance,
+                         logistic$presenting.features.haemoptysis$glance,
+                         logistic$presenting.features.cough$glance,
+                         logistic$presenting.features.syncope$glance,
+                         logistic$presenting.features.palpitations$glance,
+                         logistic$presenting.features.other$glance,
+                         logistic$surgery$glance,
+                         logistic$history.thrombosis$glance,
+                         logistic$history.veins$glance,
+                         ## logistic$history.iv.drug$glance,
+                         logistic$thrombosis$glance,
+                         logistic$trimester$glance,
+                         logistic$this.pregnancy.problems$glance,
+                         logistic$thrombo$glance$glance,
+                         logistic$multiple.preg$glance,
+                         logistic$travel$glance,
+                         logistic$immobil$glance,
+                         logistic$ecg.cat$glance,
+                         logistic$ecg$glance)
 
 ## Get all predicted values
-logistic.predicted <- merge(logistic.age$predicted,
-                            logistic.age.cat$predicted,
+logistic$predicted <- merge(logistic$age$predicted,
+                            logistic$age.cat$predicted,
                             by  = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.smoking$predicted,
+                            logistic$smoking$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.temperature$predicted,
+                            logistic$temperature$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.temperature.cat$predicted,
+                            logistic$temperature.cat$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.bp.diastolic$predicted,
+                            logistic$bp.diastolic$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.bp.diastolic.cat$predicted,
+                            logistic$bp.diastolic.cat$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.bp.systolic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      ## merge(.,
-                      ##       logistic.bp.systolic.cat$predicted,
-                      ##       by = 'obs',
-                      ##       all = TRUE) %>%
-                      merge(.,
-                            logistic.o2.saturation$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.o2.saturation.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.respiratory.rate$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.respiratory.rate.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.bmi$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.bmi.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.pregnancies.under$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.pregnancies.over$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.prev.preg.problem$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.pleuritic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.non.pleuritic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.sob.rest$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.sob.exertion$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.haemoptysis$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.cough$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.syncope$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.palpitations$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.presenting.features.other$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.surgery$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.history.thrombosis$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic.history.veins$predicted,
+                            logistic$bp.systolic$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       ## merge(.,
-                      ##       logistic.history.iv.drug$predicted,
+                      ##       logistic$bp.systolic.cat$predicted,
                       ##       by = 'obs',
                       ##       all = TRUE) %>%
                       merge(.,
-                            logistic.thrombosis$predicted,
+                            logistic$o2.saturation$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.trimester$predicted,
+                            logistic$o2.saturation.cat$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.this.pregnancy.problems$predicted,
+                            logistic$respiratory.rate$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.thrombo$predicted,
+                            logistic$respiratory.rate.cat$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.multiple.preg$predicted,
+                            logistic$bmi$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.travel$predicted,
+                            logistic$bmi.cat$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.immobil$predicted,
+                            logistic$pregnancies.under$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.ecg.cat$predicted,
+                            logistic$pregnancies.over$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
-                            logistic.ecg$predicted,
+                            logistic$prev.preg.problem$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.pleuritic$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.non.pleuritic$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.sob.rest$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.sob.exertion$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.haemoptysis$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.cough$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.syncope$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.palpitations$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$presenting.features.other$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$surgery$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$history.thrombosis$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$history.veins$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      ## merge(.,
+                      ##       logistic$history.iv.drug$predicted,
+                      ##       by = 'obs',
+                      ##       all = TRUE) %>%
+                      merge(.,
+                            logistic$thrombosis$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$trimester$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$this.pregnancy.problems$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$thrombo$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$multiple.preg$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$travel$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$immobil$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$ecg.cat$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$ecg$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       ## Age is complete, use observed values from that, remove all others
@@ -381,23 +382,24 @@ logistic.predicted <- merge(logistic.age$predicted,
                                     pred.thrombo, pred.multiple.preg, pred.travel, pred.immobil,
                                     pred.ecg.cat, pred.ecg)
 ## Sort out names
-names(logistic.predicted) <- gsub('pe.age', 'pe', names(logistic.predicted))
-names(logistic.predicted) <- gsub('pred.', '', names(logistic.predicted))
+names(logistic$predicted) <- gsub('pe.age', 'pe', names(logistic$predicted))
+names(logistic$predicted) <- gsub('pred.', '', names(logistic$predicted))
 
 ## Saturated
-saturated <- dipep_glm(df = dipep,
-                       predictor = c('age', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic', 'o2.saturation', 'respiratory.rate',
-                                     'smoking', 'prev.preg.problem', 'pregnancies.under', 'pregnancies.over',
-                                     'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-                                     'presenting.features.sob.rest', 'presenting.features.sob.exertion',
-                                     'presenting.features.cough', 'presenting.features.haemoptysis',
-                                     'presenting.features.syncope', 'presenting.features.palpitations',
-                                     'presenting.features.other', 'surgery',
-                                     'history.thrombosis', 'history.veins', ## 'history.iv.drug',
-                                     'thrombosis', 'trimester', 'this.pregnancy.problems',
-                                     'thrombo', 'multiple.preg', 'travel', 'immobil',
-                                     'ecg'),
-                       model = 'saturated multivariable logistic model')
+logistic$saturated <- dipep_glm(df = dipep,
+                                predictor = c('age', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic',
+                                              'o2.saturation', 'respiratory.rate', 'smoking',
+                                              'prev.preg.problem', 'pregnancies.under', 'pregnancies.over',
+                                              'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+                                              'presenting.features.sob.rest', 'presenting.features.sob.exertion',
+                                              'presenting.features.cough', 'presenting.features.haemoptysis',
+                                              'presenting.features.syncope', 'presenting.features.palpitations',
+                                              'presenting.features.other', 'surgery',
+                                              'history.thrombosis', 'history.veins', ## 'history.iv.drug',
+                                              'thrombosis', 'trimester', 'this.pregnancy.problems',
+                                              'thrombo', 'multiple.preg', 'travel', 'immobil',
+                                              'ecg'),
+                                model = 'saturated multivariable logistic model')
 
 
 ```
@@ -413,7 +415,7 @@ Regardless each of the individual variables has been analysed under a univariabl
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.  Both raw continuous and categorised variables are included to provide comparison.
 
 ```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
-to.sum <- dplyr::filter(logistic.tidied, term != '(Intercept)') %>%
+to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
     dplyr::select(term, estimate, lower, upper, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lower, ymax = upper)) +
@@ -433,8 +435,8 @@ rm(to.sum)
 
 ```{r results_logistic_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
-markers <- names(logistic.predicted)[2:length(names(logistic.predicted))]
-to.plot <- melt_roc(logistic.predicted, d = 'pe', m = markers)
+markers <- names(logistic$predicted)[2:length(names(logistic$predicted))]
+to.plot <- melt_roc(logistic$predicted, d = 'pe', m = markers)
 to.plot <- mutate(to.plot,
                   name = gsub('presenting.features.', '', name))
 ## names(to.plot) <- gsub('name', 'Predictor', names(to.plot)
@@ -495,7 +497,7 @@ ggplot(dplyr::filter(to.plot, name %in% c('history.thrombosis',
 In a situation where you are likely to have information on all possible variables to hand it makes little sense in disregarding some of that information even if it only improves the overall fit of a model by a small fraction.  To this end a saturated logistic regression model including all variables in their raw, uncategroised format (which preserves the maximum amount of information) has been tested for its performance.
 
 ```{r results_logistic_regression_multi_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
-to.sum <- mutate(saturated$tidied,
+to.sum <- mutate(logistic$saturated$tidied,
                  lower = estimate - 1.96 * std.error,
                  upper = estimate + 1.96 * std.error) %>%
           dplyr::select(term, estimate, lower, upper, p.value) %>%
@@ -514,5 +516,5 @@ rm(to.sum)
 ```
 
 ```{r results_logistic_regression_multi_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
-saturated$roc
+logistic$saturated$roc
 ```
