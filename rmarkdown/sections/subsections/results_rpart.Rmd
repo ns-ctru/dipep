@@ -55,7 +55,9 @@ load(file = '../../data/results/rpart.RData')
 
 ```
 
-[Recursive Partitioning](https://en.wikipedia.org/wiki/Recursive_partitioning) is a method of automatically selecting variables, and when continuous cut-points within the range of a given variable, that maximise the classification of individuals.  The [R](https://www.r-project.org/) package [rpart](https://cran.r-project.org/web/packages/rpart/) has been used to fit a model using the LASSO and if you are interested in learning about the LASSO or fitting with this model it is recommended you read the packages [vignette](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf).
+[Recursive Partitioning](https://en.wikipedia.org/wiki/Recursive_partitioning) is a method of automatically selecting variables, and when continuous cut-points within the range of a given variable, that maximise the classification of individuals.  The [R](https://www.r-project.org/) package [rpart](https://cran.r-project.org/web/packages/rpart/) has been used to fit a model using recursive partitioning and if you are interested in learning about the this method it is recommended you read the packages [vignette](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf).
+
+**Caution** Recursive partitioning is normally used on large datasets (i.e. N is in the tens of thousands).  Frank Harrell (author of *Regression Modeeling Strategies*@harrell2006) notes that with $<20000$ observations the results of recursive partitioning are unreliable i.e. repeated bootstraps results in different trees) (see his comment [here](http://stats.stackexchange.com/a/13461/25629)).
 
 #### Model
 
@@ -92,7 +94,7 @@ printcp(categorical)
 
 The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
 
-```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, eval = TRUE}
+```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
 prp(categorical,
     type = 4,
     extra = 106,
@@ -105,7 +107,7 @@ prp(categorical,
 
 This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).
 
-```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 10, fig_height = 10, eval = TRUE}
+```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 15, fig_height = 10, eval = TRUE}
 cp <- 0.0084270
 categorical_prune <- prune(categorical, cp = cp)
 printcp(categorical_prune)
@@ -127,9 +129,9 @@ We now need to calculate the sensitivity and specificity.  There is no single va
 ## xpred.rpart(categorical_prune)
 .predict <- predict(categorical_prune, type = 'prob')
 .predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
-pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y)
+pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y) %>% as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
-ggplot(pred.obs, aes(d = pe, m = predicted)) +
+ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
     ggtitle(paste0('ROC Curve for Pruned Categorical Tree (CP = ', cp, ')'))
 
@@ -148,7 +150,7 @@ printcp(continuous)
 ```
 The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
 
-```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, eval = TRUE}
+```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
 prp(continuous,
     type   = 4,
     extra  = 106,
@@ -163,7 +165,7 @@ prp(continuous,
 
 In addition to the problem described above for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets severly limited, because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror`.
 
-```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, results = 'rmarkdown', eval = TRUE}
+```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
 cp <- 0.016854
 continuous_prune <- prune(continuous, cp = cp)
 printcp(continuous_prune)
@@ -177,12 +179,12 @@ prp(continuous_prune,
 
 ```
 
-```{r results_rpart_continuous_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = FALSE}
+```{r results_rpart_continuous_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
 .predict <- predict(continuous_prune, type = 'prob')
 .predicted <- prediction(.predict[,2] %>% as.vector(), continuous_prune$y)
-pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y)
+pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y) %>% as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
-ggplot(pred.obs, aes(d = pe, m = predicted)) +
+ggplot(pred.obs, aes(d = continuous_prune$y, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
     ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', cp, ')'))
 
