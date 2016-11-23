@@ -54,35 +54,6 @@ logistic.pregnancies.over <- dipep_glm(df = dipep,
 ## Previous Pregnancy Problems
 logistic.prev.preg.problem <- dipep_glm(df = dipep,
                              predictor = 'prev.preg.problem')
-## For now fill in missing, will switch to using 'imputed' data set later
-dipep <- mutate(dipep,
-                presenting.features.pleuritic = ifelse(is.na(presenting.features.pleuritic),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.pleuritic),
-                presenting.features.non.pleuritic = ifelse(is.na(presenting.features.non.pleuritic),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.non.pleuritic),
-                presenting.features.sob.exertion = ifelse(is.na(presenting.features.sob.exertion),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.sob.exertion),
-                presenting.features.sob.rest = ifelse(is.na(presenting.features.sob.rest),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.sob.rest),
-                presenting.features.haemoptysis = ifelse(is.na(presenting.features.haemoptysis),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.haemoptysis),
-                presenting.features.cough = ifelse(is.na(presenting.features.cough),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.cough),
-                presenting.features.syncope = ifelse(is.na(presenting.features.syncope),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.syncope),
-                presenting.features.palpitations = ifelse(is.na(presenting.features.palpitations),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.palpitations),
-                presenting.features.other = ifelse(is.na(presenting.features.other),
-                                                       yes = 'Not Ticked',
-                                                       no  = presenting.features.other))
 ## Pleuritic
 logistic.presenting.features.pleuritic <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.pleuritic')
@@ -110,15 +81,21 @@ logistic.presenting.features.palpitations <- dipep_glm(df = dipep,
 ## Other Features on Presentation
 logistic.presenting.features.other <- dipep_glm(df = dipep,
                           predictor = 'presenting.features.other')
+## Other Features on Presentation
+logistic.surgery <- dipep_glm(df = dipep,
+                          predictor = 'surgery')
 ## Family history of thrombosis
 logistic.history.thrombosis <- dipep_glm(df = dipep,
                           predictor = 'history.thrombosis')
-## Family history of veins
+## History of varicoseveins
 logistic.history.veins <- dipep_glm(df = dipep,
                           predictor = 'history.veins')
-## Family history of IV Drug use
+## History of IV Drug use
 logistic.history.iv.drug <- dipep_glm(df = dipep,
                           predictor = 'history.iv.drug')
+## Thrombosis
+logistic.thrombosis <- dipep_glm(df = dipep,
+                          predictor = 'thrombosis')
 ## Trimester
 logistic.trimester <- dipep_glm(df = dipep,
                           predictor = 'trimester')
@@ -173,10 +150,11 @@ logistic.tidied <- rbind(logistic.age$tidied,
                          logistic.presenting.features.syncope$tidied,
                          logistic.presenting.features.palpitations$tidied,
                          logistic.presenting.features.other$tidied,
-
+                         logistic.surgery$tidied,
                          logistic.history.thrombosis$tidied,
                          logistic.history.veins$tidied,
-                         logistic.history.iv.drug$tidied,
+                         ## logistic.history.iv.drug$tidied,
+                         logistic.thrombosis$tidied,
                          logistic.trimester$tidied,
                          logistic.this.pregnancy.problems$tidied,
                          logistic.thrombo$tidied$tidied,
@@ -213,9 +191,11 @@ logistic.glance <- rbind(logistic.age$glance,
                          logistic.presenting.features.syncope$glance,
                          logistic.presenting.features.palpitations$glance,
                          logistic.presenting.features.other$glance,
+                         logistic.surgery$glance,
                          logistic.history.thrombosis$glance,
                          logistic.history.veins$glance,
-                         logistic.history.iv.drug$glance,
+                         ## logistic.history.iv.drug$glance,
+                         logistic.thrombosis$glance,
                          logistic.trimester$glance,
                          logistic.this.pregnancy.problems$glance,
                          logistic.thrombo$glance$glance,
@@ -331,6 +311,10 @@ logistic.predicted <- merge(logistic.age$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
+                            logistic.surgery$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
                             logistic.history.thrombosis$predicted,
                             by = 'obs',
                             all = TRUE) %>%
@@ -338,8 +322,12 @@ logistic.predicted <- merge(logistic.age$predicted,
                             logistic.history.veins$predicted,
                             by = 'obs',
                             all = TRUE) %>%
+                      ## merge(.,
+                      ##       logistic.history.iv.drug$predicted,
+                      ##       by = 'obs',
+                      ##       all = TRUE) %>%
                       merge(.,
-                            logistic.history.iv.drug$predicted,
+                            logistic.thrombosis$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
@@ -387,8 +375,8 @@ logistic.predicted <- merge(logistic.age$predicted,
                                     pred.presenting.features.sob.rest, pred.presenting.features.sob.exertion,
                                     pred.presenting.features.cough, pred.presenting.features.haemoptysis,
                                     pred.presenting.features.syncope, pred.presenting.features.palpitations,
-                                    pred.presenting.features.other, pred.history.thrombosis,
-                                    pred.history.veins, pred.history.iv.drug,
+                                    pred.presenting.features.other, pred.surgery,
+                                    pred.history.thrombosis, pred.history.veins, ## pred.history.iv.drug,
                                     pred.trimester, pred.this.pregnancy.problems,
                                     pred.thrombo, pred.multiple.preg, pred.travel, pred.immobil,
                                     pred.ecg.cat, pred.ecg)
@@ -404,11 +392,11 @@ saturated <- dipep_glm(df = dipep,
                                      'presenting.features.sob.rest', 'presenting.features.sob.exertion',
                                      'presenting.features.cough', 'presenting.features.haemoptysis',
                                      'presenting.features.syncope', 'presenting.features.palpitations',
-                                     'presenting.features.other','pred.history.thrombosis',
-                                     'pred.history.veins', 'pred.history.iv.drug',
-                                     'pred.trimester', 'pred.this.pregnancy.problems',
-                                     'pred.thrombo', 'pred.multiple.preg', 'pred.travel', 'pred.immobil',
-                                     'pred.ecg.cat', 'pred.ecg'),
+                                     'presenting.features.other', 'surgery',
+                                     'history.thrombosis', 'history.veins', ## 'history.iv.drug',
+                                     'thrombosis', 'trimester', 'this.pregnancy.problems',
+                                     'thrombo', 'multiple.preg', 'travel', 'immobil',
+                                     'ecg'),
                        model = 'saturated multivariable logistic model')
 
 
@@ -417,7 +405,7 @@ saturated <- dipep_glm(df = dipep,
 #### Univariable Regression
 Its is not advisable to use the results of univariable regression to shape your choice of variables to include in multi-variable models for the simple reason that the coefficients obtained for a variable in isolation will not be the same as those from a multi-variable model.  Thus something that appears to be significant under univariable analysis may well not be under multi-variable analysis.  A better strategy is to use expert clinical knowledge as to what factors are important to determine which variables are included in a multi-variable model.
 
-Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.
+Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.  For the full output of each univariable logistic regression model please refer to the [Appendix](dipep.html#appendix).
 
 
 ##### Point Estimates
@@ -483,6 +471,17 @@ ggplot(dplyr::filter(to.plot, name %in% c('pleuritic',
 ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
                                           'pregnancies.over',
                                           'pregnancies.under')),
+       aes(d = D, m = M, color = name)) +
+    geom_roc() +
+    guides(guide = guide_legend(title = 'Predictor...')) +
+    ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
+    style_roc() + theme_bw()
+## PlotMedical History
+ggplot(dplyr::filter(to.plot, name %in% c('history.thrombosis',
+                                          'history.veins',
+                                          'thrombo',
+                                          'surgery',
+                                          'thrombosis')),
        aes(d = D, m = M, color = name)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
