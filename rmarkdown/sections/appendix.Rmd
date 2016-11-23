@@ -1,0 +1,7 @@
+### Software
+```{r child = 'appendix/software.Rmd', eval = TRUE}
+```
+
+### Univariable Logistic Regression
+```{r child = 'appendix/logistic.Rmd', eval = TRUE}
+```
