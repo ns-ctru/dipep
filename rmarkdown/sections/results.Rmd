@@ -6,20 +6,16 @@
 ```{r child = 'subsections/missing_data.Rmd', eval = TRUE}
 ```
 
-### Demographics  {.tabset .tabset-fade .tabset-pills}
-```{r child = 'subsections/demograhpics.Rmd', eval = TRUE}
-```
-
-### Adverse Events
-```{r child = 'subsections/results_adverse_events.Rmd', eval = TRUE}
+### Demographics {.tabset .tabset-fade .tabset-pills}
+```{r child = 'subsections/demographics.Rmd', eval = TRUE}
 ```
 
 ### EQ-5D-5L
 ```{r child = 'subsections/results_eq5d5l.Rmd', eval = TRUE}
 ```
 
-### Clinical Opinion
-```{r child = 'subsections/results_clinical_opinion.Rmd', eval = FALSE}
+### Clinical Opinion {.tabset .tabset-fade .tabset-pills}
+```{r child = 'subsections/results_clinical_opinion.Rmd', eval = TRUE}
 ```
 
 ### Recursive Partitioning
@@ -30,6 +26,6 @@
 ```{r child = 'subsections/results_lasso.Rmd', eval = TRUE}
 ```
 
-### Logistic Regression
+### Logistic Regression  {.tabset .tabset-fade .tabset-pills}
 ```{r child = 'subsections/results_logistic.Rmd', eval = TRUE}
 ```
