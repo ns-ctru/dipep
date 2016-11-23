@@ -1,4 +1,4 @@
-The full results of the univariable logistic regression are presented below.
+The full results of the univariable logistic regression are presented below.  For each variable a summry of the logistic regression model is shown followed by four diagnostic plots and then the individual ROC curve for the variable.
 
 #### Age (Continuous)
 ```{r child = 'logistic/age.Rmd', eval = TRUE}
@@ -29,7 +29,8 @@ The full results of the univariable logistic regression are presented below.
 ```
 
 #### Systolic Blood Pressure (Categorical)
-```{r child = 'logistic/bp.systolic.cat.Rmd', eval = TRUE}
+**NB** No one had abnormal systolic blood pressure and as the outcome was invariant it is impossible to perform any form of regression.
+```{r child = 'logistic/bp.systolic.cat.Rmd', eval = FALSE}
 ```
 
 #### Heart Rate (Continuous)
