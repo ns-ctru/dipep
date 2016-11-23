@@ -121,6 +121,15 @@ logistic$ecg.cat <- dipep_glm(df = dipep,
 ## ECG
 logistic$ecg <- dipep_glm(df = dipep,
                           predictor = 'ecg')
+## ECG (Categorised)
+logistic$xray.cat <- dipep_glm(df = dipep,
+                          predictor = 'xray.cat')
+## X-Ray
+logistic$xray <- dipep_glm(df = dipep,
+                          predictor = 'xray')
+## X-Ray (Categorised)
+logistic$xray.cat <- dipep_glm(df = dipep,
+                          predictor = 'xray.cat')
 
 
 ## Combine all three sets of tidied output from each model
@@ -163,7 +172,9 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$travel$tidied,
                          logistic$immobil$tidied,
                          logistic$ecg.cat$tidied,
-                         logistic$ecg$tidied) %>%
+                         logistic$ecg$tidied,
+                         logistic$xray.cat$tidied,
+                         logistic$xray$tidied) %>%
                     mutate(lower = estimate - 1.96 * std.error,
                            upper = estimate + 1.96 * std.error)
 logistic$glance <- rbind(logistic$age$glance,
@@ -204,7 +215,9 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$travel$glance,
                          logistic$immobil$glance,
                          logistic$ecg.cat$glance,
-                         logistic$ecg$glance)
+                         logistic$ecg$glance,
+                         logistic$xray.cat$glance,
+                         logistic$xray$glance)
 
 ## Get all predicted values
 logistic$predicted <- merge(logistic$age$predicted,
@@ -363,7 +376,15 @@ logistic$predicted <- merge(logistic$age$predicted,
                             logistic$ecg$predicted,
                             by = 'obs',
                             all = TRUE) %>%
-                      ## Age is complete, use observed values from that, remove all others
+                      merge(.,
+                            logistic$xray.cat$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$xray$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+    ## Age is complete, use observed values from that, remove all others
                       dplyr::select(pe.age, pred.age, pred.age.cat, pred.smoking,
                                     pred.temperature, pred.temperature.cat,
                                     pred.bp.diastolic, pred.bp.diastolic.cat,
@@ -380,7 +401,7 @@ logistic$predicted <- merge(logistic$age$predicted,
                                     pred.history.thrombosis, pred.history.veins, ## pred.history.iv.drug,
                                     pred.trimester, pred.this.pregnancy.problems,
                                     pred.thrombo, pred.multiple.preg, pred.travel, pred.immobil,
-                                    pred.ecg.cat, pred.ecg)
+                                    pred.ecg.cat, pred.ecg, pred.xray.cat, pred.xray)
 ## Sort out names
 names(logistic$predicted) <- gsub('pe.age', 'pe', names(logistic$predicted))
 names(logistic$predicted) <- gsub('pred.', '', names(logistic$predicted))
@@ -398,7 +419,7 @@ logistic$saturated <- dipep_glm(df = dipep,
                                               'history.thrombosis', 'history.veins', ## 'history.iv.drug',
                                               'thrombosis', 'trimester', 'this.pregnancy.problems',
                                               'thrombo', 'multiple.preg', 'travel', 'immobil',
-                                              'ecg'),
+                                              'ecg', 'xray'),
                                 model = 'saturated multivariable logistic model')
 
 
@@ -478,7 +499,7 @@ ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
     guides(guide = guide_legend(title = 'Predictor...')) +
     ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
     style_roc() + theme_bw()
-## PlotMedical History
+## Plot Medical History
 ggplot(dplyr::filter(to.plot, name %in% c('history.thrombosis',
                                           'history.veins',
                                           'thrombo',
@@ -487,7 +508,7 @@ ggplot(dplyr::filter(to.plot, name %in% c('history.thrombosis',
        aes(d = D, m = M, color = name)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
-    ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
+    ggtitle('ROC curves for Medical History Univariable Logistic Regression') +
     style_roc() + theme_bw()
 
 ```
