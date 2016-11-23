@@ -1,0 +1,97 @@
+The full results of the univariable logistic regression are presented below.
+
+#### Age (Continuous)
+```{r child = 'logistic/age.Rmd', eval = TRUE}
+```
+
+#### Age (Categorical)
+```{r child = 'logistic/age.cat.Rmd', eval = TRUE}
+```
+
+#### BMI (Continuous)
+```{r child = 'logistic/bmi.Rmd', eval = TRUE}
+```
+
+#### BMI (Categorical)
+```{r child = 'logistic/bmi.cat.Rmd', eval = TRUE}
+```
+
+#### Diastolic Blood Pressure (Continuous)
+```{r child = 'logistic/bp.diastolic.Rmd', eval = TRUE}
+```
+
+#### Diastolic Blood Pressure (Categorical)
+```{r child = 'logistic/bp.diastolic.cat.Rmd', eval = TRUE}
+```
+
+#### Systolic Blood Pressure (Continuous)
+```{r child = 'logistic/bp.systolic.Rmd', eval = TRUE}
+```
+
+#### Systolic Blood Pressure (Categorical)
+```{r child = 'logistic/bp.systolic.cat.Rmd', eval = TRUE}
+```
+
+#### Heart Rate (Continuous)
+```{r child = 'logistic/heart.rate.Rmd', eval = TRUE}
+```
+
+#### Heart Rate (Categorical)
+```{r child = 'logistic/heart.rate.cat.Rmd', eval = TRUE}
+```
+
+#### Oxygen Saturation (Continuous)
+```{r child = 'logistic/o2.saturation.Rmd', eval = TRUE}
+```
+
+#### Oxygen Saturation (Categorical)
+```{r child = 'logistic/o2.saturation.cat.Rmd', eval = TRUE}
+```
+
+#### Respiratory Rate (Continuous)
+```{r child = 'logistic/respiratory.rate.Rmd', eval = TRUE}
+```
+
+#### Respiratory Rate (Categorical)
+```{r child = 'logistic/respiratory.rate.cat.Rmd', eval = TRUE}
+```
+
+#### History of IV Drug Use
+```{r child = 'logistic/history.iv.drug.Rmd', eval = TRUE}
+```
+
+#### Family History of Thrombosis
+```{r child = 'logistic/history.thrombosis.Rmd', eval = TRUE}
+```
+
+#### History of Varicose Veins
+```{r child = 'logistic/history.veins.Rmd', eval = TRUE}
+```
+
+#### Previous Pregnancy Problems
+```{r child = 'logistic/prev.preg.problem.Rmd', eval = TRUE}
+```
+
+#### Problems with Current Pregnancy
+```{r child = 'logistic/this.pregnancy.problems.Rmd', eval = TRUE}
+```
+
+#### Multiple Pregnancy
+```{r child = 'logistic/multiple.preg.Rmd', eval = TRUE}
+```
+
+#### Trimester
+```{r child = 'logistic/trimester.Rmd', eval = TRUE}
+```
+
+#### One or more Pregnancy > 24 weeks
+```{r child = 'logistic/pregnancies.over.Rmd', eval = TRUE}
+```
+
+#### Known Thrombophilia
+```{r child = 'logistic/thrombo.Rmd', eval = TRUE}
+```
+
+#### History of Thrombosis
+```{r child = 'logistic/thrombosis.Rmd', eval = TRUE}
+```
