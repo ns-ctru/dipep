@@ -40,6 +40,14 @@ dipep_tidy <- function(df     = results,
                  term = sub('trimester3rd Trimester', 'Third Trimester', term),
                  term = sub('multiple.pregYes', 'Multiple Pregnancy - Yes', term),
                  term = sub('multiple.pregNo', 'Multiple Pregnancy - No', term),
+                 term = sub('travelYes', 'Long Haul Travel (>4hrs) - Yes', term),
+                 term = sub('travelNo', 'Long Haul Travel (>4hrs) - No', term),
+                 term = sub('immobilYes', '>3 days Immobility - Yes', term),
+                 term = sub('immobilNo', '>3 days Immobility - No', term),
+                 term = sub('this.pregnancy.problemsYes', 'Problems with this Pregnancy - Yes', term),
+                 term = sub('this.pregnancy.problemsNo', 'Problems with this  Pregnancy - No', term),
+                 term = sub('prev.preg.problemYes', 'Problems with Previous Pregnancy - Yes', term),
+                 term = sub('prev.preg.problemNo', 'Problems with Previous Pregnancy - No', term),
                  )
     return(df)
 }
