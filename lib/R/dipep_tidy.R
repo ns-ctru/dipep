@@ -15,7 +15,8 @@
 #' @export
 dipep_tidy <- function(df     = results,
                        ...){
-    df <- mutate(term = sub('age', 'Age', term),
+    df <- mutate(df,
+                 term = sub('age', 'Age', term),
                  term = sub('smokingnever', 'Smoking - Never', term),
                  term = sub('smokinggave up prior to pregnancy', 'Smoking - Gave up Prior to Pregnancy', term),
                  term = sub('smokinggave up during pregnancy', 'Smoking - Gave up During Pregnancy', term),
