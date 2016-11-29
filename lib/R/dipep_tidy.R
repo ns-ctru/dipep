@@ -71,6 +71,9 @@ dipep_tidy <- function(df     = results,
                  term = sub('ecgNot performed', 'ECG Not Performed', term),
                  term = sub('ecgNormal', 'ECG Normal', term),
                  term = sub('ecgAbnormal', 'ECG Abnormal', term),
+                 term = sub('xrayNot performed', 'X-Ray Not Performed', term),
+                 term = sub('xrayNormal', 'X-Ray Normal', term),
+                 term = sub('xrayAbnormal', 'X-Ray Abnormal', term)
                  )
     return(df)
 }
