@@ -877,9 +877,11 @@ dipep <- mutate(dipep,
                 age.cat = factor(age.cat,
                                  levels = c(0, 1),
                                  labels = c('Young', 'Old')),
+                ecg     = factor(ecg),
                 ecg.cat = factor(ecg.cat,
                                  levels = c(0, 1),
                                  labels = c('Normal ECG', 'Abnormal ECG')),
+                xray     = factor(xray),
                 xray.cat = factor(xray.cat,
                                   levels = c(0, 1),
                                   labels = c('Normal X-Ray', 'Abnormal X-Ray')),
@@ -946,8 +948,12 @@ dipep <- mutate(dipep,
                                                             ref = 'Non-smoker'),
                 age.cat                           = relevel(age.cat,
                                                             ref = 'Young'),
+                ecg                               = relevel(ecg,
+                                                            ref = 'Not performed'),
                 ecg.cat                           = relevel(ecg.cat,
                                                             ref = 'Normal ECG'),
+                xray                              = relevel(xray,
+                                                            ref = 'Not performed'),
                 xray.cat                          = relevel(xray.cat,
                                                             ref = 'Normal X-Ray'),
                 trimester                         = relevel(trimester,
@@ -1114,7 +1120,12 @@ dipep <- mutate(dipep,
                         wells.surgery.immobil +
                         wells.previous.dvt.pe +
                         wells.hemoptysis +
-                        wells.neoplasm)
+                        wells.neoplasm,
+                wells.pe = ifelse(wells > 6,
+                                  yes = 'High',
+                                  no = ifelse(wells > 2,
+                                              yes = 'Moderate',
+                                              no  = 'Low')))
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
