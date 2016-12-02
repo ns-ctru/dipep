@@ -136,6 +136,11 @@ dipep_glm <- function(df              = .data,
                    guides(guide = guide_legend(title = '')) +
                    ggtitle(paste0('ROC curve for ', model)) +
                    style_roc() + theme_bw()
+    ## Add the AUC
+    results$auc <- calc_auc(results$roc)
+    results$roc <- results$roc +
+                   annotate('text', x = 0.75, y = 0.25,
+                            label = paste0('AUC = ', round(results$auc$AUC, 3)))
     ## Rename predicted df for ease of subsequent use
     names(results$predicted) <- c('obs', paste0('pe.', model), paste0('pred.', model))
     return(results)
