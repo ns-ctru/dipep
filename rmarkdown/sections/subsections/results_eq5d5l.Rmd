@@ -98,5 +98,3 @@ kable(caption = paste0('Summary of Health Scale Number EQ-5D-5L responses for ',
 rm(all, by.group)
 
 ```
-
-**TODO** Summary of overall scores
