@@ -70,7 +70,7 @@ mutate(to.table,
                            ' individuals with Suspected PE'))
 rm(to.plot, to.table)
 all <- summarise(eq5d,
-                 N      = sum(!is.na()),
+                 N      = sum(!is.na(health.scale.number)),
                  Mean   = mean(health.scale.number, na.rm = TRUE),
                  SD     = sd(health.scale.number, na.rm = TRUE),
                  Lower  = quantile(health.scale.number, probs = 0.25, na.rm = TRUE),
@@ -80,7 +80,7 @@ all <- summarise(eq5d,
                  Max    = max(health.scale.number, na.rm = TRUE)) %>%
        mutate(Status = 'All')
 by.group <- group_by(eq5d, pe) %>%
-            summarise(N      = sum(!is.na()),
+            summarise(N      = sum(!is.na(health.scale.number)),
                       Mean   = mean(health.scale.number, na.rm = TRUE),
                       SD     = sd(health.scale.number, na.rm = TRUE),
                       Lower  = quantile(health.scale.number, probs = 0.25, na.rm = TRUE),
