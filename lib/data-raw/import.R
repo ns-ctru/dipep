@@ -1121,11 +1121,14 @@ dipep <- mutate(dipep,
                         wells.previous.dvt.pe +
                         wells.hemoptysis +
                         wells.neoplasm,
-                wells.pe = ifelse(wells > 6,
-                                  yes = 'High',
-                                  no = ifelse(wells > 2,
-                                              yes = 'Moderate',
-                                              no  = 'Low')))
+                wells.pe.risk = ifelse(wells > 6,
+                                       yes = 'High',
+                                       no = ifelse(wells > 2,
+                                                   yes = 'Moderate',
+                                                   no  = 'Low')),
+                wells.pe      = ifelse(wells > 2,
+                                       yes = 'PE',
+                                       no  = 'No PE'))
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
