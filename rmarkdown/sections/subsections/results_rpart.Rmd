@@ -131,9 +131,12 @@ We now need to calculate the sensitivity and specificity.  There is no single va
 .predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
 pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y) %>% as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
-ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
+roc <- ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
     ggtitle(paste0('ROC Curve for Pruned Categorical Tree (CP = ', cp, ')'))
+## Calculate AUC and add to plot
+roc + annotate('text', x = 0.75, y = 0.25,
+               label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
 
 ```
 
@@ -186,9 +189,9 @@ pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y) %>% as.data.
 names(pred.obs) <- c('predicted', 'obs')
 roc <- ggplot(pred.obs, aes(d = continuous_prune$y, m = predicted)) +
        geom_roc(n.cuts = 10) + style_roc() +
-       ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', cp, ')')) +
+       ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', cp, ')'))
     ## Calculate AUC and add to plot
 roc + annotate('text', x = 0.75, y = 0.25,
-               label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3))))
+               label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
 
 ```
