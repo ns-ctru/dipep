@@ -166,10 +166,10 @@ prp(continuous,
 
 
 
-In addition to the problem described above for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets severly limited, because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror`.
+In addition to the problem described for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets, severly limited because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror`.
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
-cp <- 0.016854
+cp <- 0.0084270
 continuous_prune <- prune(continuous, cp = cp)
 printcp(continuous_prune)
 prp(continuous_prune,
