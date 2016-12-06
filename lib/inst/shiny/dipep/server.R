@@ -13,18 +13,18 @@ shinyServer(function(input, output){
     ## Set up the model                                                       ##
     ############################################################################
     model <- reactive({
-        reformulate(response = 'pe',
-                    termlabels = c(input$demog, input$presenting, input$history))
+        if(input$categorical == TRUE){
+            reformulate(response = 'pe',
+                    termlabels = c(input$demog.cat, input$presenting, input$history))
+        }
+        else{
+            reformulate(response = 'pe',
+                        termlabels = c(input$demog, input$presenting, input$history))
+        }
     })
     ############################################################################
     ## Logistic Regression                                                    ##
     ############################################################################
-    output$logistic <- renderText({
-                           glm(formula = pe ~ age,
-                               data = filter(dipep, group == 'Suspected PE'),
-                               family = binomial(link = 'logit')) %>%
-                           summary()
-    })
     ############################################################################
     ## Clinical decision rules                                                ##
     ############################################################################
@@ -36,41 +36,58 @@ shinyServer(function(input, output){
     ############################################################################
     ## Recurrsive Partitioning                                                ##
     ############################################################################
-    fitted <- reactive({
-                  dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
-                  dipep$pe <- factor(dipep$pe,
-                                     levels = c(0, 1),
-                                     labels = c('No PE', 'PE'))
-                  fitted <- rpart(formula  = model(),
-                                  data   = filter(dipep, group == 'Suspected PE'),
-                                  method = 'class')
+    ## Fit the full regression tree
+    rpart.fit.full <- reactive({
+        rpart(formula  = model(),
+              data   = filter(dipep, group == 'Suspected PE'),
+              method = 'class',
+              minsplit  = input$minsplit,
+              minbucket = input$minbucket)
     })
+    ## Plot the full tree
     output$part.plot <- renderPlot({
-                            prp(fitted(),
-                                type   = 4,
-                                extra  = 106,
-                                yesno  = 1,
-                                branch = 1,
-                                varlen = 0,
-                                faclen = 0)
+        prp(rpart.fit.full(),
+            type   = 4,
+            extra  = 106,
+            yesno  = 1,
+            branch = 1,
+            varlen = 0,
+            faclen = 0)
     })
-    output$part.cp <- renderText({
-                          printcp(fitted())
+    output$part.cp.full <- renderPrint({
+        rpart.fit.full() %>% printcp()
+    })
+    ## Prune the tree
+    rpart.fit.prune <- reactive({
+        prune(rpart.fit.full(), cp = input$cp)
+    })
+    output$pruned.plot <- renderPlot({
+        prp(rpart.fit.prune(),
+            type   = 4,
+            extra  = 106,
+            yesno  = 1,
+            branch = 1,
+            varlen = 0,
+            faclen = 0)
+    })
+    output$part.cp.prune <- renderPrint({
+        rpart.fit.prune() %>% printcp()
     })
     ############################################################################
     ## Regression - LASSO                                                     ##
     ############################################################################
-    covars <- reactive({covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-                            dplyr::select_(input$demog, input$presenting, input$current, input$history) %>%
-                            mutate(use = complete.cases(.)) %>%
-                            filter(use == TRUE) %>%
-                            dplyr::select(-use) %>%
-                            data.matrix()
-    })
-    status <- reactive({## ToDo - Switch to filtering based on actual variable and complete.cases()
-                 status <- ifelse(runif(n = nrow(covars())) > 0.8, 1, 0) %>%
-                           factor(levels = c(0,1))
-    })
+    ## ToDo - Switch to glmnetUtils
+    ## covars <- reactive({covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
+    ##                         dplyr::select_(input$demog, input$presenting, input$current, input$history) %>%
+    ##                         mutate(use = complete.cases(.)) %>%
+    ##                         filter(use == TRUE) %>%
+    ##                         dplyr::select(-use) %>%
+    ##                         data.matrix()
+    ## })
+    ## status <- reactive({## ToDo - Switch to filtering based on actual variable and complete.cases()
+    ##              status <- ifelse(runif(n = nrow(covars())) > 0.8, 1, 0) %>%
+    ##                        factor(levels = c(0,1))
+    ## })
     lasso <- reactive({## Run LASSO
                 lasso <- glmnet(x      = covars(),
                                 y      = status(),
@@ -91,23 +108,12 @@ shinyServer(function(input, output){
     ############################################################################
     ## Regression - Saturated                                                 ##
     ############################################################################
-    ## Model
-    ## Plot?
-    ## Table
-    ## model <- reformulate(response = 'pe',
-    ##                      termlabels = c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
-    ##                                    'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-    ##                                    'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
-    ##                                    'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-    ##                                    'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-    ##                                    'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-    ##                                    'presenting.features.haemoptysis', 'presenting.features.cough',
-    ##                                    'presenting.features.syncope', 'presenting.features.palpitations',
-    ##                                    'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
-    ##                                    'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat'))
-    ## output$saturated.model <- renderPrint(
-    ##     saturated <- glm(data = filter(dipep, group == 'Suspected PE'),
-    ##                      formula = model(),
-    ##                      family  = 'binomial')
-    ## )
+    logistic.model <- reactive({
+        saturated <- glm(data = filter(dipep, group == 'Suspected PE'),
+                         formula = model(),
+                         family  = 'binomial')
+    })
+    output$logistic <- renderPrint({
+        summary(logistic.model())
+    })
 })
