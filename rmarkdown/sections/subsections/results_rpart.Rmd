@@ -127,9 +127,12 @@ We now need to calculate the sensitivity and specificity.  There is no single va
 ## Extract the predicted values and bind to the observed
 ## https://stackoverflow.com/questions/31094473/r-how-to-calculate-sensitivity-and-specificity-of-rpart-tree
 ## xpred.rpart(categorical_prune)
-.predict <- predict(categorical_prune, type = 'prob')
-.predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
-pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y) %>% as.data.frame()
+## .predict <- predict(categorical_prune, type = 'prob')
+## .predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
+## pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y) %>% as.data.frame()
+pred.obs <- cbind(predict(categorical_prune, type = 'prob'),
+                  categorical_prune$y) %>%
+            as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
 roc <- ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
@@ -183,9 +186,12 @@ prp(continuous_prune,
 ```
 
 ```{r results_rpart_continuous_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
-.predict <- predict(continuous_prune, type = 'prob')
-.predicted <- prediction(.predict[,2] %>% as.vector(), continuous_prune$y)
-pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y) %>% as.data.frame()
+## .predict <- predict(continuous_prune, type = 'prob')
+## .predicted <- prediction(.predict[,2] %>% as.vector(), continuous_prune$y)
+## pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y) %>% as.data.frame()
+pred.obs <- cbind(predict(continuous_prune, type = 'prob'),
+                  continuous_prune$y) %>%
+            as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
 roc <- ggplot(pred.obs, aes(d = continuous_prune$y, m = predicted)) +
        geom_roc(n.cuts = 10) + style_roc() +
