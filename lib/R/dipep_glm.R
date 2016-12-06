@@ -123,15 +123,19 @@ dipep_glm <- function(df              = .data,
     results$augmented$model <- model
     results$glance$model    <- model
     ## Get predicted probabilities
-    results$predicted <- results$fitted %>% predict() %>% as.data.frame()
-    names(results$predicted) <- c('pred')
-    results$predicted$obs <- rownames(results$predicted)
-    results$predicted <- merge(dplyr::select(results$df, obs, pe),
-                               results$predicted,
-                               by = c('obs'))
+    ## results$predicted <- results$fitted %>% predict() %>% as.data.frame()
+    ## names(results$predicted) <- c('pred')
+    ## results$predicted$obs <- rownames(results$predicted)
+    ## results$predicted <- merge(dplyr::select(results$df, obs, pe),
+    ##                            results$predicted,
+    ##                            by = c('obs'))
+    results$predicted <- cbind(predict(results$fitted),
+                               results$fitted$y) %>%
+                         as.data.frame()
+    names(results$predicted) <- c('predicted', 'pe')
     ## Return ROC curve for this model
     results$roc <- ggplot(results$predicted,
-                          aes(d = pe, m = pred)) +
+                          aes(d = pe, m = predicted)) +
                    geom_roc() +
                    guides(guide = guide_legend(title = '')) +
                    ggtitle(paste0('ROC curve for ', model)) +
@@ -142,6 +146,7 @@ dipep_glm <- function(df              = .data,
                    annotate('text', x = 0.75, y = 0.25,
                             label = paste0('AUC = ', round(results$auc$AUC, 3)))
     ## Rename predicted df for ease of subsequent use
-    names(results$predicted) <- c('obs', paste0('pe.', model), paste0('pred.', model))
+    ## names(results$predicted) <- c('obs', paste0('pe.', model), paste0('pred.', model))
+    names(results$predicted) <- c(paste0('predicted.', model), paste0('pe.', model))
     return(results)
 }
