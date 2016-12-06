@@ -40,6 +40,12 @@ logistic$respiratory.rate.cat <- dipep_glm(df = dipep,
 ## Respiratory Rate
 logistic$respiratory.rate <- dipep_glm(df = dipep,
                           predictor = 'respiratory.rate')
+## Heart Rate (Categorised)
+logistic$heart.rate.cat <- dipep_glm(df = dipep,
+                          predictor = 'heart.rate.cat')
+## Heart Rate
+logistic$heart.rate <- dipep_glm(df = dipep,
+                          predictor = 'heart.rate')
 ## BMI (Categorised)
 logistic$bmi.cat <- dipep_glm(df = dipep,
                           predictor = 'bmi.cat')
@@ -146,6 +152,8 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$o2.saturation$tidied,
                          logistic$respiratory.rate.cat$tidied,
                          logistic$respiratory.rate$tidied,
+                         logistic$heart.rate.cat$tidied,
+                         logistic$heart.rate$tidied,
                          logistic$bmi.cat$tidied,
                          logistic$bmi$tidied,
                          logistic$pregnancies.under$tidied,
@@ -189,6 +197,8 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$o2.saturation$glance,
                          logistic$respiratory.rate.cat$glance,
                          logistic$respiratory.rate$glance,
+                         logistic$heart.rate.cat$glance,
+                         logistic$heart.rate$glance,
                          logistic$bmi.cat$glance,
                          logistic$bmi$glance,
                          logistic$pregnancies.under$glance,
@@ -266,6 +276,14 @@ logistic$predicted <- merge(logistic$age$predicted,
                             all = TRUE) %>%
                       merge(.,
                             logistic$respiratory.rate.cat$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$heart.rate$predicted,
+                            by = 'obs',
+                            all = TRUE) %>%
+                      merge(.,
+                            logistic$heart.rate.cat$predicted,
                             by = 'obs',
                             all = TRUE) %>%
                       merge(.,
@@ -391,6 +409,7 @@ logistic$predicted <- merge(logistic$age$predicted,
                                     pred.bp.systolic, ## pred.bp.systolic.cat,
                                     pred.o2.saturation, pred.o2.saturation.cat,
                                     pred.respiratory.rate, pred.respiratory.rate.cat,
+                                    pred.heart.rate, pred.heart.rate.cat,
                                     pred.bmi, pred.bmi.cat, pred.prev.preg.problem,
                                     pred.pregnancies.under, pred.pregnancies.over,
                                     pred.presenting.features.pleuritic, pred.presenting.features.non.pleuritic,
@@ -409,7 +428,7 @@ names(logistic$predicted) <- gsub('pred.', '', names(logistic$predicted))
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
                                 predictor = c('age', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic',
-                                              'o2.saturation', 'respiratory.rate', 'smoking',
+                                              'o2.saturation', 'respiratory.rate', 'heart.rate', 'smoking',
                                               'prev.preg.problem', 'pregnancies.under', 'pregnancies.over',
                                               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
                                               'presenting.features.sob.rest', 'presenting.features.sob.exertion',
@@ -420,7 +439,7 @@ logistic$saturated <- dipep_glm(df = dipep,
                                               'thrombosis', 'trimester', 'this.pregnancy.problems',
                                               'thrombo', 'multiple.preg', 'travel', 'immobil',
                                               'ecg', 'xray'),
-                                model = 'saturated multivariable logistic model')
+                                model = 'Saturated Multivariable Logistic Model')
 
 
 ```
@@ -463,7 +482,7 @@ to.plot <- mutate(to.plot,
 ## names(to.plot) <- gsub('name', 'Predictor', names(to.plot)
 ## ROC for continuous variables
 ggplot(dplyr::filter(to.plot, name %in% c('age', 'bmi', 'o2.saturation', 'bp.diastolic', 'bp.systolic', 'temperature')),
-       aes(d = D, m = M, color = name)) +
+       aes(d = D, m = M, colour = name)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
     ggtitle('ROC curves for Continuous Univariable Logistic Regression') +
@@ -493,7 +512,10 @@ ggplot(dplyr::filter(to.plot, name %in% c('pleuritic',
 ## Plot Other
 ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
                                           'pregnancies.over',
-                                          'pregnancies.under')),
+                                          'pregnancies.under',
+                                          'xray.cat',
+                                          'ecg.cat',
+                                          'this.pregnancy.problems')),
        aes(d = D, m = M, color = name)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
@@ -501,6 +523,7 @@ ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
     style_roc() + theme_bw()
 ## Plot Medical History
 ggplot(dplyr::filter(to.plot, name %in% c('history.thrombosis',
+                                          'history.iv.drug',
                                           'history.veins',
                                           'thrombo',
                                           'surgery',
