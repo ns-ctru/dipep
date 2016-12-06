@@ -15,11 +15,11 @@ shinyServer(function(input, output){
     model <- reactive({
         if(input$categorical == TRUE){
             reformulate(response = 'pe',
-                    termlabels = c(input$demog.cat, input$presenting, input$history))
+                    termlabels = c(input$demog.cat, input$presenting, input$history, input$current))
         }
         else{
             reformulate(response = 'pe',
-                        termlabels = c(input$demog, input$presenting, input$history))
+                        termlabels = c(input$demog, input$presenting, input$history, input$current))
         }
     })
     ############################################################################
@@ -39,7 +39,7 @@ shinyServer(function(input, output){
     ## Fit the full regression tree
     rpart.fit.full <- reactive({
         rpart(formula  = model(),
-              data   = filter(dipep, group == 'Suspected PE'),
+              data   = dplyr::filter(dipep, group == 'Suspected PE'),
               method = 'class',
               minsplit  = input$minsplit,
               minbucket = input$minbucket)
@@ -88,16 +88,27 @@ shinyServer(function(input, output){
     ##              status <- ifelse(runif(n = nrow(covars())) > 0.8, 1, 0) %>%
     ##                        factor(levels = c(0,1))
     ## })
+    ## glmnetUtils() not quite fully functional yet as it doesn't seem to like subsetting
+    ## the data, so we do that manually now...
+    lasso.df <- reactive({
+
+    })
     lasso <- reactive({## Run LASSO
-                lasso <- glmnet(x      = covars(),
-                                y      = status(),
-                                family = 'binomial')
+                ## lasso <- glmnet(x      = covars(),
+                ##                 y      = status(),
+                ##                 family = 'binomial')
+        lasso <- glmnetUtils::glmnet(data = lasso.df(),
+                                     formula = model(),
+                                     family  = 'binomial')
     })
     cv.lasso <- reactive({## Run Cross validation
-                   cv.lasso <- cv.glmnet(x      = covars(),
-                                         y      = status(),
-                                         family = 'binomial',
-                                         nfolds = length(status()))
+                   ## cv.lasso <- cv.glmnet(x      = covars(),
+                   ##                       y      = status(),
+                   ##                       family = 'binomial',
+                   ##                       nfolds = length(status()))
+        lasso <- glmnetUtils::cv.glmnet(data = lasso.df(),
+                                        formula = model(),
+                                        family  = 'binomial')
     })
     output$lasso.plot <- renderPlot({
         autoplot(lasso()) + theme_bw()
@@ -109,11 +120,32 @@ shinyServer(function(input, output){
     ## Regression - Saturated                                                 ##
     ############################################################################
     logistic.model <- reactive({
-        saturated <- glm(data = filter(dipep, group == 'Suspected PE'),
+        saturated <- glm(data = dplyr::filter(dipep, group == 'Suspected PE'),
                          formula = model(),
                          family  = 'binomial')
     })
     output$logistic <- renderPrint({
         summary(logistic.model())
+    })
+    output$logistic.roc <- renderPlot({
+        ## Extract predicted variables, rename and add obs for binding
+        predicted <- logistic.model() %>% predict() %>% as.data.frame()
+        names(predicted) <- c('pred')
+        predicted$obs <- rownames(predicted)
+        obs <- dplyr::filter(dipep, group == 'Suspected PE') %>%
+            dplyr::select(pe)
+        obs$obs <- rownames(obs)
+        predicted <- merge(obs,
+                           predicted,
+                           by = c('obs'))
+        roc <- ggplot(predicted, aes(d = pe, m = pred)) +
+               geom_roc() +
+               guides(guide = guide_legend(title = 'Predictor...')) +
+               ## ggtitle('ROC curve for multivariable logistic regression') +
+               style_roc() + theme_bw()
+        ## Calculate AUC + annotate plot
+        auc <- calc_auc(roc)
+        roc + annotate('text', x = 0.75, y = 0.25,
+                       label = paste0('AUC = ', round(auc$AUC, input$digits)))
     })
 })
