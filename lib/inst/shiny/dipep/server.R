@@ -85,21 +85,35 @@ shinyServer(function(input, output){
     ##                         data.matrix()
     ## })
     ## status <- reactive({## ToDo - Switch to filtering based on actual variable and complete.cases()
-    ##              status <- ifelse(runif(n = nrow(covars())) > 0.8, 1, 0) %>%
-    ##                        factor(levels = c(0,1))
+    ##              status <- dplyr::filter(dipep, group == 'Suspected PE') %>%
+    ##                        dplyr::select(pe)
     ## })
     ## glmnetUtils() not quite fully functional yet as it doesn't seem to like subsetting
     ## the data, so we do that manually now...
     lasso.df <- reactive({
-
+        if(input$categorical == TRUE){
+            dplyr::filter(dipep, group == 'Suspected PE') %>%
+            dplyr::select_(input$demog.cat, input$presenting, input$history, input$current)
+        }
+        else{
+            dplyr::filter(dipep, group == 'Suspected PE') %>%
+            dplyr::select_(input$demog, input$presenting, input$history, input$current)
+        }
     })
     lasso <- reactive({## Run LASSO
                 ## lasso <- glmnet(x      = covars(),
                 ##                 y      = status(),
-                ##                 family = 'binomial')
-        lasso <- glmnetUtils::glmnet(data = lasso.df(),
+        ##                 family = 'binomial')
+        print('Guess we are about to complain...')
+        head(dipep) %>% print()
+        typeof(dipep) %>% print()
+        dipep <- as.data.frame()
+        head(dipep) %>% print()
+        typeof(dipep) %>% print()
+        lasso <- glmnetUtils::glmnet(data = dplyr::filter(dipep, group == 'Suspected PE'),
                                      formula = model(),
                                      family  = 'binomial')
+        print('Nope made it past there')
     })
     cv.lasso <- reactive({## Run Cross validation
                    ## cv.lasso <- cv.glmnet(x      = covars(),
@@ -108,7 +122,8 @@ shinyServer(function(input, output){
                    ##                       nfolds = length(status()))
         lasso <- glmnetUtils::cv.glmnet(data = lasso.df(),
                                         formula = model(),
-                                        family  = 'binomial')
+                                        family  = 'binomial',
+                                        nfolds  = nrow(lasso.df))
     })
     output$lasso.plot <- renderPlot({
         autoplot(lasso()) + theme_bw()
