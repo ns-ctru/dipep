@@ -73,6 +73,12 @@ shinyServer(function(input, output){
     output$part.cp.prune <- renderPrint({
         rpart.fit.prune() %>% printcp()
     })
+    ## Generate ROC Curve
+    output$part.roc <- renderPlot({
+        pred.obs <- cbind(predict(rpart.fit.prune(), type = 'prob'),
+                          rpart.fit.prune()$y) %>%
+                    as.data.frame()
+    })
     ############################################################################
     ## Regression - LASSO                                                     ##
     ############################################################################
@@ -144,16 +150,12 @@ shinyServer(function(input, output){
     })
     output$logistic.roc <- renderPlot({
         ## Extract predicted variables, rename and add obs for binding
-        predicted <- logistic.model() %>% predict() %>% as.data.frame()
-        names(predicted) <- c('pred')
-        predicted$obs <- rownames(predicted)
-        obs <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-            dplyr::select(pe)
-        obs$obs <- rownames(obs)
-        predicted <- merge(obs,
-                           predicted,
-                           by = c('obs'))
-        roc <- ggplot(predicted, aes(d = pe, m = pred)) +
+        logistic.model()$y %>% print()
+        predicted <- cbind(logistic.model() %>% predict(),
+                     logistic.model()$y) %>%
+            as.data.frame()
+        names(predicted) <- c('predicted', 'pe')
+        roc <- ggplot(predicted, aes(d = pe, m = predicted)) +
                geom_roc() +
                guides(guide = guide_legend(title = 'Predictor...')) +
                ## ggtitle('ROC curve for multivariable logistic regression') +
