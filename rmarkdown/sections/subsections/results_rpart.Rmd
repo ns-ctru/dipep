@@ -130,7 +130,7 @@ We now need to calculate the sensitivity and specificity.  There is no single va
 ## .predict <- predict(categorical_prune, type = 'prob')
 ## .predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
 ## pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y) %>% as.data.frame()
-pred.obs <- cbind(predict(categorical_prune, type = 'prob'),
+pred.obs <- cbind(predict(categorical_prune, type = 'prob')[,2],
                   categorical_prune$y) %>%
             as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
@@ -189,11 +189,11 @@ prp(continuous_prune,
 ## .predict <- predict(continuous_prune, type = 'prob')
 ## .predicted <- prediction(.predict[,2] %>% as.vector(), continuous_prune$y)
 ## pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y) %>% as.data.frame()
-pred.obs <- cbind(predict(continuous_prune, type = 'prob'),
+pred.obs <- cbind(predict(continuous_prune, type = 'prob')[,2],
                   continuous_prune$y) %>%
             as.data.frame()
 names(pred.obs) <- c('predicted', 'obs')
-roc <- ggplot(pred.obs, aes(d = continuous_prune$y, m = predicted)) +
+roc <- ggplot(pred.obs, aes(d = obs, m = predicted)) +
        geom_roc(n.cuts = 10) + style_roc() +
        ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', cp, ')'))
     ## Calculate AUC and add to plot
