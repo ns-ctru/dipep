@@ -1,0 +1,43 @@
+```{r results_existing, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+```
+
+#### PERC Score
+
+The PERC Score for study participants (@kline2004) is summarised below.  It should be noted though that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)), which is not the case in the cohort being considered in this study.
+
+```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+ggplot(dipep, aes(x = perc)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('PERC Scores by clinical classification') +
+    xlab('PERC Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+## kable(dipep$pe, dipep$perc, caption = 'Tabulation of PERC Score by clinical classification')
+
+```
+
+#### Simplified Revised Geneva
+```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+ggplot(dipep, aes(x = simplified)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('Simplified Revised Geneva  Scores by clinical classification') +
+    xlab('PERC Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+
+```
+
+#### Wells Score
+
+The Wells Score (@wells2001) is summarised below.
+
+```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+ggplot(dipep, aes(x = wells)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('PERC Scores by clinical classification') +
+    xlab('PERC Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+## kable(dipep$pe, dipep$wells, caption = 'Tabulation of Wells Score by clinical classification')
+
+```

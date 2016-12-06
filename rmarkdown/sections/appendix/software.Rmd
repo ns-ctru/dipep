@@ -1,0 +1,11 @@
+The work presented within has been performed using the statistical language [R](https://www.r-project.org/)(@R) and the HTML pages you are reading (and associated PDF and M$-Word documents) produced dynamically using [R Markdown](http://rmarkdown.rstudio.com/).  A number of user written packages for the R language were utilised and are detailed below with their area of application.
+
+Package       | Version | Usage
+--------------|---------|-----------------------------
+[dplyr](https://cran.r-project.org/web/packages/dplyr/index.html)         | 0.5.0 | Data manipulation
+[glmnet](https://cran.r-project.org/web/packages/glmnet/index.html)       | 2.0-5   | LASSO
+[ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)     | 2.1.0   | Graphics
+[plotROC](https://cran.r-project.org/web/packages/plotROC/index.html)     | 2.0.1   | ROC Curves
+[rmarkdown](https://cran.r-project.org/web/packages/rmarkdown/index.html) | 1.0     | Dynamic report generation
+[rpart](https://cran.r-project.org/web/packages/rmarkdown/index.html)     | 4.1-10  | Recursive Partitioning
+[stats](https://cran.r-project.org/web/packages/stats/index.html)         | 3.3.2   | Logistic Regression (`glm()`)
