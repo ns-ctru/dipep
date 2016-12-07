@@ -121,7 +121,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('xrayAbnormal', 'X-ray : Abnormal', term),
                              term = gsub('xrayNot performed', 'X-ray : Not Performed', term),
                              term = gsub('xray.catAbnomral ECG', 'X-ray (Binary) : Abnormal', term))
-    results$augmented <- broom::augment(results$fitted)
+    results$augmented <- broom::augment(results$fitted, type.predict = 'response')
     results$glance    <- broom::glance(results$fitted)
     ## Add the predictor to each to make it easier combining
     results$tidied$model    <- model
@@ -134,7 +134,7 @@ dipep_glm <- function(df              = .data,
     ## results$predicted <- merge(dplyr::select(results$df, obs, pe),
     ##                            results$predicted,
     ##                            by = c('obs'))
-    results$predicted <- cbind(predict(results$fitted),
+    results$predicted <- cbind(predict(results$fitted, type = 'response'),
                                results$fitted$y) %>%
                          as.data.frame()
     names(results$predicted) <- c('predicted', 'pe')
