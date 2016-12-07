@@ -526,14 +526,20 @@ t8 <- dplyr::select(master$pregnancy,
                     num.fetus,
                     travel,
                     immobil)
+
 ## Details of medical history problems
+## This data frame is in long format and needs converting to wide
 t9 <- dplyr::select(master$med.hist.problems,
                     screening,
                     group,
                     site,
                     event.name,
                     medical.specify,
-                    medical.other)
+                    medical.other)  %>%
+    melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
+    group_by(screening, variable) %>%
+    mutate(n = row_number()) %>%
+    dcast(screening + group + site + event.name ~ variable + n)
 ## Details of medical history problems
 t10 <- dplyr::select(master$pregnancy.problems,
                      screening,
@@ -897,21 +903,27 @@ dipep <- mutate(dipep,
                 diagnosis.post.pe = factor(diagnosis.post.pe,
                                            levels = c(0, 1),
                                            labels = c('No PE', 'PE')),
-                presenting.features.pleuritic  = factor(presenting.features.pleuritic),
+                presenting.features.pleuritic      = factor(presenting.features.pleuritic),
                 presenting.features.non.pleuritic  = factor(presenting.features.non.pleuritic),
-                presenting.features.sob.exertion  = factor(presenting.features.sob.exertion),
-                presenting.features.sob.rest  = factor(presenting.features.sob.rest),
-                presenting.features.cough  = factor(presenting.features.cough),
-                presenting.features.syncope  = factor(presenting.features.syncope),
-                presenting.features.haemoptysis  = factor(presenting.features.haemoptysis),
-                presenting.features.other  = factor(presenting.features.other),
-                history.thrombosis = factor(history.thrombosis),
-                history.veins = factor(history.veins),
-                history.iv.drug = factor(history.iv.drug),
-                thrombo = factor(thrombo),
-                multiple.preg = factor(multiple.preg),
-                travel = factor(travel),
-                immobil = factor(immobil)
+                presenting.features.sob.exertion   = factor(presenting.features.sob.exertion),
+                presenting.features.sob.rest       = factor(presenting.features.sob.rest),
+                presenting.features.cough          = factor(presenting.features.cough),
+                presenting.features.syncope        = factor(presenting.features.syncope),
+                presenting.features.haemoptysis    = factor(presenting.features.haemoptysis),
+                presenting.features.other          = factor(presenting.features.other),
+                history.thrombosis                 = factor(history.thrombosis),
+                history.veins                      = factor(history.veins),
+                history.iv.drug                    = factor(history.iv.drug),
+                thrombo                            = factor(thrombo),
+                multiple.preg                      = factor(multiple.preg),
+                thrombosis                         = factor(thrombosis),
+                thrombosis                         = relevel(thrombosis, ref = 'No'),
+                injury                             = factor(injury,
+                                                            levels = c(0, 1),
+                                                            labels = c('No', 'Yes')),
+                injury                             = relevel(injury, ref = 'No'),
+                travel                             = factor(travel),
+                immobil                            = factor(immobil)
                 ## ToDo - Thresholds
                 ## d.dimer.high = factor(d.dimer.high,
                 ##                       levels = c(0, 1),
@@ -1091,6 +1103,7 @@ dipep <- mutate(dipep,
                        ## perc.embolism +
                        perc.hormone +
                        perc.dvt)
+                ## perc.pe = ifelse())
 ## Wells
 dipep <- mutate(dipep,
                 wells.dvt = ifelse(dvt == 'Yes',
