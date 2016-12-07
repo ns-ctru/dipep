@@ -526,7 +526,6 @@ t8 <- dplyr::select(master$pregnancy,
                     num.fetus,
                     travel,
                     immobil)
-
 ## Details of medical history problems
 ## This data frame is in long format and needs converting to wide
 t9 <- dplyr::select(master$med.hist.problems,
@@ -535,11 +534,11 @@ t9 <- dplyr::select(master$med.hist.problems,
                     site,
                     event.name,
                     medical.specify,
-                    medical.other)  %>%
-    melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
-    group_by(screening, variable) %>%
-    mutate(n = row_number()) %>%
-    dcast(screening + group + site + event.name ~ variable + n)
+                    medical.other) %>%
+      melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
+      group_by(screening, variable) %>%
+      mutate(n = row_number()) %>%
+      dcast(screening + group + site + event.name ~ variable + n)
 ## Details of medical history problems
 t10 <- dplyr::select(master$pregnancy.problems,
                      screening,
@@ -547,7 +546,11 @@ t10 <- dplyr::select(master$pregnancy.problems,
                      site,
                      event.name,
                      this.preg.problem.specify,
-                     this.preg.problem.other)
+                     this.preg.problem.other) %>%
+    melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
+    group_by(screening, variable) %>%
+    mutate(n = row_number()) %>%
+    dcast(screening + group + site + event.name ~ variable + n)
 ## Details of medication (required for derivation of PERC score)
 t11 <- dplyr::select(master$therapy,
                      screening,
