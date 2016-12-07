@@ -229,201 +229,51 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$xray.cat$glance,
                          logistic$xray$glance)
 
-## Get all predicted values
-logistic$predicted <- merge(logistic$age$predicted,
+## Combine all predicted
+logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$age.cat$predicted,
-                            by  = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$smoking$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$temperature$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$temperature.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$bp.diastolic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$bp.diastolic.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$bp.systolic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      ## merge(.,
-                      ##       logistic$bp.systolic.cat$predicted,
-                      ##       by = 'obs',
-                      ##       all = TRUE) %>%
-                      merge(.,
+                            ## logistic$bp.systolic.cat$predicted,
                             logistic$o2.saturation$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$o2.saturation.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$respiratory.rate$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$respiratory.rate.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$heart.rate$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$heart.rate.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$bmi$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$bmi.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$pregnancies.under$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$pregnancies.over$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$prev.preg.problem$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.pleuritic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.non.pleuritic$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.sob.rest$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.sob.exertion$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.haemoptysis$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.cough$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.syncope$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.palpitations$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$presenting.features.other$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$surgery$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$history.thrombosis$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$history.veins$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      ## merge(.,
-                      ##       logistic$history.iv.drug$predicted,
-                      ##       by = 'obs',
-                      ##       all = TRUE) %>%
-                      merge(.,
+                            ## logistic$history.iv.drug$predicted,
                             logistic$thrombosis$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$trimester$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$this.pregnancy.problems$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$thrombo$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$multiple.preg$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$travel$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$immobil$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$ecg.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$ecg$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
                             logistic$xray.cat$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-                      merge(.,
-                            logistic$xray$predicted,
-                            by = 'obs',
-                            all = TRUE) %>%
-    ## Age is complete, use observed values from that, remove all others
-                      dplyr::select(pe.age, pred.age, pred.age.cat, pred.smoking,
-                                    pred.temperature, pred.temperature.cat,
-                                    pred.bp.diastolic, pred.bp.diastolic.cat,
-                                    pred.bp.systolic, ## pred.bp.systolic.cat,
-                                    pred.o2.saturation, pred.o2.saturation.cat,
-                                    pred.respiratory.rate, pred.respiratory.rate.cat,
-                                    pred.heart.rate, pred.heart.rate.cat,
-                                    pred.bmi, pred.bmi.cat, pred.prev.preg.problem,
-                                    pred.pregnancies.under, pred.pregnancies.over,
-                                    pred.presenting.features.pleuritic, pred.presenting.features.non.pleuritic,
-                                    pred.presenting.features.sob.rest, pred.presenting.features.sob.exertion,
-                                    pred.presenting.features.cough, pred.presenting.features.haemoptysis,
-                                    pred.presenting.features.syncope, pred.presenting.features.palpitations,
-                                    pred.presenting.features.other, pred.surgery,
-                                    pred.history.thrombosis, pred.history.veins, ## pred.history.iv.drug,
-                                    pred.trimester, pred.this.pregnancy.problems,
-                                    pred.thrombo, pred.multiple.preg, pred.travel, pred.immobil,
-                                    pred.ecg.cat, pred.ecg, pred.xray.cat, pred.xray)
-## Sort out names
-names(logistic$predicted) <- gsub('pe.age', 'pe', names(logistic$predicted))
-names(logistic$predicted) <- gsub('pred.', '', names(logistic$predicted))
+                            logistic$xray$predicted)
 
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
