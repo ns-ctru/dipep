@@ -24,7 +24,6 @@ master$data.dictionary <- read_dipep(file       = "Lookups.csv",
                                      header     = TRUE,
                                      sep        = ',',
                                      dictionary = NULL)
-
 #######################################################################
 ## 30 day follow-up.csv                                              ##
 #######################################################################
@@ -538,7 +537,189 @@ t9 <- dplyr::select(master$med.hist.problems,
       melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
       group_by(screening, variable) %>%
       mutate(n = row_number()) %>%
-      dcast(screening + group + site + event.name ~ variable + n)
+      dcast(screening + group + site + event.name ~ variable + n) %>%
+## There are multiple records for historical medical problems and problems with
+## this pregnancy to which end these need resolving into a single variable...
+      mutate(existing.medical.autoimmune = ifelse(medical.specify_1 == 'Autoimmune diseases' |
+                                                  medical.specify_2 == 'Autoimmune diseases' |
+                                                  medical.specify_3 == 'Autoimmune diseases' |
+                                                  medical.specify_4 == 'Autoimmune diseases' |
+                                                  medical.specify_5 == 'Autoimmune diseases' |
+                                                  medical.specify_6 == 'Autoimmune diseases' |
+                                                  medical.specify_7 == 'Autoimmune diseases' |
+                                                  medical.specify_8 == 'Autoimmune diseases' |
+                                                  medical.specify_9 == 'Autoimmune diseases',
+                                                  yes = 1,
+                                                  no  = 0),
+             existing.medical.autoimmune = ifelse(is.na(existing.medical.autoimmune),
+                                                  yes = 0,
+                                                  no  = existing.medical.autoimmune),
+             existing.medical.cancer = ifelse(medical.specify_1 == 'Cancer' |
+                                              medical.specify_2 == 'Cancer' |
+                                              medical.specify_3 == 'Cancer' |
+                                              medical.specify_4 == 'Cancer' |
+                                              medical.specify_5 == 'Cancer' |
+                                              medical.specify_6 == 'Cancer' |
+                                              medical.specify_7 == 'Cancer' |
+                                              medical.specify_8 == 'Cancer' |
+                                              medical.specify_9 == 'Cancer',
+                                              yes = 1,
+                                              no  = 0),
+             existing.medical.cancer = ifelse(is.na(existing.medical.cancer),
+                                              yes = 0,
+                                              no  = existing.medical.cancer),
+             existing.medical.cardiac = ifelse(medical.specify_1 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_2 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_3 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_4 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_5 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_6 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_7 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_8 == 'Cardiac disease (congenital or acquired)' |
+                                               medical.specify_9 == 'Cardiac disease (congenital or acquired)',
+                                               yes = 1,
+                                               no  = 0),
+             existing.medical.cardiac = ifelse(is.na(existing.medical.cardiac),
+                                               yes = 0,
+                                               no  = existing.medical.cardiac),
+             existing.medical.diabetes = ifelse(medical.specify_1 == 'Diabetes' |
+                                                medical.specify_2 == 'Diabetes' |
+                                                medical.specify_3 == 'Diabetes' |
+                                                medical.specify_4 == 'Diabetes' |
+                                                medical.specify_5 == 'Diabetes' |
+                                                medical.specify_6 == 'Diabetes' |
+                                                medical.specify_7 == 'Diabetes' |
+                                                medical.specify_8 == 'Diabetes' |
+                                                medical.specify_9 == 'Diabetes',
+                                                yes = 1,
+                                                no  = 0),
+             existing.medical.diabetes = ifelse(is.na(existing.medical.diabetes),
+                                                yes = 0,
+                                                no  = existing.medical.diabetes),
+             existing.medical.varicose = ifelse(medical.specify_1 == 'Gross varicose veins' |
+                                                medical.specify_2 == 'Gross varicose veins' |
+                                                medical.specify_3 == 'Gross varicose veins' |
+                                                medical.specify_4 == 'Gross varicose veins' |
+                                                medical.specify_5 == 'Gross varicose veins' |
+                                                medical.specify_6 == 'Gross varicose veins' |
+                                                medical.specify_7 == 'Gross varicose veins' |
+                                                medical.specify_8 == 'Gross varicose veins' |
+                                                medical.specify_9 == 'Gross varicose veins',
+                                                yes = 1,
+                                                no  = 0),
+             existing.medical.varicose = ifelse(is.na(existing.medical.varicose),
+                                                yes = 0,
+                                                no  = existing.medical.varicose),
+             existing.medical.haematological = ifelse(medical.specify_1 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_2 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_3 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_4 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_5 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_6 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_7 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_8 == 'Haematological disorders e.g. sickle cell disease' |
+                                                      medical.specify_9 == 'Haematological disorders e.g. sickle cell disease',
+                                                      yes = 1,
+                                                      no  = 0),
+             existing.medical.haematological = ifelse(is.na(existing.medical.haematological),
+                                                      yes = 0,
+                                                      no  = existing.medical.haematological),
+             existing.medical.inflammatory = ifelse(medical.specify_1 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_2 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_3 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_4 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_5 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_6 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_7 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_8 == 'Inflammatory disorders e.g. inflammatory bowel disease' |
+                                                    medical.specify_9 == 'Inflammatory disorders e.g. inflammatory bowel disease',
+                                                    yes = 1,
+                                                    no  = 0),
+             existing.medical.inflammatory = ifelse(is.na(existing.medical.inflammatory),
+                                                    yes = 0,
+                                                    no  = existing.medical.inflammatory),
+             existing.medical.malignancy.6.month = ifelse(medical.specify_1 == 'Malignancy within 6 months' |
+                                                          medical.specify_2 == 'Malignancy within 6 months' |
+                                                          medical.specify_3 == 'Malignancy within 6 months' |
+                                                          medical.specify_4 == 'Malignancy within 6 months' |
+                                                          medical.specify_5 == 'Malignancy within 6 months' |
+                                                          medical.specify_6 == 'Malignancy within 6 months' |
+                                                          medical.specify_7 == 'Malignancy within 6 months' |
+                                                          medical.specify_8 == 'Malignancy within 6 months' |
+                                                          medical.specify_9 == 'Malignancy within 6 months',
+                                                          yes = 1,
+                                                          no  = 0),
+             existing.medical.malignancy.6.month = ifelse(is.na(existing.medical.malignancy.6.month),
+                                                          yes = 0,
+                                                          no  = existing.medical.malignancy.6.month),
+             existing.medical.myeloproliferative = ifelse(medical.specify_1 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_2 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_3 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_4 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_5 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_6 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_7 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_8 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera' |
+                                                          medical.specify_9 == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera',
+                                                          yes = 1,
+                                                          no  = 0),
+             existing.medical.myeloproliferative = ifelse(is.na(existing.medical.myeloproliferative),
+                                                          yes = 0,
+                                                          no  = existing.medical.myeloproliferative),
+             existing.medical.other = ifelse(medical.specify_1 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_2 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_3 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_4 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_5 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_6 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_7 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_8 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease' |
+                                             medical.specify_9 == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease',
+                                             yes = 1,
+                                             no  = 0),
+             existing.medical.other = ifelse(is.na(existing.medical.other),
+                                             yes = 0,
+                                             no  = existing.medical.other),
+             existing.medical = ifelse(existing.medical.autoimmune == 1 |
+                                       existing.medical.cancer == 1 |
+                                       existing.medical.cardiac == 1 |
+                                       existing.medical.diabetes == 1 |
+                                       existing.medical.autoimmune == 1 |
+                                       existing.medical.varicose == 1 |
+                                       existing.medical.haematological == 1 |
+                                       existing.medical.inflammatory == 1 |
+                                       existing.medical.malignancy.6.month == 1 |
+                                       existing.medical.myeloproliferative == 1 |
+                                       existing.medical.other == 1,
+                                       yes = 1,
+                                       no  = 0),
+             existing.medical = ifelse(is.na(existing.medical),
+                                       yes = 0,
+                                       no  = existing.medical)) %>%
+             ## existing.medical = factor(existing.medical,
+             ##                           levels = c(0, 1),
+             ##                           labels = c('No', 'Yes'))) %>%
+    dplyr::select(-existing.medical.autoimmune,
+                  ## LEAVE CANCER INDICATOR IN, REQUIRED FOR GENEVA SCORE
+                  ## -existing.medical.cancer,
+                  -existing.medical.cardiac,
+                  -existing.medical.diabetes,
+                  -existing.medical.autoimmune,
+                  -existing.medical.varicose,
+                  -existing.medical.haematological,
+                  -existing.medical.inflammatory,
+                  -existing.medical.malignancy.6.month,
+                  -existing.medical.myeloproliferative,
+                  -existing.medical.other,
+                  -medical.specify_1, -medical.other_1,
+                  -medical.specify_2, -medical.other_2,
+                  -medical.specify_3, -medical.other_3,
+                  -medical.specify_4, -medical.other_4,
+                  -medical.specify_5, -medical.other_5,
+                  -medical.specify_6, -medical.other_6,
+                  -medical.specify_7, -medical.other_7,
+                  -medical.specify_8, -medical.other_8,
+                  -medical.specify_9, -medical.other_9)
 ## Details of medical history problems
 t10 <- dplyr::select(master$pregnancy.problems,
                      screening,
@@ -550,7 +731,116 @@ t10 <- dplyr::select(master$pregnancy.problems,
     melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
     group_by(screening, variable) %>%
     mutate(n = row_number()) %>%
-    dcast(screening + group + site + event.name ~ variable + n)
+    dcast(screening + group + site + event.name ~ variable + n) %>%
+    mutate(this.pregnancy.problems.dehydration = ifelse(this.preg.problem.specify_1 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_2 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_3 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_4 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_5 == 'Dehydration requiring admission',
+                                                        yes = 1,
+                                                        no  = 0),
+           this.pregnancy.problems.eclampsia =  ifelse(this.preg.problem.specify_1 == 'Eclampsia' |
+                                                        this.preg.problem.specify_2 == 'Eclampsia' |
+                                                        this.preg.problem.specify_3 == 'Eclampsia' |
+                                                        this.preg.problem.specify_4 == 'Eclampsia' |
+                                                        this.preg.problem.specify_5 == 'Eclampsia',
+                                                        yes = 1,
+                                                        no  = 0),
+           this.pregnancy.problems.gestational.diabetes =  ifelse(this.preg.problem.specify_1 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_2 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_3 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_4 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_5 == 'Gestational diabetes',
+                                                                  yes = 1,
+                                                                  no  = 0),
+           this.pregnancy.problems.haemorrhage =  ifelse(this.preg.problem.specify_1 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_2 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_3 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_4 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_5 == 'Haemorrhage',
+                                                         yes = 1,
+                                                         no  = 0),
+           this.pregnancy.problems.hyperemesis =  ifelse(this.preg.problem.specify_1 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_2 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_3 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_4 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_5 == 'Hyperemesis requiring admission',
+                                                         yes = 1,
+                                                         no  = 0),
+           this.pregnancy.problems.ovarian.hyperstimulation =  ifelse(this.preg.problem.specify_1 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_2 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_3 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_4 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_5 == 'Ovarian hyperstimulation syndrome',
+                                                                      yes = 1,
+                                                                      no  = 0),
+           this.pregnancy.problems.postpartum.haemorrhage =  ifelse(this.preg.problem.specify_1 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_2 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_3 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_4 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_5 == 'Post-partum haemorrhage requiring transfusion',
+                                                                    yes = 1,
+                                                                    no  = 0),
+           this.pregnancy.problems.preeclampsia =  ifelse(this.preg.problem.specify_1 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_2 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_3 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_4 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_5 == 'Pre-eclampsia (hypertension and proteinuria)',
+                                                          yes = 1,
+                                                          no  = 0),
+           this.pregnancy.problems.preterm =  ifelse(this.preg.problem.specify_1 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_2 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_3 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_4 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_5 == 'Preterm birth or mid trimester loss',
+                                                     yes = 1,
+                                                     no  = 0),
+           this.pregnancy.problems.severe.infection =  ifelse(this.preg.problem.specify_1 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_2 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_3 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_4 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_5 == 'Severe infection e.g. pyelonephritis',
+                                                              yes = 1,
+                                                              no  = 0),
+           this.pregnancy.problems.stillbirth =  ifelse(this.preg.problem.specify_1 == 'Stillbirth' |
+                                                        this.preg.problem.specify_2 == 'Stillbirth' |
+                                                        this.preg.problem.specify_3 == 'Stillbirth' |
+                                                        this.preg.problem.specify_4 == 'Stillbirth' |
+                                                        this.preg.problem.specify_5 == 'Stillbirth',
+                                                        yes = 1,
+                                                        no  = 0),
+           this.pregnancy.problems = ifelse(this.pregnancy.problems.dehydration == 1 |
+                                            this.pregnancy.problems.eclampsia == 1 |
+                                            this.pregnancy.problems.gestational.diabetes == 1 |
+                                            this.pregnancy.problems.haemorrhage == 1 |
+                                            this.pregnancy.problems.hyperemesis == 1 |
+                                            this.pregnancy.problems.ovarian.hyperstimulation == 1 |
+                                            this.pregnancy.problems.postpartum.haemorrhage == 1 |
+                                            this.pregnancy.problems.preeclampsia == 1 |
+                                            this.pregnancy.problems.preterm == 1 |
+                                            this.pregnancy.problems.severe.infection == 1 |
+                                            this.pregnancy.problems.stillbirth == 1,
+                                            yes = 1,
+                                            no  = 0),
+                this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
+                                                 yes = 0,
+                                                 no  = this.pregnancy.problems)) %>%
+    dplyr::select(-this.pregnancy.problems.dehydration,
+                  -this.pregnancy.problems.eclampsia,
+                  -this.pregnancy.problems.gestational.diabetes,
+                  -this.pregnancy.problems.haemorrhage,
+                  -this.pregnancy.problems.hyperemesis,
+                  -this.pregnancy.problems.ovarian.hyperstimulation,
+                  -this.pregnancy.problems.postpartum.haemorrhage,
+                  -this.pregnancy.problems.preeclampsia,
+                  -this.pregnancy.problems.preterm,
+                  -this.pregnancy.problems.severe.infection,
+                  -this.pregnancy.problems.stillbirth,
+                  -this.preg.problem.specify_1, -this.preg.problem.other_1,
+                  -this.preg.problem.specify_2, -this.preg.problem.other_2,
+                  -this.preg.problem.specify_3, -this.preg.problem.other_3,
+                  -this.preg.problem.specify_4, -this.preg.problem.other_4,
+                  -this.preg.problem.specify_5, -this.preg.problem.other_5)
 ## Details of medication (required for derivation of PERC score)
 t11 <- dplyr::select(master$therapy,
                      screening,
@@ -579,7 +869,6 @@ rm(event.date.dvt, event.date.suspected.pe)
 names(event.date) <- gsub('consent', 'event', names(event.date))
 ## Merge the subsets
 merge.by <- c('screening', 'group', 'site', 'event.name')
-
 t <- merge(t1,
            t2,
            by    = merge.by,
@@ -632,7 +921,7 @@ master$missing <- merge(t,
                         all.y = TRUE) %>%
                   filter(is.na(year.of.birth)) %>%
                   dplyr::select(screening, event.date, group, site, year.of.birth)
-rm(t, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
+## rm(t, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
 
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
@@ -741,34 +1030,12 @@ dipep <- mutate(dipep,
                 xray.cat = ifelse(is.na(xray.cat),
                                   yes = 0,
                                   no  = xray.cat),
-                existing.medical = ifelse(medical.specify == 'Autoimmune diseases' |
-                                          medical.specify == 'Cancer' |
-                                          medical.specify == 'Cardiac disease (congenital or acquired)' |
-                                          medical.specify == 'Diabetes' |
-                                          medical.specify == 'Gross varicose veins' |
-                                          medical.specify == 'Haematological disorders e.g. sickle cell disease' |
-                                          medical.specify == 'Inflammatory disorders e.g. inflammatory bowel disease' |
-                                          medical.specify == 'Malignancy within 6 months' |
-                                          medical.specify == 'Myeloproliferative disorders e.g. essential thrombocythaemia, polycythaemia vera'  |
-                                          medical.specify == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease',
-                                          yes = 1,
-                                          no  = 0),
                 existing.medical = ifelse(is.na(existing.medical),
                                           yes = 0,
                                           no  = existing.medical),
-                this.pregnancy.problems = ifelse(this.preg.problem.specify == 'Dehydration requiring admission' |
-                                                 this.preg.problem.specify == 'Eclampsia' |
-                                                 this.preg.problem.specify == 'Gestational diabetes' |
-                                                 this.preg.problem.specify == 'Haemorrhage' |
-                                                 this.preg.problem.specify == 'Hyperemesis requiring admission' |
-                                                 this.preg.problem.specify == 'Ovarian hyperstimulation syndrome' |
-                                                 this.preg.problem.specify == 'Post-partum haemorrhage requiring transfusion' |
-                                                 this.preg.problem.specify == 'Pre-eclampsia (hypertension and proteinuria)' |
-                                                 this.preg.problem.specify == 'Preterm birth or mid trimester loss' |
-                                                 this.preg.problem.specify == 'Severe infection e.g. pyelonephritis' |
-                                                 this.preg.problem.specify == 'Stillbirth',
-                                                 yes = 1,
-                                                 no  = 0),
+                existing.medical.cancer = ifelse(is.na(existing.medical.cancer),
+                                                 yes = 0,
+                                                 no  = existing.medical.cancer),
                 this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
                                                  yes = 0,
                                                  no  = this.pregnancy.problems),
@@ -842,7 +1109,6 @@ dipep <- mutate(dipep,
                 ##                            yes = 1,
                 ##                            no  = 0)
                 )
-
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -1036,7 +1302,7 @@ dipep <- mutate(dipep,
                 simplified.surgery = ifelse(surgery == 'Yes',
                                             yes = 1,
                                             no  = 0),
-                simplified.neoplasm = ifelse(medical.specify == 'Cancer',
+                simplified.neoplasm = ifelse(existing.medical.cancer == 'Yes',
                                              yes = 1,
                                              no  = 0),
                 simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE),
@@ -1062,7 +1328,8 @@ dipep <- mutate(dipep,
                              simplified.lower.limb.unilateral.pain +
                              simplified.haemoptysis +
                              simplified.heart.rate +
-                             simplified.lower.limb.pain)
+                             simplified.lower.limb.pain) %>%
+         mutate(-existing.medical.cancer)
 ## PERC
 dipep <- mutate(dipep,
                 perc.age = ifelse(age > 50,
@@ -1096,16 +1363,16 @@ dipep <- mutate(dipep,
                 perc.dvt = ifelse(dvt == 'Yes',
                                   yes = 1,
                                   no  = 0),
-                perc = perc.age +
-                       perc.heart.rate +
-                       perc.o2 +
-                       perc.cough +
-                       perc.haemoptysis +
-                       perc.leg.swelling +
-                       perc.surgery +
-                       ## perc.embolism +
-                       perc.hormone +
-                       perc.dvt)
+                perc.risk = perc.age +
+                            perc.heart.rate +
+                            perc.o2 +
+                            perc.cough +
+                            perc.haemoptysis +
+                            perc.leg.swelling +
+                            perc.surgery +
+                            ## perc.embolism +
+                            perc.hormone +
+                            perc.dvt)
                 ## perc.pe = ifelse())
 ## Wells
 dipep <- mutate(dipep,
@@ -1127,7 +1394,7 @@ dipep <- mutate(dipep,
                 wells.hemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
                                           yes = 3,
                                           no  = 0),
-                wells.neoplasm = ifelse(medical.specify == 'Cancer',
+                wells.neoplasm = ifelse(existing.medical.cancer == 1,
                                         yes = 3,
                                         no  = 0),
                 wells = wells.dvt +
@@ -1357,6 +1624,8 @@ dipep.README.variables$unavailable.forms              <- fields_dipep(df     = m
                                                                 fields = fields)
 dipep.README.variables$womans.details                 <- fields_dipep(df     = master$womans.details,
                                                                 fields = fields)
+## ToDo (2016-12-07) - Add in derived scores etc.
+dipep.README.variables$wells.pe <-
 
 #######################################################################
 ## Save all data frames                                              ##
