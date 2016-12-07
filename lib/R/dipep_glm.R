@@ -141,7 +141,12 @@ dipep_glm <- function(df              = .data,
     ## names(results$predicted) <- c('predicted', 'pe')
     ## Extract these from the 'augmented' data frame
     results$predicted <- dplyr::select(results$augmented, pe, .fitted)
-    results$predicted$name <- predictor
+    if(length(predictor) == 1){
+        results$predicted$name <- predictor
+    }
+    else{
+        results$predicted$name <- model
+    }
     results$predicted$term <- model
     names(results$predicted) <- gsub('.fitted', 'M', names(results$predicted))
     names(results$predicted) <- gsub('pe', 'D', names(results$predicted))
