@@ -112,7 +112,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('thromboYes', 'Known Thrombophilia', term),
                              term = gsub('multiple.pregYes', 'Multiple Pregnancy', term),
                              term = gsub('travelYes', 'Long-haul travel during pregnancy', term),
-                             term = gsub('immobilYes', '3 or more days Immobility/bed rest during pregnancy', term),
+                             term = gsub('immobilYes', '>=3 days Immobility/bed rest during pregnancy', term),
                              term = gsub('ecgNormal', 'ECG : Normal', term),
                              term = gsub('ecgAbnormal', 'ECG : Abnormal', term),
                              term = gsub('ecgNot performed', 'ECG : Not Performed', term),
@@ -121,6 +121,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('xrayAbnormal', 'X-ray : Abnormal', term),
                              term = gsub('xrayNot performed', 'X-ray : Not Performed', term),
                              term = gsub('xray.catAbnomral ECG', 'X-ray (Binary) : Abnormal', term))
+    ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
     results$glance    <- broom::glance(results$fitted)
     ## Add the predictor to each to make it easier combining
@@ -134,13 +135,19 @@ dipep_glm <- function(df              = .data,
     ## results$predicted <- merge(dplyr::select(results$df, obs, pe),
     ##                            results$predicted,
     ##                            by = c('obs'))
-    results$predicted <- cbind(predict(results$fitted, type = 'response'),
-                               results$fitted$y) %>%
-                         as.data.frame()
-    names(results$predicted) <- c('predicted', 'pe')
+    ## results$predicted <- cbind(predict(results$fitted, type = 'response'),
+    ##                            results$fitted$y) %>%
+    ##                      as.data.frame()
+    ## names(results$predicted) <- c('predicted', 'pe')
+    ## Extract these from the 'augmented' data frame
+    results$predicted <- dplyr::select(results$augmented, pe, .fitted)
+    results$predicted$name <- predictor
+    results$predicted$term <- model
+    names(results$predicted) <- gsub('.fitted', 'M', names(results$predicted))
+    names(results$predicted) <- gsub('pe', 'D', names(results$predicted))
     ## Return ROC curve for this model
     results$roc <- ggplot(results$predicted,
-                          aes(d = pe, m = predicted)) +
+                          aes(d = D, m = M)) +
                    geom_roc() +
                    guides(guide = guide_legend(title = '')) +
                    ggtitle(paste0('ROC curve for ', model)) +
@@ -150,8 +157,5 @@ dipep_glm <- function(df              = .data,
     results$roc <- results$roc +
                    annotate('text', x = 0.75, y = 0.25,
                             label = paste0('AUC = ', round(results$auc$AUC, 3)))
-    ## Rename predicted df for ease of subsequent use
-    ## names(results$predicted) <- c('obs', paste0('pe.', model), paste0('pred.', model))
-    names(results$predicted) <- c(paste0('predicted.', model), paste0('pe.', model))
     return(results)
 }
