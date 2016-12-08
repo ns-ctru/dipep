@@ -3,139 +3,184 @@
 logistic <- list()
 ## Age
 logistic$age <- dipep_glm(df = dipep,
-                          predictor = 'age')
+                          predictor = 'age',
+                          model     = 'Age')
 ## Age (Categorised)
 logistic$age.cat <- dipep_glm(df = dipep,
-                          predictor = 'age.cat')
+                              predictor = 'age.cat',
+                              model     = 'Age (Binary)')
 ## Smoking
 logistic$smoking <- dipep_glm(df = dipep,
-                          predictor = 'smoking')
+                              predictor = 'smoking',
+                              model = 'Smoking')
 ## Temperature (Categorised)
-logistic$temperature.cat <- dipep_glm(df = dipep,
-                          predictor = 'temperature.cat')
+logistic$temperature.cat <- dipep_glm(df        = dipep,
+                                      predictor = 'temperature.cat',
+                                      model     = 'Temperature (Binary)')
 ## Temperature
-logistic$temperature <- dipep_glm(df = dipep,
-                          predictor = 'temperature')
+logistic$temperature <- dipep_glm(df            = dipep,
+                                  predictor     = 'temperature',
+                                  model         = 'Temperature')
 ## BP Diastolic (Categorised)
-logistic$bp.diastolic.cat <- dipep_glm(df = dipep,
-                          predictor = 'bp.diastolic.cat')
+logistic$bp.diastolic.cat <- dipep_glm(df        = dipep,
+                                       predictor = 'bp.diastolic.cat',
+                                       model     = 'Diastolic BP (Binary)')
 ## BP Diastolic
-logistic$bp.diastolic <- dipep_glm(df = dipep,
-                          predictor = 'bp.diastolic')
+logistic$bp.diastolic <- dipep_glm(df        = dipep,
+                                   predictor = 'bp.diastolic',
+                                   model     = 'Diastolic BP')
 ## BP Systolic (Categorised)
 ## logistic$bp.systolic.cat <- dipep_glm(df = dipep,
-##                           predictor = 'bp.systolic.cat')
+##                                       predictor = 'bp.systolic.cat',
+##                                       model     = Systolic BP (Binary)')
 ## BP Systolic
 logistic$bp.systolic <- dipep_glm(df = dipep,
-                          predictor = 'bp.systolic')
+                                  predictor = 'bp.systolic',
+                                  model     = 'Systolic BP')
 ## O2 Saturation (Categorised)
 logistic$o2.saturation.cat <- dipep_glm(df = dipep,
-                          predictor = 'o2.saturation.cat')
+                                        predictor = 'o2.saturation.cat',
+                                        model = 'O2 Saturation (Binary)')
 ## O2 Saturation
 logistic$o2.saturation <- dipep_glm(df = dipep,
-                          predictor = 'o2.saturation')
+                                    predictor = 'o2.saturation',
+                                    model = 'O2 Saturation')
 ## Respiratory Rate (Categorised)
 logistic$respiratory.rate.cat <- dipep_glm(df = dipep,
-                          predictor = 'respiratory.rate.cat')
+                                           predictor = 'respiratory.rate.cat',
+                                           model = 'Respiratory Rate (Binary)')
 ## Respiratory Rate
 logistic$respiratory.rate <- dipep_glm(df = dipep,
-                          predictor = 'respiratory.rate')
+                                       predictor = 'respiratory.rate',
+                                       model = 'Respiratory Rate')
 ## Heart Rate (Categorised)
 logistic$heart.rate.cat <- dipep_glm(df = dipep,
-                          predictor = 'heart.rate.cat')
+                                     predictor = 'heart.rate.cat',
+                                     model = 'Heart Rate (Binary)')
 ## Heart Rate
 logistic$heart.rate <- dipep_glm(df = dipep,
-                          predictor = 'heart.rate')
+                                 predictor = 'heart.rate',
+                                 model = 'Heart Rate')
 ## BMI (Categorised)
 logistic$bmi.cat <- dipep_glm(df = dipep,
-                          predictor = 'bmi.cat')
+                              predictor = 'bmi.cat',
+                              model = 'BMI (Binary)')
 ## BMI
 logistic$bmi <- dipep_glm(df = dipep,
-                          predictor = 'bmi')
+                          predictor = 'bmi',
+                          model = 'BMI')
 ## Previous Pregnancies < 24 weeks
 logistic$pregnancies.under <- dipep_glm(df = dipep,
-                          predictor = 'pregnancies.under')
+                                        predictor = 'pregnancies.under',
+                                        model = 'Pregnancies <= 24')
 ## Previous Pregnancies > 24 weeks
 logistic$pregnancies.over <- dipep_glm(df = dipep,
-                          predictor = 'pregnancies.over')
+                                       predictor = 'pregnancies.over',
+                                       model = 'Pregnancies >= 24')
 ## Previous Pregnancy Problems
 logistic$prev.preg.problem <- dipep_glm(df = dipep,
-                             predictor = 'prev.preg.problem')
+                                        predictor = 'prev.preg.problem',
+                                        model = 'Previous Pregnancy Problems')
 ## Pleuritic
 logistic$presenting.features.pleuritic <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.pleuritic')
+                                                    predictor = 'presenting.features.pleuritic',
+                                                    model = 'Pleuritic')
 ## Non-Pleuritic
 logistic$presenting.features.non.pleuritic <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.non.pleuritic')
+                                                        predictor = 'presenting.features.non.pleuritic',
+                                                        model = 'Non-Pleuritic')
 ## Shortness of Breath (Exertion)
 logistic$presenting.features.sob.exertion <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.sob.exertion')
+                                                       predictor = 'presenting.features.sob.exertion',
+                                                       model = 'Shortness of Breath (Exertion)')
 ## Shortness of Breath (Rest)
 logistic$presenting.features.sob.rest <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.sob.rest')
+                                                   predictor = 'presenting.features.sob.rest',
+                                                   model = 'Shortness of Breath (Rest)')
 ## Haemoptysis
 logistic$presenting.features.haemoptysis <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.haemoptysis')
+                                                      predictor = 'presenting.features.haemoptysis',
+                                                      model = 'Haemoptysis')
 ## Cough
 logistic$presenting.features.cough <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.cough')
+                                                predictor = 'presenting.features.cough',
+                                                model = 'Cough')
 ## Syncope
 logistic$presenting.features.syncope <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.syncope')
+                                                  predictor = 'presenting.features.syncope',
+                                                  model = 'Syncope')
 ## Palpitations
 logistic$presenting.features.palpitations <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.palpitations')
+                                                       predictor = 'presenting.features.palpitations',
+                                                       model = 'Palpitations')
 ## Other Features on Presentation
 logistic$presenting.features.other <- dipep_glm(df = dipep,
-                          predictor = 'presenting.features.other')
-## Other Features on Presentation
+                                                predictor = 'presenting.features.other',
+                                                model = 'Other')
+## Surgery
 logistic$surgery <- dipep_glm(df = dipep,
-                          predictor = 'surgery')
+                              predictor = 'surgery',
+                              model = 'Surgery')
 ## Family history of thrombosis
 logistic$history.thrombosis <- dipep_glm(df = dipep,
-                          predictor = 'history.thrombosis')
+                                         predictor = 'history.thrombosis',
+                                         model = 'Family History of Thrombosis')
 ## History of varicoseveins
 logistic$history.veins <- dipep_glm(df = dipep,
-                          predictor = 'history.veins')
+                                    predictor = 'history.veins',
+                                    model =  'Varicose Veins')
 ## History of IV Drug use
 logistic$history.iv.drug <- dipep_glm(df = dipep,
-                          predictor = 'history.iv.drug')
+                                      predictor = 'history.iv.drug',
+                                      model = 'History of IV Drug Use')
 ## Thrombosis
 logistic$thrombosis <- dipep_glm(df = dipep,
-                          predictor = 'thrombosis')
+                                 predictor = 'thrombosis',
+                                 model = 'History of Thrombosis')
 ## Trimester
 logistic$trimester <- dipep_glm(df = dipep,
-                          predictor = 'trimester')
+                                predictor = 'trimester',
+                                model = 'Trimester')
 ## Problems with this pregnancy
 logistic$this.pregnancy.problems <- dipep_glm(df = dipep,
-                          predictor = 'this.pregnancy.problems')
+                                              predictor = 'this.pregnancy.problems',
+                                              model = 'Problems During This Pregnancy')
 ## Thrombo
 logistic$thrombo <- dipep_glm(df = dipep,
-                          predictor = 'thrombo')
+                              predictor = 'thrombo',
+                              model = 'Known Thrombophilia')
 ## Multiple Pregnancy
 logistic$multiple.preg <- dipep_glm(df = dipep,
-                          predictor = 'multiple.preg')
+                                    predictor = 'multiple.preg',
+                                    model = 'Multiple Pregnancy')
 ## Travel
 logistic$travel <- dipep_glm(df = dipep,
-                          predictor = 'travel')
+                             predictor = 'travel',
+                             model = 'Long-haul travel during pregnancy')
 ## Immobility
 logistic$immobil <- dipep_glm(df = dipep,
-                          predictor = 'immobil')
+                              predictor = 'immobil',
+                              model = '>=3 days Immobility/bed rest during pregnancy')
 ## ECG (Categorised)
 logistic$ecg.cat <- dipep_glm(df = dipep,
-                          predictor = 'ecg.cat')
+                              predictor = 'ecg.cat',
+                              model = 'ECG (Binary)')
 ## ECG
 logistic$ecg <- dipep_glm(df = dipep,
-                          predictor = 'ecg')
+                          predictor = 'ecg',
+                          model = 'ECG')
 ## ECG (Categorised)
 logistic$xray.cat <- dipep_glm(df = dipep,
-                          predictor = 'xray.cat')
+                               predictor = 'xray.cat',
+                               model = 'X-Ray (Binary)')
 ## X-Ray
 logistic$xray <- dipep_glm(df = dipep,
-                          predictor = 'xray')
+                           predictor = 'xray',
+                           model = 'X-Ray')
 ## X-Ray (Categorised)
 logistic$xray.cat <- dipep_glm(df = dipep,
-                          predictor = 'xray.cat')
+                               predictor = 'xray.cat',
+                               model = 'X-Ray (Binary)')
 
 
 ## Combine all three sets of tidied output from each model
@@ -274,6 +319,9 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$ecg$predicted,
                             logistic$xray.cat$predicted,
                             logistic$xray$predicted)
+## Remove 'presenting.features.' from name
+logistic$predicted <- mutate(logistic$predicted,
+                             name = gsub('presenting.features.', '', name))
 
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
@@ -306,13 +354,19 @@ The point-estimate and 95% Confidence Intervals from univariable logistic regres
 
 ```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
-    dplyr::select(term, estimate, lower, upper, p.value)
+          ## Remove temperature and O2 Saturation as CI is HUGE
+          dplyr::filter(term != 'Temperature (High)') %>%
+          dplyr::filter(term != 'O2 Saturation (High)') %>%
+          dplyr::select(term, estimate, lower, upper, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lower, ymax = upper)) +
     coord_flip() + geom_hline(yintercept = 0) +
     xlab('Predictor') + ylab('Estimate') +
     ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression') +
     theme_bw() + theme(legend.position = 'none')
+## Redo subsetting, include temperature and O2 Saturation
+to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
+          dplyr::select(term, estimate, lower, upper, p.value)
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
@@ -326,27 +380,32 @@ rm(to.sum)
 
 ```{r results_logistic_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
-markers <- names(logistic$predicted)[2:length(names(logistic$predicted))]
-to.plot <- melt_roc(logistic$predicted, d = 'pe', m = markers)
-to.plot <- mutate(to.plot,
-                  name = gsub('presenting.features.', '', name))
-## names(to.plot) <- gsub('name', 'Predictor', names(to.plot)
 ## ROC for continuous variables
-ggplot(dplyr::filter(to.plot, name %in% c('age', 'bmi', 'o2.saturation', 'bp.diastolic', 'bp.systolic', 'temperature')),
-       aes(d = D, m = M, colour = name)) +
+ggplot(dplyr::filter(logistic$predicted, name %in% c('age',
+                                                     'bmi',
+                                                     'o2.saturation',
+                                                     'bp.diastolic',
+                                                     'bp.systolic',
+                                                     'temperature')),
+       aes(d = D, m = M, colour = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
     ggtitle('ROC curves for Continuous Univariable Logistic Regression') +
     style_roc() + theme_bw()
 ## Plot categorised variables
-ggplot(dplyr::filter(to.plot, name %in% c('age.cat', 'bmi.cat', 'o2.saturation.cat', 'bp.diastolic.cat', 'bp.systolic.cat', 'temperature.cat')),
-       aes(d = D, m = M, color = name)) +
+ggplot(dplyr::filter(logistic$predicted, name %in% c('age.cat',
+                                                     'bmi.cat',
+                                                     'o2.saturation.cat',
+                                                     'bp.diastolic.cat',
+                                                     'bp.systolic.cat',
+                                                     'temperature.cat')),
+       aes(d = D, m = M, color = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
     ggtitle('ROC curves for Binary Univariable Logistic Regression') +
     style_roc() + theme_bw()
 ## Plot presenting features
-ggplot(dplyr::filter(to.plot, name %in% c('pleuritic',
+ggplot(dplyr::filter(logistic$predicted, name %in% c('pleuritic',
                                           'non.pleuritic',
                                           'sob.exertion',
                                           'sob.rest',
@@ -355,13 +414,13 @@ ggplot(dplyr::filter(to.plot, name %in% c('pleuritic',
                                           'syncope',
                                           'palpitations',
                                           'other')),
-       aes(d = D, m = M, color = name)) +
+       aes(d = D, m = M, color = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
     ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
     style_roc() + theme_bw()
 ## Plot Other
-ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
+ggplot(dplyr::filter(logistic$predicted, name %in% c('prev.preg.problem',
                                           'pregnancies.over',
                                           'pregnancies.under',
                                           'xray.cat',
@@ -373,7 +432,7 @@ ggplot(dplyr::filter(to.plot, name %in% c('prev.preg.problem',
     ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
     style_roc() + theme_bw()
 ## Plot Medical History
-ggplot(dplyr::filter(to.plot, name %in% c('history.thrombosis',
+ggplot(dplyr::filter(logistic$predicted, name %in% c('history.thrombosis',
                                           'history.iv.drug',
                                           'history.veins',
                                           'thrombo',
