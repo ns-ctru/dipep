@@ -245,11 +245,11 @@ dplyr::select(dipep, ethnicity, group) %>%
     xlab('') + ylab('N') +
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+    facet_wrap(~group, ncol = 3) + theme_bw() +
+    theme(axis.text.x = element_text(angle = 90))
 
 ```
 
-**TODO** Rotate x-axis labels.
 
 #### Age
 
