@@ -1,4 +1,4 @@
-#' Summarise Dipep variaables
+#' Summarise Dipep variables
 #'
 #' @description Summary statistics for any given numerical variable
 #'
@@ -16,8 +16,8 @@
 #'
 #' @export
 dipep_summarise <- function(df              = .data,
-                            grouping        = group,
-                            to.sum          = 'respiratory.rate',
+                            grouping        = 'group',
+                            to.sum          = c('respiratory.rate', 'heart.rate'),
                             na.rm           = 'TRUE',
                             ## mean            = TRUE,
                             ## sd              = TRUE,
@@ -29,11 +29,16 @@ dipep_summarise <- function(df              = .data,
                             ## missing         = TRUE,
                             ...){
     results <- list()
+    ## Subset the data
+    df <- dplyr::select_(df, .dots = c(grouping, to.sum))
     head(df) %>% print()
+    mean(df$respiratory.rate, na.rm = TRUE) %>% print()
     ## Overall
-    overall <- summarise_(df,
-                          n = ~n(),
-                          mean   = ~mean(to.sum, na.rm = na.rm))
+    overall <- summarise_each_(df,
+                               funs(mean(na.rm = TRUE),
+                                    sd(na.rm = TRUE)),
+                               .dots = to.sum)
+                               ## vars(~to.sum))
     overall %>% print()
     ## By Group
     return(results)
