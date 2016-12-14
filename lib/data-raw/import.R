@@ -511,8 +511,7 @@ t7 <- dplyr::select(master$med.hist,
                     thrombosis,
                     medical.probs,
                     surgery,
-                    surgery.other,
-                    injury)
+                    surgery.other)
 ## This Pregnancy
 t8 <- dplyr::select(master$pregnancy,
                     screening,
@@ -1186,11 +1185,9 @@ dipep <- mutate(dipep,
                 thrombo                            = factor(thrombo),
                 multiple.preg                      = factor(multiple.preg),
                 thrombosis                         = factor(thrombosis),
-                thrombosis                         = relevel(thrombosis, ref = 'No'),
                 injury                             = factor(injury,
                                                             levels = c(0, 1),
                                                             labels = c('No', 'Yes')),
-                injury                             = relevel(injury, ref = 'No'),
                 travel                             = factor(travel),
                 immobil                            = factor(immobil)
                 ## ToDo - Thresholds
@@ -1269,11 +1266,15 @@ dipep <- mutate(dipep,
                                                             ref = 'No'),
                 thrombo                           = relevel(thrombo,
                                                             ref = 'No'),
+                thrombosis                        = relevel(thrombosis,
+                                                            ref = 'No'),
                 multiple.preg                     = relevel(multiple.preg,
                                                             ref = 'No'),
                 travel                            = relevel(travel,
                                                             ref = 'No'),
                 immobil                           = relevel(immobil,
+                                                            ref = 'No'),
+                injury                            = relevel(injury,
                                                             ref = 'No')
                 ## d.dimer.high                   = relevel(d.dimer.high)
                 )
@@ -1328,8 +1329,7 @@ dipep <- mutate(dipep,
                              simplified.lower.limb.unilateral.pain +
                              simplified.haemoptysis +
                              simplified.heart.rate +
-                             simplified.lower.limb.pain) %>%
-         mutate(-existing.medical.cancer)
+                             simplified.lower.limb.pain)
 ## PERC
 dipep <- mutate(dipep,
                 perc.age = ifelse(age > 50,
@@ -1391,7 +1391,7 @@ dipep <- mutate(dipep,
                 wells.previous.dvt.pe = ifelse(thrombosis == 'Yes',
                                                yes = 1.5,
                                                no  = 0),
-                wells.hemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
+                wells.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
                                           yes = 3,
                                           no  = 0),
                 wells.neoplasm = ifelse(existing.medical.cancer == 1,
@@ -1402,7 +1402,7 @@ dipep <- mutate(dipep,
                         wells.heart.rate +
                         wells.surgery.immobil +
                         wells.previous.dvt.pe +
-                        wells.hemoptysis +
+                        wells.haemoptysis +
                         wells.neoplasm,
                 wells.pe.risk = ifelse(wells > 6,
                                        yes = 'High',
@@ -1411,7 +1411,8 @@ dipep <- mutate(dipep,
                                                    no  = 'Low')),
                 wells.pe      = ifelse(wells > 2,
                                        yes = 'PE',
-                                       no  = 'No PE'))
+                                       no  = 'No PE')) %>%
+         dplyr::select(-existing.medical.cancer)
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
@@ -1625,7 +1626,28 @@ dipep.README.variables$unavailable.forms              <- fields_dipep(df     = m
 dipep.README.variables$womans.details                 <- fields_dipep(df     = master$womans.details,
                                                                 fields = fields)
 ## ToDo (2016-12-07) - Add in derived scores etc.
-dipep.README.variables$wells.pe <-
+## dipep.README.variables$perc <-rbind(c('perc.age', 'PERC Score - Age'),
+##                                     c('perc.heart.rate', 'PERC Score - Heart Rate'),
+##                                     c('perc.o2', 'PERC Score - O2 Saturation'),
+##                                     c('perc.cough', 'PERC Score - Cough'),
+##                                     c('perc.haemoptysis', 'PERC Score - Haemoptysis'),
+##                                     c('perc.leg.swelling', 'PERC Score - Leg Swelling'),
+##                                     c('perc.surgery', 'PERC Score - Surgery'),
+##                                     c('perc.embolism', 'PERC Score - Embolism'),
+##                                     c('perc.hormone', 'PERC Score - Hormone'),
+##                                     c('perc.dvt', 'PERC Score - DVT'),
+##                                     c('perc.risk', 'PERC Score - Overall Risk'),
+##                                     c('perc.pe', 'PERC Score - Pulmonary Embolism'))
+## dipep.README.variables$wells <- rbind(c('wells.dvt', 'Wells Score - DVT'),
+##                                       c('wells.alternative', 'Wells Score - Alternative'),
+##                                       c('wells.heart.rate', 'Wells Score - Heart Rate'),
+##                                       c('wells.surgery.immobil', 'Wells Score - Surgery/Immobile'),
+##                                       c('wells.previous.dvt.pe', 'Wells Score - Previous DVT/PE'),
+##                                       c('wells.haemoptysis', 'Wells Score - Haemoptysis'),
+##                                       c('wells.neoplasm', 'Wells Score - Neoplasm'),
+##                                       c('wells', 'Wells Score - Overall'),
+##                                       c('wells.pe.risk', 'Wells Score - Risk'),
+##                                       c('wells.pe', 'Wells Score - Pulmonary Embolism'))
 
 #######################################################################
 ## Save all data frames                                              ##
