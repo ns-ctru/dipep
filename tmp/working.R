@@ -1,3 +1,36 @@
+## 2016-12-14 Deriving the number of missing observations for a subset
+test <- dipep_incomplete(df = dipep,
+                         id = screening,
+                         heart.rate, respiratory.rate, bp.systolic, bp.diastolic) %>%
+        group_by(group, n_missing) %>%
+        tally()
+test <- dipep_incomplete(df = dipep,
+                         heart.rate, respiratory.rate, bp.systolic, bp.diastolic,
+                         summarise = TRUE)
+
+## 2016-12-07 Resolving multivariable model in light of tweaks to dipep_glm()
+##            restructuring function and obtaining predicted probabilities
+dipep_glm(df = dipep,
+          predictor = c('age', 'bmi', 'temperature', 'bp.diastolic', 'bp.systolic',
+                        'o2.saturation', 'respiratory.rate', 'heart.rate', 'smoking',
+                        'prev.preg.problem', 'pregnancies.under', 'pregnancies.over',
+                        'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+                        'presenting.features.sob.rest', 'presenting.features.sob.exertion',
+                        'presenting.features.cough', 'presenting.features.haemoptysis',
+                        'presenting.features.syncope', 'presenting.features.palpitations',
+                        'presenting.features.other', 'surgery',
+                        'history.thrombosis', 'history.veins', ## 'history.iv.drug',
+                        'thrombosis', 'trimester', 'this.pregnancy.problems',
+                        'thrombo', 'multiple.preg', 'travel', 'immobil',
+                        'ecg', 'xray'),
+          model = 'Saturated Multivariable Logistic Model')
+
+## 2016-12-02 Testing AUC annotation
+logistic <- list()
+## Age
+logistic$age <- dipep_glm(df = dipep,
+                          predictor = 'age')
+
 ## 2016-11-22 Checking conversion of NA to values for categorical variables
 #######################################################################
 ## Combine required variables into one coherent data frame (would be ##
@@ -158,7 +191,6 @@ rm(event.date.dvt, event.date.suspected.pe)
 names(event.date) <- gsub('consent', 'event', names(event.date))
 ## Merge the subsets
 merge.by <- c('screening', 'group', 'site', 'event.name')
-
 t <- merge(t1,
            t2,
            by    = merge.by,
@@ -211,7 +243,65 @@ master$missing <- merge(t,
                         all.y = TRUE) %>%
                   filter(is.na(year.of.birth)) %>%
                   dplyr::select(screening, event.date, group, site, year.of.birth)
-
+## Table variables for checking
+print('BMI')
+table(dipep$bmi, useNA = 'ifany')
+print('Pregnancies Over')
+table(dipep$pregnancies.over, useNA = 'ifany')
+print('Pregnancies Under')
+table(dipep$pregnancies.under, useNA = 'ifany')
+print('Temperature')
+table(dipep$temperature, useNA = 'ifany')
+print('BP Diastolic')
+table(dipep$bp.diastolic, useNA = 'ifany')
+print('BP Systolic')
+table(dipep$bp.systolic, useNA = 'ifany')
+print('O2 Saturation')
+table(dipep$o2.saturation, useNA = 'ifany')
+print('Respiratory Rate')
+table(dipep$respiratory.rate, useNA = 'ifany')
+print('Smoking')
+table(dipep$smoking, useNA = 'ifany')
+print('ECG')
+table(dipep$ecg, useNA = 'ifany')
+print('XRay')
+table(dipep$xray, useNA = 'ifany')
+print('Medical Problem')
+table(dipep$medical.specify, useNA = 'ifany')
+print('Problems this pregnancy')
+table(dipep$this.preg.problem.specify, useNA = 'ifany')
+print('Pleuritic')
+table(dipep$presenting.features.pleuritic, useNA = 'ifany')
+print('Non-Pleuritic')
+table(dipep$presenting.features.non.pleuritic, useNA = 'ifany')
+print('SOB Exertion')
+table(dipep$presenting.features.sob.exertion, useNA = 'ifany')
+print('SOB Rest')
+table(dipep$presenting.features.sob.rest, useNA = 'ifany')
+print('Cough')
+table(dipep$presenting.features.cough, useNA = 'ifany')
+print('Haemoptysis')
+table(dipep$presenting.features.haemoptysis, useNA = 'ifany')
+print('Syncope')
+table(dipep$presenting.features.syncope, useNA = 'ifany')
+print('Palpitations')
+table(dipep$presenting.features.palpitations, useNA = 'ifany')
+print('Other')
+table(dipep$presenting.features.other, useNA = 'ifany')
+print('Thrombosis')
+table(dipep$history.thrombosis, useNA = 'ifany')
+print('History Veins')
+table(dipep$history.veins, useNA = 'ifany')
+print('History IV Drugs')
+table(dipep$history.iv.drug, useNA = 'ifany')
+print('Thrombo')
+table(dipep$thrombo, useNA = 'ifany')
+print('Multiple Pregnancies')
+table(dipep$multiple.preg, useNA = 'ifany')
+print('Travel')
+table(dipep$travel, useNA = 'ifany')
+print('Immobil')
+table(dipep$immobil, useNA = 'ifany')
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
 ## could do in Prospect as then BMI, age, etc. would all be          ##
@@ -256,19 +346,19 @@ dipep <- mutate(dipep,
                                            no  = 1),
                 o2.saturation.cat = ifelse(is.na(o2.saturation),
                                            yes = 0,
-                                           no  = o2.saturation),
+                                           no  = o2.saturation.cat),
                 respiratory.rate.cat = ifelse(respiratory.rate <= 24,
                                               yes = 0,
                                               no  = 1),
                 respiratory.rate.cat = ifelse(is.na(respiratory.rate),
                                               yes = 0,
-                                              no  = 1),
+                                              no  = respiratory.rate.cat),
                 bmi.cat = ifelse(bmi >= 30,
                                  yes = 1,
                                  no  = 0),
                 bmi.cat = ifelse(is.na(bmi),
                                  yes = 0,
-                                 no  = bmi.cat)
+                                 no  = bmi.cat),
                 gestation = 280 - (ymd(edd) - ymd(event.date)),
                 trimester = ifelse(gestation < 98,
                                    yes = 0,
@@ -277,7 +367,7 @@ dipep <- mutate(dipep,
                                                 ifelse(gestation >= 196 & preg.post == 'Pregnant',
                                                        yes = 2,
                                                        no  = 3))),
-                trimester = ifeles(is.na(trimester),
+                trimester = ifelse(is.na(trimester),
                                    yes = 0,
                                    no  = trimester),
                 heart.rate.cat = ifelse(trimester != 2 & heart.rate > 100,
@@ -287,26 +377,26 @@ dipep <- mutate(dipep,
                                                      no  = 0)),
                 heart.rate.cat = ifelse(is.na(heart.rate.cat),
                                         yes = 0,
-                                        no  = heart.rate.cat)
+                                        no  = heart.rate.cat),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
                 cesarean = ifelse(grepl('c*esarian|c*section|caesarean|emcs|lscs|c/s', surgery.other, ignore.case = TRUE),
                                   yes = 1,
                                   no  = 0),
                 cesarean = ifelse(is.na(cesarean),
                                   yes = 0,
-                                  no  = cesarean)
+                                  no  = cesarean),
                 smoking.cat = ifelse(smoking == 'current' | smoking == 'gave up during pregnancy',
                                      yes = 1,
                                      no  = 0),
                 smoking.cat = ifelse(is.na(smoking.cat),
                                      yes = 0,
-                                     no  = 1),
+                                     no  = smoking.cat),
                 age.cat = ifelse(age > 35,
                                  yes = 1,
                                  no  = 0),
                 age.cat = ifelse(is.na(age.cat),
                                  yes = 0,
-                                 no  = age.cat)
+                                 no  = age.cat),
                 ecg.cat = ifelse(ecg == 'Abnormal',
                                  yes = 1,
                                  no  = 0),
@@ -331,7 +421,7 @@ dipep <- mutate(dipep,
                                           medical.specify == 'Other medical disorders e.g. nephrotic syndrome, cardiac disease',
                                           yes = 1,
                                           no  = 0),
-                existing.medical = ifelse(is.na(this.pregnancy),
+                existing.medical = ifelse(is.na(existing.medical),
                                           yes = 0,
                                           no  = existing.medical),
                 this.pregnancy.problems = ifelse(this.preg.problem.specify == 'Dehydration requiring admission' |
@@ -347,7 +437,7 @@ dipep <- mutate(dipep,
                                                  this.preg.problem.specify == 'Stillbirth',
                                                  yes = 1,
                                                  no  = 0),
-                this.pregnancy.problems = ifelse(is.na(this.pregnancy),
+                this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
                                                  yes = 0,
                                                  no  = this.pregnancy.problems),
                 diagnosis.post.pe = ifelse(grepl('pe', diagnosis.post, ignore.case = TRUE) |
@@ -421,6 +511,66 @@ dipep <- mutate(dipep,
                 ##                            no  = 0)
                 )
 
+## Table variables for checking
+print('BMI')
+table(dipep$bmi.cat, useNA = 'ifany')
+print('Pregnancies Over')
+table(dipep$pregnancies.over.cat, useNA = 'ifany')
+print('Pregnancies Under')
+table(dipep$pregnancies.under.cat, useNA = 'ifany')
+print('Temperature')
+table(dipep$temperature.cat, useNA = 'ifany')
+print('BP Diastolic')
+table(dipep$bp.diastolic.cat, useNA = 'ifany')
+print('BP Systolic')
+table(dipep$bp.systolic.cat, useNA = 'ifany')
+print('O2 Saturation')
+table(dipep$o2.saturation.cat, useNA = 'ifany')
+print('Respiratory Rate')
+table(dipep$respiratory.rate.cat, useNA = 'ifany')
+print('Smoking')
+table(dipep$smoking.cat, useNA = 'ifany')
+print('ECG')
+table(dipep$ecg.cat, useNA = 'ifany')
+print('XRay')
+table(dipep$xray.cat, useNA = 'ifany')
+print('Medical Problem')
+table(dipep$existing.medical, useNA = 'ifany')
+print('Problems this pregnancy')
+table(dipep$this.pregnancy.problems, useNA = 'ifany')
+print('Pleuritic')
+table(dipep$presenting.features.pleuritic, useNA = 'ifany')
+print('Non-Pleuritic')
+table(dipep$presenting.features.non.pleuritic, useNA = 'ifany')
+print('SOB Exertion')
+table(dipep$presenting.features.sob.exertion, useNA = 'ifany')
+print('SOB Rest')
+table(dipep$presenting.features.sob.rest, useNA = 'ifany')
+print('Cough')
+table(dipep$presenting.features.cough, useNA = 'ifany')
+print('Haemoptysis')
+table(dipep$presenting.features.haemoptysis, useNA = 'ifany')
+print('Syncope')
+table(dipep$presenting.features.syncope, useNA = 'ifany')
+print('Palpitations')
+table(dipep$presenting.features.palpitations, useNA = 'ifany')
+print('Other')
+table(dipep$presenting.features.other, useNA = 'ifany')
+print('Thrombosis')
+table(dipep$history.thrombosis, useNA = 'ifany')
+print('History Veins')
+table(dipep$history.veins, useNA = 'ifany')
+print('History IV Drugs')
+table(dipep$history.iv.drug, useNA = 'ifany')
+print('Thrombo')
+table(dipep$thrombo, useNA = 'ifany')
+print('Multiple Pregnancies')
+table(dipep$multiple.preg, useNA = 'ifany')
+print('Travel')
+table(dipep$travel, useNA = 'ifany')
+print('Immobil')
+table(dipep$immobil, useNA = 'ifany')
+
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -482,9 +632,7 @@ dipep <- mutate(dipep,
                 diagnosis.post.pe = factor(diagnosis.post.pe,
                                            levels = c(0, 1),
                                            labels = c('No PE', 'PE')),
-                presenting.features.pleuritic  = factor(presenting.features.pleuritic,
-                                                        levels = c(0, 1),
-                                                        labels = c('Not Ticked', 'Ticked')),
+                presenting.features.pleuritic  = factor(presenting.features.pleuritic),
                 presenting.features.non.pleuritic  = factor(presenting.features.non.pleuritic,
                                                         levels = c(0, 1),
                                                         labels = c('Not Ticked', 'Ticked')),
@@ -532,6 +680,66 @@ dipep <- mutate(dipep,
                 ##                            levels = c(0, 1),
                 ##                            labels = c('Normal', 'Very High'))
                 )
+
+## Table variables for checking
+print('BMI')
+table(dipep$bmi.cat, useNA = 'ifany')
+print('Pregnancies Over')
+table(dipep$pregnancies.over.cat, useNA = 'ifany')
+print('Pregnancies Under')
+table(dipep$pregnancies.under.cat, useNA = 'ifany')
+print('Temperature')
+table(dipep$temperature.cat, useNA = 'ifany')
+print('BP Diastolic')
+table(dipep$bp.diastolic.cat, useNA = 'ifany')
+print('BP Systolic')
+table(dipep$bp.systolic.cat, useNA = 'ifany')
+print('O2 Saturation')
+table(dipep$o2.saturation.cat, useNA = 'ifany')
+print('Respiratory Rate')
+table(dipep$respiratory.rate.cat, useNA = 'ifany')
+print('Smoking')
+table(dipep$smoking.cat, useNA = 'ifany')
+print('ECG')
+table(dipep$ecg.cat, useNA = 'ifany')
+print('XRay')
+table(dipep$xray.cat, useNA = 'ifany')
+print('Medical Problem')
+table(dipep$existing.medical, useNA = 'ifany')
+print('Problems this pregnancy')
+table(dipep$this.pregnancy.problems, useNA = 'ifany')
+print('Pleuritic')
+table(dipep$presenting.features.pleuritic, useNA = 'ifany')
+print('Non-Pleuritic')
+table(dipep$presenting.features.non.pleuritic, useNA = 'ifany')
+print('SOB Exertion')
+table(dipep$presenting.features.sob.exertion, useNA = 'ifany')
+print('SOB Rest')
+table(dipep$presenting.features.sob.rest, useNA = 'ifany')
+print('Cough')
+table(dipep$presenting.features.cough, useNA = 'ifany')
+print('Haemoptysis')
+table(dipep$presenting.features.haemoptysis, useNA = 'ifany')
+print('Syncope')
+table(dipep$presenting.features.syncope, useNA = 'ifany')
+print('Palpitations')
+table(dipep$presenting.features.palpitations, useNA = 'ifany')
+print('Other')
+table(dipep$presenting.features.other, useNA = 'ifany')
+print('Thrombosis')
+table(dipep$history.thrombosis, useNA = 'ifany')
+print('History Veins')
+table(dipep$history.veins, useNA = 'ifany')
+print('History IV Drugs')
+table(dipep$history.iv.drug, useNA = 'ifany')
+print('Thrombo')
+table(dipep$thrombo, useNA = 'ifany')
+print('Multiple Pregnancies')
+table(dipep$multiple.preg, useNA = 'ifany')
+print('Travel')
+table(dipep$travel, useNA = 'ifany')
+print('Immobil')
+table(dipep$immobil, useNA = 'ifany')
 
 
 ## 2016-10-13 Sample data/function to ask question
