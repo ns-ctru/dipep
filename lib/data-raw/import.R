@@ -908,11 +908,13 @@ t <- merge(t1,
           t11,
           by    = merge.by,
           all   = TRUE)
-## Now do two merges with the event.date, one to get a master dataset...
+## Now do three merges with the event.date, one to get a master dataset (excluding those who were Non recruited)...
 dipep <- merge(t,
                event.date,
                by    = c('screening', 'group', 'site'),
                all.x = TRUE)
+## Make a copy of this for assessing missing data
+dipep.raw <- dipep
 ## ...and one to get the IDs of those who have an event.date but nothing else...
 master$missing <- merge(t,
                         event.date,
@@ -928,6 +930,9 @@ master$missing <- merge(t,
 ## standardised and reusable and whoever does the QA will not have to##
 ## duplicate the work of deriving variables).                        ##
 #######################################################################
+dipep.raw <- mutate(dipep.raw,
+                    bmi = weight / (height / 100)^2,
+                    age = 2016 - year.of.birth)
 dipep <- mutate(dipep,
                 bmi = weight / (height / 100)^2,
                 age = 2016 - year.of.birth,
@@ -1185,9 +1190,7 @@ dipep <- mutate(dipep,
                 thrombo                            = factor(thrombo),
                 multiple.preg                      = factor(multiple.preg),
                 thrombosis                         = factor(thrombosis),
-                injury                             = factor(injury,
-                                                            levels = c(0, 1),
-                                                            labels = c('No', 'Yes')),
+                injury                             = factor(injury),
                 travel                             = factor(travel),
                 immobil                            = factor(immobil)
                 ## ToDo - Thresholds
@@ -1329,7 +1332,15 @@ dipep <- mutate(dipep,
                              simplified.lower.limb.unilateral.pain +
                              simplified.haemoptysis +
                              simplified.heart.rate +
-                             simplified.lower.limb.pain)
+                             simplified.lower.limb.pain,
+                simplified.risk = ifelse(simplified < 4,
+                                         yes = 'Low',
+                                         no  = ifelse(simplified >= 11,
+                                                      yes = 'High',
+                                                      no  = 'Moderate')),
+                simplified.pe = ifelse(simplified >= 4,
+                                       yes = 'PE',
+                                       no  = 'No PE'))
 ## PERC
 dipep <- mutate(dipep,
                 perc.age = ifelse(age > 50,
@@ -1372,8 +1383,10 @@ dipep <- mutate(dipep,
                             perc.surgery +
                             ## perc.embolism +
                             perc.hormone +
-                            perc.dvt)
-                ## perc.pe = ifelse())
+                            perc.dvt,
+                perc.pe = ifelse(perc.risk >= 2,
+                                 yes = 'PE',
+                                 no  = 'No PE'))
 ## Wells
 dipep <- mutate(dipep,
                 wells.dvt = ifelse(dvt == 'Yes',
@@ -1654,6 +1667,7 @@ dipep.README.variables$womans.details                 <- fields_dipep(df     = m
 #######################################################################
 save(master,
      dipep,
+     dipep.raw,
      ## follow.up.30.day,
      ## blood.sample,
      ## service.receipt,
