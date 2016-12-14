@@ -2,7 +2,7 @@
 ```{r child = 'subsections/recruitment.Rmd', eval = TRUE}
 ```
 
-### Data Completeness
+### Data Completeness {.tabset .tabset-fade .tabset-pills}
 ```{r child = 'subsections/missing_data.Rmd', eval = TRUE}
 ```
 
@@ -12,6 +12,10 @@
 
 ### EQ-5D-5L
 ```{r child = 'subsections/results_eq5d5l.Rmd', eval = TRUE}
+```
+
+### Existing Scores {.tabset .tabset-fade .tabset-pills}
+```{r child = 'subsections/results_existing.Rmd', eval = TRUE}
 ```
 
 ### Clinical Opinion {.tabset .tabset-fade .tabset-pills}
