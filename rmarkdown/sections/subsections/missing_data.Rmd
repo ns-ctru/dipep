@@ -9,9 +9,7 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep.raw,
                  id = screening,
                  age, bmi, heart.rate, respiratory.rate, bp.systolic, bp.diastolic, temperature, o2.saturation) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
   kable(caption = paste0('Number of missing physiological variables (Age, BMI, Heart Rate, Respiratory Rate, Systolic Blood Pressure, Diastolic Blood Pressure, Temperature and O2 Saturation) by group', 'Generated : ', Sys.time()))
 
 ```
@@ -21,9 +19,7 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep.raw,
                  id = screening,
                  history.thrombosis, history.veins, history.iv.drug, thrombo, surgery, injury, thrombosis) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
 kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group', 'Generated : ', Sys.time()))
 
 ```
@@ -33,10 +29,8 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep.raw,
                  id = screening,
                  multiple.preg, travel, immobil) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
-kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group.', 'Generated : ', Sys.time()))
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
+  kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group.', 'Generated : ', Sys.time()))
 
 ```
 
@@ -45,10 +39,8 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep.raw,
                  id = screening,
                  pregnancies.over, pregnancies.under, prev.preg.problem) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
-kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group.', 'Generated : ', Sys.time()))
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
+  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group.', 'Generated : ', Sys.time()))
 
 ```
 
@@ -86,9 +78,7 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep,
                  id = screening,
                  age, bmi, heart.rate, respiratory.rate, bp.systolic, bp.diastolic, temperature, o2.saturation) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
   kable(caption = paste0('Number of missing physiological variables (Age, BMI, Heart Rate, Respiratory Rate, Systolic Blood Pressure, Diastolic Blood Pressure, Temperature and O2 Saturation) by group', 'Generated : ', Sys.time()))
 
 ```
@@ -98,10 +88,8 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep,
                  id = screening,
                  history.thrombosis, history.veins, history.iv.drug, thrombo, surgery, injury, thrombosis) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
-kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group', 'Generated : ', Sys.time()))
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
+  kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group', 'Generated : ', Sys.time()))
 
 ```
 
@@ -110,10 +98,8 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep,
                  id = screening,
                  multiple.preg, travel, immobil) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
-kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group.', 'Generated : ', Sys.time()))
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
+  kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group.', 'Generated : ', Sys.time()))
 
 ```
 
@@ -122,10 +108,8 @@ options(knitr.kable.NA = 0)
 dipep_incomplete(df = dipep,
                  id = screening,
                  pregnancies.over, pregnancies.under, prev.preg.problem) %>%
-  group_by(group, n_missing) %>%
-  tally() %>%
-  dcast(group ~ n_missing) %>%
-kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group.', 'Generated : ', Sys.time()))
+  dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
+  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group.', 'Generated : ', Sys.time()))
 
 ```
 
