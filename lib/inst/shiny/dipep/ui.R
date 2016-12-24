@@ -92,7 +92,7 @@ shinyUI(
                      sliderInput('cp',
                                  'rpart : complexity parameter',
                                  min   = 0,
-                                 max   = 0.5,
+                                 max   = 0.1,
                                  step  = 0.00001,
                                  value = 0.001)
                      ## checkboxGroupInput('history', 'Medical History...',
@@ -126,13 +126,18 @@ shinyUI(
                                               h3('Pruned Model'),
                                               plotOutput('pruned.plot',
                                                          width  = "100%"),
-                                              verbatimTextOutput('part.cp.prune')
+                                              verbatimTextOutput('part.cp.prune'),
+                                              h3('ROC Curve'),
+                                              plotOutput('part.roc',
+                                                         width  = "100%")
                                               ),
                                      tabPanel('LASSO Regression',
                                               h3('Fitted Model'),
                                               plotOutput('lasso.plot'),
+                                              verbatimTextOutput('lasso'),
                                               h3('Cross-Validation'),
-                                              plotOutput('lasso.cvplot')
+                                              plotOutput('lasso.cvplot'),
+                                              verbatimTextOutput('lasso.cv')
                                               ),
                                      tabPanel('Logistic Regression',
                                               ## p(paste0('Whilst parsimony in modelling can be useful in situations such as the current scenario where the most accurate prediction is required it makes sense to use as much available information as possible rather than having a trade-off in the amount of information used and a reduction in accuracy as the subset of predictors is redcuded by the LASSO.  Practically this makes sense too, in A&E clinicians will have all of the information available on which to make a decision, and increasingly are not reliant on remembering a set of rules with the rise of software and applications to take the information and test it against a set of rules.  Therefore there seems little value in ignoring some of the information available by being parsimonious when it can all be used to inform the decision of how to treat the patient.  There is the website',
