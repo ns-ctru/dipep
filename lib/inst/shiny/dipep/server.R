@@ -75,67 +75,46 @@ shinyServer(function(input, output){
     })
     ## Generate ROC Curve
     output$part.roc <- renderPlot({
-        pred.obs <- cbind(predict(rpart.fit.prune(), type = 'prob'),
-                          rpart.fit.prune()$y) %>%
-                    as.data.frame()
+        ## Extract predicted variables, rename and add obs for binding
+        predicted <- cbind(predict(rpart.fit.prune())[,2],
+                           rpart.fit.prune()$y) %>%
+                     as.data.frame()
+        names(predicted) <- c('predicted', 'pe')
+        roc <- ggplot(predicted, aes(d = pe, m = predicted)) +
+               geom_roc() +
+               guides(guide = guide_legend(title = 'Predictor...')) +
+               ## ggtitle('ROC curve for multivariable logistic regression') +
+               style_roc() + theme_bw()
+        ## Calculate AUC + annotate plot
+        auc <- calc_auc(roc)
+        roc + annotate('text', x = 0.75, y = 0.25,
+                       label = paste0('AUC = ', round(auc$AUC, input$digits)))
     })
     ############################################################################
     ## Regression - LASSO                                                     ##
     ############################################################################
-    ## ToDo - Switch to glmnetUtils
-    ## covars <- reactive({covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-    ##                         dplyr::select_(input$demog, input$presenting, input$current, input$history) %>%
-    ##                         mutate(use = complete.cases(.)) %>%
-    ##                         filter(use == TRUE) %>%
-    ##                         dplyr::select(-use) %>%
-    ##                         data.matrix()
-    ## })
-    ## status <- reactive({## ToDo - Switch to filtering based on actual variable and complete.cases()
-    ##              status <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-    ##                        dplyr::select(pe)
-    ## })
-    ## glmnetUtils() not quite fully functional yet as it doesn't seem to like subsetting
-    ## the data, so we do that manually now...
-    lasso.df <- reactive({
-        if(input$categorical == TRUE){
-            dplyr::filter(dipep, group == 'Suspected PE') %>%
-            dplyr::select_(input$demog.cat, input$presenting, input$history, input$current)
-        }
-        else{
-            dplyr::filter(dipep, group == 'Suspected PE') %>%
-            dplyr::select_(input$demog, input$presenting, input$history, input$current)
-        }
+    lasso.model <- reactive({
+        glmnetUtils::glmnet(formula = model(),
+                            data    = dplyr::filter(dipep, group == 'Suspected PE'),
+                            family  = 'binomial')
     })
-    lasso <- reactive({## Run LASSO
-                ## lasso <- glmnet(x      = covars(),
-                ##                 y      = status(),
-        ##                 family = 'binomial')
-        print('Guess we are about to complain...')
-        head(dipep) %>% print()
-        typeof(dipep) %>% print()
-        dipep <- as.data.frame()
-        head(dipep) %>% print()
-        typeof(dipep) %>% print()
-        lasso <- glmnetUtils::glmnet(data = dplyr::filter(dipep, group == 'Suspected PE'),
-                                     formula = model(),
-                                     family  = 'binomial')
-        print('Nope made it past there')
+    output$lasso <- renderPrint({
+        lasso.model() %>% print()
     })
-    cv.lasso <- reactive({## Run Cross validation
-                   ## cv.lasso <- cv.glmnet(x      = covars(),
-                   ##                       y      = status(),
-                   ##                       family = 'binomial',
-                   ##                       nfolds = length(status()))
-        lasso <- glmnetUtils::cv.glmnet(data = lasso.df(),
-                                        formula = model(),
+    cv.lasso.model <- reactive({
+        lasso <- glmnetUtils::cv.glmnet(formula = model(),
+                                        data    = dplyr::filter(dipep, group == 'Suspected PE'),
                                         family  = 'binomial',
-                                        nfolds  = nrow(lasso.df))
+                                        nfolds  = nrow(dplyr::filter(dipep, group == 'Suspected PE')))
+    })
+    output$lasso.cv <- renderPrint({
+        cv.lasso.model() %>% print()
     })
     output$lasso.plot <- renderPlot({
-        autoplot(lasso()) + theme_bw()
+        autoplot(lasso.model()) + theme_bw()
     })
     output$lasso.cvplot <- renderPlot({
-        autoplot(cv.lasso()) + theme_bw()
+        autoplot(cv.lasso.model()) + theme_bw()
     })
     ############################################################################
     ## Regression - Saturated                                                 ##
@@ -150,10 +129,9 @@ shinyServer(function(input, output){
     })
     output$logistic.roc <- renderPlot({
         ## Extract predicted variables, rename and add obs for binding
-        logistic.model()$y %>% print()
         predicted <- cbind(logistic.model() %>% predict(),
-                     logistic.model()$y) %>%
-            as.data.frame()
+                           logistic.model()$y) %>%
+                     as.data.frame()
         names(predicted) <- c('predicted', 'pe')
         roc <- ggplot(predicted, aes(d = pe, m = predicted)) +
                geom_roc() +
