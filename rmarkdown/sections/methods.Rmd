@@ -70,13 +70,13 @@ The number of individuals with and without PE will be calculated and their basel
 
 ### Missing and Spurious Data
 
-There will be no missing data for the reference standard because all women will be classified as having or not having PE based on the available data.  However, for the predictor variables there is scope for missing data if the attending clinician fails to measure or record the data.  This is most likely to happen when the variable is anticipated to be or recorded as negative or normal, and thus unlikely to change clinical care.  To address this missing values will be imputed based on clinically determined "normal" values defined by [Prof Steve Goodacre](mailto:s.goodacre@sheffield.ac.uk) and [Dr Gordon Fuller](mailto:g.fuller@sheffield.ac.uk).  Sensitivity will be assessed by comparing these results to complete cases and a multiple imputation approach to imputing missing values based on the observed patterns from individuals who do have all data.
+There will be no missing data for the reference standard because all women will be classified as having or not having PE based on the available data.  However, for the predictor variables there is scope for missing data if the attending clinician fails to measure or record the data.  This is most likely to happen when the variable is anticipated to be or recorded as negative or normal, and thus unlikely to change clinical care.  To address this missing values will be imputed based on clinically determined "normal" values defined by [Prof Steve Goodacre](mailto:s.goodacre@sheffield.ac.uk) and [Dr Gordon Fuller](mailto:g.fuller@sheffield.ac.uk).  Sensitivity will be assessed by comparing these results to complete cases.  Multiple imputation was to be investigated it is not advisable as it has been demonstrated to perform poorly for recurrsive partitioning(@hapfelmeier2012), and there are parctical issues to performing analysis of multiply-imputed datasets via recursive partitioning and LASSO (i.e. the statistician doesn't know how to do this).
 
 #### Withdrawals
 
 Where patients have withdrawn from the study their data will be included upto the point of withdrawal unless they have explicitly requested to have all of their data withdrawn from the study
 
-### Questoinnaire Data
+### Questionnaire Data
 
 Summaries of responses to assessment questionnaires will be made in tabular form for each time point.
 
@@ -121,6 +121,7 @@ Pre or Post Partum									| Prepartum (i.e. pregnant)| 0               | `preg.
 Pre or Post Partum									| Postpartum               | 1               | `preg.post`
 Trimester											| $1^{st}$ or $2^{nd}$     | 0               | `trimester` (`edd`)
 Trimester											| $3^{rd}$                 | 1               | `trimester` (`edd`)
+Trimester											| Post-partum              | 1               | `trimester` (`edd`)
 Multiple Pregnancy									| None                 | 0                   | `multiple.preg`
 Multiple Pregnancy									| Any (i.e. $\ge 2$)   | 1                   | `multiple.preg`
 Long haul Travel during Pregnancy                   | None                 | 0                   | `travel`
@@ -174,8 +175,8 @@ Diastolic Blood Pressure						| $\ge 60$                                        
 Diastolic Blood Pressure						| $< 60$                                                   | 1                   | `bp.diastolic`
 Temperature										| $\le 37.4$                                               | 0                   | `temperature`
 Temperature										| $> 37.4$                                                 | 1                   | `temperature`
-D-Dimers (ELISA)								| $< X$   | 0                   | `?`
-D-Dimers (ELISA)								| $\ge X$ | 1                   | `?`
+D-Dimers (ELISA)								| $< `d.dimer.high`$   | 0                   | `d.dimer.cat`
+D-Dimers (ELISA)								| $\ge `d.dimer.high`$ | 1                   | `d.dimer.cat`
 D-Dimers (latex agglutination)					| $< X$   | 0                   | `?`
 D-Dimers (latex agglutination)					| $\ge X$ | 1                   | `?`
 Plasmin-antiplasmin Assay (PAP)					| $< X$   | 0                   | `?`
@@ -223,7 +224,7 @@ $$
  TNR = \frac{TN}{FP + TN}
 $$
 
-Assessing the combined sensitivity and specificity of each method of classification will be performed by plotting [Receiver Operating Characteristic (ROC) curves](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and quantified by the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve).
+Assessing the combined sensitivity and specificity of each method of classification will be performed by plotting [Receiver Operating Characteristic (ROC) curves](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and quantified by the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve).  For an illustrative example of applying ROC and AUC and some criticisms see the article [Illustrated Guide to ROC and AUC](https://www.r-bloggers.com/illustrated-guide-to-roc-and-auc/).  Fordetailed information on plotting ROC curves in R using [ggplot2](http://docs.ggplot2.org/current/) see the [plotROC vignette](https://sachsmc.github.io/plotROC/)
 
 #### Positive & Negative Predictive Value
 
@@ -242,6 +243,60 @@ $$
 I recently came across a paper discussing alternatives to Area Under the ROC curve (@pencina2008) and proposes two new measures which offer improvements, one based on both the sensitivity and specificity, the other based on reclassification tables.  The approach has been implemented in the `Hmisc` package for R (see [comment from packages author on R-help](http://r.789695.n4.nabble.com/Calculating-Sensitivity-Specificity-and-Agreement-from-Logistics-Regression-Model-td874453.html)) and if the limited time available permits these will be investigated.
 
 
-### Adverse Events
+### Existing Rules {.tabset .tabset-fade .tabset-pills}
 
-All adverse events and serious adverse events
+The simplified revised Geneva score (@klok2008), Wells Score (@wells2001) and PERC score (@kline2004) are to be assessed and compared to the derived models.  The criteria and scoring for each of these rules are described below.
+
+#### Simplified Revised Geneva Score
+
+Criteria             | Score        | Based on...  | Derived Variable
+---------------------|--------------|--------------|--------------------
+$> 65$ years old     | `1`          | `age`        | `simplified.age`
+Previous DVT or PE   | `1`          | `dvt`        | `simplified.previous`
+Surgery or fracture $< 1$ month | `1`          | `surgery.other`           | `simplified.surgery`
+Active Malignancy $< 1$ year    | `1`          | `x`           | `simplified.neoplasm`
+Unilateral lower-limb pain      | `1`          | `x`           | `simplified.lower.limb.unilateral.pain`
+Haemoptysis          | `1`          | `presenting.features.haemoptysis` | `simplified.haemoptysis`
+$> 75$ beats/minute  | `1`          | `heart.rate` | `simplified.heart.rate`
+Lower Limb Pain      | `
+
+An online calculator is available at [MDCalc - Geneva Score (Revised) for Pulmonary Embolism](http://www.mdcalc.com/geneva-score-revised-pulmonary-embolism/).
+
+#### Wells Score
+
+The patients characteristics are scored based on the following criteria...
+
+Criteria             | Score        | Based on...  | Derived Variable
+---------------------|--------------|--------------|--------------------
+DVT                  | `3`   | `dvt` | `wells.dvt`
+Alternative diagnosis less likely | `3` | `post.pe` | `wells.alternative`
+$> 100$ beats/minute | `1.5`   | `dvt` | `wells.dvt`
+Surgery/Immobile     | `1.5` | `surgery` / `immobile` | `wells.surgery.immobil`
+Previous DVT or PE   | `1.5` | `dvt` / `x` | `wells.previous.dvt.pe`
+Hemoptysis           | `1` | `presenting.features.haemoptysis` | `perc.haemoptysis`
+Neoplasm             | `1` | `medical.other` / `medical.specify` | `perc.neoplasm`
+
+An online calculator is available at [MDCalc - Wells Criteria for Pulmonary Embolism](http://www.mdcalc.com/wells-criteria-pulmonary-embolism-pe/).
+
+#### PERC Score
+
+The patients characteristics are scored based on the following criteria...
+
+Criteria             | Score        | Based on...  | Derived Variable
+---------------------|--------------|--------------|--------------------
+$> 50$ years old     | `1`          | `age`        | `perc.age`
+$> 100$ beats/minute | `1`          | `heart.rate` | `perc.heart.rate`
+Cough                | `1`          | `presenting.features.cough`       | `perc.cough`
+Haemoptysis          | `1`          | `presenting.features.haemoptysis` | `perc.haemoptysis`
+Leg Swelling         | `1`          | ``other.symptoms.specify`         | `perc.leg.swelling`
+DVT                  | `1`          | `dvt`        | `perc.dvt`
+
+Scores are then classified as `High`, `Moderate` or `Low` based on the cut-points...
+
+Score | PERC Risk of PE
+------|------------------
+$>6$  | `High`
+$2-6$ | `Moderate`
+$<2$  | `Low`
+
+An online calculator is available at [MDCalc - PERC Rule for Pulmonary Embolism](http://www.mdcalc.com/perc-rule-pulmonary-embolism/).
