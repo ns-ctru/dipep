@@ -386,7 +386,8 @@ ggplot(dplyr::filter(logistic$predicted, name %in% c('age',
                                                      'o2.saturation',
                                                      'bp.diastolic',
                                                      'bp.systolic',
-                                                     'temperature')),
+                                                     'temperature',
+                                                     'ecg')),
        aes(d = D, m = M, colour = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
@@ -398,7 +399,8 @@ ggplot(dplyr::filter(logistic$predicted, name %in% c('age.cat',
                                                      'o2.saturation.cat',
                                                      'bp.diastolic.cat',
                                                      'bp.systolic.cat',
-                                                     'temperature.cat')),
+                                                     'temperature.cat',
+                                                     'ecg.cat',)),
        aes(d = D, m = M, color = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
@@ -424,9 +426,8 @@ ggplot(dplyr::filter(logistic$predicted, name %in% c('prev.preg.problem',
                                           'pregnancies.over',
                                           'pregnancies.under',
                                           'xray.cat',
-                                          'ecg.cat',
                                           'this.pregnancy.problems')),
-       aes(d = D, m = M, color = name)) +
+       aes(d = D, m = M, color = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
     ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
