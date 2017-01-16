@@ -1,43 +1,137 @@
 ```{r results_existing, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ```
 
-#### PERC Score
-
-The PERC Score for study participants (@kline2004) is summarised below.  It should be noted though that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)), which is not the case in the cohort being considered in this study.
-
-```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-ggplot(dipep, aes(x = perc)) +
-    geom_bar(aes(fill = pe), position = 'dodge') +
-    ggtitle('PERC Scores by clinical classification') +
-    xlab('PERC Score') + ylab('N') +
-    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
-    theme_bw()
-## kable(dipep$pe, dipep$perc, caption = 'Tabulation of PERC Score by clinical classification')
-
-```
-
 #### Simplified Revised Geneva
-```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-ggplot(dipep, aes(x = simplified)) +
+
+The Simplified Geneva score is summarised below.
+
+```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+## Bar chart of scores by 'true' PE Status
+ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = simplified)) +
     geom_bar(aes(fill = pe), position = 'dodge') +
-    ggtitle('Simplified Revised Geneva  Scores by clinical classification') +
-    xlab('PERC Score') + ylab('N') +
+    ggtitle('Simplified Revised Geneva Scores by clinical classification') +
+    xlab('Simplified Revised Geneva Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
+## Table of scores
+all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       summarise(N      = sum(!is.na(simplified)),
+                 Mean   = mean(simplified, na.rm = TRUE),
+                 SD     = sd(simplified, na.rm = TRUE),
+                 Lower  = quantile(simplified, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(simplified, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(simplified, probs = 0.25, na.rm = TRUE),
+                 Min    = min(simplified, na.rm = TRUE),
+                 Max    = max(simplified, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            group_by(pe) %>%
+            summarise(N      = sum(!is.na(simplified)),
+                      Mean   = mean(simplified, na.rm = TRUE),
+                      SD     = sd(simplified, na.rm = TRUE),
+                      Lower  = quantile(simplified, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(simplified, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(simplified, probs = 0.25, na.rm = TRUE),
+                      Min    = min(simplified, na.rm = TRUE),
+                      Max    = max(simplified, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = 'Summary of Simplified GENEVA score individuals with Suspected PE',
+      digits = 3)
+rm(all, by.group)
+## Tabulation of Simplified Geneva v 'true' PE status and the sensitivity and specificity
+## dplyr::filter(dipep, !is.na(simp.pe)) %>%
+##        group_by(pe, simp.pe) %>%
+##        tally()
 
 ```
+
 
 #### Wells Score
 
 The Wells Score (@wells2001) is summarised below.
 
-```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-ggplot(dipep, aes(x = wells)) +
+```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = wells)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('Wells Scores by clinical classification') +
+    xlab('Wells Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       summarise(N      = sum(!is.na(wells)),
+                 Mean   = mean(wells, na.rm = TRUE),
+                 SD     = sd(wells, na.rm = TRUE),
+                 Lower  = quantile(wells, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(wells, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(wells, probs = 0.25, na.rm = TRUE),
+                 Min    = min(wells, na.rm = TRUE),
+                 Max    = max(wells, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            group_by(pe) %>%
+            summarise(N      = sum(!is.na(wells)),
+                      Mean   = mean(wells, na.rm = TRUE),
+                      SD     = sd(wells, na.rm = TRUE),
+                      Lower  = quantile(wells, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(wells, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(wells, probs = 0.25, na.rm = TRUE),
+                      Min    = min(wells, na.rm = TRUE),
+                      Max    = max(wells, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = 'Summary of Wells score individuals with Suspected PE',
+      digits = 3)
+rm(all, by.group)
+## Quick model
+## .formula <- reformulate(response = 'pe',
+##                         termlabels = c('wells'))
+## dplyr::filter(dipep, group == 'Suspected PE') %>%
+##     glm(formula = .formula,
+##         family  = 'binomial')
+
+```
+
+#### PERC Score
+
+The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).
+
+**NB** At present a PERC Score $> 2$ (Moderate Risk) is taken as indicative of PE.
+
+```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = perc.risk)) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('PERC Scores by clinical classification') +
     xlab('PERC Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
-## kable(dipep$pe, dipep$wells, caption = 'Tabulation of Wells Score by clinical classification')
+all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       summarise(N      = sum(!is.na(perc.risk)),
+                 Mean   = mean(perc.risk, na.rm = TRUE),
+                 SD     = sd(perc.risk, na.rm = TRUE),
+                 Lower  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(perc.risk, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
+                 Min    = min(perc.risk, na.rm = TRUE),
+                 Max    = max(perc.risk, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            group_by(pe) %>%
+            summarise(N      = sum(!is.na(perc.risk)),
+                      Mean   = mean(perc.risk, na.rm = TRUE),
+                      SD     = sd(perc.risk, na.rm = TRUE),
+                      Lower  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(perc.risk, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
+                      Min    = min(perc.risk, na.rm = TRUE),
+                      Max    = max(perc.risk, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = 'Summary of PERC score individuals with Suspected PE',
+      digits = 3)
+rm(all, by.group)
 
 ```
