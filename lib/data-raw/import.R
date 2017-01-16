@@ -1282,10 +1282,16 @@ dipep <- mutate(dipep,
                 ## d.dimer.high                   = relevel(d.dimer.high)
                 )
 ## Add a dummy for PE for now
-dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
-dipep$pe <- factor(dipep$pe,
-                   levels = c(0, 1),
-                   labels = c('No PE', 'PE'))
+## dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
+## dipep$pe <- factor(dipep$pe,
+##                    levels = c(0, 1),
+##                    labels = c('No PE', 'PE'))
+## Derive binary indicator for Suspected v's Diagnosed PE
+dipep <- dipep %>%
+         mutate(pe = case_when(.$group == 'Suspected PE' ~ 'Suspected PE',
+                               .$group == 'Diagnosed PE' ~ 'Diagnosed PE'),
+                pe = factor(pe, levels = c('Suspected PE', 'Diagnosed PE')))
+
 #######################################################################
 ## Derive clinical rules based on...                                 ##
 ##                                                                   ##
