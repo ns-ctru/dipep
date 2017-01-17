@@ -1,4 +1,24 @@
-```{r results_existing, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+to.plot <- dplyr::filter(dipep, !is.na(pe)) %>%
+           dplyr::select(pe, simplified.pe, wells.pe, perc.pe) %>%
+           tidyr::gather(key = pe)##  %>%
+           ## mutate(value = ifelse(grepl('No', value),
+           ##                       0,
+           ##                       1))
+
+names(to.plot) <- c('D', 'Score', 'value')
+## Convert String variable to 0/1 for predicted probabilities
+to.plot <- to.plot %>%
+           dplyr::mutate(M     = ifelse(grepl('No', value), 0, 1),
+                         Score = case_when(.$Score == 'simplified.pe' ~ 'Simplified Revised Geneva',
+                                           .$Score == 'perc.pe'       ~ 'PERC',
+                                           .$Score == 'wells.pe'      ~ 'Wells'))
+ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
+    geom_roc() +
+    guides(guide = guide_legend(title = 'Predictor Score...')) +
+    ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
+    style_roc() + theme_bw()
+
 ```
 
 #### Simplified Revised Geneva
@@ -48,7 +68,7 @@ rm(all, by.group)
 ```
 
 ```{r results_existing_simplified_revised_geneva_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-summary.simplified <- dipep_existing_sum(df = dipep,
+summary.simplified <- dipep_existing_sum(df    = dipep,
                                          score = simplified.pe)
 kable(summary.simplified$table,
       caption = 'Pulmonary Embolism status compared to predicted status based on Simplified Revised Geneva Score.')
@@ -105,11 +125,13 @@ rm(all, by.group)
 ```
 
 ```{r results_existing_simplified_revised_wells_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-summary.simplified <- dipep_existing_sum(df = dipep,
+summary.simplified <- dipep_existing_sum(df    = dipep,
                                          score = wells.pe)
 kable(summary.simplified$table,
+      digits = 3,
       caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score.')
 kable(summary.simplified$summary.table,
+      digits = 3,
       caption = 'Performance indicators for the Wells Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
@@ -155,11 +177,13 @@ rm(all, by.group)
 ```
 
 ```{r results_existing_simplified_revised_perc_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-summary.simplified <- dipep_existing_sum(df = dipep,
+summary.simplified <- dipep_existing_sum(df    = dipep,
                                          score = perc.pe)
 kable(summary.simplified$table,
+      digits = 3,
       caption = 'Pulmonary Embolism status compared to predicted status based on Perc Score.')
 kable(summary.simplified$summary.table,
+      digits = 3,
       caption = 'Performance indicators for the Perc Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
