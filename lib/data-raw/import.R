@@ -1295,7 +1295,6 @@ dipep <- dipep %>%
 #######################################################################
 ## Derive clinical rules based on...                                 ##
 ##                                                                   ##
-## Geneva (Wicki et al. 2001)                                        ##
 ## Simplified Geneva (http://dx.doi.org/10.1001/archinte.168.19.2131)##
 ## PERC (http://dx.doi.org/10.1111/j.1538-7836.2004.00790.x)         ##
 ## Wells (http://dx.doi.org/10.7326/0003-4819-135-2-200107170-00010) ##
@@ -1726,4 +1725,4 @@ names(dipep) <- gsub("simplified_", "simp_", names(dipep))
 write_dta(dipep, version = 14, path = 'dipep.dta')
 names(dipep) <- gsub("_", ".", names(dipep))
 names(dipep) <- gsub("presenting", "presenting.features", names(dipep))
-names(dipep) <- gsub("simp_", "simplified_", names(dipep))
+names(dipep) <- gsub("simp.", "simplified.", names(dipep))
