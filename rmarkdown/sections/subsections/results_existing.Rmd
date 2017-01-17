@@ -3,7 +3,7 @@
 
 #### Simplified Revised Geneva
 
-The Simplified Geneva score is summarised below.
+The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online calculator](https://www.mdcalc.com/geneva-score-revised-pulmonary-embolism) is available.  A score $> X$ is taken as indicative of PE.
 
 ```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Bar chart of scores by 'true' PE Status
@@ -47,10 +47,20 @@ rm(all, by.group)
 
 ```
 
+```{r results_existing_simplified_revised_geneva_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+summary.simplified <- dipep_existing_sum(df = dipep,
+                                         score = simplified.pe)
+kable(summary.simplified$table,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Simplified Revised Geneva Score.')
+kable(summary.simplified$summary.table,
+      caption = 'Performance indicators for the Simplified Revised Geneva Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
 
 #### Wells Score
 
-The Wells Score (@wells2001) is summarised below.
+The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> X$ is taken as indicative of PE.
 
 ```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = wells)) +
@@ -94,11 +104,19 @@ rm(all, by.group)
 
 ```
 
+```{r results_existing_simplified_revised_wells_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+summary.simplified <- dipep_existing_sum(df = dipep,
+                                         score = wells.pe)
+kable(summary.simplified$table,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score.')
+kable(summary.simplified$summary.table,
+      caption = 'Performance indicators for the Wells Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
 #### PERC Score
 
-The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).
-
-**NB** At present a PERC Score $> 2$ (Moderate Risk) is taken as indicative of PE.
+The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $> 2$ (Moderate Risk) is taken as indicative of PE.
 
 ```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = perc.risk)) +
@@ -133,5 +151,15 @@ dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
 kable(caption = 'Summary of PERC score individuals with Suspected PE',
       digits = 3)
 rm(all, by.group)
+
+```
+
+```{r results_existing_simplified_revised_perc_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+summary.simplified <- dipep_existing_sum(df = dipep,
+                                         score = perc.pe)
+kable(summary.simplified$table,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Perc Score.')
+kable(summary.simplified$summary.table,
+      caption = 'Performance indicators for the Perc Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
