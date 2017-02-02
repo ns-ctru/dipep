@@ -1,6 +1,6 @@
 #### Raw Data
 
-The raw data is summarised below.  This is *before* applying any rules such as "*if a Yes/No response is not present assume No*", the pattern of missing data after applying these rules is presented in the next tab (Tidied Data).  The first set of tables summarise for each 'set' of variables (physiology, medical history, this pregnanyc and previous pregnancy) how many individuals in each group the number of these which are missing.
+The raw data is summarised below.  This is *before* applying any rules such as "*if a Yes/No response is not present assume No*", the pattern of missing data after applying these rules is presented in the [next tab](#section-tidied-data).  The first set of tables summarise for each 'set' of variables (physiology, medical history, this pregnany and previous pregnancy) how many individuals in each group the number of these which are missing.
 
 **NB** If there is a level of missing observations that is not present in the data it is NOT present in the table.
 
@@ -10,7 +10,7 @@ dipep_incomplete(df = dipep.raw,
                  id = screening,
                  age, bmi, heart.rate, respiratory.rate, bp.systolic, bp.diastolic, temperature, o2.saturation) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing physiological variables (Age, BMI, Heart Rate, Respiratory Rate, Systolic Blood Pressure, Diastolic Blood Pressure, Temperature and O2 Saturation) by group', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing physiological variables (Age, BMI, Heart Rate, Respiratory Rate, Systolic Blood Pressure, Diastolic Blood Pressure, Temperature and O2 Saturation) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
@@ -20,7 +20,7 @@ dipep_incomplete(df = dipep.raw,
                  id = screening,
                  history.thrombosis, history.veins, history.iv.drug, thrombo, surgery, injury, thrombosis) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group', 'Generated : ', Sys.time()))
+kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
@@ -30,7 +30,7 @@ dipep_incomplete(df = dipep.raw,
                  id = screening,
                  multiple.preg, travel, immobil) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group.', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
@@ -40,36 +40,39 @@ dipep_incomplete(df = dipep.raw,
                  id = screening,
                  pregnancies.over, pregnancies.under, prev.preg.problem) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group.', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
 
 ```{r missing_data_raw_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## Count the number of observations of each
-n.diagnosed.dvt <- filter(dipep.raw, group == 'Diagnosed DVT') %>%
+n.diagnosed.dvt <- dplyr::filter(dipep.raw, group == 'Diagnosed DVT') %>%
                    nrow()
-n.non.recruited <- filter(dipep.raw, group == 'Non recruited') %>%
+n.non.recruited <- dplyr::filter(dipep.raw, group == 'Non recruited') %>%
                    nrow()
-n.suspected.pe  <- filter(dipep.raw, group == 'Suspected PE') %>%
+n.suspected.pe  <- dplyr::filter(dipep.raw, group == 'Suspected PE') %>%
                    nrow()
+n.diagnosed.pe <- dplyr::filter(dipep.raw, group == 'Diagnosed PE') %>%
+                  nrow()
 missing <-  group_by(dipep.raw, group) %>%
             summarise_each(funs(sum(is.na(.)))) %>%
             t() %>%
             as.data.frame()
 names(missing) <- c(paste0('Diagnosed DVT (N = ', n.diagnosed.dvt, ')'),
+                    paste0('Diagnosed PE (N = ', n.diagnosed.pe, ')'),
                     paste0('Non recruited (N = ', n.non.recruited, ')'),
                     paste0('Suspected PE (N = ', n.suspected.pe, ')'))
 missing[!rownames(missing) %in% 'group',] %>%
     kable(caption = paste0('Missing data patterns in raw data for variables used in statistical modelling.\n', 'Generated : ', Sys.time()))
-rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, missing)
+rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, n.diagnoised.pe, missing)
 
 ```
 
 
 #### Tidied Data
 
-The rawtidied data is summarised below.  This is *after* applying any rules such as "*if a Yes/No response is not present assume No*", the pattern of missing data before applying these rules is presented in the previous tab (Raw Data).  The first set of tables summarise for each 'set' of variables (physiology, medical history, this pregnanyc and previous pregnancy) how many individuals in each group the number of these which are missing.
+The tidied data is summarised below.  This is *after* applying any rules such as "*if a Yes/No response is not present assume No*", the pattern of missing data before applying these rules is presented in the [previous tab](#section-raw-data).  The first set of tables summarise for each 'set' of variables (physiology, medical history, this pregnany and previous pregnancy) how many individuals in each group the number of these which are missing.
 
 **NB** If there is a level of missing observations that is not present in the data it is NOT present in the table.
 
@@ -79,7 +82,7 @@ dipep_incomplete(df = dipep,
                  id = screening,
                  age, bmi, heart.rate, respiratory.rate, bp.systolic, bp.diastolic, temperature, o2.saturation) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing physiological variables (Age, BMI, Heart Rate, Respiratory Rate, Systolic Blood Pressure, Diastolic Blood Pressure, Temperature and O2 Saturation) by group', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing physiological variables (Age, BMI, Heart Rate, Respiratory Rate, Systolic Blood Pressure, Diastolic Blood Pressure, Temperature and O2 Saturation) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
@@ -89,7 +92,7 @@ dipep_incomplete(df = dipep,
                  id = screening,
                  history.thrombosis, history.veins, history.iv.drug, thrombo, surgery, injury, thrombosis) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing medical history variables (History of Thrombosis in Relatives, History of Varicose Veins, History of IV Drug use, Known Thrombophilia, Surgery <= 4 weeks, Injury <= 4 weeks, History of Thrombosis) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
@@ -99,7 +102,7 @@ dipep_incomplete(df = dipep,
                  id = screening,
                  multiple.preg, travel, immobil) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group.', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing variables for this pregnancy (Multiple Pregnancy, >= 4hrs travel during pregnancy, >= 3 days immobility) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
@@ -109,29 +112,67 @@ dipep_incomplete(df = dipep,
                  id = screening,
                  pregnancies.over, pregnancies.under, prev.preg.problem) %>%
   dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE) %>%
-  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group.', 'Generated : ', Sys.time()))
+  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group. ', 'Table Generated : ', Sys.time()))
 
 ```
 
 
+```{r missing_data_by_section, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+options(knitr.kable.NA = 0)
+## How many have > 50% of 'Previous Medical History' missing
+missing.previous <- dplyr::select(dipep,
+                                  history.thrombosis,
+                                  history.veins,
+                                  history.iv.drug,
+                                  thrombo,
+                                  surgery,
+                                  injury,
+                                  medical.probs) %>%
+                    is.na() %>%
+                    rowSums()
+missing.this.pregnancy <- dplyr::select(dipep,
+                                        multiple.preg,
+                                        travel,
+                                        immobil) %>%
+                          is.na() %>%
+                          rowSums()
+missing.physiology <- dplyr::select(dipep,
+                                    heart.rate,
+                                    respiratory.rate,
+                                    o2.saturation) %>%
+                      is.na() %>%
+                      rowSums()
+
+dipep_incomplete(df = dipep,
+                 id = screening,
+                 history.thrombosis, history.veins, history.iv.drug, thrombo, surgery, injury, thrombosis, medical.probs) %>%
+    dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE)
+
+  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group. ', 'Table Generated : ', Sys.time()))
+
+```
+
 ```{r missing_data_tidy_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## Count the number of observations of each
-n.diagnosed.dvt <- filter(dipep, group == 'Diagnosed DVT') %>%
+n.diagnosed.dvt <- dplyr::filter(dipep, group == 'Diagnosed DVT') %>%
                    nrow()
-n.non.recruited <- filter(dipep, group == 'Non recruited') %>%
+n.non.recruited <- dplyr::filter(dipep, group == 'Non recruited') %>%
                    nrow()
-n.suspected.pe  <- filter(dipep, group == 'Suspected PE') %>%
+n.suspected.pe  <- dplyr::filter(dipep, group == 'Suspected PE') %>%
+                   nrow()
+n.diagnosed.pe  <- dplyr::filter(dipep, group == 'Diagnosed PE') %>%
                    nrow()
 missing <-  group_by(dipep, group) %>%
             summarise_each(funs(sum(is.na(.)))) %>%
             t() %>%
             as.data.frame()
 names(missing) <- c(paste0('Diagnosed DVT (N = ', n.diagnosed.dvt, ')'),
+                    paste0('Diagnosed PE (N = ', n.diagnosed.pe, ')'),
                     paste0('Non recruited (N = ', n.non.recruited, ')'),
                     paste0('Suspected PE (N = ', n.suspected.pe, ')'))
 missing[!rownames(missing) %in% 'group',] %>%
-    kable(caption = paste0('Missing data patterns in raw data for variables used in statistical modelling.\n', 'Generated : ', Sys.time()))
-rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, missing)
+    kable(caption = paste0('Missing data patterns in tidied data for variables used in statistical modelling.\n', 'Generated : ', Sys.time()))
+rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, n.diagnosed.pe, missing)
 
 ```
 
