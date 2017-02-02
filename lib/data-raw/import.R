@@ -411,6 +411,60 @@ master$womans.details <- read_dipep("Womans details.csv",
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
 #######################################################################
+## .csv                                                      ##
+#######################################################################
+## First tidy the CSV file exported from Excel to remove the redundant
+## and uninformative header rows.  Done with a short Bash script that
+## uses grep -v to print only lines that don't contain the headers, and
+## a few calls to sed to remove entries such as 'no plasma', 'ce' and 'nc' and
+## inequality symbols (primarily '<') which for some inexplicable reason are
+## recorded in fields which are meant to be numerical.
+##
+## If you don't understand this search StackOverflow for things like...
+##
+## bash
+## grep
+## regular expressions
+## sed
+##
+## Note also that this code will run fine on a GNU/Linux system but you
+## will have to install a UNIX-like shell (e.g. Cygwin) and tweak the
+## system() call to ensure that it is invoked should you wish to run
+## this code in M$-Win.
+system('./clean_biomarker.sh')
+master$biomarker_raw <- read.table(file = 'biomarker_clean.csv',
+                                   header = TRUE,
+                                   sep    = ';')
+master$biomarker_tidy <- master$biomarker_raw
+## Tidy up the names
+names(master$biomarker_tidy) <- names(master$biomarker_tidy) %>%
+                                tolower()
+names(master$biomarker_tidy) <- gsub('sample.number', 'sample', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('sample.name', 'screening', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('pt', 'prothombin.time', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('aptt.sp.luquid', '', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('clauss.fibrinogen', 'clauss.fibrinogen', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('d.dimer.innovan.latex.test', 'ddimer.innovan', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('lagtime', 'thrombin.generation.lag.time', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('etp', 'thrombin.generation.endogenous.thrombin.potential', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('peak', 'thrombin.generation.peak', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('ttpeak', 'thrombin.generation.time.to.peak', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('error.message..comment', 'error.message', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('d.dimer.eliza.zymutest..hyphen.', 'ddimer.elisa', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('pap', 'plasmin.antiplasmin', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('pf.1.2', 'prothrombin.fragments', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('tf', 'soluble.tissue.factor', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('troponin.1', 'troponin', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('nppb', 'natriuertic.peptide', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('mproanp', 'mrproamp', names(master$biomarker_tidy))
+## Remove extrenuous columns
+master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(error.message, comments, key, x))
+
+
+
+
+
+#######################################################################
 ## Combine required variables into one coherent data frame (would be ##
 ## nice if data management provided this functionality in Prospect   ##
 ## but that is highly unlikely to happen).                           ##
@@ -907,7 +961,11 @@ t <- merge(t1,
     merge(.,
           t11,
           by    = merge.by,
-          all   = TRUE)
+          all   = TRUE) %>%
+    merge(.,
+          master$biomarker_tidy,
+          by    = 'screening',
+          all.x = TRUE)
 ## Now do three merges with the event.date, one to get a master dataset (excluding those who were Non recruited)...
 dipep <- merge(t,
                event.date,
@@ -1344,8 +1402,10 @@ dipep <- mutate(dipep,
                                                       yes = 'High',
                                                       no  = 'Moderate')),
                 simplified.pe = ifelse(simplified >= 4,
-                                       yes = 'PE',
-                                       no  = 'No PE'))
+                                       yes = 'Simplified PE',
+                                       no  = 'No Simplified PE'),
+                simplified.pe = factor(simplified.pe,
+                                       levels = c('No Simplified PE', 'Simplified PE')))
 ## PERC
 dipep <- mutate(dipep,
                 perc.age = ifelse(age > 50,
@@ -1390,8 +1450,10 @@ dipep <- mutate(dipep,
                             perc.hormone +
                             perc.dvt,
                 perc.pe = ifelse(perc.risk >= 2,
-                                 yes = 'PE',
-                                 no  = 'No PE'))
+                                 yes = 'PERC PE',
+                                 no  = 'No PERC PE'),
+                perc.pe = factor(perc.pe,
+                                 levels = c('No PERC PE', 'PERC PE')))
 ## Wells
 dipep <- mutate(dipep,
                 wells.dvt = ifelse(dvt == 'Yes',
@@ -1428,9 +1490,21 @@ dipep <- mutate(dipep,
                                                    yes = 'Moderate',
                                                    no  = 'Low')),
                 wells.pe      = ifelse(wells > 2,
-                                       yes = 'PE',
-                                       no  = 'No PE')) %>%
-         dplyr::select(-existing.medical.cancer)
+                                       yes = 'Wells PE',
+                                       no  = 'No Wells PE'),
+                wells.pe      = factor(wells.pe,
+                                       levels = c('No Wells PE', 'Wells PE'))) %>%
+    dplyr::select(-existing.medical.cancer)
+## Ensure all scores are factors
+## dipep <- within(dipep, {
+##                 simplified.pe <- factor(dipep$simplified.pe,
+##                                            levels = c('No Simplified PE', 'Simplified PE'))
+##                 wells.pe <- factor(dipep$wells.pe,
+##                                    levels = c('No Wells PE', 'Wells PE'))
+##                 perc.pe <- factor(dipep$perc.pe,
+##                                   levels = c('No PERC PE', 'PERC PE'))
+##                 })
+
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
@@ -1722,7 +1796,9 @@ save(master,
 names(dipep) <- gsub("\\.", "_", names(dipep))
 names(dipep) <- gsub("presenting_features", "presenting", names(dipep))
 names(dipep) <- gsub("simplified_", "simp_", names(dipep))
+names(dipep) <- gsub("thrombin_generation_", "tg_", names(dipep))
 write_dta(dipep, version = 14, path = 'dipep.dta')
 names(dipep) <- gsub("_", ".", names(dipep))
 names(dipep) <- gsub("presenting", "presenting.features", names(dipep))
 names(dipep) <- gsub("simp.", "simplified.", names(dipep))
+names(dipep) <- gsub("tg_", "thrombin_generation_", names(dipep))
