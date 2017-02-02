@@ -1747,58 +1747,15 @@ dipep.README.variables$womans.details                 <- fields_dipep(df     = m
 save(master,
      dipep,
      dipep.raw,
-     ## follow.up.30.day,
-     ## blood.sample,
-     ## service.receipt,
-     ## service.receipt.hospital,
-     ## completion,
-     ## contact,
-     ## delivery,
-     ## discrepancies,
-     ## eq5d,
-     ## events,
-     ## follow.up.sent,
-     ## forms,
-     ## individuals,
-     ## investigations,
-     ## investigations.investigation,
-     ## med.hist,
-     ## med.hist.problems,
-     ## med.hist.thrombophilia,
-     ## outcome.infant,
-     ## outcome.infant.infant,
-     ## outcome.woman,
-     ## outcome.woman.morbidity,
-     ## presenting.features,
-     ## previous.pregnancies,
-     ## previous.pregnancies.problems,
-     ## questionnaire.contact,
-     ## screening.dvt,
-     ## screening.non.recruited,
-     ## screening.suspected.pe,
-     ## sign.off,
-     ## sites,
-     ## therapy,
-     ## pregnancy.continued,
-     ## pregnancy.problems,
-     ## pregnancy,
-     ## pregnancy.immobility,
-     ## preganancy.long.haul,
-     ## thromboprophylaxis,
-     ## thrombotic.events,
-     ## unavailable.forms,
-     ## womans.details,
      file   = '../data/dipep.RData')
 
 ## Write a dataset in Stata format for Mike Bradburn to QC
 ## dplyr::select(dipep, -life.support.presentation, -incidental) %>%
 ##     write.dta(file = 'dipep.dta')
-names(dipep) <- gsub("\\.", "_", names(dipep))
-names(dipep) <- gsub("presenting_features", "presenting", names(dipep))
-names(dipep) <- gsub("simplified_", "simp_", names(dipep))
-names(dipep) <- gsub("thrombin_generation_", "tg_", names(dipep))
-write_dta(dipep, version = 14, path = 'dipep.dta')
-names(dipep) <- gsub("presenting", "presenting.features", names(dipep))
-names(dipep) <- gsub("simp.", "simplified.", names(dipep))
-names(dipep) <- gsub("tg_", "thrombin_generation_", names(dipep))
-names(dipep) <- gsub("_", ".", names(dipep))
+dipep_ <- dipep
+names(dipep_) <- gsub("\\.", "_", names(dipep_))
+names(dipep_) <- gsub("presenting_features", "presenting", names(dipep_))
+names(dipep_) <- gsub("simplified_", "simp_", names(dipep_))
+names(dipep_) <- gsub("thrombin_generation_", "tg_", names(dipep_))
+write_dta(dipep_, version = 14, path = 'dipep_.dta')
+rm(dipep_)
