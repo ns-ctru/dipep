@@ -19,7 +19,11 @@
 ```
 
 ### Clinical Opinion {.tabset .tabset-fade .tabset-pills}
-```{r child = 'subsections/results_clinical_opinion.Rmd', eval = TRUE}
+```{r child = 'subsections/results_clinical_opinion.Rmd', eval = FALSE}
+```
+
+### Biomarkers {.tabset .tabset-fade .tabset-pills}
+```{r child = 'subsections/results_biomarkers.Rmd', eval = TRUE}
 ```
 
 ### Recursive Partitioning
@@ -30,6 +34,6 @@
 ```{r child = 'subsections/results_lasso.Rmd', eval = TRUE}
 ```
 
-### Logistic Regression  {.tabset .tabset-fade .tabset-pills}
+### Logistic Regression {.tabset .tabset-fade .tabset-pills}
 ```{r child = 'subsections/results_logistic.Rmd', eval = TRUE}
 ```
