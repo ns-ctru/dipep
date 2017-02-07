@@ -1405,6 +1405,7 @@ dipep <- mutate(dipep,
                 simplified.pe = ifelse(simplified >= 4,
                                        yes = 'Simplified PE',
                                        no  = 'No Simplified PE'),
+                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7))
                 simplified.pe = factor(simplified.pe,
                                        levels = c('No Simplified PE', 'Simplified PE')))
 ## PERC
@@ -1450,9 +1451,10 @@ dipep <- mutate(dipep,
                             ## perc.embolism +
                             perc.hormone +
                             perc.dvt,
-                perc.pe = ifelse(perc.risk >= 2,
+                perc.pe = ifelse(perc >= 2,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
+                perc          = factor(perc, levels = c(0, 1, 2, 3, 4))
                 perc.pe = factor(perc.pe,
                                  levels = c('No PERC PE', 'PERC PE')))
 ## Wells
@@ -1493,21 +1495,10 @@ dipep <- mutate(dipep,
                 wells.pe      = ifelse(wells > 2,
                                        yes = 'Wells PE',
                                        no  = 'No Wells PE'),
+                wells         = factor(wells, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5))
                 wells.pe      = factor(wells.pe,
                                        levels = c('No Wells PE', 'Wells PE'))) %>%
     dplyr::select(-existing.medical.cancer)
-## Ensure all scores are factors
-dipep <- mutate(dipep
-                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7)),
-                simplified.pe = factor(dipep$simplified.pe,
-                                           levels = c('No Simplified PE', 'Simplified PE')),
-                wells         = factor(wells, levels = c()),
-                wells.pe      = factor(dipep$wells.pe,
-                                       levels = c('No Wells PE', 'Wells PE')),
-                perc          = factor(perc, levels = c(0, 1, 2, 3, 4))
-                perc.pe       = factor(dipep$perc.pe,
-                                       levels = c('No PERC PE', 'PERC PE'))
-                })
 
 #######################################################################
 ## Derive an imputed data set                                        ##
