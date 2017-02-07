@@ -1391,6 +1391,7 @@ dipep <- mutate(dipep,
                                                     no  = 0),
                 simplified = simplified.age +
                              simplified.previous +
+                             simplified.surgery +
                              simplified.neoplasm +
                              simplified.lower.limb.unilateral.pain +
                              simplified.haemoptysis +
@@ -1439,7 +1440,7 @@ dipep <- mutate(dipep,
                 perc.dvt = ifelse(dvt == 'Yes',
                                   yes = 1,
                                   no  = 0),
-                perc.risk = perc.age +
+                perc      = perc.age +
                             perc.heart.rate +
                             perc.o2 +
                             perc.cough +
@@ -1472,10 +1473,10 @@ dipep <- mutate(dipep,
                                                yes = 1.5,
                                                no  = 0),
                 wells.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
-                                          yes = 3,
+                                          yes = 1,
                                           no  = 0),
                 wells.neoplasm = ifelse(existing.medical.cancer == 1,
-                                        yes = 3,
+                                        yes = 1,
                                         no  = 0),
                 wells = wells.dvt +
                         ## wells.alternative +
@@ -1496,14 +1497,17 @@ dipep <- mutate(dipep,
                                        levels = c('No Wells PE', 'Wells PE'))) %>%
     dplyr::select(-existing.medical.cancer)
 ## Ensure all scores are factors
-## dipep <- within(dipep, {
-##                 simplified.pe <- factor(dipep$simplified.pe,
-##                                            levels = c('No Simplified PE', 'Simplified PE'))
-##                 wells.pe <- factor(dipep$wells.pe,
-##                                    levels = c('No Wells PE', 'Wells PE'))
-##                 perc.pe <- factor(dipep$perc.pe,
-##                                   levels = c('No PERC PE', 'PERC PE'))
-##                 })
+dipep <- mutate(dipep
+                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7)),
+                simplified.pe = factor(dipep$simplified.pe,
+                                           levels = c('No Simplified PE', 'Simplified PE')),
+                wells         = factor(wells, levels = c()),
+                wells.pe      = factor(dipep$wells.pe,
+                                       levels = c('No Wells PE', 'Wells PE')),
+                perc          = factor(perc, levels = c(0, 1, 2, 3, 4))
+                perc.pe       = factor(dipep$perc.pe,
+                                       levels = c('No PERC PE', 'PERC PE'))
+                })
 
 #######################################################################
 ## Derive an imputed data set                                        ##
