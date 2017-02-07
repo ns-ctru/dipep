@@ -446,9 +446,9 @@ names(master$biomarker_tidy) <- gsub('aptt.sp.luquid', '', names(master$biomarke
 names(master$biomarker_tidy) <- gsub('clauss.fibrinogen', 'clauss.fibrinogen', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('d.dimer.innovan.latex.test', 'ddimer.innovan', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('lagtime', 'thrombin.generation.lag.time', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('etp', 'thrombin.generation.endogenous.thrombin.potential', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('peak', 'thrombin.generation.peak', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('etp', 'thrombin.generation.endogenous.potential', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('ttpeak', 'thrombin.generation.time.to.peak', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('^peak', 'thrombin.generation.peak', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('error.message..comment', 'error.message', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('d.dimer.eliza.zymutest..hyphen.', 'ddimer.elisa', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('pap', 'plasmin.antiplasmin', names(master$biomarker_tidy))
@@ -1627,6 +1627,8 @@ dipep.README <- within(dipep.README,{
                  description[data.frame == 'dipep']                          <- 'Combined data set for analysis (no imputation)'
                  description[data.frame == 'dipep.imputed']                  <- 'Combined data set for analysis (imputed missing values)'
                  description[data.frame == 'missing.data'] <- 'Summary of data completeness (FALSE == Not Missing; TRUE == Missing)'
+                 description[data.frame == 'biomarker_raw'] <- 'Raw Biomarker data after some (external) cleaning and import'
+                 description[data.frame == 'biomarker_tidy'] <- 'Tidied Biomarker data after some (external) cleaning and import'
 })
 
 #######################################################################
