@@ -42,6 +42,7 @@ likert(plot.simplified, grouping = existing$group) %>%
     plot(centered = 4) + labs(caption = 'Plots are centered on the Risk category (4).\n Percentages indicate the proportion below, within and above this.')
 ## Table of scores
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       mutate(simplified = as.numeric(simplified)) %>%
        summarise(N      = sum(!is.na(simplified)),
                  Mean   = mean(simplified, na.rm = TRUE),
                  SD     = sd(simplified, na.rm = TRUE),
@@ -104,6 +105,7 @@ likert(plot.wells, grouping = existing$group) %>%
     plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category (2).\n Percentages indicate the proportion below, within and above this.')
 ## Summary tables
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       mutate(wells = as.numeric(wells)) %>%
        summarise(N      = sum(!is.na(wells)),
                  Mean   = mean(wells, na.rm = TRUE),
                  SD     = sd(wells, na.rm = TRUE),
@@ -168,6 +170,7 @@ likert(plot.perc, grouping = existing$group) %>%
     plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
 ## Summary Tables
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       mutate(perc = as.numeric(perc)) %>%
        summarise(N      = sum(!is.na(perc)),
                  Mean   = mean(perc, na.rm = TRUE),
                  SD     = sd(perc, na.rm = TRUE),
