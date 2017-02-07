@@ -19,7 +19,7 @@ ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
     ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
     style_roc() + theme_bw()
 ## Extract the existing scores for Likert style plotting
-existing <- dplyr::filter(dipep, !is.na(pe)) %>% dplyr::select(group, wells, simplified, perc.risk)
+existing <- dplyr::filter(dipep, !is.na(pe)) %>% dplyr::select(group, wells, simplified, perc)
 
 ```
 
@@ -36,11 +36,10 @@ ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = simplified)) +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
 ## Likert style plot of scores
-plot.simplified <- dplyr::select(existing, simplified) %>%
-              mutate(simplified = factor(simplified, levels = c(0, 1, 2, 3,4, 5)))
-names(plot.simplified) <- c('Simplified')
+plot.simplified <- dplyr::select(existing, simplified)
+names(plot.simplified) <- c('Simplified Revised GENEVA Scores')
 likert(plot.simplified, grouping = existing$group) %>%
-    plot(centered = FALSE) + ggtitle('Simplified Revised GENEVA Scores for Diagnosed and Suspected PE')
+    plot(centered = 4) + labs(caption = 'Plots are centered on the Risk category (4).\n Percentages indicate the proportion below, within and above this.')
 ## Table of scores
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
        summarise(N      = sum(!is.na(simplified)),
@@ -92,18 +91,17 @@ The Wells Score (@wells2001) is summarised below.  An [online calculator](https:
 
 ```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Bar Chart of scores
-ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = wells)) +
+ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = factor(wells))) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('Wells Scores by clinical classification') +
     xlab('Wells Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
 ## Likert style plot of scores
-plot.wells <- dplyr::select(existing, wells) %>%
-              mutate(wells = factor(wells, levels = c(0, 1.5, 2, 4.5, 6, 7.5)))
-names(plot.wells) <- c('Wells')
+plot.wells <- dplyr::select(existing, wells)
+names(plot.wells) <- c('Wells Scores')
 likert(plot.wells, grouping = existing$group) %>%
-    plot(centered = FALSE) + ggtitle('Wells Scores for Diagnosed and Suspected PE')
+    plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category (2).\n Percentages indicate the proportion below, within and above this.')
 ## Summary tables
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
        summarise(N      = sum(!is.na(wells)),
@@ -157,39 +155,38 @@ kable(summary.simplified$summary.table,
 The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $> 2$ (Moderate Risk) is taken as indicative of PE.
 
 ```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = perc.risk)) +
+ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = perc)) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('PERC Scores by clinical classification') +
     xlab('PERC Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
 ## Likert style plot of scores
-plot.perc <- dplyr::select(existing, perc.risk) %>%
-              mutate(perc.risk = factor(perc.risk, levels = c(0, 1, 2, 3, 4)))
-names(plot.perc) <- c('PERC')
+plot.perc <- dplyr::select(existing, perc)
+names(plot.perc) <- c('PERC Scores')
 likert(plot.perc, grouping = existing$group) %>%
-    plot(centered = FALSE) + ggtitle('PERC Scores for Diagnosed and Suspected PE')
+    plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
 ## Summary Tables
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
-       summarise(N      = sum(!is.na(perc.risk)),
-                 Mean   = mean(perc.risk, na.rm = TRUE),
-                 SD     = sd(perc.risk, na.rm = TRUE),
-                 Lower  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
-                 Median = quantile(perc.risk, probs = 0.5, na.rm = TRUE),
-                 Upper  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
-                 Min    = min(perc.risk, na.rm = TRUE),
-                 Max    = max(perc.risk, na.rm = TRUE)) %>%
+       summarise(N      = sum(!is.na(perc)),
+                 Mean   = mean(perc, na.rm = TRUE),
+                 SD     = sd(perc, na.rm = TRUE),
+                 Lower  = quantile(perc, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(perc, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(perc, probs = 0.25, na.rm = TRUE),
+                 Min    = min(perc, na.rm = TRUE),
+                 Max    = max(perc, na.rm = TRUE)) %>%
        mutate(Status = 'All')
 by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
             group_by(pe) %>%
-            summarise(N      = sum(!is.na(perc.risk)),
-                      Mean   = mean(perc.risk, na.rm = TRUE),
-                      SD     = sd(perc.risk, na.rm = TRUE),
-                      Lower  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
-                      Median = quantile(perc.risk, probs = 0.5, na.rm = TRUE),
-                      Upper  = quantile(perc.risk, probs = 0.25, na.rm = TRUE),
-                      Min    = min(perc.risk, na.rm = TRUE),
-                      Max    = max(perc.risk, na.rm = TRUE)) %>%
+            summarise(N      = sum(!is.na(perc)),
+                      Mean   = mean(perc, na.rm = TRUE),
+                      SD     = sd(perc, na.rm = TRUE),
+                      Lower  = quantile(perc, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(perc, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(perc, probs = 0.25, na.rm = TRUE),
+                      Min    = min(perc, na.rm = TRUE),
+                      Max    = max(perc, na.rm = TRUE)) %>%
             rename("Status" = pe)
 rbind(all, by.group) %>%
 dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
