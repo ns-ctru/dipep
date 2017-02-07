@@ -16,8 +16,10 @@ to.plot <- to.plot %>%
 ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor Score...')) +
-    ggtitle('ROC curves for Presenting Features Univariable Logistic Regression') +
+    ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
     style_roc() + theme_bw()
+## Extract the existing scores for Likert style plotting
+existing <- dplyr::filter(dipep, !is.na(pe)) %>% dplyr::select(group, wells, simplified, perc.risk)
 
 ```
 
@@ -33,6 +35,12 @@ ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = simplified)) +
     xlab('Simplified Revised Geneva Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
+## Likert style plot of scores
+plot.simplified <- dplyr::select(existing, simplified) %>%
+              mutate(simplified = factor(simplified, levels = c(0, 1, 2, 3,4, 5)))
+names(plot.simplified) <- c('Simplified')
+likert(plot.simplified, grouping = existing$group) %>%
+    plot(centered = FALSE) + ggtitle('Simplified Revised GENEVA Scores for Diagnosed and Suspected PE')
 ## Table of scores
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
        summarise(N      = sum(!is.na(simplified)),
@@ -83,12 +91,20 @@ kable(summary.simplified$summary.table,
 The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> X$ is taken as indicative of PE.
 
 ```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+## Bar Chart of scores
 ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = wells)) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('Wells Scores by clinical classification') +
     xlab('Wells Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
+## Likert style plot of scores
+plot.wells <- dplyr::select(existing, wells) %>%
+              mutate(wells = factor(wells, levels = c(0, 1.5, 2, 4.5, 6, 7.5)))
+names(plot.wells) <- c('Wells')
+likert(plot.wells, grouping = existing$group) %>%
+    plot(centered = FALSE) + ggtitle('Wells Scores for Diagnosed and Suspected PE')
+## Summary tables
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
        summarise(N      = sum(!is.na(wells)),
                  Mean   = mean(wells, na.rm = TRUE),
@@ -147,6 +163,13 @@ ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = perc.risk)) +
     xlab('PERC Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
     theme_bw()
+## Likert style plot of scores
+plot.perc <- dplyr::select(existing, perc.risk) %>%
+              mutate(perc.risk = factor(perc.risk, levels = c(0, 1, 2, 3, 4)))
+names(plot.perc) <- c('PERC')
+likert(plot.perc, grouping = existing$group) %>%
+    plot(centered = FALSE) + ggtitle('PERC Scores for Diagnosed and Suspected PE')
+## Summary Tables
 all <- dplyr::filter(dipep, !is.na(pe)) %>%
        summarise(N      = sum(!is.na(perc.risk)),
                  Mean   = mean(perc.risk, na.rm = TRUE),
