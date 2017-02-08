@@ -432,7 +432,7 @@ master$womans.details <- read_dipep("Womans details.csv",
 ## system() call to ensure that it is invoked should you wish to run
 ## this code in M$-Win.
 system('./clean_biomarker.sh')
-master$biomarker_raw <- read.table(file = 'biomarker_clean.csv',
+master$biomarker_raw <- read.table(file   = 'biomarker_clean.csv',
                                    header = TRUE,
                                    sep    = ';')
 master$biomarker_tidy <- master$biomarker_raw
@@ -459,7 +459,21 @@ names(master$biomarker_tidy) <- gsub('nppb', 'natriuertic.peptide', names(master
 names(master$biomarker_tidy) <- gsub('mproanp', 'mrproamp', names(master$biomarker_tidy))
 ## Remove extrenuous columns
 master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(error.message, comments, key, x))
-
+## Now read in the exclusions which are those who have received anti-coagulents
+## prior to blood sample being taken for assay.  This list is based on an XLS
+## file which lists those identified based on the assays and has then been augmented
+## by review of case notes to confirm whether anti-coagulants were received.
+## The file was sent by email 2017-02-07 by Ellen Bradley (e.bradley@sheffield.ac.uk) and
+## forwarded by Kim Horspool (k.horspool@sheffield.ac.uk) the same day (subject Fwd : Data Cleansing)
+## and has been saved to ../lib/data-raw/xls/biomarker_anticoag_exclusions_20170207.xls
+## The worksheet has been saved to CSV ../lib/data-raw/biomarker_anticoag_exclusions_20170207.csv
+## however because of the use of commas in free text fields the delimiter has been
+## set to a semi-colon so that importing does not split fields (albeit that most of
+## those text fields are redundant)
+system('./clean_biomarker_exclusions.sh')
+master$biomarker_exclusions_raw <- read.table(file   = 'biomarker_anticoag_exclusions_20170207.csv',
+                                              header = TRUE,
+                                              sep    = ';')
 
 
 
@@ -1405,7 +1419,7 @@ dipep <- mutate(dipep,
                 simplified.pe = ifelse(simplified >= 4,
                                        yes = 'Simplified PE',
                                        no  = 'No Simplified PE'),
-                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7))
+                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7)),
                 simplified.pe = factor(simplified.pe,
                                        levels = c('No Simplified PE', 'Simplified PE')))
 ## PERC
@@ -1454,7 +1468,7 @@ dipep <- mutate(dipep,
                 perc.pe = ifelse(perc >= 2,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
-                perc          = factor(perc, levels = c(0, 1, 2, 3, 4))
+                perc          = factor(perc, levels = c(0, 1, 2, 3, 4)),
                 perc.pe = factor(perc.pe,
                                  levels = c('No PERC PE', 'PERC PE')))
 ## Wells
@@ -1495,7 +1509,7 @@ dipep <- mutate(dipep,
                 wells.pe      = ifelse(wells > 2,
                                        yes = 'Wells PE',
                                        no  = 'No Wells PE'),
-                wells         = factor(wells, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5))
+                wells         = factor(wells, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
                 wells.pe      = factor(wells.pe,
                                        levels = c('No Wells PE', 'Wells PE'))) %>%
     dplyr::select(-existing.medical.cancer)
