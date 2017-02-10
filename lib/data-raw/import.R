@@ -411,7 +411,47 @@ master$womans.details <- read_dipep("Womans details.csv",
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
 #######################################################################
-## .csv                                                      ##
+## Case Review 1.csv                                                 ##
+#######################################################################
+master$case.review1 <- read_dipep("Case Review 1.csv",
+                                  header           = TRUE,
+                                  sep              = ',',
+                                  convert.dates    = TRUE,
+                                  dictionary       = master$data.dictionary)
+master$case.review1.investigation <- read_dipep("Case Review 1 - Investigation.csv",
+                                                header           = TRUE,
+                                                sep              = ',',
+                                                convert.dates    = TRUE,
+                                                dictionary       = master$data.dictionary)
+#######################################################################
+## Case Review 2.csv                                                 ##
+#######################################################################
+master$case.review2 <- read_dipep("Case Review 2.csv",
+                                  header           = TRUE,
+                                  sep              = ',',
+                                  convert.dates    = TRUE,
+                                  dictionary       = master$data.dictionary)
+master$case.review2.investigation <- read_dipep("Case Review 2 - Investigation.csv",
+                                                header           = TRUE,
+                                                sep              = ',',
+                                                convert.dates    = TRUE,
+                                                dictionary       = master$data.dictionary)
+#######################################################################
+## Case Review 3.csv                                                 ##
+#######################################################################
+master$case.review3 <- read_dipep("Case Review 3.csv",
+                                  header           = TRUE,
+                                  sep              = ',',
+                                  convert.dates    = TRUE,
+                                  dictionary       = master$data.dictionary)
+master$case.review3.investigation <- read_dipep("Case Review 3 - Investigation.csv",
+                                                header           = TRUE,
+                                                sep              = ',',
+                                                convert.dates    = TRUE,
+                                                dictionary       = master$data.dictionary)
+
+#######################################################################
+## biomarker_clean.csv                                               ##
 #######################################################################
 ## First tidy the CSV file exported from Excel to remove the redundant
 ## and uninformative header rows.  Done with a short Bash script that
@@ -431,6 +471,7 @@ master$womans.details <- read_dipep("Womans details.csv",
 ## will have to install a UNIX-like shell (e.g. Cygwin) and tweak the
 ## system() call to ensure that it is invoked should you wish to run
 ## this code in M$-Win.
+
 system('./clean_biomarker.sh')
 master$biomarker_raw <- read.table(file   = 'biomarker_clean.csv',
                                    header = TRUE,
@@ -442,7 +483,7 @@ names(master$biomarker_tidy) <- names(master$biomarker_tidy) %>%
 names(master$biomarker_tidy) <- gsub('sample.number', 'sample', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('sample.name', 'screening', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('pt', 'prothombin.time', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('aptt.sp.luquid', '', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('aprothombin.timet.sp.liquid', 'aprothombin', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('clauss.fibrinogen', 'clauss.fibrinogen', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('d.dimer.innovan.latex.test', 'ddimer.innovan', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('lagtime', 'thrombin.generation.lag.time', names(master$biomarker_tidy))
@@ -458,7 +499,16 @@ names(master$biomarker_tidy) <- gsub('troponin.1', 'troponin', names(master$biom
 names(master$biomarker_tidy) <- gsub('nppb', 'natriuertic.peptide', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('mproanp', 'mrproamp', names(master$biomarker_tidy))
 ## Remove extrenuous columns
-master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(error.message, comments, key, x))
+master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(sample, error.message, comments, key, x))
+## UNCONFIRMED - But it looks like a value of '-1' has been used to indicate missing data
+##               Convert those to true missing now.
+## NB - Requested confirmation from Kiran via email (2017-02-02 @ 13:26; Subject :
+##      Fwd: DiPep - expert elicitation exercise) and despite a response from Kiran
+##      (2017-02-02 @ 18:14) this aspect was not addressed.
+master$biomarker_tidy[master$biomarker_tidy == -1] <- NA
+#######################################################################
+## biomarker_anticoag_exclusions_clean.csv                           ##
+#######################################################################
 ## Now read in the exclusions which are those who have received anti-coagulents
 ## prior to blood sample being taken for assay.  This list is based on an XLS
 ## file which lists those identified based on the assays and has then been augmented
@@ -471,11 +521,39 @@ master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(error.message, 
 ## set to a semi-colon so that importing does not split fields (albeit that most of
 ## those text fields are redundant)
 system('./clean_biomarker_exclusions.sh')
-master$biomarker_exclusions_raw <- read.table(file   = 'biomarker_anticoag_exclusions_20170207.csv',
+master$biomarker_exclusions_raw <- read.table(file   = 'biomarker_anticoag_exclusions_clean.csv',
                                               header = TRUE,
                                               sep    = ';')
-
-
+## Only really need two colums, ID and indicator of anti-coagulant
+master$biomarker_exclusions_clean <- dplyr::select(master$biomarker_exclusions_raw,
+                                                   Sample.name,
+                                                   Received.anti.coag.before.blood.sample.)
+names(master$biomarker_exclusions_clean) <- c('screening', 'exclude.anti.coag')
+## BUT...there are four individuals who _didn't_ receive anti-coagulants so
+## now filter those out to a list for use in cleaning the actual data
+master$biomarker_exclusions_clean <- dplyr::filter(master$biomarker_exclusions_clean, exclude.anti.coag == 'Yes')
+## Now scrub the data out of the tidied master$biomarker_tidy
+master$biomarker_tidy <- left_join(master$biomarker_tidy,
+                                   master$biomarker_exclusions_clean) %>%
+                         mutate(exclude.anti.coag = ifelse(is.na(exclude.anti.coag),
+                                                           yes = 'No',
+                                                           no  = exclude.anti.coag))
+master$biomarker_tidy <- mutate(master$biomarker_tidy,
+                                aprothombin = ifelse(exclude.anti.coag == 'Yes',
+                                                     yes = NA,
+                                                     no  = aprothombin),
+                                thrombin.generation.lag.time = ifelse(exclude.anti.coag == 'Yes',
+                                                                      yes = NA,
+                                                                      no  = thrombin.generation.lag.time),
+                                thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+                                                                      yes = NA,
+                                                                      no  = thrombin.generation.endogenous.potential),
+                                thrombin.generation.time.to.peak = ifelse(exclude.anti.coag == 'Yes',
+                                                                          yes = NA,
+                                                                          no  = thrombin.generation.time.to.peak),
+                                thrombin.generation.peak = ifelse(exclude.anti.coag == 'Yes',
+                                                                  yes = NA,
+                                                                  no  = thrombin.generation.peak))
 
 
 #######################################################################
@@ -1550,6 +1628,27 @@ dipep.imputed <- mutate(dipep,
                         ## heart.rate.cat = ifelse(is.na(), yes = , no = )
                         )
 
+#######################################################################
+## UKOSS Exclusions                                                  ##
+#######################################################################
+master$ukoss.exclusions <- read.table('exclusions_20170210.csv',
+                                      header = FALSE,
+                                      sep    = ';')
+## Remove redundant and uninformative header
+master$ukoss.exclusions <- master$ukoss.exclusions[4:nrow(master$ukoss.exclusions),]
+names(master$ukoss.exclusions) <- c('screening', 'reason')
+## Clean and tidy the identifiers 24 of which have been mutated and would no
+## longer match anything
+master$ukoss.exclusions <- mutate(master$ukoss.exclusions,
+                                  screening = gsub(',', '', screening),
+                                  screening = ifelse(nchar(screening) == 3,
+                                                 yes = paste0('PE_', screening),
+                                                 no  = screening),
+                                  screening = ifelse(nchar(screening) == 4,
+                                                 yes = gsub('E', 'PE_', screening),
+                                                 no  = screening))
+
+#######################################################################
 #######################################################################
 ## Database Specification                                            ##
 #######################################################################
