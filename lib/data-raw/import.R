@@ -1120,6 +1120,10 @@ t <- merge(t1,
     merge(.,
           master$biomarker_tidy,
           by    = 'screening',
+          all.x = TRUE) %>%
+    merge(.,
+          master$case.review,
+          by    = 'screening',
           all.x = TRUE)
 ## Now do three merges with the event.date, one to get a master dataset (excluding those who were Non recruited)...
 dipep <- merge(t,
@@ -1654,6 +1658,7 @@ dipep <- mutate(dipep,
                 wells.pe      = factor(wells.pe,
                                        levels = c('No Wells PE', 'Wells PE'))) %>%
     dplyr::select(-existing.medical.cancer)
+##
 
 #######################################################################
 ## Derive an imputed data set                                        ##
@@ -1712,7 +1717,6 @@ master$ukoss.exclusions <- mutate(master$ukoss.exclusions,
                                                  no  = screening))
 
 #######################################################################
-#######################################################################
 ## Database Specification                                            ##
 #######################################################################
 ## The 'Forms' Worksheet from the Data Management document           ##
@@ -1742,7 +1746,8 @@ fields <- read.csv('fields.csv')
 fields <- dplyr::select(fields, Identifier, Label)
 names(fields) <- c('variable', 'description')
 fields$variable <- gsub('_', '.', fields$variable)
-
+fields <- rbind(fields,
+                read.csv('fields_derived.csv'))
 
 #######################################################################
 ## Data Dictionary for R objects                                    ##
@@ -1889,7 +1894,9 @@ dipep.README.variables$thrombotic.events              <- fields_dipep(df     = m
 dipep.README.variables$unavailable.forms              <- fields_dipep(df     = master$unavailable.forms,
                                                                 fields = fields)
 dipep.README.variables$womans.details                 <- fields_dipep(df     = master$womans.details,
-                                                                fields = fields)
+                                                                      fields = fields)
+dipep.README.variables$dipep <- fields_dipep(df = dipep,
+                                             fields = fields)
 ## ToDo (2016-12-07) - Add in derived scores etc.
 ## dipep.README.variables$perc <-rbind(c('perc.age', 'PERC Score - Age'),
 ##                                     c('perc.heart.rate', 'PERC Score - Heart Rate'),
