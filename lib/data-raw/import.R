@@ -410,6 +410,7 @@ master$womans.details <- read_dipep("Womans details.csv",
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
+
 #######################################################################
 ## Case Review 1.csv                                                 ##
 #######################################################################
@@ -418,6 +419,7 @@ master$case.review1 <- read_dipep("Case Review 1.csv",
                                   sep              = ',',
                                   convert.dates    = TRUE,
                                   dictionary       = master$data.dictionary)
+master$case.review1$case.review <- 1
 master$case.review1.investigation <- read_dipep("Case Review 1 - Investigation.csv",
                                                 header           = TRUE,
                                                 sep              = ',',
@@ -431,6 +433,7 @@ master$case.review2 <- read_dipep("Case Review 2.csv",
                                   sep              = ',',
                                   convert.dates    = TRUE,
                                   dictionary       = master$data.dictionary)
+master$case.review2$case.review <- 2
 master$case.review2.investigation <- read_dipep("Case Review 2 - Investigation.csv",
                                                 header           = TRUE,
                                                 sep              = ',',
@@ -444,11 +447,72 @@ master$case.review3 <- read_dipep("Case Review 3.csv",
                                   sep              = ',',
                                   convert.dates    = TRUE,
                                   dictionary       = master$data.dictionary)
+master$case.review3$case.review <- 3
 master$case.review3.investigation <- read_dipep("Case Review 3 - Investigation.csv",
                                                 header           = TRUE,
                                                 sep              = ',',
                                                 convert.dates    = TRUE,
                                                 dictionary       = master$data.dictionary)
+#######################################################################
+## Combine Case Reviews into one                                     ##
+#######################################################################
+## Short function to subset and clean (convert to string) the case review
+## variables that are important.
+clean_case_review <- function(df  = master$case.review1,
+                              reviewer = 1,
+                              ...){
+    df <- dplyr::select(df, screening, primary.class, secondary.class, img.class, trt.class, fup.class) %>%
+          mutate(primary.class = as.character(primary.class),
+                 secondary.class = as.character(secondary.class),
+                 img.class       = as.character(img.class),
+                 trt.class       = as.character(trt.class),
+                 fup.class       = as.character(fup.class))
+    names(df) <- gsub('class', paste0('class', reviewer), names(df))
+    return(df)
+}
+case.review1 <- clean_case_review(df       = master$case.review1,
+                                  reviewer = 1)
+case.review2 <- clean_case_review(df       = master$case.review1,
+                                  reviewer = 2)
+case.review3 <- clean_case_review(df       = master$case.review1,
+                                  reviewer = 3)
+master$case.review <- left_join(case.review1,
+                                case.review2) %>%
+                      left_join(.,
+                                case.review3) %>%
+                      mutate(primary.class     = ifelse(is.na(primary.class3) & primary.class1 == primary.class2,
+                                                        yes = primary.class1,
+                                                        no  = primary.class3),
+                             primary.class     = ifelse(primary.class == 'Exclude',
+                                                        yes = NA,
+                                                        no  = primary.class),
+                             secondary.class   = ifelse(is.na(secondary.class3) & secondary.class1 == secondary.class2,
+                                                        yes = secondary.class1,
+                                                        no  = secondary.class3),
+                             secondary.class   = ifelse(secondary.class == 'Exclude',
+                                                        yes = NA,
+                                                        no  = secondary.class)) %>%
+                      dplyr::select(screening, primary.class, secondary.class)
+## TODO 20170213 - How to define other classifications, and whether to actually do so or not
+##                 Personally I see no utility as the subsequent classifications are using
+##                 individuals for whom there is uncertainty about their classification.
+##                 This will only serve to reduce the predictive value of any model (or change
+##                 the variables that are selected as being useful for prediction).
+##
+##                 Regardless its still unclear how to do this, the document by Steve Goodacre
+##                 attached to email from Kim Horspool (2017-02-10 @ 10:13 Re: DiPEP case
+##                 review update) hhas classifications of Imaging, Treatment and Follow-up,
+##                 and indicates how Primary and Secondary classifications (made by reviewers)
+##                 are made.  It does not however indicate how to reconcile when reviewers 1
+##                 and 2 do not concur on these three categories (which are the underlying
+##                 reasons why reviewer 3 has been used) because it is the image classification
+##                 that may be discordant, and it then becomes a question of which one to
+##                 use for that, same rules, as the overall classification?
+##                              tertiary.class    = ifelse(),
+##                              quaternary.class  = ifelse(),
+##                              quinternary.class = ifelse())
+## Remove helper funciton and temporary dataframes
+rm(clean_case_review, case.review1, case.review2, case.review3)
 
 #######################################################################
 ## biomarker_clean.csv                                               ##
@@ -471,7 +535,6 @@ master$case.review3.investigation <- read_dipep("Case Review 3 - Investigation.c
 ## will have to install a UNIX-like shell (e.g. Cygwin) and tweak the
 ## system() call to ensure that it is invoked should you wish to run
 ## this code in M$-Win.
-
 system('./clean_biomarker.sh')
 master$biomarker_raw <- read.table(file   = 'biomarker_clean.csv',
                                    header = TRUE,
