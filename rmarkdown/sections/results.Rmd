@@ -10,9 +10,6 @@
 ```{r child = 'subsections/classification.Rmd', eval = TRUE}
 ```
 
-```{r child = 'subsections/results_eq5d5l.Rmd', eval = TRUE}
-```
-
 ```{r child = 'subsections/results_existing.Rmd', eval = TRUE}
 ```
 
