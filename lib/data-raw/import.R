@@ -480,19 +480,27 @@ master$case.review <- left_join(case.review1,
                                 case.review2) %>%
                       left_join(.,
                                 case.review3) %>%
-                      mutate(primary.class     = ifelse(is.na(primary.class3) & primary.class1 == primary.class2,
+                      mutate(img.class = ifelse(img.class1 == img.class2,
+                                                yes = img.class1,
+                                                no  = img.class3),
+                             trt.class = ifelse(trt.class1 == trt.class2,
+                                                yes = trt.class1,
+                                                no  = trt.class3),
+                             fup.class = ifelse(fup.class1 == fup.class2,
+                                                yes = fup.class1,
+                                                no  = fup.class3),
+                             primary.class     = ifelse(primary.class1 == primary.class2,
                                                         yes = primary.class1,
                                                         no  = primary.class3),
                              primary.class     = ifelse(primary.class == 'Exclude',
                                                         yes = NA,
                                                         no  = primary.class),
-                             secondary.class   = ifelse(is.na(secondary.class3) & secondary.class1 == secondary.class2,
+                             secondary.class   = ifelse(secondary.class1 == secondary.class2,
                                                         yes = secondary.class1,
                                                         no  = secondary.class3),
                              secondary.class   = ifelse(secondary.class == 'Exclude',
                                                         yes = NA,
-                                                        no  = secondary.class)) %>%
-                      dplyr::select(screening, primary.class, secondary.class)
+                                                        no  = secondary.class))
 ## TODO 20170213 - How to define other classifications, and whether to actually do so or not
 ##                 Personally I see no utility as the subsequent classifications are using
 ##                 individuals for whom there is uncertainty about their classification.
@@ -1658,7 +1666,65 @@ dipep <- mutate(dipep,
                 wells.pe      = factor(wells.pe,
                                        levels = c('No Wells PE', 'Wells PE'))) %>%
     dplyr::select(-existing.medical.cancer)
+## Delphi Consensus rule.
+## Nothings ever simple and they've derived three scores, which will need testing in
+## however many different cohorts they wish to test sensitivity in!!!
 ##
+## Details are in the following document
+##
+## ../projects/DiPEP/08. Study Management/PMG/07 Jun 16 - PMG + Delphi Meeting/Documents for Delphi Consensus Meeting/DIPEP CLINICAL DECISION RULE FEEDBACK_7June2016.docx
+## dipe <- mutate(dipep,
+##                delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked' &
+##                                                               (),
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.chest.pain             = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.history.dvt.pe         = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.family.history         = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.medical.history        = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.obstetric.complication = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.medical.complication   = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.gestation              = ifelse(gestation > 180,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.clinical.dvt           = ifelse(,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.o2.saturation.cat      = ifelse(o2.saturation < 94,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.heart.rate.110.bpm     = ifelse(heart.rate > 110,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.heart.rate.100.bpm     = ifelse(heart.rate > 100,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.respiratory.rate       = ifelse(respiratory.rate > 20,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.bmi                    = ifelse(bmi > 30,
+##                                                               yes = ,
+##                                                               no  = 0),
+##                delphi.primary.score = sum(, na.rm = TRUE)
+##                delphi.primary = ifelse())
 
 #######################################################################
 ## Derive an imputed data set                                        ##
@@ -1937,5 +2003,6 @@ names(dipep_) <- gsub("\\.", "_", names(dipep_))
 names(dipep_) <- gsub("presenting_features", "presenting", names(dipep_))
 names(dipep_) <- gsub("simplified_", "simp_", names(dipep_))
 names(dipep_) <- gsub("thrombin_generation_", "tg_", names(dipep_))
-write_dta(dipep_, version = 14, path = 'dipep_.dta')
+write_dta(dipep_, version = 14, path = 'stata/dipep.dta')
+write_dta(dipep.README.variables$dipep, version = 14, path = 'stata/dipep_description.dta')
 rm(dipep_)
