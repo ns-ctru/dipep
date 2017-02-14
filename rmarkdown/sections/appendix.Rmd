@@ -1,11 +1,14 @@
-### Miscellaneous Requests
+```{r child = 'appendix/codes.Rmd', eval = TRUE}
+```
+
+```{r child = 'appendix/eq5d5l.Rmd', eval = TRUE}
+```
+
+```{r child = 'appendix/logistic.Rmd', eval = FALSE}
+```
+
 ```{r child = 'appendix/misc.Rmd', eval = TRUE}
 ```
 
-### Software
 ```{r child = 'appendix/software.Rmd', eval = TRUE}
-```
-
-### Univariable Logistic Regression
-```{r child = 'appendix/logistic.Rmd', eval = FALSE}
 ```
