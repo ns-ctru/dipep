@@ -1,3 +1,5 @@
+### Univariable Logistic Regression
+
 The full results of the univariable logistic regression are presented below.  For each variable a summry of the logistic regression model is shown followed by four diagnostic plots and then the individual ROC curve for the variable.
 
 #### Age (Continuous)
