@@ -1,3 +1,5 @@
+### Existing Scores {.tabset .tabset-fade .tabset-pills}
+
 ```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(pe)) %>%
            dplyr::select(pe, simplified.pe, wells.pe, perc.pe) %>%
@@ -53,6 +55,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Max    = max(simplified, na.rm = TRUE)) %>%
        mutate(Status = 'All')
 by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            mutate(simplified = as.numeric(simplified)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(simplified)),
                       Mean   = mean(simplified, na.rm = TRUE),
@@ -116,6 +119,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Max    = max(wells, na.rm = TRUE)) %>%
        mutate(Status = 'All')
 by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            mutate(wells = as.numeric(wells)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(wells)),
                       Mean   = mean(wells, na.rm = TRUE),
@@ -181,6 +185,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Max    = max(perc, na.rm = TRUE)) %>%
        mutate(Status = 'All')
 by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            mutate(perc = as.numeric(perc)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(perc)),
                       Mean   = mean(perc, na.rm = TRUE),
@@ -210,3 +215,5 @@ kable(summary.simplified$summary.table,
       caption = 'Performance indicators for the Perc Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
+
+#### Delphi Consensus
