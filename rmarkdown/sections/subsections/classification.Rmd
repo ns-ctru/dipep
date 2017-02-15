@@ -54,7 +54,7 @@ group_by(master$case.review, group, img.class3, trt.class3, fup.class3) %>%
     summarise(n = n()) %>%
     dplyr::filter(group != 'Diagnosed DVT') %>%
     dcast(img.class3 + trt.class3 + fup.class3 ~ group) %>%
-    dplyr::filter(!is.na(img.class3))
+    dplyr::filter(!is.na(img.class3)) %>%
     kable(col.names = c('Imaging', 'Treatment', 'Follow-Up', 'UKOSS', 'Non-Recruited', 'Suspected PE'),
           caption = 'Reviewer 3 Primary classification based on Image, Treatment and Follow-Up for data from three sources. **NB** Combinations that were NOT observed are NOT tabulated.')
 
