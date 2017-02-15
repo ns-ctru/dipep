@@ -23,6 +23,18 @@ ggplot2.opts$binwidth <- 30
 
 ```
 
+```{r backup, eval = TRUE}
+## Make a backup of current output based on time stamp by obtaining the
+## modified time of the existing file and constructing a command to 
+## copy this to the sub-directory 'arch/' modifying the filename to include
+## the timestamp
+mtime <- gsub(' GMT', '', file.info('dipep.html')$mtime)
+mtime <- gsub(' ', '-', mtime)
+cmd <- paste0('cp dipep.html arch/dipep-', mtime, '.html && bzip2 arch/dipep-', mtime, '.html')
+system(cmd)
+
+```
+
 ```{r notifications, eval = TRUE}
 
 ```
