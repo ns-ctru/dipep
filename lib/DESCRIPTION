@@ -29,7 +29,7 @@ Depends:
     reshape2 (>= 1.4.1),
     rms (>= 4.5-0),
     rpart (>= 4.1-10),
-    Rpushbullet (>= 0.3.0),
+    RPushbullet (>= 0.3.0),
     rpart.plot (>= 2.1.0),
     shiny(>= 0.13.0),
     stargazer(>= 5.1),
