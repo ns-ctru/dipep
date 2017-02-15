@@ -472,35 +472,40 @@ clean_case_review <- function(df  = master$case.review1,
 }
 case.review1 <- clean_case_review(df       = master$case.review1,
                                   reviewer = 1)
-case.review2 <- clean_case_review(df       = master$case.review1,
+case.review2 <- clean_case_review(df       = master$case.review2,
                                   reviewer = 2)
-case.review3 <- clean_case_review(df       = master$case.review1,
+case.review3 <- clean_case_review(df       = master$case.review3,
                                   reviewer = 3)
 master$case.review <- left_join(case.review1,
                                 case.review2) %>%
                       left_join(.,
-                                case.review3) %>%
-                      mutate(img.class = ifelse(img.class1 == img.class2,
-                                                yes = img.class1,
-                                                no  = img.class3),
-                             trt.class = ifelse(trt.class1 == trt.class2,
-                                                yes = trt.class1,
-                                                no  = trt.class3),
-                             fup.class = ifelse(fup.class1 == fup.class2,
-                                                yes = fup.class1,
-                                                no  = fup.class3),
-                             primary.class     = ifelse(primary.class1 == primary.class2,
-                                                        yes = primary.class1,
-                                                        no  = primary.class3),
-                             primary.class     = ifelse(primary.class == 'Exclude',
-                                                        yes = NA,
-                                                        no  = primary.class),
-                             secondary.class   = ifelse(secondary.class1 == secondary.class2,
-                                                        yes = secondary.class1,
-                                                        no  = secondary.class3),
-                             secondary.class   = ifelse(secondary.class == 'Exclude',
-                                                        yes = NA,
-                                                        no  = secondary.class))
+                                case.review3) ## %>%
+                      ## mutate(img.class = ifelse(img.class1 == img.class2,
+                      ##                           yes = img.class1,
+                      ##                           no  = img.class3),
+                      ##        trt.class = ifelse(trt.class1 == trt.class2,
+                      ##                           yes = trt.class1,
+                      ##                           no  = trt.class3),
+                      ##        fup.class = ifelse(fup.class1 == fup.class2,
+                      ##                           yes = fup.class1,
+                      ##                           no  = fup.class3),
+                      ##        primary.class     = ifelse(primary.class1 == primary.class2,
+                      ##                                   yes = primary.class1,
+                      ##                                   no  = primary.class3),
+                      ##        primary.class     = ifelse(primary.class == 'Exclude',
+                      ##                                   yes = NA,
+                      ##                                   no  = primary.class),
+                      ##        secondary.class   = ifelse(secondary.class1 == secondary.class2,
+                      ##                                   yes = secondary.class1,
+                      ##                                   no  = secondary.class3),
+                      ##        secondary.class   = ifelse(secondary.class == 'Exclude',
+                      ##                                   yes = NA,
+##                                   no  = secondary.class))
+## Add in the group so that desired table structure can be created
+master$case.review <- left_join(dplyr::select(master$womans.details,
+                                              screening,
+                                              group),
+                                master$case.review)
 ## TODO 20170213 - How to define other classifications, and whether to actually do so or not
 ##                 Personally I see no utility as the subsequent classifications are using
 ##                 individuals for whom there is uncertainty about their classification.
@@ -1130,7 +1135,7 @@ t <- merge(t1,
           by    = 'screening',
           all.x = TRUE) %>%
     merge(.,
-          master$case.review,
+          dplyr::select(master$case.review, screening, img.class, trt.class, fup.class, primary.class, secondary.class),
           by    = 'screening',
           all.x = TRUE)
 ## Now do three merges with the event.date, one to get a master dataset (excluding those who were Non recruited)...
