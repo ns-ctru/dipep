@@ -11,6 +11,7 @@
 #' @param df Data frame holding data
 #' @param by Variable to group data by, options are \code{group} | \code{primary.class} | \code{secondary.class}.
 #' @param to.sum Variable to be summarised.
+#' @param group.as.col Logical as to whether to transpose resulting summary data frame to have groups as columns.
 #'
 #' @export
 dipep_summarise <- function(df              = dipep,
@@ -71,7 +72,7 @@ dipep_summarise <- function(df              = dipep,
                           Statistic = gsub('min', 'Min', Statistic),
                           Statistic = gsub('max', 'Max', Statistic)) %>%
             dplyr::filter(Statistic != grouping)
-        ## Rename and order
+        ## Rename and order rows and columns
         names(results) <- c('All', observed.levels, 'Statistic', 'Measurement')
         results <- mutate(results,
                           order1 = 1,
@@ -85,6 +86,8 @@ dipep_summarise <- function(df              = dipep,
                           order1 = ifelse(Statistic == 'Max'            , 8, order1)) %>%
                    arrange(Measurement, order1) %>%
                    dplyr::select(-order1)
+        refcols <- c('Measurement', 'Statistic')
+        results <- results[, c(refcols, setdiff(names(results), refcols))]
     }
     return(results)
 }
