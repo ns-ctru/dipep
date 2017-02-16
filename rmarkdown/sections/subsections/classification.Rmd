@@ -7,8 +7,12 @@ Four classifications were derived and are summarised in the tables that follow.
 | Imaging | Treatment | Follow-up | Primary | Secondary | Tertiary | Quaternary |
 |:-------:|:---------:|:---------:|:--------|:----------|:---------|:-----------|
 | `I1a`   | `T1`      | `F1`      | PE      | PE        | PE       | PE         |
-| `I1a`   | `T2`      | `F2`      | PE      | Exclude   | PE       | PE         |
+| `I1a`   | `T1`      | `F2`      | PE      | PE        | PE       | PE         |
+| `I1a`   | `T2`      | `F1`      | PE      | PE        | PE       | PE         |
+| `I1a`   | `T2`      | `F2`      | PE      | PE        | PE       | PE         |
 | `I1b`   | `T1`      | `F1`      | PE      | PE        | PE       | Exclude    |
+| `I1b`   | `T1`      | `F2`      | PE      | PE        | PE       | Exclude    |
+| `I1b`   | `T2`      | `F1`      | PE      | PE        | PE       | Exclude    |
 | `I1b`   | `T2`      | `F2`      | PE      | PE        | PE       | Exclude    |
 | `I2`    | `T1`      | `F1`      | PE      | PE        | PE       | PE         |
 | `I2`    | `T1`      | `F2`      | Exclude | PE        | Exclude  | Exclude    |
