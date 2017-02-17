@@ -124,7 +124,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('xrayNormal', 'X-ray : Normal', term),
                              term = gsub('xrayAbnormal', 'X-ray : Abnormal', term),
                              term = gsub('xrayNot performed', 'X-ray : Not Performed', term),
-                             term = gsub('xray.catAbnomral ECG', 'X-ray (Binary) : Abnormal', term))
+                             term = gsub('xray.catAbnomral X-Ray', 'X-ray (Binary) : Abnormal', term))
     ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
     results$glance    <- broom::glance(results$fitted)
