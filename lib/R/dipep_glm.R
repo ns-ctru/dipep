@@ -11,6 +11,7 @@
 #'
 #'
 #' @param df Data frame to analyse (default is \code{dipep} and shouldn't need changing)
+#' @param classification Specify the variable that defines the disease status, for this study there are four classifications of diseases ststus, hence the need for flexibility.
 #' @param predictor Predictor variable(s) to test.
 #' @param model Name/label of your model.
 #' @param relevel Reference level for logistic regression if different from default.
@@ -18,13 +19,14 @@
 #'
 #' @export
 dipep_glm <- function(df              = .data,
+                      classification  = 'first.st',
                       predictor       = 'age',
                       model           = NULL,
                       relevel         = NULL,
                       ...){
     results <- list()
     ## Build the formula
-    .formula <- reformulate(response = 'pe',
+    .formula <- reformulate(response = classification,
                             termlabels = predictor)
     ## Relevel if asked
     ## ToDo - Check this, may not work correctly (usual NSE issues)
@@ -36,9 +38,11 @@ dipep_glm <- function(df              = .data,
     if(is.null(model)){
         model <- predictor
     }
-    ## Filter the data frame
-    results$df <- dplyr::filter(df, group == 'Suspected PE') %>%
-                  dplyr::select_(.dots = c('pe', predictor)) %>%
+    ## Filter the data frame, need to remove all Non-recruited and
+    ## those who can not be classified as PE/No PE
+    results$df <- dplyr::filter(df, group != 'Non recruited') %>%
+                  dplyr::filter_(is.na(classification)) %>%
+                  dplyr::select_(.dots = c(classification, predictor)) %>%
                   mutate(obs = rownames(.),
                          use = complete.cases(.)) %>%
                   dplyr::filter(use == TRUE) %>%
