@@ -1139,8 +1139,8 @@ t <- merge(t1,
           by    = 'screening',
           all.x = TRUE) %>%
     merge(.,
-          dplyr::select(master$case.review, screening, img.class, trt.class, fup.class, primary.class, secondary.class),
-          by    = 'screening',
+          dplyr::select(master$case.review, screening, group, primary.dm, secondary.dm, first.st, second.st, third.st, fourth.st),
+          by    = c('screening', 'group'),
           all.x = TRUE)
 ## Now do three merges with the event.date, one to get a master dataset (excluding those who were Non recruited)...
 dipep <- merge(t,
