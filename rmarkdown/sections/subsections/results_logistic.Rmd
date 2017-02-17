@@ -1,3 +1,5 @@
+### Logistic Regression {.tabset .tabset-fade .tabset-pills}
+
 ```{r results_logistic_regression, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Test each outcome for association, then gather them *using broom) into one dataset for summarisation
 logistic <- list()
@@ -400,7 +402,7 @@ ggplot(dplyr::filter(logistic$predicted, name %in% c('age.cat',
                                                      'bp.diastolic.cat',
                                                      'bp.systolic.cat',
                                                      'temperature.cat',
-                                                     'ecg.cat',)),
+                                                     'ecg.cat')),
        aes(d = D, m = M, color = term)) +
     geom_roc() +
     guides(guide = guide_legend(title = 'Predictor...')) +
