@@ -28,10 +28,8 @@ dipep_glm <- function(df              = .data,
     results <- list()
     ## Remove individuals who are explicitly to be removed
     if(!is.null(exclude)){
-        dim(df) %>% print()
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
-        table(df$screening) %>% print()
     }
     ## Build the formula
     .formula <- reformulate(response = classification,
@@ -48,7 +46,7 @@ dipep_glm <- function(df              = .data,
     }
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
-    results$df <- dplyr::filter(df, group != 'Non recruited') %>%
+    results$df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE') %>%
                   dplyr::filter_(!is.na(classification)) %>%
                   dplyr::select_(.dots = c(classification, predictor)) %>%
                   mutate(obs = rownames(.),
