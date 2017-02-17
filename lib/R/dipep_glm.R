@@ -23,8 +23,16 @@ dipep_glm <- function(df              = .data,
                       predictor       = 'age',
                       model           = NULL,
                       relevel         = NULL,
+                      exclude         = NULL,
                       ...){
     results <- list()
+    ## Remove individuals who are explicitly to be removed
+    if(!is.null(exclude)){
+        dim(df) %>% print()
+        df <- df[!(df$screening %in% exclude),]
+        ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
+        table(df$screening) %>% print()
+    }
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
