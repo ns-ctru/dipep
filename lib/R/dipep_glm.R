@@ -41,7 +41,7 @@ dipep_glm <- function(df              = .data,
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
     results$df <- dplyr::filter(df, group != 'Non recruited') %>%
-                  dplyr::filter_(is.na(classification)) %>%
+                  dplyr::filter_(!is.na(classification)) %>%
                   dplyr::select_(.dots = c(classification, predictor)) %>%
                   mutate(obs = rownames(.),
                          use = complete.cases(.)) %>%
@@ -49,6 +49,7 @@ dipep_glm <- function(df              = .data,
                   dplyr::select(-use)
     results$df$obs <- rownames(results$df)
     ## Test the model
+    results$df %>% print()
     results$fitted <- glm(.formula,
                           data   = results$df,
                           family = 'binomial')
