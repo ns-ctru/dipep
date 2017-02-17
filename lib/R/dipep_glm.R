@@ -49,7 +49,6 @@ dipep_glm <- function(df              = .data,
                   dplyr::select(-use)
     results$df$obs <- rownames(results$df)
     ## Test the model
-    results$df %>% print()
     results$fitted <- glm(.formula,
                           data   = results$df,
                           family = 'binomial')
@@ -145,7 +144,7 @@ dipep_glm <- function(df              = .data,
     ##                      as.data.frame()
     ## names(results$predicted) <- c('predicted', 'pe')
     ## Extract these from the 'augmented' data frame
-    results$predicted <- dplyr::select(results$augmented, pe, .fitted)
+    results$predicted <- dplyr::select_(results$augmented, classification, '.fitted')
     if(length(predictor) == 1){
         results$predicted$name <- predictor
     }
@@ -154,7 +153,7 @@ dipep_glm <- function(df              = .data,
     }
     results$predicted$term <- model
     names(results$predicted) <- gsub('.fitted', 'M', names(results$predicted))
-    names(results$predicted) <- gsub('pe', 'D', names(results$predicted))
+    names(results$predicted) <- gsub(classification, 'D', names(results$predicted))
     ## Return ROC curve for this model
     results$roc <- ggplot(results$predicted,
                           aes(d = D, m = M)) +
