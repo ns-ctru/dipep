@@ -1,3 +1,122 @@
+## 2017-02-18 Simple LASSO testing
+t <- dipep_glmnet(df = dipep,
+             classification = 'third.st',
+             predictor      = c('age', 'history.iv.drug'))
+
+
+## 2017-02-17 Developing dipep_glmnet() function/wrapper
+##
+## Test things actually work before testing the function
+test.data <- data.frame(
+    y=c(1:4, NA, NA, 7:10),
+    x=c(letters[c(1:8, 8, 8)]),
+    z=c(letters[c(1:8, 8, 8)]),
+    stringsAsFactors = F)
+test.f <- function(df = test.data,
+                   classification = y,
+                   predictor      = 'x'){
+    subset(df, !is.na(classification), select = predictor)
+}
+test.f()
+
+.formula <- reformulate(response = 'first.st',
+                        termlabels = c('age', 'gestation'))
+lasso.categorical <- glmnetUtils::glmnet(data = dplyr::filter(dipep, !is.na(first.st)),
+                                         .formula,
+                                         family  = 'binomial',
+                                         alpha = 1)
+tidy(lasso.categorical)
+predict(lasso.categorical, newdata = dipep) %>% head()
+cv.lasso.categorical <- glmnetUtils::cv.glmnet(data = dplyr::filter(dipep, !is.na(first.st)),
+                                            .formula,
+                                            family  = 'binomial',
+                                            alpha = 1)
+predict(cv.lasso.categorical, newdata = dipep)
+
+## As a function call
+t <- dipep_glmnet(df = dipep,
+             classification = 'third.st',
+             predictor      = c('age', 'history.iv.drug'))
+
+## 2017-02-17 Modifying dipep_glm() to allow individuals (non-recruited who are also UKOSS)
+##            to be explicitly excluded.
+logistic$age <- dipep_glm(df = dipep,
+                          classification = 'first.st',
+                          predictor      = 'age',
+                          model          = 'Age',
+                          exclude        = c('N04/06', 'N04/07'))
+## WORKS \o/
+
+## 2017-02-17 Developing ROC plotting function (eases maintainability of code)
+t <- dipep_roc()
+t$plot + geom_text(data = t$plot.auc, aes(x = x, y = y, label = AUC))
+## NO JOY :(
+
+## 2017-02-16 CHecking primary and secondary classifications
+sink(file = '~/work/dipep/tmp/classification_check.txt')
+print('Secondary Classification (DM has Classifcation, I do not)')
+dplyr::filter(master$case.review, is.na(secondary.class) & !is.na(secondary.class.dm))
+dplyr::filter(master$case.review, is.na(secondary.class) & !is.na(secondary.class.dm)) %>%
+    write.table('~/work/dipep/tmp/check1.txt', sep = ',')
+print('Secondary Classification (DM has Classifcation, I do not)')
+dplyr::filter(master$case.review, !is.na(secondary.class) & is.na(secondary.class.dm))
+dplyr::filter(master$case.review, !is.na(secondary.class) & is.na(secondary.class.dm)) %>%
+    write.table('~/work/dipep/tmp/check2.txt', sep = ',')
+sink()
+
+## 2017-02-15 Checking how classification is actually done, whether case reviewers overall
+##            classifications have to match or whether its done on the components, i.e.
+##            agreement on imaging, then treatment and then follow-up
+sink(file = '~/work/dipep/tmp/case_review_check.txt')
+dplyr::filter(master$case.review, !is.na(primary.class3)) %>%
+    dplyr::select(screening,
+                  img.class1, img.class2, img.class3,
+                  trt.class1, trt.class2, trt.class3,
+                  fup.class1, fup.class2, fup.class3,
+                  primary.class1, primary.class2, primary.class3)
+check <- mutate(master$case.review,
+                img.match        = img.class1 == img.class2,
+                trt.match        = trt.class1 == trt.class2,
+                fup.match        = fup.class1 == fup.class2,
+                primary.match    = primary.class1 == primary.class2,
+                secondary.match  = secondary.class1 == secondary.class2)
+table(check$img.match, useNA = 'ifany')
+dplyr::filter(check, img.match == FALSE) %>%
+    dplyr::select(screening,
+                  img.class1, img.class2, img.class3,
+                  trt.class1, trt.class2, trt.class3,
+                  fup.class1, fup.class2, fup.class3,
+                  primary.class1, primary.class2, primary.class3)
+table(check$trt.match, useNA = 'ifany')
+dplyr::filter(check, trt.match == FALSE) %>%
+    dplyr::select(screening,
+                  img.class1, img.class2, img.class3,
+                  trt.class1, trt.class2, trt.class3,
+                  fup.class1, fup.class2, fup.class3,
+                  primary.class1, primary.class2, primary.class3)
+table(check$fup.match, useNA = 'ifany')
+dplyr::filter(check, fup.match == FALSE) %>%
+    dplyr::select(screening,
+                  img.class1, img.class2, img.class3,
+                  trt.class1, trt.class2, trt.class3,
+                  fup.class1, fup.class2, fup.class3,
+                  primary.class1, primary.class2, primary.class3)
+table(check$primary.match, useNA = 'ifany')
+dplyr::filter(check, primary.match == FALSE) %>%
+    dplyr::select(screening,
+                  img.class1, img.class2, img.class3,
+                  trt.class1, trt.class2, trt.class3,
+                  fup.class1, fup.class2, fup.class3,
+                  primary.class1, primary.class2, primary.class3)
+table(check$secondary.match, useNA = 'ifany')
+dplyr::filter(check, secondary.match == FALSE) %>%
+    dplyr::select(screening,
+                  img.class1, img.class2, img.class3,
+                  trt.class1, trt.class2, trt.class3,
+                  fup.class1, fup.class2, fup.class3,
+                  primary.class1, primary.class2, primary.class3)
+sink()
+
 ## 2016-12-14 Deriving the number of missing observations for a subset
 test <- dipep_incomplete(df = dipep,
                          id = screening,
