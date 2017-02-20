@@ -83,10 +83,16 @@ dipep_glm <- function(df              = .data,
                           family = 'binomial')
     ## Obtain Confidence Intervals
     results$ci <- confint(results$fitted) %>%
-        as.data.frame() %>%
-        mutate(term = rownames(.))
+                  as.data.frame() %>%
+                  mutate(term = rownames(.),
+                         model = model)
+    names(results$ci) <- gsub('2.5 %',  'lci', names(results$ci))
+    names(results$ci) <- gsub('97.5 %', 'uci', names(results$ci))
     ## Use Broom to sweep up/tidy the results
     results$tidied    <- broom::tidy(results$fitted)
+    ## Merge in the CI
+    results$tidied <- left_join(results$tidied,
+                                results$ci)
     results$tidied <- mutate(results$tidied,
                              term = gsub('age.catYoung', 'Age (Young)', term),
                              term = gsub('age.catOld', 'Age (Old)', term),
@@ -162,7 +168,22 @@ dipep_glm <- function(df              = .data,
                              term = gsub('xrayNormal', 'X-ray : Normal', term),
                              term = gsub('xrayAbnormal', 'X-ray : Abnormal', term),
                              term = gsub('xrayNot performed', 'X-ray : Not Performed', term),
-                             term = gsub('xray.catAbnormal X-Ray', 'X-ray (Binary) : Abnormal', term))
+                             term = gsub('xray.catAbnormal X-Ray', 'X-ray (Binary) : Abnormal', term),
+                             term = gsub('prothombin', 'Prothombin', term),
+                             term = gsub('aprothombin', 'Aprothombin', term),
+                             term = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', term),
+                             term = gsub('ddimer.innovan', 'D-Dimer (Innovan)', term),
+                             term = gsub('ddimer.elisa', 'D-Dimer (ELISA)', term),
+                             term = gsub('thombin.generation.lag.time', 'Thrombin Generation (Lag Time)', term),
+                             term = gsub('thombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', term),
+                             term = gsub('thombin.generation.peak', 'Thrombin Generation (Peak)', term),
+                             term = gsub('thombin.generation.time.to.time', 'Thrombin Generation (Time to Peak)', term),
+                             term = gsub('plasming.antiplasmin', 'Plasmin (Antiplasmin)', term),
+                             term = gsub('prothombin.fragments', 'Prothombin Fragments', term),
+                             term = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', term),
+                             term = gsub('troponin', 'Troponin', term),
+                             term = gsub('natriuretic.peptide', 'Natriuertic Peptide', term),
+                             term = gsub('mrproanp', 'MR-proANP', term))
     ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
     results$glance    <- broom::glance(results$fitted)
