@@ -82,7 +82,9 @@ dipep_glm <- function(df              = .data,
                           data   = results$df,
                           family = 'binomial')
     ## Obtain Confidence Intervals
-    results$ci <- confint(results$fitted)
+    results$ci <- confint(results$fitted) %>%
+        as.data.frame() %>%
+        mutate(term = rownames(.))
     ## Use Broom to sweep up/tidy the results
     results$tidied    <- broom::tidy(results$fitted)
     results$tidied <- mutate(results$tidied,
