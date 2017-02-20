@@ -1,6 +1,6 @@
 ### Logistic Regression {.tabset .tabset-fade .tabset-pills}
 
-```{r results_logistic_regression, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+```{r results_logistic_regression, echo = FALSE, cache = FALSE, message = FALSE, results = 'hide', eval = TRUE}
 ## Test each outcome for association, then gather them (using broom) into one dataset for summarisation
 logistic <- list()
 ## Age
@@ -428,48 +428,67 @@ rm(to.sum)
 ```{r results_logistic_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
 ## ROC for continuous variables
-dipep_roc(df      = logistic$predicted,
-          to.plot = c('age',
-                      'bmi',
-                      'o2.saturation',
-                      'bp.diastolic',
-                      'bp.systolic',
-                      'temperature'))$plot
+logistic$roc.physiology <- dipep_roc(df      = logistic$predicted,
+                            to.plot = c('age',
+                                        'bmi',
+                                        'o2.saturation',
+                                        'bp.diastolic',
+                                        'bp.systolic',
+                                        'temperature'),
+                            title   = 'Physiology (Continuous)')
+logistic$roc.physiology$plot
 ## Plot categorised variables
-dipep_roc(df      = logistic$predicted,
-          to.plot = c('age.cat',
-                      'bmi.cat',
-                      'o2.saturation.cat',
-                      'bp.diastolic.cat',
-                      'bp.systolic.cat',
-                      'temperature.cat'))$plot
+logistic$roc.physiology.cat <- dipep_roc(df      = logistic$predicted,
+                                to.plot = c('age.cat',
+                                            'bmi.cat',
+                                            'o2.saturation.cat',
+                                            'bp.diastolic.cat',
+                                            'bp.systolic.cat',
+                                            'temperature.cat'),
+                                title   = 'Physiology (Dichotomised)')
+logistic$roc.physiology.cat$plot
 ## Plot presenting features
-dipep_roc(df      = logistic$predicted,
-          to.plot = c('pleuritic',
-                      'non.pleuritic',
-                      'sob.exertion',
-                      'sob.rest',
-                      'cough',
-                      'haemoptysis',
-                      'syncope',
-                      'palpitations',
-                      'other'))$plot
+logistic$roc.presenting <- dipep_roc(df      = logistic$predicted,
+                            to.plot = c('pleuritic',
+                                        'non.pleuritic',
+                                        'sob.exertion',
+                                        'sob.rest',
+                                        'cough',
+                                        'haemoptysis',
+                                        'syncope',
+                                        'palpitations',
+                                        'other'),
+                            title = 'Presenting Features')
+logistic$roc.presenting$plot
 ## Plot Other
-dipep_roc(df      = logistic$predicted,
-          to.plot = c('prev.preg.problem',
-                      'pregnancies.over',
-                      'pregnancies.under',
-                      'xray.cat',
-                      'ecg.cat',
-                      'this.pregnancy.problems'))$plot
+logistic$roc.other <- dipep_roc(df      = logistic$predicted,
+                       to.plot = c('prev.preg.problem',
+                                   'pregnancies.over',
+                                   'pregnancies.under',
+                                   'xray.cat',
+                                   'ecg.cat',
+                                   'this.pregnancy.problems'),
+                       title   = 'Other Features')
+logistic$roc.other$plot
 ## Plot Medical History
-dipep_roc(df      = logistic$predicted,
-          to.plot = c('history.thrombosis',
-                      'history.iv.drug',
-                      'history.veins',
-                      'thrombo',
-                      'surgery',
-                      'thrombosis'))$plot
+logistic$roc.med.hist <- dipep_roc(df      = logistic$predicted,
+                          to.plot = c('history.thrombosis',
+                                      'history.iv.drug',
+                                      'history.veins',
+                                      'thrombo',
+                                      'surgery',
+                                      'thrombosis'),
+                          title   = 'Medical History')
+logistic$roc.med.hist$plot
+## Combine and tabulate the AUC
+rbind(logistic$rocphysiology$plot.auc,
+      logistic$roc.physiology.cat$plot.auc,
+      logistic$roc.presenting$plot.auc,
+      logistic$roc.other$plot.auc,
+      logistic$roc.med.hist$plot.auc) %>%
+    dplyr::select(-c(x, y)) %>%
+    kable(digits = 3,
+          caption = 'Area Under the Curve (AUC) statistics of predictor variables')
 
 ```
 
@@ -480,7 +499,7 @@ In a situation where you are likely to have information on all possible variable
 **NB** - History of IV Drug use and Long-haul travel have explicitly been excluded due to problems, this may be rectified in the future.
 
 ```{r results_logistic_regression_multi_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
-to.sum <- logistic$saturated$tidied,
+to.sum <- logistic$saturated$tidied %>%
           dplyr::select(term, estimate, lci, uci, p.value) %>%
           dplyr::filter(term != '(Intercept)')
 ggplot(to.sum, aes(term, estimate, colour = term)) +
@@ -498,4 +517,5 @@ rm(to.sum)
 
 ```{r results_logistic_regression_multi_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 logistic$saturated$roc
+
 ```
