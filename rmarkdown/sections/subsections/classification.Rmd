@@ -66,5 +66,50 @@ group_by(master$case.review, group, img.class3, trt.class3, fup.class3) %>%
 
 #### Overall Classifications
 
+
 ```{r results_classification_overall, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+
+## Remove DVT
+to.table <- dplyr::filter(dipep, group != 'Diagnosed DVT') %>%
+            dplyr::select(group, first.st, second.st, third.st, fourth.st)
+## Counts by each classification
+## ToDo 20170220 - Should perhaps have this done using dplyr function to repeat over columns
+##                 insufficient time to spend on working that out.
+primary <- group_by(to.table, group, first.st) %>%
+    summarise(n = n())
+names(primary) <- gsub('first.st', 'class', names(primary))
+primary$classification <- 'Primary'
+secondary <- group_by(to.table, group, second.st) %>%
+    summarise(n = n())
+names(secondary) <- gsub('second.st', 'class', names(secondary))
+secondary$classification <- 'Secondary'
+tertiary <- group_by(to.table, group, third.st) %>%
+            summarise(n = n())
+names(tertiary) <- gsub('third.st', 'class', names(tertiary))
+tertiary$classification <- 'Tertiary'
+quaternary <- group_by(to.table, group, fourth.st) %>%
+            summarise(n = n())
+names(quaternary) <- gsub('fourth.st', 'class', names(quaternary))
+quaternary$classification <- 'Quaternary'
+to.table <- rbind(primary,
+                  secondary,
+                  tertiary,
+                  quaternary) %>%
+            dcast(classification ~ group + class, value.var = 'n')
+names(to.table) <- gsub('classification', 'Classification', names(to.table))
+names(to.table) <- gsub('Diagnosed PE', 'UKOSS', names(to.table))
+names(to.table) <- gsub('_PE', ' (PE)', names(to.table))
+names(to.table) <- gsub('_NA', ' (Missing)', names(to.table))
+names(to.table) <- gsub('_No PE', ' (No PE)', names(to.table))
+to.table <- to.table %>%
+            mutate(order = case_when(.$Classification == 'Primary' ~ 1,
+                                     .$Classification == 'Secondary' ~ 2,
+                                     .$Classification == 'Tertiary' ~ 3,
+                                     .$Classification == 'Quaternary' ~ 4)) %>%
+            arrange(order) %>%
+            dplyr::select(-c(order))
+kable(to.table,
+      caption = 'Overall classifications for UKOSS, Suspected PE and Non-recruited individuals for the four different classification rules (see above table).')
+rm(to.table)
+
 ```
