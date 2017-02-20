@@ -15,7 +15,7 @@
 #' @param predictor Predictor variable(s) to test.
 #' @param model Name/label of your model.
 #' @param relevel Reference level for logistic regression if different from default.
-#'
+#' @param exclude List of individuals to explicitly exclude.
 #'
 #' @export
 dipep_glm <- function(df              = .data,
@@ -30,6 +30,29 @@ dipep_glm <- function(df              = .data,
     if(!is.null(exclude)){
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
+    }
+    ## Remove non-recruited
+    df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE'))
+    ## Exclude those who are not classified as PE/No PE by
+    ## the specified classification
+    ## TODO 2017-02-17 : Why doesn dplyr::filter_(df, !is.na(classification)) not work???
+    if(classification == 'first.st'){
+        df <- dplyr::filter(df, !is.na(first.st))
+    }
+    else if(classification == 'second.st'){
+        df <- dplyr::filter(df, !is.na(second.st))
+    }
+    else if(classification == 'third.st'){
+        df <- dplyr::filter(df, !is.na(third.st))
+    }
+    else if(classification == 'fourth.st'){
+        df <- dplyr::filter(df, !is.na(fourth.st))
+    }
+    else if(classification == 'primary.dm'){
+        df <- dplyr::filter(df, !is.na(primary.dm))
+    }
+    else if(classification == 'secondary.dm'){
+        df <- dplyr::filter(df, !is.na(secondary.dm))
     }
     ## Build the formula
     .formula <- reformulate(response = classification,
@@ -46,7 +69,7 @@ dipep_glm <- function(df              = .data,
     }
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
-    results$df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE') %>%
+    results$df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE')) %>%
                   dplyr::filter_(!is.na(classification)) %>%
                   dplyr::select_(.dots = c(classification, predictor)) %>%
                   mutate(obs = rownames(.),
@@ -119,7 +142,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('this.pregnancy.problemsYes', 'Problems with this Pregnancy', term),
                              term = gsub('this.pregnancy.problemsNo', 'No Problems with this Pregnancy', term),
                              term = gsub('surgeryYes', 'Surgery in previous 4 weeks', term),
-                             term = gsub('surgeryNos', 'No Surgery in previous 4 weeks', term),
+                             term = gsub('surgeryNo', 'No Surgery in previous 4 weeks', term),
                              term = gsub('thromboYes', 'Known Thrombophilia', term),
                              term = gsub('thromboNo', 'No Known Thrombophilia', term),
                              term = gsub('multiple.pregYes', 'Multiple Pregnancy', term),
@@ -177,5 +200,6 @@ dipep_glm <- function(df              = .data,
     results$roc <- results$roc +
                    annotate('text', x = 0.75, y = 0.25,
                             label = paste0('AUC = ', round(results$auc$AUC, 3)))
+    ## ToDo 20170220 - Calculate sensitivity, specificity, PPV/NPV
     return(results)
 }
