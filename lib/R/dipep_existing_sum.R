@@ -7,12 +7,44 @@
 #'
 #' @param df Data frame.
 #' @param score The score that is to be summarised, either \code{simplified.pe}, \code{wells.pe} or \code{perc.pe}
+#' @param classification Specify the variable that defines the disease status, for this study there are four classifications of diseases ststus, hence the need for flexibility.
+#' @param exclude List of individuals to explicitly exclude.
 #'
 #' @export
-dipep_existing_sum <- function(df          = dipep,
-                               score       = simplified.pe,
+dipep_existing_sum <- function(df             = dipep,
+                               classification = 'first.st'
+                               score          = simplified.pe,
+                               exclude        = NULL,
                                ...){
     results <- list()
+    ## Remove individuals who are explicitly to be removed
+    if(!is.null(exclude)){
+        df <- df[!(df$screening %in% exclude),]
+        ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
+    }
+    ## Remove non-recruited and exclusions who couldn't be classified
+    df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE'))
+        ## Exclude those who are not classified as PE/No PE by
+    ## the specified classification
+    ## TODO 2017-02-17 : Why doesn dplyr::filter_(df, !is.na(classification)) not work???
+    if(classification == 'first.st'){
+        df <- dplyr::filter(df, !is.na(first.st))
+    }
+    else if(classification == 'second.st'){
+        df <- dplyr::filter(df, !is.na(second.st))
+    }
+    else if(classification == 'third.st'){
+        df <- dplyr::filter(df, !is.na(third.st))
+    }
+    else if(classification == 'fourth.st'){
+        df <- dplyr::filter(df, !is.na(fourth.st))
+    }
+    else if(classification == 'primary.dm'){
+        df <- dplyr::filter(df, !is.na(primary.dm))
+    }
+    else if(classification == 'secondary.dm'){
+        df <- dplyr::filter(df, !is.na(secondary.dm))
+    }
     ## Slim down the data frame only want diagnosed and suspected
     df <- dplyr::select_(df, lazyeval::lazy(pe), lazyeval::lazy(score))
     ## Evaluate the score
