@@ -1,0 +1,187 @@
+### Biomarkers {.tabset .tabset-fade .tabset-pills}
+
+```{r biomarkers_logistic, echo = FALSE, cache = FALSE, message = FALSE, results = 'hide', eval = FALSE}
+## Test association of each biomarker
+biomarker <- list()
+## Prothombin (Time)
+biomarker$prothombin.time <- dipep_glm(df = dipep,
+                                       classification = 'first.st',
+                                       predictor      = 'prothombin.time',
+                                       model          = 'Prothombin (Time)')
+## Aprothombin
+biomarker$aprothombin <- dipep_glm(df = dipep,
+                                   classification = 'first.st',
+                                   predictor      = 'aprothombin',
+                                   model          = 'Aprothombin')
+## Claus Fibrinogen
+biomarker$clauss.fibrinogen <- dipep_glm(df = dipep,
+                                         classification = 'first.st',
+                                         predictor      = 'clauss.fibrinogen',
+                                         model          = 'Clauss Fibrinogen')
+## D-Dimer - Innovan
+biomarker$ddimer.innovan <- dipep_glm(df = dipep,
+                                         classification = 'first.st',
+                                         predictor      = 'ddimer.innovan',
+                                         model          = 'D-Dimer (Innovan)')
+## D-Dimer - ELISA
+biomarker$ddimer.elisa <- dipep_glm(df = dipep,
+                                         classification = 'first.st',
+                                         predictor      = 'ddimer.elisa',
+                                         model          = 'D-Dimer (ELISA)')
+# Thombin Generation - Lag Time
+biomarker$thrombin.generation.lag.time <- dipep_glm(df = dipep,
+                                                    classification = 'first.st',
+                                                    predictor      = 'thrombin.generation.lag.time',
+                                                    model          = 'Thrombin Generation (Lag Time)')
+# Thombin Generation - Endogenous Potential
+biomarker$thrombin.generation.endogenous.potential <- dipep_glm(df = dipep,
+                                                    classification = 'first.st',
+                                                    predictor      = 'thrombin.generation.endogenous.potential',
+                                                    model          = 'Thrombin Generation (Endogenous Potential)')
+# Thombin Generation - Peak
+biomarker$thrombin.generation.peak <- dipep_glm(df = dipep,
+                                                classification = 'first.st',
+                                                predictor      = 'thrombin.generation.peak',
+                                                model          = 'Thrombin Generation (Peak)')
+# Thombin Generation - Time to Peak
+biomarker$thrombin.generation.time.to.peak <- dipep_glm(df = dipep,
+                                                classification = 'first.st',
+                                                predictor      = 'thrombin.generation.time.to.peak',
+                                                model          = 'Thrombin Generation (Time to Peak)')
+# Plasmin - Antiplasmin
+biomarker$plasmin.antiplasmin <- dipep_glm(df = dipep,
+                                           classification = 'first.st',
+                                           predictor      = 'plasmin.antiplasmin',
+                                           model          = 'Plasmin (Antiplasmin)')
+# Prothombin Fragments
+biomarker$prothrombin.fragments <- dipep_glm(df = dipep,
+                                             classification = 'first.st',
+                                             predictor      = 'prothrombin.fragments',
+                                             model          = 'Prothombin Fragments')
+# Soluble Tissue Factor
+biomarker$soluble.tissue.factor <- dipep_glm(df = dipep,
+                                             classification = 'first.st',
+                                             predictor      = 'soluble.tissue.factor',
+                                             model          = 'Soluble Tissue Factor')
+# Troponin
+biomarker$troponin <- dipep_glm(df = dipep,
+                                classification = 'first.st',
+                                predictor      = 'troponin',
+                                model          = 'Troponin')
+## # Natriuertic Peptide
+## biomarker$natriuertic.peptide <- dipep_glm(df = dipep,
+##                                            classification = 'first.st',
+##                                            predictor      = 'natriuertic.peptide',
+##                                            model          = 'Natriuertic Peptide')
+## # Mrproanp
+## biomarker$mrproanp <- dipep_glm(df = dipep,
+##                                 classification = 'first.st',
+##                                 predictor      = 'mrproanp',
+##                                 model          = 'MR-proANP')
+
+## Combine all three sets of tidied output from each model
+biomarker$tidied <- rbind(biomarker$prothombin.time$tidied,
+                          biomarker$aprothombin$tidied,
+                          biomarker$clauss.fibrinogen$tidied,
+                          biomarker$ddimer.innovan$tidied,
+                          biomarker$ddimer.elisa$tidied,
+                          biomarker$thrombin.generation.lag.time$tidied,
+                          biomarker$thrombin.generation.endogenous.potential$tidied,
+                          biomarker$thrombin.generation.peak$tidied,
+                          biomarker$thrombin.generation.time.to.peak$tidied,
+                          biomarker$plasmin.antiplasmin$tidied,
+                          biomarker$prothrombin.fragments$tidied,
+                          biomarker$soluble.tissue.factor$tidied,
+                          biomarker$troponin$tidied) ##,
+                          ## biomarker$natriuertic.peptide$tidied,
+                          ## biomarker$mrproanp$tidied)
+biomarker$glance <- rbind(biomarker$prothombin.time$glance,
+                          biomarker$aprothombin$glance,
+                          biomarker$clauss.fibrinogen$glance,
+                          biomarker$ddimer.innovan$glance,
+                          biomarker$ddimer.elisa$glance,
+                          biomarker$thrombin.generation.lag.time$glance,
+                          biomarker$thrombin.generation.endogenous.potential$glance,
+                          biomarker$thrombin.generation.peak$glance,
+                          biomarker$thrombin.generation.time.to.peak$glance,
+                          biomarker$plasmin.antiplasmin$glance,
+                          biomarker$prothrombin.fragments$glance,
+                          biomarker$soluble.tissue.factor$glance,
+                          biomarker$troponin$glance) ##,
+                          ## biomarker$natriuertic.peptide$glance,
+                          ## biomarker$mrproanp$glance)
+## Combine all predicted
+biomarker$predicted <- rbind(biomarker$prothombin.time$predicted,
+                             biomarker$aprothombin$predicted,
+                             biomarker$clauss.fibrinogen$predicted,
+                             biomarker$ddimer.innovan$predicted,
+                             biomarker$ddimer.elisa$predicted,
+                             biomarker$thrombin.generation.lag.time$predicted,
+                             biomarker$thrombin.generation.endogenous.potential$predicted,
+                             biomarker$thrombin.generation.peak$predicted,
+                             biomarker$thrombin.generation.time.to.peak$predicted,
+                             biomarker$plasmin.antiplasmin$predicted,
+                             biomarker$prothrombin.fragments$predicted,
+                             biomarker$soluble.tissue.factor$predicted,
+                             biomarker$troponin$predicted) ##,
+                             ## biomarker$natriuertic.peptide$predicted,
+                             ## biomarker$mrproanp$predicted)
+
+
+```
+
+##### Point Estimates
+
+The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
+
+```{r results_biomarker_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+to.sum <- dplyr::filter(biomarker$tidied, term != '(Intercept)') %>%
+          ## Remove temperature and O2 Saturation as CI is HUGE
+          ## dplyr::filter(term != 'Temperature (High)') %>%
+          ## dplyr::filter(term != 'O2 Saturation (High)') %>%
+          dplyr::select(term, estimate, lci, uci, p.value)
+ggplot(to.sum, aes(term, estimate, colour = term)) +
+    geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
+    coord_flip() + geom_hline(yintercept = 0) +
+    xlab('Predictor') + ylab('Estimate') +
+    ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression of Biomarkers') +
+    theme_bw() + theme(legend.position = 'none')
+## Redo subsetting, include temperature and O2 Saturation
+to.sum <- dplyr::filter(biomarker$tidied, term != '(Intercept)') %>%
+          dplyr::select(term, estimate, lci, uci, p.value)
+names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+kable(to.sum,
+      digits  = 3,
+      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
+rm(to.sum)
+
+```
+
+##### ROC Curves
+
+[Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
+
+```{r results_biomarker_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = FALSE}
+## This uses the geom_roc() ggplot2 extension from the ploROC package
+## ROC for continuous variables
+biomarker$roc.other <- dipep_roc(df      = biomarker$predicted,
+                           to.plot = c('clauss.fibrinogen',
+                                       'ddimer.innovan',
+                                       'ddimer.elisa',
+                                       'plasmin.antiplasmin',
+                                       'soluble.tissue.factor',
+                                       'troponin'),
+                           title    = 'Other Biomarkers')
+biomarker$roc.other$plot
+biomarker$roc.thrombin <- dipep_roc(df      = biomarker$predicted,
+                                    to.plot = c('aprothombin',
+                                                'prothombin.time',
+                                                'thrombin.generation.lag.time',
+                                                'thrombin.generation.endogenous.potential',
+                                                'thrombin.generation.peak',
+                                                'thrombin.generation.time.to.peak',
+                                                'prothrombin.fragments'),
+                                    title    = 'Thrombin/Prothombin Biomarkers')$plot
+biomarker$roc.thrombing$plot
+
+```
