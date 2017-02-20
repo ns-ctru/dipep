@@ -161,7 +161,7 @@ rm(to.sum)
 
 [Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
 
-```{r results_biomarker_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = FALSE}
+```{r results_biomarker_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
 ## ROC for continuous variables
 biomarker$roc.other <- dipep_roc(df      = biomarker$predicted,
@@ -181,7 +181,13 @@ biomarker$roc.thrombin <- dipep_roc(df      = biomarker$predicted,
                                                 'thrombin.generation.peak',
                                                 'thrombin.generation.time.to.peak',
                                                 'prothrombin.fragments'),
-                                    title    = 'Thrombin/Prothombin Biomarkers')$plot
-biomarker$roc.thrombing$plot
+                                    title    = 'Thrombin/Prothombin Biomarkers')
+biomarker$roc.thrombin$plot
+## Combine the AUC and print as table
+rbind(biomarker$roc.other$plot.auc,
+      biomarker$roc.thrombin$plot.auc) %>%
+    dplyr::select(-c(x, y)) %>%
+    kable(digits = 3,
+          caption = 'Area Under the Curve (AUC) statistics of ROC curves for Biomarkers')
 
 ```
