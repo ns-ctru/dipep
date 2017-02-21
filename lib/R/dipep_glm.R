@@ -177,13 +177,13 @@ dipep_glm <- function(df              = .data,
                              term = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', term),
                              term = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', term),
                              term = gsub('thrombin.generation.peak', 'Thrombin Generation (Peak)', term),
-                             term = gsub('thrombin.generation.time.to.time', 'Thrombin Generation (Time to Peak)', term),
+                             term = gsub('thrombin.generation.time.to.peak', 'Thrombin Generation (Time to Peak)', term),
                              term = gsub('plasmin.antiplasmin', 'Plasmin (Antiplasmin)', term),
                              term = gsub('prothrombin.fragments', 'Prothombin Fragments', term),
                              term = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', term),
                              term = gsub('troponin', 'Troponin', term),
                              term = gsub('natriuretic.peptide', 'Natriuertic Peptide', term),
-                             term = gsub('mrproanp', 'MR-proANP', term))
+                             term = gsub('mrproanp', 'MRproANP', term))
     ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
     results$glance    <- broom::glance(results$fitted)
