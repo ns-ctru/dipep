@@ -1,177 +1,177 @@
 ### Demographics {.tabset .tabset-fade .tabset-pills}
 
-```{r demograhpics_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+```{r demograhpics_summary, echo = FALSE, cache = FALSE, messages = 'hide', results = 'hide', eval = TRUE}
 ## Derive summary numbers for use in text
 n_ethnicity          <- unique(dipep$ethnicity) %>% length()
 nonmissing_ethnicity <- filter(dipep, !is.na(ethnicity)) %>% nrow()
 missing_ethnicity    <- filter(dipep, is.na(ethnicity)) %>% nrow()
-## ## TODO - Replace with function
-## ## BMI
-## ## bmi_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = bmi)
-## bmi_mean    <- mean(dipep$bmi, na.rm = TRUE)
-## bmi_sd      <- sd(dipep$bmi, na.rm = TRUE)
-## bmi_median  <- quantile(dipep$bmi, probs = 0.5, na.rm = TRUE)
-## bmi_p25     <- quantile(dipep$bmi, probs = 0.25, na.rm = TRUE)
-## bmi_p75     <- quantile(dipep$bmi, probs = 0.75, na.rm = TRUE)
-## bmi_min     <- min(dipep$bmi, na.rm = TRUE)
-## bmi_max     <- max(dipep$bmi, na.rm = TRUE)
-## bmi_missing <- filter(dipep, is.na(bmi)) %>% nrow()
-## ## BMI - Suspected PE
-## bmi_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(bmi, na.rm = TRUE)
-## ## bmi_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(bmi, na.rm = TRUE)
-## ## bmi_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(bmi, probs = 0.5, na.rm = TRUE)
-## ## bmi_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(bmi, probs = 0.25, na.rm = TRUE)
-## ## bmi_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(bmi, probs = 0.75, na.rm = TRUE)
-## ## bmi_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(bmi, na.rm = TRUE)
-## ## bmi_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(bmi, na.rm = TRUE)
-## ## bmi_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(bmi)) %>% nrow()
-## ## Age
-## ## age_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = age)
-## age_mean    <- mean(dipep$age, na.rm = TRUE)
-## age_sd      <- sd(dipep$age, na.rm = TRUE)
-## age_median  <- quantile(dipep$age, probs = 0.5, na.rm = TRUE)
-## age_p25     <- quantile(dipep$age, probs = 0.25, na.rm = TRUE)
-## age_p75     <- quantile(dipep$age, probs = 0.75, na.rm = TRUE)
-## age_min     <- min(dipep$age, na.rm = TRUE)
-## age_max     <- max(dipep$age, na.rm = TRUE)
-## age_missing <- filter(dipep, is.na(age)) %>% nrow()
-## ## Age - Suspected PE
-## age_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(age, na.rm = TRUE)
-## ## age_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(age, na.rm = TRUE)
-## ## age_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(age, probs = 0.5, na.rm = TRUE)
-## ## age_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(age, probs = 0.25, na.rm = TRUE)
-## ## age_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(age, probs = 0.75, na.rm = TRUE)
-## ## age_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(age, na.rm = TRUE)
-## ## age_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(age, na.rm = TRUE)
-## ## age_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(age)) %>% nrow()
+## ## TODO - Replace with extracting values from summary data frames
+## BMI
+## bmi_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = bmi)
+bmi_mean    <- mean(dipep$bmi, na.rm = TRUE)
+bmi_sd      <- sd(dipep$bmi, na.rm = TRUE)
+bmi_median  <- quantile(dipep$bmi, probs = 0.5, na.rm = TRUE)
+bmi_p25     <- quantile(dipep$bmi, probs = 0.25, na.rm = TRUE)
+bmi_p75     <- quantile(dipep$bmi, probs = 0.75, na.rm = TRUE)
+bmi_min     <- min(dipep$bmi, na.rm = TRUE)
+bmi_max     <- max(dipep$bmi, na.rm = TRUE)
+bmi_missing <- filter(dipep, is.na(bmi)) %>% nrow()
+## BMI - Suspected PE
+bmi_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(bmi, na.rm = TRUE)
+## bmi_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(bmi, na.rm = TRUE)
+## bmi_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(bmi, probs = 0.5, na.rm = TRUE)
+## bmi_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(bmi, probs = 0.25, na.rm = TRUE)
+## bmi_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(bmi, probs = 0.75, na.rm = TRUE)
+## bmi_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(bmi, na.rm = TRUE)
+## bmi_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(bmi, na.rm = TRUE)
+## bmi_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(bmi)) %>% nrow()
+## Age
+## age_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = age)
+age_mean    <- mean(dipep$age, na.rm = TRUE)
+age_sd      <- sd(dipep$age, na.rm = TRUE)
+age_median  <- quantile(dipep$age, probs = 0.5, na.rm = TRUE)
+age_p25     <- quantile(dipep$age, probs = 0.25, na.rm = TRUE)
+age_p75     <- quantile(dipep$age, probs = 0.75, na.rm = TRUE)
+age_min     <- min(dipep$age, na.rm = TRUE)
+age_max     <- max(dipep$age, na.rm = TRUE)
+age_missing <- filter(dipep, is.na(age)) %>% nrow()
+## Age - Suspected PE
+age_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(age, na.rm = TRUE)
+## age_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(age, na.rm = TRUE)
+## age_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(age, probs = 0.5, na.rm = TRUE)
+## age_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(age, probs = 0.25, na.rm = TRUE)
+## age_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(age, probs = 0.75, na.rm = TRUE)
+## age_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(age, na.rm = TRUE)
+## age_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(age, na.rm = TRUE)
+## age_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(age)) %>% nrow()
 
-## ## Height
-## ## height_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = height)
-## height_mean    <- mean(dipep$height, na.rm = TRUE)
-## height_sd      <- sd(dipep$height, na.rm = TRUE)
-## height_median  <- quantile(dipep$height, probs = 0.5, na.rm = TRUE)
-## height_p25     <- quantile(dipep$height, probs = 0.25, na.rm = TRUE)
-## height_p75     <- quantile(dipep$height, probs = 0.75, na.rm = TRUE)
-## height_min     <- min(dipep$height, na.rm = TRUE)
-## height_max     <- max(dipep$height, na.rm = TRUE)
-## height_missing <- filter(dipep, is.na(height)) %>% nrow()
-## ## Height - Suspected PE
-## height_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(height, na.rm = TRUE)
-## ## height_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(height, na.rm = TRUE)
-## ## height_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(height, probs = 0.5, na.rm = TRUE)
-## ## height_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(height, probs = 0.25, na.rm = TRUE)
-## ## height_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(height, probs = 0.75, na.rm = TRUE)
-## ## height_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(height, na.rm = TRUE)
-## ## height_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(height, na.rm = TRUE)
-## ## height_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(height)) %>% nrow()
+## Height
+## height_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = height)
+height_mean    <- mean(dipep$height, na.rm = TRUE)
+height_sd      <- sd(dipep$height, na.rm = TRUE)
+height_median  <- quantile(dipep$height, probs = 0.5, na.rm = TRUE)
+height_p25     <- quantile(dipep$height, probs = 0.25, na.rm = TRUE)
+height_p75     <- quantile(dipep$height, probs = 0.75, na.rm = TRUE)
+height_min     <- min(dipep$height, na.rm = TRUE)
+height_max     <- max(dipep$height, na.rm = TRUE)
+height_missing <- filter(dipep, is.na(height)) %>% nrow()
+## Height - Suspected PE
+height_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(height, na.rm = TRUE)
+## height_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(height, na.rm = TRUE)
+## height_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(height, probs = 0.5, na.rm = TRUE)
+## height_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(height, probs = 0.25, na.rm = TRUE)
+## height_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(height, probs = 0.75, na.rm = TRUE)
+## height_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(height, na.rm = TRUE)
+## height_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(height, na.rm = TRUE)
+## height_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(height)) %>% nrow()
 
-## ## Weight
-## ## weight_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = weight)
-## weight_mean    <- mean(dipep$weight, na.rm = TRUE)
-## weight_sd      <- sd(dipep$weight, na.rm = TRUE)
-## weight_median  <- quantile(dipep$weight, probs = 0.5, na.rm = TRUE)
-## weight_p25     <- quantile(dipep$weight, probs = 0.25, na.rm = TRUE)
-## weight_p75     <- quantile(dipep$weight, probs = 0.75, na.rm = TRUE)
-## weight_min     <- min(dipep$weight, na.rm = TRUE)
-## weight_max     <- max(dipep$weight, na.rm = TRUE)
-## weight_missing <- filter(dipep, is.na(weight)) %>% nrow()
-## ## Weight - Suspected PE
-## weight_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(weight, na.rm = TRUE)
-## ## weight_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(weight, na.rm = TRUE)
-## ## weight_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(weight, probs = 0.5, na.rm = TRUE)
-## ## weight_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(weight, probs = 0.25, na.rm = TRUE)
-## ## weight_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(weight, probs = 0.75, na.rm = TRUE)
-## ## weight_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(weight, na.rm = TRUE)
-## ## weight_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(weight, na.rm = TRUE)
-## ## weight_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(weight)) %>% nrow()
+## Weight
+## weight_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = weight)
+weight_mean    <- mean(dipep$weight, na.rm = TRUE)
+weight_sd      <- sd(dipep$weight, na.rm = TRUE)
+weight_median  <- quantile(dipep$weight, probs = 0.5, na.rm = TRUE)
+weight_p25     <- quantile(dipep$weight, probs = 0.25, na.rm = TRUE)
+weight_p75     <- quantile(dipep$weight, probs = 0.75, na.rm = TRUE)
+weight_min     <- min(dipep$weight, na.rm = TRUE)
+weight_max     <- max(dipep$weight, na.rm = TRUE)
+weight_missing <- filter(dipep, is.na(weight)) %>% nrow()
+## Weight - Suspected PE
+weight_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(weight, na.rm = TRUE)
+## weight_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(weight, na.rm = TRUE)
+## weight_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(weight, probs = 0.5, na.rm = TRUE)
+## weight_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(weight, probs = 0.25, na.rm = TRUE)
+## weight_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(weight, probs = 0.75, na.rm = TRUE)
+## weight_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(weight, na.rm = TRUE)
+## weight_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(weight, na.rm = TRUE)
+## weight_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(weight)) %>% nrow()
 
-## ## Heart Rate
-## ## heart_rate_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = heart.rate)
-## heart_rate_mean    <- mean(dipep$heart.rate, na.rm = TRUE)
-## heart_rate_sd      <- sd(dipep$heart.rate, na.rm = TRUE)
-## heart_rate_median  <- quantile(dipep$heart.rate, probs = 0.5, na.rm = TRUE)
-## heart_rate_p25     <- quantile(dipep$heart.rate, probs = 0.25, na.rm = TRUE)
-## heart_rate_p75     <- quantile(dipep$heart.rate, probs = 0.75, na.rm = TRUE)
-## heart_rate_min     <- min(dipep$heart.rate, na.rm = TRUE)
-## heart_rate_max     <- max(dipep$heart.rate, na.rm = TRUE)
-## heart_rate_missing <- filter(dipep, is.na(heart.rate)) %>% nrow()
-## ## Heart Rate - Suspected PE
-## heart_rate_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(heart.rate, na.rm = TRUE)
-## ## heart_rate_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(heart.rate, na.rm = TRUE)
-## ## heart_rate_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(heart.rate, probs = 0.5, na.rm = TRUE)
-## ## heart_rate_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(heart.rate, probs = 0.25, na.rm = TRUE)
-## ## heart_rate_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(heart.rate, probs = 0.75, na.rm = TRUE)
-## ## heart_rate_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(heart.rate, na.rm = TRUE)
-## ## heart_rate_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(heart.rate, na.rm = TRUE)
-## ## heart_rate_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(heart.rate)) %>% nrow()
+## Heart Rate
+## heart_rate_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = heart.rate)
+heart_rate_mean    <- mean(dipep$heart.rate, na.rm = TRUE)
+heart_rate_sd      <- sd(dipep$heart.rate, na.rm = TRUE)
+heart_rate_median  <- quantile(dipep$heart.rate, probs = 0.5, na.rm = TRUE)
+heart_rate_p25     <- quantile(dipep$heart.rate, probs = 0.25, na.rm = TRUE)
+heart_rate_p75     <- quantile(dipep$heart.rate, probs = 0.75, na.rm = TRUE)
+heart_rate_min     <- min(dipep$heart.rate, na.rm = TRUE)
+heart_rate_max     <- max(dipep$heart.rate, na.rm = TRUE)
+heart_rate_missing <- filter(dipep, is.na(heart.rate)) %>% nrow()
+## Heart Rate - Suspected PE
+heart_rate_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(heart.rate, na.rm = TRUE)
+## heart_rate_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(heart.rate, na.rm = TRUE)
+## heart_rate_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(heart.rate, probs = 0.5, na.rm = TRUE)
+## heart_rate_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(heart.rate, probs = 0.25, na.rm = TRUE)
+## heart_rate_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(heart.rate, probs = 0.75, na.rm = TRUE)
+## heart_rate_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(heart.rate, na.rm = TRUE)
+## heart_rate_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(heart.rate, na.rm = TRUE)
+## heart_rate_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(heart.rate)) %>% nrow()
 
-## ## Respiratory Rate
-## ## respiratory_rate_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = respiratory.rate)
-## respiratory_rate_mean    <- mean(dipep$respiratory.rate, na.rm = TRUE)
-## respiratory_rate_sd      <- sd(dipep$respiratory.rate, na.rm = TRUE)
-## respiratory_rate_median  <- quantile(dipep$respiratory.rate, probs = 0.5, na.rm = TRUE)
-## respiratory_rate_p25     <- quantile(dipep$respiratory.rate, probs = 0.25, na.rm = TRUE)
-## respiratory_rate_p75     <- quantile(dipep$respiratory.rate, probs = 0.75, na.rm = TRUE)
-## respiratory_rate_min     <- min(dipep$respiratory.rate, na.rm = TRUE)
-## respiratory_rate_max     <- max(dipep$respiratory.rate, na.rm = TRUE)
-## respiratory_rate_missing <- filter(dipep, is.na(respiratory.rate)) %>% nrow()
-## ## Respiratory Rate - Suspected PE
-## respiratory_rate_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(respiratory.rate, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(respiratory.rate, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(respiratory.rate, probs = 0.5, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(respiratory.rate, probs = 0.25, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(respiratory.rate, probs = 0.75, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(respiratory.rate, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(respiratory.rate, na.rm = TRUE)
-## ## respiratory_rate_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(respiratory.rate)) %>% nrow()
+## Respiratory Rate
+## respiratory_rate_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = respiratory.rate)
+respiratory_rate_mean    <- mean(dipep$respiratory.rate, na.rm = TRUE)
+respiratory_rate_sd      <- sd(dipep$respiratory.rate, na.rm = TRUE)
+respiratory_rate_median  <- quantile(dipep$respiratory.rate, probs = 0.5, na.rm = TRUE)
+respiratory_rate_p25     <- quantile(dipep$respiratory.rate, probs = 0.25, na.rm = TRUE)
+respiratory_rate_p75     <- quantile(dipep$respiratory.rate, probs = 0.75, na.rm = TRUE)
+respiratory_rate_min     <- min(dipep$respiratory.rate, na.rm = TRUE)
+respiratory_rate_max     <- max(dipep$respiratory.rate, na.rm = TRUE)
+respiratory_rate_missing <- filter(dipep, is.na(respiratory.rate)) %>% nrow()
+## Respiratory Rate - Suspected PE
+respiratory_rate_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(respiratory.rate, na.rm = TRUE)
+## respiratory_rate_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(respiratory.rate, na.rm = TRUE)
+## respiratory_rate_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(respiratory.rate, probs = 0.5, na.rm = TRUE)
+## respiratory_rate_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(respiratory.rate, probs = 0.25, na.rm = TRUE)
+## respiratory_rate_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(respiratory.rate, probs = 0.75, na.rm = TRUE)
+## respiratory_rate_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(respiratory.rate, na.rm = TRUE)
+## respiratory_rate_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(respiratory.rate, na.rm = TRUE)
+## respiratory_rate_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(respiratory.rate)) %>% nrow()
 
-## ## Systolic BP
-## ## systolic_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = bp.systolic)
-## systolic_mean    <- mean(dipep$bp.systolic, na.rm = TRUE)
-## systolic_sd      <- sd(dipep$bp.systolic, na.rm = TRUE)
-## systolic_median  <- quantile(dipep$bp.systolic, probs = 0.5, na.rm = TRUE)
-## systolic_p25     <- quantile(dipep$bp.systolic, probs = 0.25, na.rm = TRUE)
-## systolic_p75     <- quantile(dipep$bp.systolic, probs = 0.75, na.rm = TRUE)
-## systolic_min     <- min(dipep$bp.systolic, na.rm = TRUE)
-## systolic_max     <- max(dipep$bp.systolic, na.rm = TRUE)
-## systolic_missing <- filter(dipep, is.na(bp.systolic)) %>% nrow()
-## ## Systolic BP - Suspected PE
-## systolic_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(bp.systolic, na.rm = TRUE)
-## ## systolic_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(bp.systolic, na.rm = TRUE)
-## ## systolic_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.systolic, probs = 0.5, na.rm = TRUE)
-## ## systolic_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.systolic, probs = 0.25, na.rm = TRUE)
-## ## systolic_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.systolic, probs = 0.75, na.rm = TRUE)
-## ## systolic_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(bp.systolic, na.rm = TRUE)
-## ## systolic_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(bp.systolic, na.rm = TRUE)
-## ## systolic_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(bp.systolic)) %>% nrow()
+## Systolic BP
+## systolic_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = bp.systolic)
+systolic_mean    <- mean(dipep$bp.systolic, na.rm = TRUE)
+systolic_sd      <- sd(dipep$bp.systolic, na.rm = TRUE)
+systolic_median  <- quantile(dipep$bp.systolic, probs = 0.5, na.rm = TRUE)
+systolic_p25     <- quantile(dipep$bp.systolic, probs = 0.25, na.rm = TRUE)
+systolic_p75     <- quantile(dipep$bp.systolic, probs = 0.75, na.rm = TRUE)
+systolic_min     <- min(dipep$bp.systolic, na.rm = TRUE)
+systolic_max     <- max(dipep$bp.systolic, na.rm = TRUE)
+systolic_missing <- filter(dipep, is.na(bp.systolic)) %>% nrow()
+## Systolic BP - Suspected PE
+systolic_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(bp.systolic, na.rm = TRUE)
+## systolic_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(bp.systolic, na.rm = TRUE)
+## systolic_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.systolic, probs = 0.5, na.rm = TRUE)
+## systolic_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.systolic, probs = 0.25, na.rm = TRUE)
+## systolic_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.systolic, probs = 0.75, na.rm = TRUE)
+## systolic_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(bp.systolic, na.rm = TRUE)
+## systolic_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(bp.systolic, na.rm = TRUE)
+## systolic_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(bp.systolic)) %>% nrow()
 
-## ## Diastolic BP
-## ## diastolic_summary <- dipep_summarise(df     = dipep,
-## ##                                to.sum = bp.diastolic)
-## diastolic_mean    <- mean(dipep$bp.diastolic, na.rm = TRUE)
-## diastolic_sd      <- sd(dipep$bp.diastolic, na.rm = TRUE)
-## diastolic_median  <- quantile(dipep$bp.diastolic, probs = 0.5, na.rm = TRUE)
-## diastolic_p25     <- quantile(dipep$bp.diastolic, probs = 0.25, na.rm = TRUE)
-## diastolic_p75     <- quantile(dipep$bp.diastolic, probs = 0.75, na.rm = TRUE)
-## diastolic_min     <- min(dipep$bp.diastolic, na.rm = TRUE)
-## diastolic_max     <- max(dipep$bp.diastolic, na.rm = TRUE)
-## diastolic_missing <- filter(dipep, is.na(bp.diastolic)) %>% nrow()
-## ## Diastolic BP - Suspected PE
-## diastolic_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(bp.diastolic, na.rm = TRUE)
-## ## diastolic_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(bp.diastolic, na.rm = TRUE)
-## ## diastolic_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.diastolic, probs = 0.5, na.rm = TRUE)
-## ## diastolic_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.diastolic, probs = 0.25, na.rm = TRUE)
-## ## diastolic_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.diastolic, probs = 0.75, na.rm = TRUE)
-## ## diastolic_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(bp.diastolic, na.rm = TRUE)
-## ## diastolic_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(bp.diastolic, na.rm = TRUE)
-## ## diastolic_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(bp.diastolic)) %>% nrow()
+## Diastolic BP
+## diastolic_summary <- dipep_summarise(df     = dipep,
+##                                to.sum = bp.diastolic)
+diastolic_mean    <- mean(dipep$bp.diastolic, na.rm = TRUE)
+diastolic_sd      <- sd(dipep$bp.diastolic, na.rm = TRUE)
+diastolic_median  <- quantile(dipep$bp.diastolic, probs = 0.5, na.rm = TRUE)
+diastolic_p25     <- quantile(dipep$bp.diastolic, probs = 0.25, na.rm = TRUE)
+diastolic_p75     <- quantile(dipep$bp.diastolic, probs = 0.75, na.rm = TRUE)
+diastolic_min     <- min(dipep$bp.diastolic, na.rm = TRUE)
+diastolic_max     <- max(dipep$bp.diastolic, na.rm = TRUE)
+diastolic_missing <- filter(dipep, is.na(bp.diastolic)) %>% nrow()
+## Diastolic BP - Suspected PE
+diastolic_suspected_pe_mean    <- filter(dipep, group == 'Suspected PE') %>% mean(bp.diastolic, na.rm = TRUE)
+## diastolic_suspected_pe_sd      <- filter(dipep, group == 'Suspected PE') %>% sd(bp.diastolic, na.rm = TRUE)
+## diastolic_suspected_pe_median  <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.diastolic, probs = 0.5, na.rm = TRUE)
+## diastolic_suspected_pe_p25     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.diastolic, probs = 0.25, na.rm = TRUE)
+## diastolic_suspected_pe_p75     <- filter(dipep, group == 'Suspected PE') %>% quantile(bp.diastolic, probs = 0.75, na.rm = TRUE)
+## diastolic_suspected_pe_min     <- filter(dipep, group == 'Suspected PE') %>% min(bp.diastolic, na.rm = TRUE)
+## diastolic_suspected_pe_max     <- filter(dipep, group == 'Suspected PE') %>% min(bp.diastolic, na.rm = TRUE)
+## diastolic_suspected_pe_missing <- filter(dipep, group == 'Suspected PE' & is.na(bp.diastolic)) %>% nrow()
 
 ## Summary by group
 summary.stats <- list()
@@ -180,11 +180,63 @@ summary.stats$group       <-  dipep_summarise(df           = dipep,
                                        group.as.col = TRUE,
                                        age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
                                        weight, respiratory.rate, o2.saturation, gestation)
-summary.stats$primary.class <- dipep_summarise(df           = dipep,
-                                        grouping     = 'primary.class',
-                                        group.as.col = TRUE,
-                                        age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
-                                        weight, respiratory.rate, o2.saturation, gestation)
+summary.stats$first.st <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
+                      	                  group.as.col = TRUE,
+                      	                  age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
+                      	                  weight, respiratory.rate, o2.saturation, gestation)
+summary.stats$second.st <- dipep_summarise(df           = dipep,
+                       	                 grouping     = 'second.st',
+                       	                 group.as.col = TRUE,
+                       	                 age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
+                       	                 weight, respiratory.rate, o2.saturation, gestation)
+summary.stats$third.st <- dipep_summarise(df           = dipep,
+                   	    	          grouping     = 'third.st',
+                       	                  group.as.col = TRUE,
+                       	                  age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
+                       	                  weight, respiratory.rate, o2.saturation, gestation)
+summary.stats$fourth.st <- dipep_summarise(df           = dipep,
+                    	    	           grouping     = 'fourth.st',
+                       	                   group.as.col = TRUE,
+                       	                   age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
+                       	                   weight, respiratory.rate, o2.saturation, gestation)
+summary.biomarkers <- list()
+summary.biomarkers$first.st <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
+                      	                  group.as.col = TRUE,
+                      	                  prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
+                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                          soluble.tissue.factor, troponin)
+                                          ## natriuertic.peptide, mrproanp)
+summary.biomarkers$second.st <- dipep_summarise(df           = dipep,
+                                                grouping     = 'second.st',
+                                                group.as.col = TRUE,
+                                                prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
+                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                                soluble.tissue.factor, troponin)
+                                                ## natriuertic.peptide, mrproanp)
+summary.biomarkers$third.st <- dipep_summarise(df           = dipep,
+                                               grouping     = 'third.st',
+                                               group.as.col = TRUE,
+                                               prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
+                                               thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                               thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                               ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                               soluble.tissue.factor, troponin)
+                                               ## natriuertic.peptide, mrproanp)
+summary.biomarkers$fourth.st <- dipep_summarise(df           = dipep,
+                                                grouping     = 'fourth.st',
+                                                group.as.col = TRUE,
+                                                prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
+                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                                soluble.tissue.factor, troponin)
+                                                ## natriuertic.peptide, mrproanp)
 
 ```
 
@@ -214,7 +266,7 @@ dplyr::select(dipep, ethnicity, group) %>%
 
 The overall mean age in years of those was `r age_mean` (SD `r age_sd`; Median `r age_median` (IQR `r age_p25` to `r age_p75`); Range `r age_min` to `r age_max`) and the distribution of ages by group is summarised in figure and table below.
 
-```{r  demographics_figure_age, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r  demographics_figure_age_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 dplyr::select(dipep, age, group) %>%
     ggplot(aes(x    = age,
                fill = group)) +
@@ -224,9 +276,24 @@ dplyr::select(dipep, age, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Age') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Age') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Age by Group')
+```
+
+```{r  demographics_figure_age_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, age, first.st) %>%
+    ggplot(aes(x    = age,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Age (Years)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Age') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Age by Primary Classification')
 
 
 ```
@@ -236,7 +303,7 @@ dplyr::filter(sum.by.group, Measurement == 'Age') %>%
 The overall mean BMI was `r bmi_mean` (SD `r bmi_sd`; Median `r bmi_median` (IQR `r bmi_p25` to `r bmi_p75`); Range `r bmi_min` to `r bmi_max`) and the distribution of BMI by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_bmi, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r  demographics_figure_bmi_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 dplyr::select(dipep, bmi, group) %>%
     ggplot(aes(x    = bmi,
                fill = group)) +
@@ -246,9 +313,26 @@ dplyr::select(dipep, bmi, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'BMI') %>%
+dplyr::filter(summary.stats$group, Measurement == 'BMI') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of BMI by Group')
+
+
+```
+
+```{r  demographics_figure_bmi_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, bmi, first.st) %>%
+    ggplot(aes(x    = bmi,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('BMI') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'BMI') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of BMI by Primary Classification')
 
 
 ```
@@ -258,7 +342,7 @@ dplyr::filter(sum.by.group, Measurement == 'BMI') %>%
 The overall mean height in centimetres (cm) was `r height_mean` (SD `r height_sd`; Median `r height_median` (IQR `r height_p25` to `r height_p75`); Range `r height_min` to `r height_max`) and the distribution of heights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_height, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r  demographics_figure_height_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 dplyr::select(dipep, height, group) %>%
     ggplot(aes(x    = height,
                fill = group)) +
@@ -268,9 +352,28 @@ dplyr::select(dipep, height, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Height') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Height') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Height by Group')
+
+```
+
+```{r  demographics_figure_height_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, height, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = height,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Height (cm)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Height') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Height by Primary Classification')
 
 ```
 
@@ -279,7 +382,7 @@ dplyr::filter(sum.by.group, Measurement == 'Height') %>%
 The mean weight in kilgrams (kg) was `r weight_mean` (SD `r weight_sd`; Median `r weight_median` (IQR `r weight_p25` to `r weight_p75`); Range `r weight_min` to `r weight_max`) and the distribution of weights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_weight, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r  demographics_figure_weight_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 dplyr::select(dipep, weight, group) %>%
     ggplot(aes(x    = weight,
                fill = group)) +
@@ -289,9 +392,28 @@ dplyr::select(dipep, weight, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Weight') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Weight') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Weight by Group')
+
+```
+
+```{r  demographics_figure_weight_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, weight, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = weight,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Weight (kg)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Weight') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Weight by Primary Classification')
 
 ```
 
@@ -300,8 +422,8 @@ dplyr::filter(sum.by.group, Measurement == 'Weight') %>%
 The overall mean heart rate in beats per minute (BPM) was `r heart_rate_mean` (SD `r heart_rate_sd`; Median `r heart_rate_median` (IQR `r heart_rate_p25` to `r heart_rate_p75`); Range `r heart_rate_min` to `r heart_rate_max`) and the distribution of weights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_heart_rate, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(master$presenting.features, heart.rate, group) %>%
+```{r  demographics_figure_heart_rate_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, heart.rate, group) %>%
     ggplot(aes(x    = heart.rate,
                fill = group)) +
     geom_histogram() +
@@ -310,19 +432,39 @@ dplyr::select(master$presenting.features, heart.rate, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Respiratory Rate') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate by Group')
 
 ```
+
+```{r  demographics_figure_heart_rate_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, heart.rate, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = heart.rate,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Heart Rate (BPM)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Respiratory Rate') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Respiratory Rate by Primary Classification')
+
+```
+
 
 #### Respiratory Rate
 
 The overall mean respiratory rate in breaths per minute (BPM) was `r respiratory_rate_mean` (SD `r respiratory_rate_sd`; Median `r respiratory_rate_median` (IQR `r respiratory_rate_p25` to `r respiratory_rate_p75`); Range `r respiratory_rate_min` to `r respiratory_rate_max`) and the distribution of weights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_respiratory_rate, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(master$presenting.features, respiratory.rate, group) %>%
+```{r  demographics_figure_respiratory_rate_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, respiratory.rate, group) %>%
     ggplot(aes(x    = respiratory.rate,
                fill = group)) +
     geom_histogram() +
@@ -331,9 +473,28 @@ dplyr::select(master$presenting.features, respiratory.rate, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Respiratory Rate') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate (BPM) by Group')
+
+```
+
+```{r  demographics_figure_respiratory_rate_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, respiratory.rate, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = respiratory.rate,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Respiratory Rate (BPM)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Respiratory Rate') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Respiratory Rate (BPM) by Primary Classification')
 
 ```
 
@@ -342,8 +503,8 @@ dplyr::filter(sum.by.group, Measurement == 'Respiratory Rate') %>%
 The overall mean systolic blood pressure in millimetres of mercury (mmHg) was `r systolic_mean` (SD `r systolic_sd`; Median `r systolic_median` (IQR `r systolic_p25` to `r systolic_p75`); Range `r systolic_min` to `r systolic_max`) and the distribution of weights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_systolic, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(master$presenting.features, bp.systolic, group) %>%
+```{r  demographics_figure_systolic_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, bp.systolic, group) %>%
     ggplot(aes(x    = bp.systolic,
                fill = group)) +
     geom_histogram() +
@@ -352,9 +513,28 @@ dplyr::select(master$presenting.features, bp.systolic, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Systolic BP') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Systolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Group')
+
+```
+
+```{r  demographics_figure_systolic_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, bp.systolic, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = bp.systolic,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Systolic Blood Pressure (mm/Hg)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Systolic BP') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Primary Classification')
 
 ```
 
@@ -363,8 +543,8 @@ dplyr::filter(sum.by.group, Measurement == 'Systolic BP') %>%
 The overall mean diastolic blood pressure in millimetres of mercury (mmHg) was `r diastolic_mean` (SD `r diastolic_sd`; Median `r diastolic_median` (IQR `r diastolic_p25` to `r diastolic_p75`); Range `r diastolic_min` to `r diastolic_max`) and the distribution of weights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_diastolic, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(master$presenting.features, bp.diastolic, group) %>%
+```{r  demographics_figure_diastolic_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, bp.diastolic, group) %>%
     ggplot(aes(x    = bp.diastolic,
                fill = group)) +
     geom_histogram() +
@@ -373,9 +553,28 @@ dplyr::select(master$presenting.features, bp.diastolic, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Diastolic BP') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Diastolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Group')
+
+```
+
+```{r  demographics_figure_diastolic_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, bp.diastolic, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = bp.diastolic,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Diastolic Blood Pressure (mm/Hg)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Diastolic BP') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Primary Classification')
 
 ```
 
@@ -384,8 +583,8 @@ dplyr::filter(sum.by.group, Measurement == 'Diastolic BP') %>%
 The overall mean oxygen saturation as a percentage (%) was `r diastolic_mean` (SD `r diastolic_sd`; Median `r diastolic_median` (IQR `r diastolic_p25` to `r diastolic_p75`); Range `r diastolic_min` to `r diastolic_max`) and the distribution of weights by group is summarised in figure and table below.
 
 
-```{r  demographics_figure_o2_saturation, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(master$presenting.features, o2.saturation, group) %>%
+```{r  demographics_figure_o2_saturation_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, o2.saturation, group) %>%
     ggplot(aes(x    = o2.saturation,
                fill = group)) +
     geom_histogram() +
@@ -394,8 +593,50 @@ dplyr::select(master$presenting.features, o2.saturation, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(sum.by.group, Measurement == 'Oxygen Saturation') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Oxygen Saturation') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Oxygen Saturation by Group')
+
+```
+
+```{r  demographics_figure_o2_saturation_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, o2.saturation, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = o2.saturation,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Oxygen Saturation (mm/Hg)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.stats$first.st, Measurement == 'Oxygen Saturation') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Oxygen Saturation by Primary Classification')
+
+```
+#### Biomarkers  {.tabset .tabset-fade .tabset-pills}
+
+##### Prothombin (Time)
+
+```{r  demographics_biomarker_prothombin_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::select(dipep, prothombin.time, first.st) %>%
+    mutate(first.st = as.character(first.st),
+           first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                                  no  = first.st)) %>%
+    ggplot(aes(x    = prothombin.time,
+               fill = first.st)) +
+    geom_histogram() +
+    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
+    xlab('Oxygen Saturation (mm/Hg)') + ylab('N') +
+    guides(fill = guide_legend(NULL)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    facet_wrap(~first.st, ncol = 3) + theme_bw()
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Prothombin (Time)') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Summary of Prothombin (Time) by Primary Classification')
 
 ```
