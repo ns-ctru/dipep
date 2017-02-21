@@ -90,7 +90,7 @@ dipep_roc <- function(df      = logistic$predicted,
                                Predictor = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', Predictor),
                                Predictor = gsub('troponin', 'Troponin', Predictor),
                                Predictor = gsub('natriuretic.peptide', 'Natriuertic Peptide', Predictor),
-                               Predictor = gsub('mrproanp', 'MR-proANP', Predictor))
+                               Predictor = gsub('mrproanp', 'MRproANP', Predictor))
     results$plot.auc$x <- 0.75
     results$plot.auc$y <- 0.25
     ## ToDo - How to annotate plot with the Predictor and AUC components???
