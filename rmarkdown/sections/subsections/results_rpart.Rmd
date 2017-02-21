@@ -1,11 +1,32 @@
-```{r results_rpart_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
+### Recursive Partitioning
+
+```{r results_rpart_opts, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Rpart options
+rpart.opts           <- list()
+rpart.opts$method    <- 'class'
+rpart.opts$minsplit  <- 2
+rpart.opts$minbucket <- 2
+rpart.opts$cp        <- -1
+## prp options
+prp.opts <- list()
+prp.opts$type        <- 2
+prp.opts$extra       <- 'auto'
+prp.opts$box.palette <- c('green', 'red')
+prp.opts$yesno       <- 1
+prp.opts$branch      <- 1
+prp.opts$varlen      <- 0
+prp.opts$faclen      <- 0
+
+```
+
+```{r results_rpart_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Useful reading...
 ##
 ## http://gormanalysis.com/decision-trees-in-r-using-rpart/
-model <- reformulate(response = 'pe',
+model <- reformulate(response = 'first.st',
                      termlabels = c('age', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
                                     'o2.saturation.cat', 'respiratory.rate.cat', 'bmi.cat',
-                                    'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
+                                    'pregnancies.under.cat', 'pregnancies.over.cat', 'prev.preg.problem',
                                     'presenting.features.pleuritic',
                                     'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
                                     'presenting.features.sob.rest', 'presenting.features.haemoptysis',
@@ -15,16 +36,16 @@ model <- reformulate(response = 'pe',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
 categorical <- rpart(model,
-                data = filter(dipep, group == 'Suspected PE'),
-                method = 'class',
-                minsplit = 2,
-                minbucket = 2,
-                cp = -1)    ## NB - Make sure 'pe' is a factor!
+                data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
+                method = rpart.opts$method,
+                minsplit = rpart.opts$minsplit,
+                minbucket = rpart.opts$minbucket,
+                cp = rpart.opts$cp)    ## NB - Make sure 'pe' is a factor!
 
 ```
-```{r results_rpart_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
+```{r results_rpart_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Repeat using continuous variables
-model <- reformulate(response = 'pe',
+model <- reformulate(response = 'first.st',
                      termlabels = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
                                     'o2.saturation', 'respiratory.rate', 'bmi',
                                     'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
@@ -37,21 +58,21 @@ model <- reformulate(response = 'pe',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
 continuous <- rpart(model,
-              data = filter(dipep, group == 'Suspected PE'),
-              method = 'class',
-              minsplit = 2,
-              minbucket = 2,
-              cp = -1)    ## NB - Make sure 'pe' is a factor!
+              data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
+              method = rpart.opts$method,
+              minsplit = rpart.opts$minsplit,
+              minbucket = rpart.opts$minbucket,
+              cp = rpart.opts$cp)    ## NB - Make sure 'pe' is a factor!
 
 ```
 
 ```{r results_rpart_save, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
 save(continuous, categorical,
      file = '../../data/results/rpart.RData')
-```
-```{r results_rpart_load, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-load(file = '../../data/results/rpart.RData')
 
+```
+```{r results_rpart_load, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
+load(file = '../../data/results/rpart.RData')
 
 ```
 
@@ -61,7 +82,7 @@ load(file = '../../data/results/rpart.RData')
 
 #### Model
 
-The model that has been fitted uses the outcome variable of the observed events of Pulmonary Embolisms in the recruited cohort of Suspected PE individuals.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the form...
+The model that has been fitted uses the primary classification of individuals from UKOSS and those identified as Suspected PE.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the form...
 
 $$
 pulmonary.embolism ~ all.covariates
@@ -73,9 +94,9 @@ Table: Control parameters used in fitting models with `rpart`
 
 Control Parameter | Value     | Explanation
 ------------------|-----------|---------------------------------------------------------
-`minsplit`        | 4         | The minimum number of observations that must exist in a node in order for a split to be attempted.
-`minbucket`       | 4         | The mimimum number of observations in any terminal node.
-`cp`              | -1        | The Complexity Parameter, a negative value ensures a full model is fitted where everyone is classified.
+`minsplit`        | `r rpart.opts$minsplit`  | The minimum number of observations that must exist in a node in order for a split to be attempted.
+`minbucket`       | `r rpart.opts$minbucket` | The mimimum number of observations in any terminal node.
+`cp`              | `r rpart.opts$cp`        | The Complexity Parameter, a negative value ensures a full model is fitted where everyone is classified.
 
 #### Results  {.tabset .tabset-fade .tabset-pills}
 
@@ -92,32 +113,34 @@ printcp(categorical)
 
 ```
 
-The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
+The positive response to the split is always on the left-hand side of a node, the numbers in the boxes.  The dendrogram has been augmented with additional information showing
 
 ```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
 prp(categorical,
-    type = 4,
-    extra = 106,
-    yesno = 1,
-    branch = 1,
-    varlen = 0,
-    faclen = 0)
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
 
 ```
 
 This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).
 
 ```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 15, fig_height = 10, eval = TRUE}
-cp <- 0.0084270
+cp <- 0.022222
 categorical_prune <- prune(categorical, cp = cp)
 printcp(categorical_prune)
 prp(categorical_prune,
-    type   = 4,
-    extra  = 106,
-    yesno  = 1,
-    branch = 1,
-    varlen = 0,
-    faclen = 0)
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
 
 ```
 
@@ -158,12 +181,13 @@ The positive response to the split is always on the left-hand side of a node, th
 
 ```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
 prp(continuous,
-    type   = 4,
-    extra  = 106,
-    yesno  = 1,
-    branch = 1,
-    varlen = 0,
-    faclen = 0)
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
 
 ```
 
@@ -172,16 +196,17 @@ prp(continuous,
 In addition to the problem described for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets, severly limited because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror`.
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
-cp <- 0.0084270
+cp <- 0.0000
 continuous_prune <- prune(continuous, cp = cp)
 printcp(continuous_prune)
 prp(continuous_prune,
-    type   = 4,
-    extra  = 106,
-    yesno  = 1,
-    branch = 1,
-    varlen = 0,
-    faclen = 0)
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
 
 ```
 
