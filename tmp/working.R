@@ -1,8 +1,10 @@
 ## 2017-02-18 Simple LASSO testing
+build()
+install()
 t <- dipep_glmnet(df = dipep,
              classification = 'third.st',
              predictor      = c('age', 'history.iv.drug'))
-
+head(t$lasso_predict)
 
 ## 2017-02-17 Developing dipep_glmnet() function/wrapper
 ##
