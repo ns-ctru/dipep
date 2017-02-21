@@ -10,7 +10,9 @@ bibliography: sections/bibliography.bib
 opts_chunk$set(cache.path = 'cache/',
                width    = 200,
                fig.height = 8,
-               fig.width  = 8)
+               fig.width  = 8,
+               warning = FALSE,
+               message = FALSE)
 options(digits = 3)
 ## Ensure anchors are assessed first
 ## opts_knit$set(eval.after = 'echo')
