@@ -1,163 +1,6 @@
-```{r results_lasso_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
-## Categorised variables
-## Covariates
-## covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-##          dplyr::select(age.cat, bmi.cat, smoking.cat, pregnancies.over.cat, pregnancies.under.cat,
-##                        history.thrombosis, history.veins, history.iv.drug, thrombo, cesarean,
-##                        injury, thrombosis, existing.medical, preg.post, trimester, multiple.preg,
-##                        travel, immobil, this.pregnancy.problems, prev.preg.problem,
-##                        presenting.features.pleuritic, presenting.features.non.pleuritic,
-##                        presenting.features.sob.exertion, presenting.features.sob.rest,
-##                        presenting.features.haemoptysis, presenting.features.cough,
-##                        presenting.features.syncope, presenting.features.palpitations,
-##                        presenting.features.other, respiratory.rate.cat, heart.rate.cat,
-##                        o2.saturation.cat, bp.systolic.cat, bp.diastolic.cat, ecg.cat, xray.cat,
-##                        ## likely.diagnosis, d.dimer.cat,
-##                        pe) %>%
-##          dplyr::select(age.cat, smoking.cat, heart.rate.cat, pe) %>%
-##          mutate(use = complete.cases(.)) %>%
-##          filter(use == TRUE) %>%
-##          dplyr::select(-use) %>%
-##          data.matrix()
-## Classification of Pulmonary Embolism
-## TODO - Get true status
-## status <- covar[,ncol(covar)]
-## covar <- covar[,1:ncol(covar) - 1]
-## LASSO
-## Worked example at https://stats.stackexchange.com/questions/72251/an-example-lasso-regression-using-glmnet-for-binary-outcome
-## lasso.categorical <- glmnet::glmnet(x      = covar,
-##                             y      = status,
-##                             family = 'binomial')
-## cv.lasso.categorical <- glmnet::cv.glmnet(x      = covar,
-##                                   y      = status,
-##                                   family = 'binomial',
-##                                   nfolds = length(status))
-## cv.lasso.auc.categorical <- glmnet::cv.glmnet(x      = covar,
-##                                   y      = status,
-##                                   family = 'binomial',
-##                                   type.measure = 'auc',
-##                                   nfolds = length(status))
-
-#################################################
-## Alternative using glmnetUtils()             ##
-#################################################
-.formula <- reformulate(response = 'pe',
-                        termlabels = c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat'
-##                                        'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-##                                        'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
-##                                        'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-##                                        'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-##                                        'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-##                                        'presenting.features.haemoptysis', 'presenting.features.cough',
-##                                        'presenting.features.syncope', 'presenting.features.palpitations',
-##                                        'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
-##                                        'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat'))
-                                       ))
-suspected.pe <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-                ## ToDo - Remove select statement, should work with whole data frame
-                dplyr::select(pe, age.cat, bmi.cat, smoking.cat, pregnancies.over.cat, pregnancies.under.cat)
-status <- nrow(suspected.pe)
-##                             history.thrombosis, history.veins, history.iv.drug, thrombo, cesarean,
-##                             injury, thrombosis, existing.medical, preg.post, trimester, multiple.preg,
-##                             travel, immobil, this.pregnancy.problems, prev.preg.problem,
-##                             presenting.features.pleuritic, presenting.features.non.pleuritic,
-##                             presenting.features.sob.exertion, presenting.features.sob.rest,
-##                             presenting.features.haemoptysis, presenting.features.cough,
-##                             presenting.features.syncope, presenting.features.palpitations,
-##                             presenting.features.other, respiratory.rate.cat, heart.rate,
-##                             o2.saturation.cat, bp.systolic.cat, bp.diastolic.cat, ecg.cat, xray.cat)
-
-lasso.categorical <- glmnetUtils::glmnet(data = suspected.pe,
-                                         .formula,
-                                         family  = 'binomial')
-cv.lasso.categorical <- glmnetUtils::cv.glmnet(data = suspected.pe,
-                                              .formula,
-                                              family  = 'binomial',
-                                              nfolds = nrow(suspected.pe))
-cv.lasso.auc.categorical <- glmnetUtils::cv.glmnet(data = suspected.pe,
-                                              .formula,
-                                              family  = 'binomial',
-                                              type.measure = 'auc',
-                                              nfolds = nrow(suspected.pe))
-
-```
-
-```{r results_lasso_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
-## Continuous variables
-## Covariates
-## covar <- dplyr::filter(dipep, group == 'Suspected PE') %>%
-##          dplyr::select(age, bmi, smoking, pregnancies.over, pregnancies.under,
-##                        history.thrombosis, history.veins, history.iv.drug, thrombo, cesarean,
-##                        injury, thrombosis, existing.medical, preg.post, trimester, multiple.preg,
-##                        travel, immobil, this.pregnancy.problems, prev.preg.problem,
-##                        presenting.features.pleuritic, presenting.features.non.pleuritic,
-##                        presenting.features.sob.exertion, presenting.features.sob.rest,
-##                        presenting.features.haemoptysis, presenting.features.cough,
-##                        presenting.features.syncope, presenting.features.palpitations,
-##                        presenting.features.other, respiratory.rate,
-##                        o2.saturation, bp.systolic, bp.diastolic, ecg.cat, xray.cat,
-##                        ## likely.diagnosis,
-##                        d.dimer, heart.rate,
-##                        pe) %>%
-##          dplyr::select(age, smoking, pe) %>%
-##          mutate(use = complete.cases(.)) %>%
-##          filter(use == TRUE) %>%
-##          dplyr::select(-use) %>%
-##          data.matrix()
-## ## Classification of Pulmonary Embolism
-## ## TODO - Get true status
-## status <- covar[,ncol(covar)]
-## covar <- covar[,1:ncol(covar) - 1]
-## ## LASSO
-## ## Worked example at https://stats.stackexchange.com/questions/72251/an-example-lasso-regression-using-glmnet-for-binary-outcome
-## lasso.continuous <- glmnet(x      = covar,
-##                            y      = status,
-##                            family = 'binomial')
-## cv.lasso.continuous <- cv.glmnet(x      = covar,
-##                                  y      = status,
-##                                  family = 'binomial',
-##                                  nfolds = length(status))
-## cv.lasso.auc.continuous <- cv.glmnet(x      = covar,
-##                                  y      = status,
-##                                  family = 'binomial',
-##                                  type.measure = 'auc',
-##                                  nfolds = length(status))
-
-#################################################
-## Alternative using glmnetUtils()             ##
-#################################################
-.formula <- reformulate(response = 'pe',
-                        termlabels = c('age', 'bmi', 'smoking', 'pregnancies.over', 'pregnancies.under',
-                                        'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-                                       'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
-                                        'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-                                        'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-                                        'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-                                        'presenting.features.haemoptysis', 'presenting.features.cough',
-                                        'presenting.features.syncope', 'presenting.features.palpitations',
-                                        'presenting.features.other', 'respiratory.rate', 'heart.rate',
-                                        'o2.saturation', 'bp.systolic', 'bp.diastolic', 'ecg', 'xray'))
-
-suspected.pe <- dplyr::filter(dipep, group == 'Suspected PE') ## %>%
-                ## ToDo - Remove select statement, should work with whole data frame
-                ## dplyr::select(pe, age, bmi, smoking, pregnancies.over, pregnancies.under)
-status <- nrow(suspected.pe)
-
-lasso.continuous <- glmnetUtils::glmnet(data = suspected.pe,
-                                         .formula,
-                                         family  = 'binomial')
-cv.lasso.continuous <- glmnetUtils::cv.glmnet(data = suspected.pe,
-                                              .formula,
-                                              family  = 'binomial',
-                                              nfolds = nrow(suspected.pe))
-cv.lasso.auc.continuous <- glmnetUtils::cv.glmnet(data = suspected.pe,
-                                              .formula,
-                                              family  = 'binomial',
-                                              type.measure = 'auc',
-                                              nfolds = nrow(suspected.pe))
+### LASSO
 
 
-```
 
 ```{r results_lasso_save, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
 save(lasso.categorical, cv.lasso.categorical,
@@ -174,102 +17,22 @@ The [LASSO (Least Absolute Shrinkage and Selection Operator)](https://en.wikiped
 
 #### Model {.tabset .tabset-fade .tabset-pills}
 
-The model that has been fitted uses the outcome variable of the observed events of Pulmonary Embolisms in the recruited cohort of Suspected PE individuals.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the form...
+The model that has been fitted uses the outcome variable of the observed events of Pulmonary Embolisms in the recruited cohort of Suspected PE individuals.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the general form...
 
 $$
-pulmonary.embolism ~
+pulmonary embolism classification ~ predictors
 $$
 
-The plot below shows the change in the coefficients for each predictor variable over iterations of estimation via LASSO. L1 Norm is a constraint placed on the analsyis for the sum of all coefficients and is one of the unique features of the LASSO.  For further details on L1 normalisation please refer to [this article](http://people.duke.edu/~hpgavin/SystemID/References/Schmidt-LASSO-2005.pdf).
+Exactly what predictors are included/used in a model varies.  Strictly the Statistical Analysis Plan states that may of the continuous physiological variables are to be dichotomised prior to analysis.  This is however not advisable for [various reasons]()(@altman2006,  @royston2006, @dawson2012), in particular @steyerberg2001 demonstrated that doing so results in a reduction in available information in the setting of prognostic modelling.  To this end the models have been tested using the raw continuous variables as well.
 
-##### Pre-Categorised Continuous Variables
+<!-- The plot below shows the change in the coefficients for each predictor variable over iterations of estimation via LASSO. L1 Norm is a constraint placed on the analsyis for the sum of all coefficients and is one of the unique features of the LASSO.  For further details on L1 normalisation please refer to [this article](http://people.duke.edu/~hpgavin/SystemID/References/Schmidt-LASSO-2005.pdf). -->
 
-** ToDo** - Get values of coefficients printed on graph (perhaps use `ggrepel` to avoid overlapping)
-```{r results_lasso_categorical_plot, echo = FALSE, cache = FALSE, fig.width = 10, fig.height = 10, results = 'asis', eval = TRUE}
-## Plot the change in coefficients over time
-autoplot(lasso.categorical) + theme_bw()
-## Get the coefficients from the last step.
-## coef.glmnet() doesn't work properly as the option 's' to select a specific
-## set of coefficients is not honored.
-lambda.min <- which(cv.lasso.categorical$lambda == cv.lasso.categorical$lambda %>% min())
-beta.coef <- coef.glmnet(lasso.categorical, s = lambda.min) ## %>% as.data.frame()
-## Instead we extract them manually, pulling out the last set of values
-lambda.min <- lasso.categorical$beta %>% ncol()
-beta.coef  <- lasso.categorical$beta[,lambda.min] %>% as.data.frame()
-names(beta.coef) <- c('beta')
-beta.coef$term <- rownames(beta.coef)
-dplyr::filter(beta.coef, beta != 0) %>%
-    dplyr::select(term, beta) %>%
-    kable(caption = 'Coefficients from LASSO')
 
+```{r child='lasso/categorised.Rmd', eval = TRUE}
 ```
 
-###### Cross-Validation
-
-[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised to check the predictive value of the model.  The plot below shows the results of the cross-validation
-**ToDo** - Explanation
-
-<!--- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
-
-```{r results_lasso_categorical_cross_validation_plot, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
-autoplot(cv.lasso.categorical) + theme_bw()
+```{r child='lasso/continuous.Rmd', eval = TRUE}
 ```
 
-###### Sensitivity and Specificity
-
-An optimal value for lambda, the regularisation parameter, needs to be selected, the recommended advice is to choose a value that is within one standard error of
-
-```{r results_lasso_categorical_roc, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
-## Obtain predictions
-lambda.1se <- which(cv.lasso.categorical$lambda == cv.lasso.categorical$lambda.1se)
-lambda.min <- which(cv.lasso.categorical$lambda == cv.lasso.categorical$lambda.min)
-
-```
-
-##### Continuous Variables
-
-** ToDo** - Get values of coefficients printed on graph (perhaps use `ggrepel` to avoid overlapping)
-```{r results_lasso_continuous_plot, echo = FALSE, cache = FALSE, fig.width = 10, fig.height = 10, results = 'asis', eval = TRUE}
-## Plot the change in coefficients over time
-autoplot(lasso.continuous) + theme_bw()
-## Get the coefficients from the last step.
-## coef.glmnet() doesn't work properly as the option 's' to select a specific
-## set of coefficients is not honored.
-lambda.min <- which(cv.lasso.continuous$lambda == cv.lasso.continuous$lambda %>% min())
-beta.coef <- coef.glmnet(lasso.continuous, s = lambda.min) ## %>% as.data.frame()
-## Instead we extract them manually, pulling out the last set of values
-lambda.min <- lasso.continuous$beta %>% ncol()
-beta.coef  <- lasso.continuous$beta[,lambda.min] %>% as.data.frame()
-names(beta.coef) <- c('beta')
-beta.coef$term <- rownames(beta.coef)
-dplyr::filter(beta.coef, beta != 0) %>%
-    dplyr::select(term, beta) %>%
-    kable(caption = 'Coefficients from LASSO')
-
-```
-
-###### Cross-Validation
-
-[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised to check the predictive value of the model.  The plot below shows the results of the cross-validation
-**ToDo** - Explanation
-
-<!--- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
-
-```{r results_lasso_continuous_cross_validation_plot, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
-autoplot(cv.lasso.continuous) + theme_bw()
-
-```
-
-###### Sensitivity and Specificity
-
-An optimal value for lambda, the regularisation parameter, needs to be selected, the recommended advice is to choose a value that is within one standard error of
-
-```{r results_lasso_continuous_roc, echo = FALSE, cache = FALSE, results = 'asis', eval = FALSE}
-## Obtain minimum values
-lambda.1se <- which(cv.lasso.continuous$lambda == cv.lasso.continuous$lambda.1se)
-lambda.min <- which(cv.lasso.continuous$lambda == cv.lasso.continuous$lambda.min)
-## Extract coefficients for the corresponding lambda
-beta <- lasso.continuous[,lambda.min]
-## ToDo - Augment ROC plots with the AUC, see http://blog.revolutionanalytics.com/2016/11/calculating-auc.html
-
+```{r child='lasso/staged.Rmd', eval = TRUE}
 ```
