@@ -78,9 +78,9 @@ load(file = '../../data/results/rpart.RData')
 
 ```
 
-[Recursive Partitioning](https://en.wikipedia.org/wiki/Recursive_partitioning) is a method of automatically selecting variables, and when continuous cut-points within the range of a given variable, that maximise the classification of individuals.  The [R](https://www.r-project.org/) package [rpart](https://cran.r-project.org/web/packages/rpart/) has been used to fit a model using recursive partitioning and if you are interested in learning about the this method it is recommended you read the packages [vignette](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf).
+[Recursive Partitioning](https://en.wikipedia.org/wiki/Recursive_partitioning) is a method of automatically selecting variables, and when continuous cut-points within the range of a given variable, that maximise the classification of individuals.  The [R](https://www.r-project.org/) package [rpart](https://cran.r-project.org/web/packages/rpart/) has been used to fit a model using recursive partitioning.  A simple overview of the procedure is described [here](http://statmethods.net/advstats/cart.html).  If you are interested in learning about the this method it is *highly* recommended you read the packages [vignette](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf).
 
-**Caution** Recursive partitioning is normally used on large datasets (i.e. N is in the tens of thousands).  Frank Harrell (author of *Regression Modeeling Strategies*@harrell2006) notes that with $<20000$ observations the results of recursive partitioning are unreliable i.e. repeated bootstraps results in different trees) (see his comment [here](http://stats.stackexchange.com/a/13461/25629)).
+**Caution** Recursive partitioning is normally used on large datasets (i.e. N is in the tens of thousands).  Frank Harrell (author of *Regression Modeeling Strategies*@harrell2006) notes that with $<20000$ observations the results of recursive partitioning are unreliable i.e. repeated bootstraps results in different trees) (see his comment [here](http://stats.stackexchange.com/a/13461/25629)).  The Dipep study is far from being anywhere near this sample size and whilst cross-validation is utilized (automatically) when developing
 
 #### Model
 
@@ -108,15 +108,16 @@ Dendrograms are a simple and natural method of visualising the results of recurs
 
 The results below are from applying recursive partitioning per-protocol approach of pre-dichotomised covariates.
 
-Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`) **TODO** finish off explanation.
+Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`) shows the reduction in error afforded by a given split and as successive splits are made the reduction in error diminishes.
 
 ```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 printcp(categorical,
         digits = printcp.opts$digits)
+plotcp(categorical)
 
 ```
 
-The positive response to the split is always on the left-hand side of a node, the numbers in the boxes.  The dendrogram has been augmented with additional information showing
+The positive response to the split is always on the left-hand side of a node, the numbers in the boxes.  The dendrogram has been augmented with additional information showing the probability of mis-classification at that node followed the the proportion of individuals split by a given node.
 
 ```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
 prp(categorical,
@@ -179,6 +180,7 @@ Cross-validation is performed automatically by the `rpart` package and is summar
 ```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 printcp(continuous,
         digits = printcp.opts$digits)
+plotcp(continuous)
 
 ```
 The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
@@ -239,7 +241,7 @@ When a person presents at hospital or Accident & Emergency the amount of informa
 ## Repeat using continuous variables
 model <- reformulate(response = 'first.st',
                      termlabels = c('age', 'temperature', 'bp.diastolic', 'bp.systolic',
-                                    'o2.saturation', 'respiratory.rate', 'bmi', 'num_fetus'))
+                                    'o2.saturation', 'respiratory.rate', 'bmi', 'num.fetus'))
 ## Test model
 physiology_continuous <- rpart(model,
                                data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
@@ -247,5 +249,44 @@ physiology_continuous <- rpart(model,
                                minsplit = rpart.opts$minsplit,
                                minbucket = rpart.opts$minbucket,
                                cp = rpart.opts$cp)    ## NB - Make sure 'pe' is a factor!
+
+```
+
+```{r results_rpart_stage_physiology_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+printcp(physiology_continuous,
+        digits = printcp.opts$digits)
+plotcp(physiology_continuous)
+
+```
+The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
+
+```{r results_rpart_stage_physiology_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
+prp(physiology_continuous,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+
+```
+
+
+
+In addition to the problem described for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets, severly limited because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).
+
+```{r results_rpart_stage_physiology_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
+cp <- 0.00000
+physiology_continuous_prune <- prune(physiology_continuous, cp = cp)
+printcp(physiology_continuous_prune)
+prp(physiology_continuous_prune,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
 
 ```
