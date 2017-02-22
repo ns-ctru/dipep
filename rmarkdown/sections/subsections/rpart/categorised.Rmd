@@ -1,0 +1,90 @@
+##### Pre-Categorised Continuous Variables
+
+```{r results_rpart_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Useful reading...
+##
+## http://gormanalysis.com/decision-trees-in-r-using-rpart/
+model <- reformulate(response = 'first.st',
+                     termlabels = c('age.cat', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
+                                    'o2.saturation.cat', 'respiratory.rate.cat', 'bmi.cat',
+                                    'pregnancies.under.cat', 'pregnancies.over.cat', 'prev.preg.problem',
+                                    'presenting.features.pleuritic',
+                                    'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
+                                    'presenting.features.sob.rest', 'presenting.features.haemoptysis',
+                                    'presenting.features.cough', 'presenting.features.syncope',
+                                    'presenting.features.palpitations', 'presenting.features.other',
+                                    'surgery', 'cesarean', 'thromb.event',
+                                    'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
+## Test model
+categorical <- rpart(model,
+                data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
+                method = rpart.opts$method,
+                minsplit = rpart.opts$minsplit,
+                minbucket = rpart.opts$minbucket,
+                cp = rpart.opts$cp)    ## NB - Make sure 'pe' is a factor!
+
+```
+
+The results below are from applying recursive partitioning per-protocol approach of pre-dichotomised covariates.
+
+Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`) shows the reduction in error afforded by a given split and as successive splits are made the reduction in error diminishes.
+
+```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+printcp(categorical,
+        digits = printcp.opts$digits)
+plotcp(categorical)
+
+```
+
+The positive response to the split is always on the left-hand side of a node, the numbers in the boxes.  The dendrogram has been augmented with additional information showing the probability of mis-classification at that node followed the the proportion of individuals split by a given node.
+
+```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
+prp(categorical,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+
+```
+
+This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).
+
+```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 15, fig_height = 10, eval = TRUE}
+cp <- 0.022222
+categorical_prune <- prune(categorical, cp = cp)
+printcp(categorical_prune)
+prp(categorical_prune,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+
+```
+
+We now need to calculate the sensitivity and specificity.  There is no single value since the cut-point for classifying can vary depending on the complexity value we wish to use, i.e. do we favour sensitivity over specificity or vice-versa.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).
+
+```{r results_rpart_categorical_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
+## Extract the predicted values and bind to the observed
+## https://stackoverflow.com/questions/31094473/r-how-to-calculate-sensitivity-and-specificity-of-rpart-tree
+## xpred.rpart(categorical_prune)
+## .predict <- predict(categorical_prune, type = 'prob')
+## .predicted <- prediction(.predict[,2] %>% as.vector(), categorical_prune$y)
+## pred.obs <- cbind(.predict[,2] %>% as.vector(), categorical_prune$y) %>% as.data.frame()
+pred.obs <- cbind(predict(categorical_prune, type = 'prob')[,2],
+                  categorical_prune$y) %>%
+            as.data.frame()
+names(pred.obs) <- c('predicted', 'obs')
+roc <- ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
+    geom_roc(n.cuts = 10) + style_roc() +
+    ggtitle(paste0('ROC Curve for Pruned Categorical Tree (CP = ', cp, ')'))
+## Calculate AUC and add to plot
+roc + annotate('text', x = 0.75, y = 0.25,
+               label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
+
+```
