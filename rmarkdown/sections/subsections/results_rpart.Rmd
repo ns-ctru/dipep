@@ -7,6 +7,8 @@ rpart.opts$method    <- 'class'
 rpart.opts$minsplit  <- 2
 rpart.opts$minbucket <- 2
 rpart.opts$cp        <- -1
+printcp.opts         <- list()
+printcp.opts$digits  <- 5
 ## prp options
 prp.opts <- list()
 prp.opts$type        <- 2
@@ -24,7 +26,7 @@ prp.opts$faclen      <- 0
 ##
 ## http://gormanalysis.com/decision-trees-in-r-using-rpart/
 model <- reformulate(response = 'first.st',
-                     termlabels = c('age', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
+                     termlabels = c('age.cat', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
                                     'o2.saturation.cat', 'respiratory.rate.cat', 'bmi.cat',
                                     'pregnancies.under.cat', 'pregnancies.over.cat', 'prev.preg.problem',
                                     'presenting.features.pleuritic',
@@ -109,7 +111,8 @@ The results below are from applying recursive partitioning per-protocol approach
 Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`) **TODO** finish off explanation.
 
 ```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-printcp(categorical)
+printcp(categorical,
+        digits = printcp.opts$digits)
 
 ```
 
@@ -127,7 +130,7 @@ prp(categorical,
 
 ```
 
-This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).
+This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).
 
 ```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 15, fig_height = 10, eval = TRUE}
 cp <- 0.022222
@@ -174,7 +177,8 @@ Because recursive partitioning seeks to optimaise the cut-point for continuous v
 Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`)
 
 ```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-printcp(continuous)
+printcp(continuous,
+        digits = printcp.opts$digits)
 
 ```
 The positive response to the split is always on the left-hand side of a node, the numbers in the boxes
@@ -193,7 +197,7 @@ prp(continuous,
 
 
 
-In addition to the problem described for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets, severly limited because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror`.
+In addition to the problem described for the categorical tree whereby overfitting arises due to forcing a fully fitted tree which then needs trimming, continuousy fitted partition trees also tend to be over-fitted, which makes their generalisability and utility in other, as yet unobserved datasets, severly limited because cut-points are based on the observed data which is only a sample of the target population.  To this end the fitted trees are again pruned to avoid this.  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
 cp <- 0.0000
@@ -224,5 +228,24 @@ roc <- ggplot(pred.obs, aes(d = obs, m = predicted)) +
     ## Calculate AUC and add to plot
 roc + annotate('text', x = 0.75, y = 0.25,
                label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
+
+```
+
+##### Staged Models
+
+When a person presents at hospital or Accident & Emergency the amount of information available to the triaging clinician will be variable.  Some patients may be fully aware and able to answer questions, whilst others may be unconcious.  To this end a sensible strategy is to develop a series of models based on available information, starting with physiological variables that will be available to all, then augmenting it with information that may be available from a persons medical records and assays from putative biomarkers before finally including responses to the questions included in this study.
+
+```{r results_rpart_staged_physiology, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Repeat using continuous variables
+model <- reformulate(response = 'first.st',
+                     termlabels = c('age', 'temperature', 'bp.diastolic', 'bp.systolic',
+                                    'o2.saturation', 'respiratory.rate', 'bmi', 'num_fetus'))
+## Test model
+physiology_continuous <- rpart(model,
+                               data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
+                               method = rpart.opts$method,
+                               minsplit = rpart.opts$minsplit,
+                               minbucket = rpart.opts$minbucket,
+                               cp = rpart.opts$cp)    ## NB - Make sure 'pe' is a factor!
 
 ```
