@@ -1,5 +1,5 @@
 ---
-title: DiPEP - Predicting Pulmonary Embolisms in Pregnant Women
+title: DiPEP - Statistical Report
 runtime: shiny
 output: html_document
 bibliography: sections/bibliography.bib
@@ -23,6 +23,10 @@ set.seed(69027181)
 ## Set sensible defaults
 ggplot2.opts <- list()
 ggplot2.opts$binwidth <- 30
+## Exclusions
+##
+## The following 'non-recruited' need excluding from all analyses
+exclusions <- c('N04/04', 'N04/05', 'N04/06')
 
 ```
 
