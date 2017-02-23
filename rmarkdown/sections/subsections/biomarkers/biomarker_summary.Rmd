@@ -2,6 +2,8 @@
 
 Biomarkers are summarised below on the basis of the primary classification of Pulmonary Embolism status.  Histograms of the distribution within each classification (`PE`, `No PE` or `Exclude`) are displayed followed by a table showing the number, mean, standard deviation, median and inter-quartile range and the minimum and maximum values observed.  No formal statistical tests for differences are shown since these are provided by the Logistic Regression analyses.
 
+**IMPORTANT** Because of the exclusion of a large amount of Thrombin biomarker data by virtue of individuals (N = `r dplyr::filter(master$biomarker_exclusions_clean, exclude.anti.coag == 'Yes') %>% nrow()`) having received anti-coagulants prior to their blood sample being taken there is a large degree of variation in the y-axis scale of the following histograms.
+
 ##### Prothombin (Time)
 
 ```{r  demographics_biomarker_prothombin_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
