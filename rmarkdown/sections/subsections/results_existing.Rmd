@@ -82,8 +82,10 @@ rm(all, by.group)
 summary.simplified <- dipep_existing_sum(df    = dipep,
                                          score = simplified.pe)
 kable(summary.simplified$table,
+      digits  = 3,
       caption = 'Pulmonary Embolism status compared to predicted status based on Simplified Revised Geneva Score.')
 kable(summary.simplified$summary.table,
+      digits  = 3,
       caption = 'Performance indicators for the Simplified Revised Geneva Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
@@ -144,13 +146,13 @@ rm(all, by.group)
 
 ```
 
-```{r results_existing_simplified_revised_wells_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-summary.simplified <- dipep_existing_sum(df    = dipep,
+```{r results_existing_wells_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+summary.wells <- dipep_existing_sum(df    = dipep,
                                          score = wells.pe)
-kable(summary.simplified$table,
+kable(summary.wells$table,
       digits = 3,
       caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score.')
-kable(summary.simplified$summary.table,
+kable(summary.wells$summary.table,
       digits = 3,
       caption = 'Performance indicators for the Wells Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
@@ -204,13 +206,13 @@ rm(all, by.group)
 
 ```
 
-```{r results_existing_simplified_revised_perc_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-summary.simplified <- dipep_existing_sum(df    = dipep,
+```{r results_existing_perc_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+summary.perc <- dipep_existing_sum(df    = dipep,
                                          score = perc.pe)
-kable(summary.simplified$table,
+kable(summary.perc$table,
       digits = 3,
       caption = 'Pulmonary Embolism status compared to predicted status based on Perc Score.')
-kable(summary.simplified$summary.table,
+kable(summary.perc$summary.table,
       digits = 3,
       caption = 'Performance indicators for the Perc Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
