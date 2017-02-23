@@ -96,7 +96,6 @@ dipep_existing_sum <- function(df             = dipep,
                      Min    = min(score, na.rm = TRUE),
                      Max    = max(score, na.rm = TRUE)) %>%
         mutate(class.char = 'All')
-    print(all)
     group <- mutate(df, score = as.numeric(score)) %>%
             group_by(class.char) %>%
             summarise(N      = sum(!is.na(score)),
@@ -107,14 +106,12 @@ dipep_existing_sum <- function(df             = dipep,
                       Upper  = quantile(score, probs = 0.75, na.rm = TRUE),
                       Min    = min(score, na.rm = TRUE),
                       Max    = max(score, na.rm = TRUE))
-    print(group)
     results$summary.table <- rbind(all, group) %>%
                              dplyr::select(class.char, N, Mean, SD, Lower, Median, Upper, Min, Max)
     names(results$summary.table) <- gsub('class\\.char', 'Status', names(results$summary.table))
     ## Predicitve assessment
     ## Tabulate first
     results$table <- table(df$class, df$class.existing)
-    results$table %>% print()
     ## True Positives, False Positives, True Negatives and False Negatives
     results$true.positive  <- results$table[2,2]
     results$false.positive <- results$table[1,2]
