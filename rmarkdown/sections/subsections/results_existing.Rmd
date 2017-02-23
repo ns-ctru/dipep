@@ -1,7 +1,7 @@
 ### Existing Scores {.tabset .tabset-fade .tabset-pills}
 
 ```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-to.plot <- dplyr::filter(dipep, !is.na(pe)) %>%
+to.plot <- dplyr::filter(dipep, !is.na(first.st)) %>%
     ## ToDp 2017-02-23 - Add in Delphi scores
            dplyr::select(pe, simplified.pe, wells.pe, perc.pe) %>%
            tidyr::gather(key = pe)##  %>%
@@ -22,7 +22,7 @@ ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
     ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
     style_roc() + theme_bw()
 ## Extract the existing scores for Likert style plotting
-existing <- dplyr::filter(dipep, !is.na(pe)) %>% dplyr::select(group, wells, simplified, perc)
+existing <- dplyr::filter(dipep, !is.na(first.pe)) %>% dplyr::select(group, wells, simplified, perc)
 
 ```
 
@@ -31,9 +31,9 @@ existing <- dplyr::filter(dipep, !is.na(pe)) %>% dplyr::select(group, wells, sim
 The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online calculator](https://www.mdcalc.com/geneva-score-revised-pulmonary-embolism) is available.  A score $> X$ is taken as indicative of PE.
 
 ```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-## Bar chart of scores by 'true' PE Status
-ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = simplified)) +
-    geom_bar(aes(fill = pe), position = 'dodge') +
+## Bar chart of scores by 'true' Status
+ggplot(dplyr::filter(dipep, !is.na(first.pe) & group %in% c('Diagnosed PE', 'Suspected PE'), aes(x = simplified)) +
+    geom_bar(aes(fill = first.pe), position = 'dodge') +
     ggtitle('Simplified Revised Geneva Scores by clinical classification') +
     xlab('Simplified Revised Geneva Score') + ylab('N') +
     scale_fill_discrete(guide = guide_legend(title = 'Status')) +
@@ -44,7 +44,7 @@ names(plot.simplified) <- c('Simplified Revised GENEVA Scores')
 likert(plot.simplified, grouping = existing$group) %>%
     plot(centered = 4) + labs(caption = 'Plots are centered on the Risk category (4).\n Percentages indicate the proportion below, within and above this.')
 ## Table of scores
-all <- dplyr::filter(dipep, !is.na(pe)) %>%
+all <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
        mutate(simplified = as.numeric(simplified)) %>%
        summarise(N      = sum(!is.na(simplified)),
                  Mean   = mean(simplified, na.rm = TRUE),
@@ -55,7 +55,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Min    = min(simplified, na.rm = TRUE),
                  Max    = max(simplified, na.rm = TRUE)) %>%
        mutate(Status = 'All')
-by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+by.group <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
             mutate(simplified = as.numeric(simplified)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(simplified)),
@@ -98,7 +98,7 @@ The Wells Score (@wells2001) is summarised below.  An [online calculator](https:
 
 ```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Bar Chart of scores
-ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = factor(wells))) +
+ggplot(dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')), aes(x = factor(wells))) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('Wells Scores by clinical classification') +
     xlab('Wells Score') + ylab('N') +
@@ -110,7 +110,7 @@ names(plot.wells) <- c('Wells Scores')
 likert(plot.wells, grouping = existing$group) %>%
     plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category (2).\n Percentages indicate the proportion below, within and above this.')
 ## Summary tables
-all <- dplyr::filter(dipep, !is.na(pe)) %>%
+all <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
        mutate(wells = as.numeric(wells)) %>%
        summarise(N      = sum(!is.na(wells)),
                  Mean   = mean(wells, na.rm = TRUE),
@@ -121,7 +121,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Min    = min(wells, na.rm = TRUE),
                  Max    = max(wells, na.rm = TRUE)) %>%
        mutate(Status = 'All')
-by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+by.group <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
             mutate(wells = as.numeric(wells)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(wells)),
@@ -164,7 +164,7 @@ kable(summary.wells$summary.table,
 The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $> 2$ (Moderate Risk) is taken as indicative of PE.
 
 ```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = perc)) +
+ggplot(dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')), aes(x = perc)) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('PERC Scores by clinical classification') +
     xlab('PERC Score') + ylab('N') +
@@ -176,7 +176,7 @@ names(plot.perc) <- c('PERC Scores')
 likert(plot.perc, grouping = existing$group) %>%
     plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
 ## Summary Tables
-all <- dplyr::filter(dipep, !is.na(pe)) %>%
+all <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
        mutate(perc = as.numeric(perc)) %>%
        summarise(N      = sum(!is.na(perc)),
                  Mean   = mean(perc, na.rm = TRUE),
@@ -187,7 +187,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Min    = min(perc, na.rm = TRUE),
                  Max    = max(perc, na.rm = TRUE)) %>%
        mutate(Status = 'All')
-by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+by.group <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
             mutate(perc = as.numeric(perc)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(perc)),
@@ -225,8 +225,8 @@ The Delphi Consensus panel derived three scores, one overall score (`Primary`), 
 
 ##### Primary
 
-```{r results_existing_delphi_primary, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = delphi.primary)) +
+```{r results_existing_delphi_primary, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
+ggplot(dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')), aes(x = delphi.primary)) +
     geom_bar(aes(fill = pe), position = 'dodge') +
     ggtitle('Delphi (Primary) Scores by clinical classification') +
     xlab('Delphi (Primary) Score') + ylab('N') +
@@ -238,7 +238,7 @@ names(plot.delphi.primary) <- c('Delphi (Primary) Scores')
 likert(plot.delphi.primary, grouping = existing$group) %>%
     plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
 ## Summary Tables
-all <- dplyr::filter(dipep, !is.na(pe)) %>%
+all <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
        mutate(perc = as.numeric(delphi.primary)) %>%
        summarise(N      = sum(!is.na(delphi.primary)),
                  Mean   = mean(delphi.primary, na.rm = TRUE),
@@ -249,7 +249,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  Min    = min(delphi.primary, na.rm = TRUE),
                  Max    = max(delphi.primary, na.rm = TRUE)) %>%
        mutate(Status = 'All')
-by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+by.group <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
             mutate(delphi.primary = as.numeric(delphi.primary)) %>%
             group_by(pe) %>%
             summarise(N      = sum(!is.na(delphi.primary)),
@@ -269,7 +269,7 @@ rm(all, by.group)
 
 ```
 
-```{r results_existing_delphi_primary_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+```{r results_existing_delphi_primary_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
 summary.delphi.primary <- dipep_existing_sum(df    = dipep,
                                              score = delphi.primary.pe)
 kable(summary.delphi.primary$table,
@@ -278,5 +278,121 @@ kable(summary.delphi.primary$table,
 kable(summary.delphi.primary$summary.table,
       digits = 3,
       caption = 'Performance indicators for the Delphi (Primary) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+##### Sensitivity
+
+```{r results_existing_delphi_sensitivity, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
+ggplot(dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')), aes(x = delphi.sensitivity)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('Delphi (Sensitivity) Scores by clinical classification') +
+    xlab('Delphi (Sensitivity) Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+## Likert style plot of scores
+plot.delphi.sensitivity <- dplyr::select(existing, delphi.sensitivity)
+names(plot.delphi.sensitivity) <- c('Delphi (Sensitivity) Scores')
+likert(plot.delphi.sensitivity, grouping = existing$group) %>%
+    plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
+## Summary Tables
+all <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
+       mutate(perc = as.numeric(delphi.sensitivity)) %>%
+       summarise(N      = sum(!is.na(delphi.sensitivity)),
+                 Mean   = mean(delphi.sensitivity, na.rm = TRUE),
+                 SD     = sd(delphi.sensitivity, na.rm = TRUE),
+                 Lower  = quantile(delphi.sensitivity, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(delphi.sensitivity, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(delphi.sensitivity, probs = 0.75, na.rm = TRUE),
+                 Min    = min(delphi.sensitivity, na.rm = TRUE),
+                 Max    = max(delphi.sensitivity, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
+            mutate(delphi.sensitivity = as.numeric(delphi.sensitivity)) %>%
+            group_by(pe) %>%
+            summarise(N      = sum(!is.na(delphi.sensitivity)),
+                      Mean   = mean(delphi.sensitivity, na.rm = TRUE),
+                      SD     = sd(delphi.sensitivity, na.rm = TRUE),
+                      Lower  = quantile(delphi.sensitivity, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(delphi.sensitivity, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(delphi.sensitivity, probs = 0.75, na.rm = TRUE),
+                      Min    = min(delphi.sensitivity, na.rm = TRUE),
+                      Max    = max(delphi.sensitivity, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = 'Summary of Delphi (Sensitivity) score individuals with Suspected PE',
+      digits = 3)
+rm(all, by.group)
+
+```
+
+```{r results_existing_delphi_sensitivity_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
+summary.delphi.sensitivity <- dipep_existing_sum(df    = dipep,
+                                             score = delphi.sensitivity.pe)
+kable(summary.delphi.sensitivity$table,
+      digits = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi (Sensitivity) Score.')
+kable(summary.delphi.sensitivity$summary.table,
+      digits = 3,
+      caption = 'Performance indicators for the Delphi (Sensitivity) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+##### Specificity
+
+```{r results_existing_delphi_specificity, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
+ggplot(dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')), aes(x = delphi.specificity)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('Delphi (Specificity) Scores by clinical classification') +
+    xlab('Delphi (Specificity) Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+## Likert style plot of scores
+plot.delphi.specificity <- dplyr::select(existing, delphi.specificity)
+names(plot.delphi.specificity) <- c('Delphi (Specificity) Scores')
+likert(plot.delphi.specificity, grouping = existing$group) %>%
+    plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
+## Summary Tables
+all <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
+       mutate(perc = as.numeric(delphi.specificity)) %>%
+       summarise(N      = sum(!is.na(delphi.specificity)),
+                 Mean   = mean(delphi.specificity, na.rm = TRUE),
+                 SD     = sd(delphi.specificity, na.rm = TRUE),
+                 Lower  = quantile(delphi.specificity, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(delphi.specificity, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(delphi.specificity, probs = 0.75, na.rm = TRUE),
+                 Min    = min(delphi.specificity, na.rm = TRUE),
+                 Max    = max(delphi.specificity, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- dplyr::filter(dipep, !is.na(pe) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
+            mutate(delphi.specificity = as.numeric(delphi.specificity)) %>%
+            group_by(pe) %>%
+            summarise(N      = sum(!is.na(delphi.specificity)),
+                      Mean   = mean(delphi.specificity, na.rm = TRUE),
+                      SD     = sd(delphi.specificity, na.rm = TRUE),
+                      Lower  = quantile(delphi.specificity, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(delphi.specificity, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(delphi.specificity, probs = 0.75, na.rm = TRUE),
+                      Min    = min(delphi.specificity, na.rm = TRUE),
+                      Max    = max(delphi.specificity, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = 'Summary of Delphi (Specificity) score individuals with Suspected PE',
+      digits = 3)
+rm(all, by.group)
+
+```
+
+```{r results_existing_delphi_specificity_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
+summary.delphi.specificity <- dipep_existing_sum(df    = dipep,
+                                             score = delphi.specificity.pe)
+kable(summary.delphi.specificity$table,
+      digits = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi (Specificity) Score.')
+kable(summary.delphi.specificity$summary.table,
+      digits = 3,
+      caption = 'Performance indicators for the Delphi (Specificity) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
