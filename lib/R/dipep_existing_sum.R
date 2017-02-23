@@ -61,7 +61,7 @@ dipep_existing_sum <- function(df             = dipep,
     ## Likert-style chart
     ## Set variables the centered value for the plots
     if(levels(df$class.existing)[1] == 'No Simplified PE'){
-        center = 4
+        center = 5
     }
     else if(levels(df$class.existing)[1] == 'No Wells PE'){
         center = 4
