@@ -67,7 +67,7 @@ dipep_existing_sum <- function(df             = dipep,
         center = 4
     }
     else if(levels(df$class.existing)[1] == 'No PERC PE'){
-        center = 3
+        center = 2
     }
     else if(levels(df$class.existing)[2] == 'No Delphi (Primary) PE'){
         center = 2
