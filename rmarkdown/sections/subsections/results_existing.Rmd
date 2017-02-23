@@ -2,6 +2,7 @@
 
 ```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(pe)) %>%
+    ## ToDp 2017-02-23 - Add in Delphi scores
            dplyr::select(pe, simplified.pe, wells.pe, perc.pe) %>%
            tidyr::gather(key = pe)##  %>%
            ## mutate(value = ifelse(grepl('No', value),
@@ -50,7 +51,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  SD     = sd(simplified, na.rm = TRUE),
                  Lower  = quantile(simplified, probs = 0.25, na.rm = TRUE),
                  Median = quantile(simplified, probs = 0.5, na.rm = TRUE),
-                 Upper  = quantile(simplified, probs = 0.25, na.rm = TRUE),
+                 Upper  = quantile(simplified, probs = 0.75, na.rm = TRUE),
                  Min    = min(simplified, na.rm = TRUE),
                  Max    = max(simplified, na.rm = TRUE)) %>%
        mutate(Status = 'All')
@@ -62,7 +63,7 @@ by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
                       SD     = sd(simplified, na.rm = TRUE),
                       Lower  = quantile(simplified, probs = 0.25, na.rm = TRUE),
                       Median = quantile(simplified, probs = 0.5, na.rm = TRUE),
-                      Upper  = quantile(simplified, probs = 0.25, na.rm = TRUE),
+                      Upper  = quantile(simplified, probs = 0.75, na.rm = TRUE),
                       Min    = min(simplified, na.rm = TRUE),
                       Max    = max(simplified, na.rm = TRUE)) %>%
             rename("Status" = pe)
@@ -116,7 +117,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  SD     = sd(wells, na.rm = TRUE),
                  Lower  = quantile(wells, probs = 0.25, na.rm = TRUE),
                  Median = quantile(wells, probs = 0.5, na.rm = TRUE),
-                 Upper  = quantile(wells, probs = 0.25, na.rm = TRUE),
+                 Upper  = quantile(wells, probs = 0.75, na.rm = TRUE),
                  Min    = min(wells, na.rm = TRUE),
                  Max    = max(wells, na.rm = TRUE)) %>%
        mutate(Status = 'All')
@@ -128,7 +129,7 @@ by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
                       SD     = sd(wells, na.rm = TRUE),
                       Lower  = quantile(wells, probs = 0.25, na.rm = TRUE),
                       Median = quantile(wells, probs = 0.5, na.rm = TRUE),
-                      Upper  = quantile(wells, probs = 0.25, na.rm = TRUE),
+                      Upper  = quantile(wells, probs = 0.75, na.rm = TRUE),
                       Min    = min(wells, na.rm = TRUE),
                       Max    = max(wells, na.rm = TRUE)) %>%
             rename("Status" = pe)
@@ -182,7 +183,7 @@ all <- dplyr::filter(dipep, !is.na(pe)) %>%
                  SD     = sd(perc, na.rm = TRUE),
                  Lower  = quantile(perc, probs = 0.25, na.rm = TRUE),
                  Median = quantile(perc, probs = 0.5, na.rm = TRUE),
-                 Upper  = quantile(perc, probs = 0.25, na.rm = TRUE),
+                 Upper  = quantile(perc, probs = 0.75, na.rm = TRUE),
                  Min    = min(perc, na.rm = TRUE),
                  Max    = max(perc, na.rm = TRUE)) %>%
        mutate(Status = 'All')
@@ -194,7 +195,7 @@ by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
                       SD     = sd(perc, na.rm = TRUE),
                       Lower  = quantile(perc, probs = 0.25, na.rm = TRUE),
                       Median = quantile(perc, probs = 0.5, na.rm = TRUE),
-                      Upper  = quantile(perc, probs = 0.25, na.rm = TRUE),
+                      Upper  = quantile(perc, probs = 0.75, na.rm = TRUE),
                       Min    = min(perc, na.rm = TRUE),
                       Max    = max(perc, na.rm = TRUE)) %>%
             rename("Status" = pe)
@@ -211,11 +212,71 @@ summary.perc <- dipep_existing_sum(df    = dipep,
                                          score = perc.pe)
 kable(summary.perc$table,
       digits = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Perc Score.')
+      caption = 'Pulmonary Embolism status compared to predicted status based on PERC Score.')
 kable(summary.perc$summary.table,
       digits = 3,
-      caption = 'Performance indicators for the Perc Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+      caption = 'Performance indicators for the PERC Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
 
-#### Delphi Consensus
+#### Delphi Consensus  {.tabset .tabset-fade .tabset-pills}
+
+The Delphi Consensus panel derived three scores, one overall score (`Primary`), one hoped to maximise sensitivity (`Sensitivity`), and one hoped to maximise specificity (`Specificity`).
+
+##### Primary
+
+```{r results_existing_delphi_primary, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+ggplot(dplyr::filter(dipep, !is.na(pe)), aes(x = delphi.primary)) +
+    geom_bar(aes(fill = pe), position = 'dodge') +
+    ggtitle('Delphi (Primary) Scores by clinical classification') +
+    xlab('Delphi (Primary) Score') + ylab('N') +
+    scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+    theme_bw()
+## Likert style plot of scores
+plot.delphi.primary <- dplyr::select(existing, delphi.primary)
+names(plot.delphi.primary) <- c('Delphi (Primary) Scores')
+likert(plot.delphi.primary, grouping = existing$group) %>%
+    plot(centered = 2) + labs(caption = 'Plots are centered on the Risk category.\n Percentages indicate the proportion below, within and above this.')
+## Summary Tables
+all <- dplyr::filter(dipep, !is.na(pe)) %>%
+       mutate(perc = as.numeric(delphi.primary)) %>%
+       summarise(N      = sum(!is.na(delphi.primary)),
+                 Mean   = mean(delphi.primary, na.rm = TRUE),
+                 SD     = sd(delphi.primary, na.rm = TRUE),
+                 Lower  = quantile(delphi.primary, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(delphi.primary, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(delphi.primary, probs = 0.75, na.rm = TRUE),
+                 Min    = min(delphi.primary, na.rm = TRUE),
+                 Max    = max(delphi.primary, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- dplyr::filter(dipep, !is.na(pe)) %>%
+            mutate(delphi.primary = as.numeric(delphi.primary)) %>%
+            group_by(pe) %>%
+            summarise(N      = sum(!is.na(delphi.primary)),
+                      Mean   = mean(delphi.primary, na.rm = TRUE),
+                      SD     = sd(delphi.primary, na.rm = TRUE),
+                      Lower  = quantile(delphi.primary, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(delphi.primary, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(delphi.primary, probs = 0.75, na.rm = TRUE),
+                      Min    = min(delphi.primary, na.rm = TRUE),
+                      Max    = max(delphi.primary, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = 'Summary of Delphi (Primary) score individuals with Suspected PE',
+      digits = 3)
+rm(all, by.group)
+
+```
+
+```{r results_existing_delphi_primary_accuracy, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+summary.delphi.primary <- dipep_existing_sum(df    = dipep,
+                                             score = delphi.primary.pe)
+kable(summary.delphi.primary$table,
+      digits = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi (Primary) Score.')
+kable(summary.delphi.primary$summary.table,
+      digits = 3,
+      caption = 'Performance indicators for the Delphi (Primary) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
