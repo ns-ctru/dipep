@@ -12,48 +12,110 @@
 #'
 #' @export
 dipep_existing_sum <- function(df             = dipep,
-                               classification = 'first.st'
-                               score          = simplified.pe,
-                               exclude        = NULL,
-                               ...){
+                      title          = 'Simplified Geneva',
+                      exclude        = NULL,
+                      ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
     if(!is.null(exclude)){
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
-    ## Remove non-recruited and exclusions who couldn't be classified
+    ## Remove non-recruited and DVT
     df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE'))
-        ## Exclude those who are not classified as PE/No PE by
-    ## the specified classification
-    ## TODO 2017-02-17 : Why doesn dplyr::filter_(df, !is.na(classification)) not work???
-    if(classification == 'first.st'){
-        df <- dplyr::filter(df, !is.na(first.st))
+    ## Subset the data for the two variables of interest, the user specified
+    ## classification and the user specified score (as '...' arguments)
+    df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
+    ## Rename variables so they are standardised and I don't have to mess around
+    ## with Standard Evaluation v's Non Standard Evaulation any more!
+    names(df) <- gsub('first.st',              'class',    names(df))
+    names(df) <- gsub('second.st',             'class',    names(df))
+    names(df) <- gsub('third.st',              'class',    names(df))
+    names(df) <- gsub('fourth.st',             'class',    names(df))
+    names(df) <- gsub('primary.dm',            'class',    names(df))
+    names(df) <- gsub('secondary.dm',          'class',    names(df))
+    names(df) <- gsub('simplified.pe',         'class.existing', names(df))
+    names(df) <- gsub('simplified',            'score',    names(df))
+    names(df) <- gsub('wells.pe',              'class.existing', names(df))
+    names(df) <- gsub('wells',                 'score',    names(df))
+    names(df) <- gsub('perc.pe',               'class.existing', names(df))
+    names(df) <- gsub('perc',                  'score',    names(df))
+    names(df) <- gsub('delphi.primary.pe',     'class.existing', names(df))
+    names(df) <- gsub('delphi.primary',        'score',    names(df))
+    names(df) <- gsub('delphi.sensitivity.pe', 'class.existing', names(df))
+    names(df) <- gsub('delphi.sensitivity',    'score',    names(df))
+    names(df) <- gsub('delphi.specificity.pe', 'class.existing', names(df))
+    names(df) <- gsub('delphi.specificity',    'score',    names(df))
+    ## Replace NA classification with 'Exclude'
+    df <- mutate(df,
+                 class.char = ifelse(is.na(class),
+                                     yes = 'Exclude',
+                                     no  = as.character(class)))
+    ## Bar chart of frequencies by classification
+    results$bar.chart <- ggplot(df, aes(x = score)) +
+                         geom_bar(aes(fill = class), position = 'dodge') +
+                         ggtitle(paste0(title, ' Scores by clinical classification')) +
+                         xlab(paste0(title, ' Score')) + ylab('N') +
+                         scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+                         theme_bw()
+    ## Likert-style chart
+    ## Set variables the centered value for the plots
+    if(levels(df$class.existing)[1] == 'No Simplified PE'){
+        center = 4
     }
-    else if(classification == 'second.st'){
-        df <- dplyr::filter(df, !is.na(second.st))
+    else if(levels(df$class.existing)[1] == 'No Wells PE'){
+        center = 4
     }
-    else if(classification == 'third.st'){
-        df <- dplyr::filter(df, !is.na(third.st))
+    else if(levels(df$class.existing)[1] == 'No PERC PE'){
+        center = 3
     }
-    else if(classification == 'fourth.st'){
-        df <- dplyr::filter(df, !is.na(fourth.st))
+    else if(levels(df$class.existing)[2] == 'No Delphi (Primary) PE'){
+        center = 2
     }
-    else if(classification == 'primary.dm'){
-        df <- dplyr::filter(df, !is.na(primary.dm))
+    else if(levels(df$class.existing)[2] == 'No Delphi (Sensitivity) PE'){
+        center = 1
     }
-    else if(classification == 'secondary.dm'){
-        df <- dplyr::filter(df, !is.na(secondary.dm))
+    else if(levels(df$class.existing)[2] == 'No Delphi (Specificity) PE'){
+        center = 3
     }
-    ## Slim down the data frame only want diagnosed and suspected
-    df <- dplyr::select_(df, lazyeval::lazy(pe), lazyeval::lazy(score))
-    ## Evaluate the score
-    .score <- substitute(score) %>% deparse()
-    ## Generate table
-    ## print('Debug 1 : Tabulation')
-    results$table <- table(df[['pe']], df[[.score]])
-    ## Calculate True Positives, False Positives, True Negatives and False Negatives
-    ## print('Debug 2 : True/False Positive/Negative')
+    plot.likert <- dplyr::select(df, score)
+    names(plot.likert) <- paste0(title, ' Score')
+    results$likert <- likert(plot.likert, grouping = df$class.char)
+    results$likert.plot <- plot(results$likert, center = center) +
+                           labs(caption = paste0('Plots are centered on the Risk category (',
+                                                 center,
+                                                 ').\n Percentages indicate the proportion below, within and above this.'))
+    ## Summarise the scores in tabular format
+    all <- mutate(df, score = as.numeric(score)) %>%
+           summarise(N        = sum(!is.na(score)),
+                     Mean   = mean(score, na.rm = TRUE),
+                     SD     = sd(score, na.rm = TRUE),
+                     Lower  = quantile(score, probs = 0.25, na.rm = TRUE),
+                     Median = quantile(score, probs = 0.5, na.rm = TRUE),
+                     Upper  = quantile(score, probs = 0.75, na.rm = TRUE),
+                     Min    = min(score, na.rm = TRUE),
+                     Max    = max(score, na.rm = TRUE)) %>%
+        mutate(class.char = 'All')
+    print(all)
+    group <- mutate(df, score = as.numeric(score)) %>%
+            group_by(class.char) %>%
+            summarise(N      = sum(!is.na(score)),
+                      Mean   = mean(score, na.rm = TRUE),
+                      SD     = sd(score, na.rm = TRUE),
+                      Lower  = quantile(score, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(score, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(score, probs = 0.75, na.rm = TRUE),
+                      Min    = min(score, na.rm = TRUE),
+                      Max    = max(score, na.rm = TRUE))
+    print(group)
+    results$summary.table <- rbind(all, group) %>%
+                             dplyr::select(class.char, N, Mean, SD, Lower, Median, Upper, Min, Max)
+    names(results$summary.table) <- gsub('class\\.char', 'Status', names(results$summary.table))
+    ## Predicitve assessment
+    ## Tabulate first
+    results$table <- table(df$class, df$class.existing)
+    results$table %>% print()
+    ## True Positives, False Positives, True Negatives and False Negatives
     results$true.positive  <- results$table[2,2]
     results$false.positive <- results$table[1,2]
     results$true.negative  <- results$table[1,1]
@@ -71,30 +133,30 @@ dipep_existing_sum <- function(df             = dipep,
     results$accuracy <- (results$true.positive + results$true.negative) /
                         (results$true.positive + results$false.positive + results$true.negative + results$false.negative)
     ## Combine into a summary
-    results$summary.table <- cbind(c('True Positive',
-                                     'False Positive',
-                                     'True Negative',
-                                     'False Negative',
-                                     'Sensitivity',
-                                     'Specificity',
-                                     'Positive Predictive Value',
-                                     'Negative Predictive Value',
-                                     'False Positive Rate',
-                                     'False Negative Rate',
-                                     'False Discovery Rate',
-                                     'Accuracy'),
-                                   c(results$true.positive,
-                                     results$false.positive,
-                                     results$true.negative,
-                                     results$false.negative,
-                                     results$sensitivity,
-                                     results$specificity,
-                                     results$ppv,
-                                     results$npv,
-                                     results$fpr,
-                                     results$fnr,
-                                     results$fdr,
-                                     results$accuracy)) %>% as.data.frame()
-    names(results$summary.table) <- c('Performance Metric', 'Value')
+    results$performance.table <- cbind(c('True Positive',
+                                         'False Positive',
+                                         'True Negative',
+                                         'False Negative',
+                                         'Sensitivity',
+                                         'Specificity',
+                                         'Positive Predictive Value',
+                                         'Negative Predictive Value',
+                                         'False Positive Rate',
+                                         'False Negative Rate',
+                                         'False Discovery Rate',
+                                         'Accuracy'),
+                                       c(results$true.positive,
+                                         results$false.positive,
+                                         results$true.negative,
+                                         results$false.negative,
+                                         results$sensitivity,
+                                         results$specificity,
+                                         results$ppv,
+                                         results$npv,
+                                         results$fpr,
+                                         results$fnr,
+                                         results$fdr,
+                                         results$accuracy)) %>% as.data.frame()
+    names(results$performance.table) <- c('Performance Metric', 'Value')
     return(results)
 }
