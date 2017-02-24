@@ -105,6 +105,7 @@ master$eq5d <- read_dipep(file   = "EQ-5D-5L.csv",
                           dictionary       = master$data.dictionary)
 ## Non-standard responses have been used, convert these to the standard
 ## responses
+## ToDo - Convert to case_when() when time permits
 master$eq5d <- mutate(master$eq5d,
                       mobility_ = ifelse(mobility == 'I have no problems in walking about', 'None',
                                    ifelse(mobility == 'I have slight problems in walking about', 'Slight',
@@ -504,7 +505,14 @@ master$case.review <- left_join(case.review1,
                                  no  = secondary.class3),
            secondary.dm = ifelse(secondary.dm == 'Exclude',
                                  yes = NA,
-                                 no  = secondary.dm))
+                                 no  = secondary.dm),
+           ## Ensure all are factors
+           first.st     = factor(first.st,     levels = c('No PE', 'PE')),
+           second.st    = factor(second.st,    levels = c('No PE', 'PE')),
+           third.st     = factor(third.st,     levels = c('No PE', 'PE')),
+           fourth.st    = factor(fourth.st,    levels = c('No PE', 'PE')),
+           primary.dm   = factor(primary.dm,   levels = c('No PE', 'PE')),
+           secondary.dm = factor(secondary.dm, levels = c('No PE', 'PE')))
 ## Add in the group so that desired table structure can be created
 master$case.review <- left_join(dplyr::select(master$womans.details,
                                               screening,
@@ -600,24 +608,37 @@ master$biomarker_tidy[master$biomarker_tidy == -1] <- NA
 ## however because of the use of commas in free text fields the delimiter has been
 ## set to a semi-colon so that importing does not split fields (albeit that most of
 ## those text fields are redundant)
-system('./clean_biomarker_exclusions.sh')
-master$biomarker_exclusions_raw <- read.table(file   = 'biomarker_anticoag_exclusions_clean.csv',
-                                              header = TRUE,
-                                              sep    = ';')
-## Only really need two colums, ID and indicator of anti-coagulant
-master$biomarker_exclusions_clean <- dplyr::select(master$biomarker_exclusions_raw,
-                                                   Sample.name,
-                                                   Received.anti.coag.before.blood.sample.)
-names(master$biomarker_exclusions_clean) <- c('screening', 'exclude.anti.coag')
-## BUT...there are four individuals who _didn't_ receive anti-coagulants so
-## now filter those out to a list for use in cleaning the actual data
-master$biomarker_exclusions_clean <- dplyr::filter(master$biomarker_exclusions_clean, exclude.anti.coag == 'Yes')
+##
+## First file from 20170207 (NOW COMPLETELY REDUNDANT SO COMMENTED OUT)
+## system('./clean_biomarker_exclusions.sh')
+## master$biomarker_exclusions_20170207_raw <- read.table(file   = 'biomarker_anticoag_exclusions_20170207_clean.csv',
+##                                               header = TRUE,
+##                                               sep    = ';')
+## ## Only really need two colums, ID and indicator of anti-coagulant
+## master$biomarker_exclusions_20170207_clean <- dplyr::select(master$biomarker_exclusions_20170207_raw,
+##                                                    Sample.name,
+##                                                    Received.anti.coag.before.blood.sample.)
+## names(master$biomarker_exclusions_20170207_clean) <- c('screening', 'exclude.anti.coag')
+## ## BUT...there are four individuals who _didn't_ receive anti-coagulants so
+## ## now filter those out to a list for use in cleaning the actual data
+## master$biomarker_exclusions_20170207_clean <- dplyr::filter(master$biomarker_exclusions_20170207_clean,
+##                                                             exclude.anti.coag == 'Yes')
+## Then there is a revised data set from 20170223
+master$biomarker_exclusions_20170223_raw <- read.table(file   = 'biomarker_anticoag_exclusions_20170223.csv',
+                                                       header = TRUE,
+                                                       sep    = ';')
+master$biomarker_exclusions_20170223_clean <- dplyr::select(master$biomarker_exclusions_20170223_raw, -X)
+names(master$biomarker_exclusions_20170223_clean) <- c('screening', 'exclude.anti.coag', 'exclude.thrombin')
+master$biomarker_exclusions_clean <- dplyr::select(master$biomarker_exclusions_20170223_clean,
+                                                   screening, exclude.anti.coag) %>%
+                                     mutate(exclude.anti.coag = case_when(.$exclude.anti.coag == 'N' ~ 'No',
+                                                                          .$exclude.anti.coag == 'Y' ~ 'Yes'))
 ## Now scrub the data out of the tidied master$biomarker_tidy
 master$biomarker_tidy <- left_join(master$biomarker_tidy,
                                    master$biomarker_exclusions_clean) %>%
-                         mutate(exclude.anti.coag = ifelse(is.na(exclude.anti.coag),
-                                                           yes = 'No',
-                                                           no  = exclude.anti.coag))
+                         mutate(exclude.anti.coag = ifelse(!is.na(exclude.anti.coag),
+                                                           yes = exclude.anti.coag,
+                                                           no  = 'No'))
 master$biomarker_tidy <- mutate(master$biomarker_tidy,
                                 aprothombin = ifelse(exclude.anti.coag == 'Yes',
                                                      yes = NA,
@@ -1088,9 +1109,16 @@ event.date.suspected.pe <- dplyr::select(master$screening.suspected.pe,
                                          group,
                                          site,
                                          consent.date)
+event.date.non.recruited <- dplyr::select(master$screening.non.recruited,
+                                          screening,
+                                          group,
+                                          site,
+                                          completing.date)
+names(event.date.non.recruited) <- gsub('completing', 'consent', names(event.date.non.recruited))
 event.date <- rbind(event.date.dvt,
-                    event.date.suspected.pe)
-rm(event.date.dvt, event.date.suspected.pe)
+                    event.date.suspected.pe,
+                    event.date.non.recruited)
+rm(event.date.dvt, event.date.suspected.pe, event.date.non.recruited)
 names(event.date) <- gsub('consent', 'event', names(event.date))
 ## Merge the subsets
 merge.by <- c('screening', 'group', 'site', 'event.name')
@@ -1166,10 +1194,10 @@ master$missing <- merge(t,
 #######################################################################
 dipep.raw <- mutate(dipep.raw,
                     bmi = weight / (height / 100)^2,
-                    age = 2016 - year.of.birth)
+                    age = year(event.date) - year.of.birth)
 dipep <- mutate(dipep,
                 bmi = weight / (height / 100)^2,
-                age = 2016 - year.of.birth,
+                age = year(event.date) - year.of.birth,
                 pregnancies.over.cat = ifelse(pregnancies.over == 0,
                                              yes = 0,
                                              no  = 1),
@@ -1238,6 +1266,9 @@ dipep <- mutate(dipep,
                                         yes = 0,
                                         no  = heart.rate.cat),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
+                ## ToDo 2017-02-22 - Possible some of these SHOULDN'T be derived for
+                ##                   individuals who are 'Non recruited' since they
+                ##                   won't have responded to the surveys.
                 cesarean = ifelse(grepl('c*esarian|c*section|caesarean|emcs|lscs|c/s', surgery.other, ignore.case = TRUE),
                                   yes = 1,
                                   no  = 0),
@@ -1683,28 +1714,29 @@ dipep <- mutate(dipep,
 ##
 ## ../projects/DiPEP/08. Study Management/PMG/07 Jun 16 - PMG + Delphi Meeting/Documents for Delphi Consensus Meeting/DIPEP CLINICAL DECISION RULE FEEDBACK_7June2016.docx
 ## dipe <- mutate(dipep,
-##                delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked' &
-##                                                               (),
-##                                                               yes = ,
+##                delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+##                                                               yes = 2,
+##                                                               no  = 0),
+##                delphi.primary.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+##                                                               yes = 2,
 ##                                                               no  = 0),
 ##                delphi.primary.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
-##                                                               yes = ,
+##                                                               yes = 1,
 ##                                                               no  = 0),
-##                delphi.primary.chest.pain             = ifelse(,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.history.dvt.pe         = ifelse(,
-##                                                               yes = ,
+##                delphi.primary.history.dvt.pe         = ifelse(dvt,
+##                                                               yes = 2,
 ##                                                               no  = 0),
 ##                delphi.primary.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
-##                                                               yes = ,
+##                                                               yes = 2,
 ##                                                               no  = 0),
-##                delphi.primary.family.history         = ifelse(,
-##                                                               yes = ,
+##                delphi.primary.family.history         = ifelse(history.thrombosis == 'Yes',
+##                                                               yes = 1,
 ##                                                               no  = 0),
-##                delphi.primary.medical.history        = ifelse(,
-##                                                               yes = ,
+##                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+##                delphi.primary.medical.history        = ifelse(injury == 'Yes' | surgery == 'Yes',
+##                                                               yes = 1,
 ##                                                               no  = 0),
+##                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
 ##                delphi.primary.obstetric.complication = ifelse(,
 ##                                                               yes = ,
 ##                                                               no  = 0),
@@ -1732,7 +1764,22 @@ dipep <- mutate(dipep,
 ##                delphi.primary.bmi                    = ifelse(bmi > 30,
 ##                                                               yes = ,
 ##                                                               no  = 0),
-##                delphi.primary.score = sum(, na.rm = TRUE)
+##                 delphi.primary.score = sum(delphi.primary.syncope
+##                                            delphi.primary.pleuritic
+##                                            delphi.primary.chest.pain
+##                                            delphi.primary.history.dvt.pe
+##                                            delphi.primary.history.iv.drug
+##                                            delphi.primary.family.history
+##                                            delphi.primary.medical.history
+##                                            delphi.primary.obstetric.complication
+##                                            delphi.primary.medical.complication
+##                                            delphi.primary.gestation
+##                                            delphi.primary.clinical.dvt
+##                                            delphi.primary.o2.saturation.cat
+##                                            delphi.primary.heart.rate.110.bpm
+##                                            delphi.primary.heart.rate.100.bpm
+##                                            delphi.primary.respiratory.rate
+##                                            delphi.primary.bmi, na.rm = TRUE)
 ##                delphi.primary = ifelse())
 
 #######################################################################
@@ -2003,7 +2050,16 @@ save(master,
      dipep,
      dipep.raw,
      file   = '../data/dipep.RData')
-
+## Subset the classification for Dan Pollard
+classification <- dplyr::select(dipep,
+                                screening, first.st, second.st, third.st, fourth.st, primary.dm, secondary.dm)
+save(classification,
+     file = '../data/classification.RData')
+write.table(classification,
+            file = 'classification.csv',
+            row.names = FALSE,
+            col.names  = TRUE,
+            sep        = ",")
 ## Write a dataset in Stata format for Mike Bradburn to QC
 ## dplyr::select(dipep, -life.support.presentation, -incidental) %>%
 ##     write.dta(file = 'dipep.dta')
