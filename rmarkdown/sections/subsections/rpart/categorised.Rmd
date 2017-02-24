@@ -91,14 +91,16 @@ pred.obs <- cbind(predict(categorical_prune, type = 'prob')[,2],
 names(pred.obs) <- c('predicted', 'obs')
 roc <- ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
     geom_roc(n.cuts = 10) + style_roc() +
-    ggtitle(paste0('ROC Curve for Pruned Categorical Tree (CP = ', cp, ')'))
+    ggtitle(paste0('ROC Curve for Pruned Categorical Tree (CP = ', round(cp, 5), ')'))
 ## Calculate AUC and add to plot
 roc + annotate('text', x = 0.75, y = 0.25,
                label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
 
 ```
 
-```{r results_rpart_categorical_summary, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+The full summary of the pruned tree is provided.
+
+```{r results_rpart_categorical_summary, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
 summary(categorical_prune)
 
 ```
