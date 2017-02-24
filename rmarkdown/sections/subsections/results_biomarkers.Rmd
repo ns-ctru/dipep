@@ -69,15 +69,15 @@ biomarker$troponin <- dipep_glm(df = dipep,
                                 predictor      = 'troponin',
                                 model          = 'Troponin')
 ## # Natriuertic Peptide
-## biomarker$natriuertic.peptide <- dipep_glm(df = dipep,
-##                                            classification = 'first.st',
-##                                            predictor      = 'natriuertic.peptide',
-##                                            model          = 'Natriuertic Peptide')
+biomarker$natriuertic.peptide <- dipep_glm(df = dipep,
+                                           classification = 'first.st',
+                                           predictor      = 'natriuertic.peptide',
+                                           model          = 'Natriuertic Peptide')
 ## # Mrproanp
-## biomarker$mrproanp <- dipep_glm(df = dipep,
-##                                 classification = 'first.st',
-##                                 predictor      = 'mrproanp',
-##                                 model          = 'MR-proANP')
+biomarker$mrproanp <- dipep_glm(df = dipep,
+                                classification = 'first.st',
+                                predictor      = 'mrproanp',
+                                model          = 'MR-proANP')
 
 ## Combine all three sets of tidied output from each model
 biomarker$tidied <- rbind(biomarker$prothombin.time$tidied,
@@ -92,9 +92,9 @@ biomarker$tidied <- rbind(biomarker$prothombin.time$tidied,
                           biomarker$plasmin.antiplasmin$tidied,
                           biomarker$prothrombin.fragments$tidied,
                           biomarker$soluble.tissue.factor$tidied,
-                          biomarker$troponin$tidied) ##,
-                          ## biomarker$natriuertic.peptide$tidied,
-                          ## biomarker$mrproanp$tidied)
+                          biomarker$troponin$tidied,
+                          biomarker$natriuertic.peptide$tidied,
+                          biomarker$mrproanp$tidied)
 biomarker$glance <- rbind(biomarker$prothombin.time$glance,
                           biomarker$aprothombin$glance,
                           biomarker$clauss.fibrinogen$glance,
@@ -107,9 +107,9 @@ biomarker$glance <- rbind(biomarker$prothombin.time$glance,
                           biomarker$plasmin.antiplasmin$glance,
                           biomarker$prothrombin.fragments$glance,
                           biomarker$soluble.tissue.factor$glance,
-                          biomarker$troponin$glance) ##,
-                          ## biomarker$natriuertic.peptide$glance,
-                          ## biomarker$mrproanp$glance)
+                          biomarker$troponin$glance,
+                          biomarker$natriuertic.peptide$glance,
+                          biomarker$mrproanp$glance)
 ## Combine all predicted
 biomarker$predicted <- rbind(biomarker$prothombin.time$predicted,
                              biomarker$aprothombin$predicted,
@@ -123,9 +123,9 @@ biomarker$predicted <- rbind(biomarker$prothombin.time$predicted,
                              biomarker$plasmin.antiplasmin$predicted,
                              biomarker$prothrombin.fragments$predicted,
                              biomarker$soluble.tissue.factor$predicted,
-                             biomarker$troponin$predicted) ##,
-                             ## biomarker$natriuertic.peptide$predicted,
-                             ## biomarker$mrproanp$predicted)
+                             biomarker$troponin$predicted,
+                             biomarker$natriuertic.peptide$predicted,
+                             biomarker$mrproanp$predicted)
 
 
 ```
@@ -139,9 +139,6 @@ The point-estimate and 95% Confidence Intervals from univariable logistic regres
 
 ```{r results_biomarker_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker$tidied, term != '(Intercept)') %>%
-          ## Remove temperature and O2 Saturation as CI is HUGE
-          ## dplyr::filter(term != 'Temperature (High)') %>%
-          ## dplyr::filter(term != 'O2 Saturation (High)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
