@@ -78,7 +78,9 @@ prp(categorical_prune,
 
 ```
 
-We now need to calculate the sensitivity and specificity.  There is no single value since the cut-point for classifying can vary depending on the complexity value we wish to use, i.e. do we favour sensitivity over specificity or vice-versa.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).
+We now need to calculate the sensitivity and specificity.  There is no single value for either of these metrics since individuals have a predicted probability of classification in the range of $0 < p < 1$ rather than a binary classification.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and calculating the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) which captures the probability of correctly classifying true positives compared to true negatives.
+
+**IMPORTANT** - Until a threshold for dichotomising individuals predicted probability of disease is selected (which can be done based on the ROC Curve) it is not possible to calculate the Sensitivity, Specificity point estimates nor the Positive or Negative Predictive Value.
 
 ```{r results_rpart_categorical_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
 ## Extract the predicted values and bind to the observed
