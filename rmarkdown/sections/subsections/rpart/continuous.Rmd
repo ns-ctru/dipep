@@ -15,24 +15,20 @@ model <- reformulate(response = 'first.st',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
 continuous <- filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
+continuous.n.missing <- dplyr::filter(categorical, is.na(first.st)) %>% nrow()
 continuous <- rpart(model,
                     data = continuous,
                     method = rpart.opts$method,
                     control = rpart.control(minsplit  = rpart.opts$minsplit,
                                             minbucket = rpart.opts$minbucket,
-                                            xval      = nrow(continuous),
+                                            ## xval      = nrow(continuous),
                                             cp        = rpart.opts$cp))
 
 ```
 
 The [dendrogram](https://en.wikipedia.org/wiki/Dendrogram) below shows the full, over-fitted.  As its over-fitted there are a lot of splits and the graph is barely legible.
 
-```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-plotcp(continuous)
 
-```
-
-This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) is plotted below for each split of the over-fitted full tree.
 
 
 ```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
@@ -44,6 +40,14 @@ prp(continuous,
     branch      = prp.opts$branch,
     varlen      = prp.opts$varlen,
     faclen      = prp.opts$faclen)
+
+```
+
+This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) is plotted below for each split of the over-fitted full tree.
+
+```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+printcp(continuous)
+plotcp(continuous)
 
 ```
 
@@ -88,9 +92,10 @@ roc + annotate('text', x = 0.75, y = 0.25,
                label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
 
 ```
-The full summary of the pruned tree is provided.
 
-```{r results_rpart_continuous_summary, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+The full summary of the pruned tree is provided.  The `r continuous.n.missing` `observations deleted due to missingness` are those classified as `exclude` rather than to a disease status.
+
+```{r results_rpart_continuous_summary, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 summary(categorical_prune)
 
 ```
