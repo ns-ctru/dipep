@@ -15,7 +15,7 @@ model <- reformulate(response = 'first.st',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
 continuous <- filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
-continuous.n.missing <- dplyr::filter(categorical, is.na(first.st)) %>% nrow()
+continuous.n.missing <- dplyr::filter(continuous, is.na(first.st)) %>% nrow()
 continuous <- rpart(model,
                     data = continuous,
                     method = rpart.opts$method,
