@@ -182,7 +182,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('prothrombin.fragments', 'Prothombin Fragments', term),
                              term = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', term),
                              term = gsub('troponin', 'Troponin', term),
-                             term = gsub('natriuretic.peptide', 'Natriuertic Peptide', term),
+                             term = gsub('natriuertic.peptide', 'Natriuertic Peptide', term),
                              term = gsub('mrproanp', 'MRproANP', term))
     ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
