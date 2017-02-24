@@ -16,27 +16,22 @@ model <- reformulate(response = 'first.st',
                                     'surgery', 'cesarean', 'thromb.event',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
+categorical <- filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
 categorical <- rpart(model,
-                data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
-                method = rpart.opts$method,
-                minsplit = rpart.opts$minsplit,
-                minbucket = rpart.opts$minbucket,
-                cp = rpart.opts$cp)    ## NB - Make sure 'pe' is a factor!
+                     data = categorical,
+                     method  = rpart.opts$method,
+                     control = rpart.control(minsplit  = rpart.opts$minsplit,
+                                             minbucket = rpart.opts$minbucket,
+                                             xval      = nrow(categorical),
+                                             cp        = rpart.opts$cp))
 
 ```
 
-The results below are from applying recursive partitioning per-protocol approach of pre-dichotomised covariates.
+This section shows the results from applying recursive partitioning.  Leave One Out Cross-Validation (LOOCV) is performed automatically by the `rpart` package at each partition and the resulting estimates used in summarising and prunning the tree.
 
-Cross-validation is performed automatically by the `rpart` package and is summarised below.  The importance of each variable is listed first, which is the sum of the goodness of split measures for each split for which it is the primary variable.  The cross-validation results are then shown.  The  Complexity Parameter (`cp`) shows the reduction in error afforded by a given split and as successive splits are made the reduction in error diminishes.
 
-```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-printcp(categorical,
-        digits = printcp.opts$digits)
-plotcp(categorical)
 
-```
-
-The positive response to the split is always on the left-hand side of a node, the numbers in the boxes.  The dendrogram has been augmented with additional information showing the probability of mis-classification at that node followed the the proportion of individuals split by a given node.
+The [dendrogram](https://en.wikipedia.org/wiki/Dendrogram) below shows the full, over-fitted.  As its over-fitted there are a lot of splits and the graph is barely legible.
 
 ```{r results_rpart_categorical_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
 prp(categorical,
@@ -50,12 +45,26 @@ prp(categorical,
 
 ```
 
-This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).
 
-```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 15, fig_height = 10, eval = TRUE}
-cp <- 0.022222
+This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) is plotted below for each split of the over-fitted full tree.
+
+```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+plotcp(categorical)
+
+```
+
+The horizontal dashed line shows the threshold for selecting the Complexity Parameter to prune the tree, and a value corresponding to the first point **below** this line is selected and applied to the data.
+
+```{r results_rpart_categorical_prune, echo = FALSE, cache = FALSE, results = 'rmarkdown', fig_width = 15, fig_height = 20, eval = TRUE}
+## Selecting cp for pruning...
+## https://stats.stackexchange.com/questions/122333/interpreting-rpart-output-for-decision-trees?rq=1
+cp.table <- categorical$cptable %>%
+            as.data.frame() %>%
+            mutate(mean = mean(xerror))
+cp <- filter(cp.table, CP < mean)[1,1] / 10
 categorical_prune <- prune(categorical, cp = cp)
-printcp(categorical_prune)
+printcp(categorical_prune,
+        digits = printcp.opts$digits)
 prp(categorical_prune,
     type        = prp.opts$type,
     extra       = prp.opts$extra,
@@ -86,5 +95,10 @@ roc <- ggplot(pred.obs, aes(d = categorical_prune$y, m = predicted)) +
 ## Calculate AUC and add to plot
 roc + annotate('text', x = 0.75, y = 0.25,
                label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
+
+```
+
+```{r results_rpart_categorical_summary, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+summary(categorical_prune)
 
 ```
