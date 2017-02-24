@@ -1,6 +1,6 @@
 ### Demographics {.tabset .tabset-fade .tabset-pills}
 
-```{r demograhpics_summary, echo = FALSE, cache = FALSE, messages = 'hide', results = 'hide', eval = TRUE}
+```{r demograhpics_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Derive summary numbers for use in text
 n_ethnicity          <- unique(dipep$ethnicity) %>% length()
 nonmissing_ethnicity <- filter(dipep, !is.na(ethnicity)) %>% nrow()
@@ -615,28 +615,5 @@ dplyr::select(dipep, o2.saturation, first.st) %>%
 dplyr::filter(summary.stats$first.st, Measurement == 'Oxygen Saturation') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Oxygen Saturation by Primary Classification')
-
-```
-#### Biomarkers  {.tabset .tabset-fade .tabset-pills}
-
-##### Prothombin (Time)
-
-```{r  demographics_biomarker_prothombin_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, prothombin.time, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = prothombin.time,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Oxygen Saturation (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
-dplyr::filter(summary.biomarkers$first.st, Measurement == 'Prothombin (Time)') %>%
-    dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Prothombin (Time) by Primary Classification')
 
 ```
