@@ -23,29 +23,38 @@ prp.opts$faclen      <- 0
 
 [Recursive Partitioning](https://en.wikipedia.org/wiki/Recursive_partitioning) is a method of automatically selecting variables, and when continuous cut-points within the range of a given variable, that maximise the classification of individuals.  The [R](https://www.r-project.org/) package [rpart](https://cran.r-project.org/web/packages/rpart/) has been used to fit a model using recursive partitioning.  A simple overview of the procedure is described [here](http://statmethods.net/advstats/cart.html).  If you are interested in learning about the this method it is *highly* recommended you read the packages [vignette](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf).
 
-**Caution** Recursive partitioning is normally used on large datasets (i.e. N is in the tens of thousands).  Frank Harrell (author of *Regression Modeeling Strategies*@harrell2006) notes that with $<20000$ observations the results of recursive partitioning are unreliable i.e. repeated bootstraps results in different trees) (see his comment [here](http://stats.stackexchange.com/a/13461/25629)).  The Dipep study is far from being anywhere near this sample size and whilst cross-validation is utilized (automatically) when developing
+**Caution** Recursive partitioning is normally used on large datasets (i.e. N is in the tens of thousands).  Frank Harrell (author of *Regression Modeeling Strategies*@harrell2006) notes that with $<20000$ observations the results of recursive partitioning are unreliable i.e. repeated bootstraps results in different trees) (see his comment [here](http://stats.stackexchange.com/a/13461/25629)).  The Dipep study is far from being anywhere near this sample size and whilst cross-validation is utilized (automatically) at each node split performed on the data to optimise the split the generalisability of the classification rules *will* need to be externally validated.
+
+Some definitions...
+
+Table : Definitions and terms in Recursive Partitioning
+| Term | Definition        |
+|------|-------------------|
+| Leave One Out Cross Validation | Observations are dropped, one at a time from the dataset, the model fitted and the excluded persons outcome predicted.  This is repeated for each observation. |
+| Over-fitting                   | Trees produced that classify all people are too specific to the dataset and will not be useful in predicting outcomes in new cases. |
+| Pruning                        | The process of trimming back an over-fitted tree using the Complexity Parameter. |
+| Node                           | A split in the partitioning tree. |
+| Complexity Parameter           | A metric which quantifies the reduction in error afforded by a given split.  As successive splits are made the reduction in error diminishes. |
+| Minimum Bucket                 | A control parameter for fitting trees which forces each split to have a minimum number of observations classified to each node. |
+
 
 #### Model
 
-The model that has been fitted uses the primary classification of individuals from UKOSS and those identified as Suspected PE.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models).  The model takes the form...
-
-$$
-pulmonary.embolism ~ all.covariates
-$$
+The models that have been fitted use the primary classification of individuals from UKOSS and those identified as Suspected PE based on their case review.  A large number of predictor variables are used initially (although in doing so caution should be used in interpretting the results because the cohort is quite small in the context of fitting such models), and the recursive partitioning algorithm automatically searches for the variables that provide the optimal split at each node.
 
 There are a number of control parameters that are used, these are described in the table below.
 
 Table: Control parameters used in fitting models with `rpart`
 
-Control Parameter | Value     | Explanation
-------------------|-----------|---------------------------------------------------------
-`minsplit`        | `r rpart.opts$minsplit`  | The minimum number of observations that must exist in a node in order for a split to be attempted.
-`minbucket`       | `r rpart.opts$minbucket` | The mimimum number of observations in any terminal node.
-`cp`              | `r rpart.opts$cp`        | The Complexity Parameter, a negative value ensures a full model is fitted where everyone is classified.
+| Control Parameter | Value     | Explanation |
+|-------------------|-----------|---------------------------------------------------------|
+|`minsplit`        | `r rpart.opts$minsplit`  | The minimum number of observations that must exist in a node in order for a split to be attempted. |
+|`minbucket`       | `r rpart.opts$minbucket` | The mimimum number of observations in any terminal node. |
+|`cp`              | `r rpart.opts$cp`        | The Complexity Parameter, a negative value ensures a full model is fitted where everyone is classified. |
 
 #### Results  {.tabset .tabset-fade .tabset-pills}
 
-Dendrograms are a simple and natural method of visualising the results of recursive partitioning and are created using the `rpart.plot` (@rpart.plotpackage).  For those unfamiliar with them for each node (split) the variable is listed on the left along with the threshold, the same side as the consequences of a positive repsonse to this variable.  Each leaf (the result of a split) has a box which indicates the probability of the second class and the percentage of observations within this classification.  Currently the graphs are crude and use the variable names used in the Prospect database which do not always align with clear informative descriptions but should be sufficiently useful.  This can be addressed when preparing figures for publication but will not be altered in this report as there is insufficient time to spend tweaking such visual
+[Dendrograms](https://en.wikipedia.org/wiki/Dendrogram) are a simple and natural method of visualising the results of recursive partitioning and are created using the `rpart.plot` (@rpart.plotpackage).  The dendrograms produced are often very large and in turn awkward to view but for those unfamiliar with them nodes are split by the parameter and criteria noted underneath the node, positive responses to this splitting rule (i.e. `Yes`) are to the left, whilst negative responses (i.e. `No`) are to the right.  Each node indicates the predicted class (in this case `PE` in green or `No PE` in red), the number immediately after this is the predicted probability of that classification at that node and the final number at the bottom of the node is the percentage of observations in that node.  Because of the need to use names without spaces in the dataset that is analysed in the statistical software plain english descriptions are not possible, however every attempt has been made to use meaningful and informative variable names so the dendrograms, if they are not too large, should be readable.
 
 ```{r child = 'rpart/categorised.Rmd', eval = TRUE}
 ```
