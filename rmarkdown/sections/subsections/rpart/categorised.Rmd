@@ -16,13 +16,14 @@ model <- reformulate(response = 'first.st',
                                     'surgery', 'cesarean', 'thromb.event',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
-categorical <- filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
+categorical <- dplyr::filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
+categorical.n.missing <- dplyr::filter(categorical, is.na(first.st)) %>% nrow()
 categorical <- rpart(model,
                      data = categorical,
                      method  = rpart.opts$method,
                      control = rpart.control(minsplit  = rpart.opts$minsplit,
                                              minbucket = rpart.opts$minbucket,
-                                             xval      = nrow(categorical),
+                                             ## xval      = nrow(categorical),
                                              cp        = rpart.opts$cp))
 
 ```
@@ -49,6 +50,7 @@ prp(categorical,
 This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) is plotted below for each split of the over-fitted full tree.
 
 ```{r results_rpart_categorical_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+printcp(categorical)
 plotcp(categorical)
 
 ```
@@ -98,9 +100,9 @@ roc + annotate('text', x = 0.75, y = 0.25,
 
 ```
 
-The full summary of the pruned tree is provided.
+The full summary of the pruned tree is provided.  The `r categorical.n.missing` `observations deleted due to missingness` are those classified as `exclude` rather than to a disease status.
 
-```{r results_rpart_categorical_summary, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+```{r results_rpart_categorical_summary, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 summary(categorical_prune)
 
 ```
