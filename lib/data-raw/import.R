@@ -1115,9 +1115,16 @@ event.date.non.recruited <- dplyr::select(master$screening.non.recruited,
                                           site,
                                           completing.date)
 names(event.date.non.recruited) <- gsub('completing', 'consent', names(event.date.non.recruited))
+event.date.diagnosed.pe <- dplyr::select(master$investigations,
+                                         screening,
+                                         group,
+                                         site,
+                                         pe.date)
+names(event.date.diagnosed.pe) <- gsub('pe', 'consent', names(event.date.diagnosed.pe))
 event.date <- rbind(event.date.dvt,
                     event.date.suspected.pe,
-                    event.date.non.recruited)
+                    event.date.non.recruited,
+                    event.date.diagnosed.pe)
 rm(event.date.dvt, event.date.suspected.pe, event.date.non.recruited)
 names(event.date) <- gsub('consent', 'event', names(event.date))
 ## Merge the subsets
