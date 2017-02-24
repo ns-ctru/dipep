@@ -100,7 +100,7 @@ roc + annotate('text', x = 0.75, y = 0.25,
 
 ```
 
-The full summary of the pruned tree is provided.  The `r categorical.n.missing` `observations deleted due to missingness` are those classified as `exclude` rather than to a disease status.
+The full summary of the pruned tree is provided.  The `r categorical.n.missing` `observations deleted due to missingness` are those classified as `exclude` rather than to a disease status and not because of missing observations in the predictor variables.
 
 ```{r results_rpart_categorical_summary, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 summary(categorical_prune)
