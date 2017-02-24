@@ -7,13 +7,16 @@
 #' Plots multiple ROC curves for supplied predictors, augmenting
 #' the plots with labelled AUC statistics for each plot.
 #'
-#' @param df Data frame of predicted probabilities for multiple outcomes (in long format)
-#' @param to.plot Vector of variables to plot
+#' @param df Data frame of predicted probabilities for multiple outcomes (in long format).
+#' @param to.plot Vector of variables to plot.
+#' @param title Title for ROC plot.
+#' @param threshold Threshold (\code{0 < x < 1}) for classification if not already part of the data frame.
 #'
 #' @export
-dipep_roc <- function(df      = logistic$predicted,
-                      to.plot = c('history.thrombosis', 'history.iv.drug', 'history.veins', 'thrombo', 'surgery', 'thrombosis'),
-                      title   = 'Medical History',
+dipep_roc <- function(df        = logistic$predicted,
+                      to.plot   = c('history.thrombosis', 'history.iv.drug', 'history.veins', 'thrombo', 'surgery', 'thrombosis'),
+                      title     = 'Medical History',
+                      threshold = 0.5,
                       ...){
     results <- list()
     ## Generate plot
@@ -89,7 +92,7 @@ dipep_roc <- function(df      = logistic$predicted,
                                Predictor = gsub('prothrombin.fragments', 'Prothombin Fragments', Predictor),
                                Predictor = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', Predictor),
                                Predictor = gsub('troponin', 'Troponin', Predictor),
-                               Predictor = gsub('natriuretic.peptide', 'Natriuertic Peptide', Predictor),
+                               Predictor = gsub('natriuertic.peptide', 'Natriuertic Peptide', Predictor),
                                Predictor = gsub('mrproanp', 'MRproANP', Predictor))
     results$plot.auc$x <- 0.75
     results$plot.auc$y <- 0.25
@@ -97,5 +100,22 @@ dipep_roc <- function(df      = logistic$predicted,
     ## Add AUC to plot
     ## results$plot <- results$plot +
     ##                 geom_text(data = plot.auc, aes(x = 0.75, y = 0.25))
+    ## ToDo 2017-02-22 - Calculate...
+    ##                   Sensitivity
+    ##                   Specificty
+    ##                   Positive Predictive Value
+    ##                   Negative Predictive Value
+    ## Check if threshold (a value which should determine the cut point for
+    ## classification) exists in the data, if not then set it
+    if(!c('threshold') %in% names(df)){
+        df <- mutate(df,
+                     threshold = threshold)
+    }
+    ## Classify people based on the threshold
+    df <- mutate(df,
+                 m = ifelse(M > threshold,
+                            yes = 1,
+                            no  = 0))
+    ## By term summarise counts of
     return(results)
 }
