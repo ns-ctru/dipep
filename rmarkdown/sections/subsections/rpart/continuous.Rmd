@@ -14,21 +14,20 @@ model <- reformulate(response = 'first.st',
                                     'surgery', 'cesarean', 'thromb.event',
                                     'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
 ## Test model
+continuous <- filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
 continuous <- rpart(model,
-              data = filter(dipep, group %in% c('UKOSS', 'Suspected PE')),
-              method = rpart.opts$method,
-                     control = rpart.control(minsplit  = rpart.opts$minsplit,
-                                             minbucket = rpart.opts$minbucket,
-                                             xval      = nrow(continuous),
-                                             cp        = rpart.opts$cp))
+                    data = continuous,
+                    method = rpart.opts$method,
+                    control = rpart.control(minsplit  = rpart.opts$minsplit,
+                                            minbucket = rpart.opts$minbucket,
+                                            xval      = nrow(continuous),
+                                            cp        = rpart.opts$cp))
 
 ```
 
 The [dendrogram](https://en.wikipedia.org/wiki/Dendrogram) below shows the full, over-fitted.  As its over-fitted there are a lot of splits and the graph is barely legible.
 
 ```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-printcp(continuous,
-        digits = printcp.opts$digits)
 plotcp(continuous)
 
 ```
@@ -51,7 +50,12 @@ prp(continuous,
 The horizontal dashed line shows the threshold for selecting the Complexity Parameter to prune the tree, and a value corresponding to the first point **below** this line is selected and applied to the data.
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
-cp <- 0.0000
+## Selecting cp for pruning...
+## https://stats.stackexchange.com/questions/122333/interpreting-rpart-output-for-decision-trees?rq=1
+cp.table <- categorical$cptable %>%
+            as.data.frame() %>%
+            mutate(mean = mean(xerror))
+cp <- filter(cp.table, CP < mean)[1,1] / 10
 continuous_prune <- prune(continuous, cp = cp)
 printcp(continuous_prune,
         digits = printcp.opts$digits)
@@ -78,7 +82,7 @@ pred.obs <- cbind(predict(continuous_prune, type = 'prob')[,2],
 names(pred.obs) <- c('predicted', 'obs')
 roc <- ggplot(pred.obs, aes(d = obs, m = predicted)) +
        geom_roc(n.cuts = 10) + style_roc() +
-       ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', cp, ')'))
+       ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', round(cp, 5), ')'))
     ## Calculate AUC and add to plot
 roc + annotate('text', x = 0.75, y = 0.25,
                label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
