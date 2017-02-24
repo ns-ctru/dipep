@@ -1,6 +1,6 @@
 ### Biomarkers {.tabset .tabset-fade .tabset-pills}
 
-```{r biomarkers_logistic, echo = FALSE, cache = FALSE, message = FALSE, results = 'hide', eval = FALSE}
+```{r biomarkers_logistic, echo = FALSE, cache = FALSE, message = FALSE, results = 'hide', eval = TRUE}
 ## Test association of each biomarker
 biomarker <- list()
 ## Prothombin (Time)
@@ -130,7 +130,10 @@ biomarker$predicted <- rbind(biomarker$prothombin.time$predicted,
 
 ```
 
-##### Point Estimates
+```{r child = 'biomarkers/biomarker_summary.Rmd', eval = TRUE}
+```
+
+#### Logistic Regression
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
 
