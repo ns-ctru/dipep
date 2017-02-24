@@ -4,8 +4,8 @@
 ## Rpart options
 rpart.opts           <- list()
 rpart.opts$method    <- 'class'
-rpart.opts$minsplit  <- 2
-rpart.opts$minbucket <- 2
+rpart.opts$minsplit  <- 4
+rpart.opts$minbucket <- rpart.opts$minsplit / 2
 rpart.opts$cp        <- -1
 printcp.opts         <- list()
 printcp.opts$digits  <- 5
@@ -28,8 +28,9 @@ prp.opts$faclen      <- 0
 Some definitions...
 
 Table : Definitions and terms in Recursive Partitioning
-| Term | Definition        |
-|------|-------------------|
+
+| Term | Definition                                                  |
+|------|-------------------------------------------------------------|
 | Leave One Out Cross Validation | Observations are dropped, one at a time from the dataset, the model fitted and the excluded persons outcome predicted.  This is repeated for each observation. |
 | Over-fitting                   | Trees produced that classify all people are too specific to the dataset and will not be useful in predicting outcomes in new cases. |
 | Pruning                        | The process of trimming back an over-fitted tree using the Complexity Parameter. |
@@ -62,5 +63,5 @@ Table: Control parameters used in fitting models with `rpart`
 ```{r child = 'rpart/continuous.Rmd', eval = TRUE}
 ```
 
-```{r child = 'rpart/staged.Rmd', eval = TRUE}
+```{r child = 'rpart/staged.Rmd', eval = FALSE}
 ```
