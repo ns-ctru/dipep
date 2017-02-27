@@ -11,10 +11,10 @@
 #' @param exclude List of individuals to explicitly exclude.
 #'
 #' @export
-dipep_existing_sum <- function(df             = dipep,
-                      title          = 'Simplified Geneva',
-                      exclude        = NULL,
-                      ...){
+dipep_existing_sum <- function(df      = dipep,
+                               title   = 'Simplified Geneva',
+                               exclude = NULL,
+                               ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
     if(!is.null(exclude)){
