@@ -89,9 +89,9 @@ The PERC Score for study participants (@kline2004) is summarised below.  It shou
 ```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
 perc <- dipep_existing_sum(df      = dipep,
-                                 title   = 'PERC',
-                                 exclude = NULL,
-                                 first.st, perc.pe, perc)
+                           title   = 'PERC',
+                           exclude = NULL,
+                           first.st, perc.pe, perc)
 ## Plots
 perc$bar.chart
 perc$likert.plot
