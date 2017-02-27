@@ -16,11 +16,17 @@ to.plot <- to.plot %>%
                          Score = case_when(.$Score == 'simplified.pe' ~ 'Simplified Revised Geneva',
                                            .$Score == 'perc.pe'       ~ 'PERC',
                                            .$Score == 'wells.pe'      ~ 'Wells'))
-ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
-    geom_roc() +
-    guides(guide = guide_legend(title = 'Predictor Score...')) +
-    ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
-    style_roc() + theme_bw()
+to.plot <- ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
+           geom_roc() +
+           guides(guide = guide_legend(title = 'Predictor Score...')) +
+           ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
+           style_roc() + theme_bw()
+## Calculate AUC
+existing.auc <-
+## Plot graph with AUC tabulated underneath
+to.plot
+kable(existing.auc,
+      caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
 ## Extract the existing scores for Likert style plotting
 existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE', 'Non recruited')) %>% dplyr::select(group, wells, simplified, perc)
 
