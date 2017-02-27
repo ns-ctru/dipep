@@ -107,15 +107,41 @@ dipep_roc <- function(df        = logistic$predicted,
     ##                   Negative Predictive Value
     ## Check if threshold (a value which should determine the cut point for
     ## classification) exists in the data, if not then set it
-    if(!c('threshold') %in% names(df)){
-        df <- mutate(df,
-                     threshold = threshold)
+    results$df <- df
+    if(!c('threshold') %in% names(results$df)){
+        results$df <- mutate(results$df,
+                             threshold = threshold)
     }
     ## Classify people based on the threshold
-    df <- mutate(df,
-                 m = ifelse(M > threshold,
-                            yes = 1,
-                            no  = 0))
+    results$df <- mutate(results$df,
+                         m = ifelse(M > threshold,
+                                    yes = 1,
+                                    no  = 0))
+    ## Count the number of individuals in each category (done in dipep_existing_sum() by
+    ## tabulation, but thats potentially problematic)
+    results$counts <- mutate(results$df,
+                             .n = 1) %>%
+        ## This puts in missing for combinations NOT seen, trick is that
+        ## missing then sum to zero because they are removed
+                      complete(term, D, m, fill = list(.n = NA)) %>%
+                      group_by(term, D, m) %>%
+                      summarise(n = sum(.n, na.rm = TRUE))
+    ## Count true/false positive/negative
+    results$counts <- ungroup(results$counts) %>%
+                      mutate(classification  = case_when(.$D == 'PE'    & .$m == 1 ~ 'true_positive',
+                                                         .$D == 'No PE' & .$m == 0 ~ 'true_negative',
+                                                         .$D == 'No PE' & .$m == 1 ~ 'false_positive',
+                                                         .$D == 'PE'    & .$m == 0 ~ 'false_negative'))
     ## By term summarise counts of
+    results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
+                             dcast(term ~ classification) %>%
+                             mutate(sensitvity  = true_positive  / (true_positive + false_negative),
+                                    specificity = true_negative  / (true_negative + false_positive),
+                                    ppv         = true_positive  / (true_positive + false_positive),
+                                    npv         = true_negative  / (true_negative + false_negative),
+                                    fpr         = false_positive / (true_negative + false_positive),
+                                    fnr         = false_negative / (true_positive + false_negative),
+                                    fdr         = false_positive / (true_positive + false_positive),
+                                    accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative))
     return(results)
 }
