@@ -68,12 +68,12 @@ biomarker$troponin <- dipep_glm(df = dipep,
                                 classification = 'first.st',
                                 predictor      = 'troponin',
                                 model          = 'Troponin')
-## # Natriuertic Peptide
+# Natriuertic Peptide
 biomarker$natriuertic.peptide <- dipep_glm(df = dipep,
                                            classification = 'first.st',
                                            predictor      = 'natriuertic.peptide',
                                            model          = 'Natriuertic Peptide')
-## # Mrproanp
+# Mrproanp
 biomarker$mrproanp <- dipep_glm(df = dipep,
                                 classification = 'first.st',
                                 predictor      = 'mrproanp',
@@ -130,8 +130,11 @@ biomarker$predicted <- rbind(biomarker$prothombin.time$predicted,
 
 ```
 
+**NB** - Only the `Suspected PE` group had blood samples assayed for this work in a standardised laboratory setting.  The D-Dimer measurements for individuals identified as `Diagnosed PE` from the UKOSS cohort suffer from heterogeneity in laboratories and reagents.
+
 ```{r child = 'biomarkers/biomarker_summary.Rmd', eval = TRUE}
 ```
+
 
 #### Logistic Regression
 
