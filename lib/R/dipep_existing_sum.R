@@ -124,9 +124,9 @@ dipep_existing_sum <- function(df      = dipep,
     results$specificity <- results$true.negative / (results$true.negative + results$false.positive)
     results$ppv         <- results$true.positive / (results$true.positive + results$false.positive)
     results$npv         <- results$true.negative / (results$true.negative + results$false.negative)
-    results$fpr <- results$false.positive / (results$true.negative + results$false.positive)
-    results$fnr <- results$false.negative / (results$true.positive + results$false.negative)
-    results$fdr <- results$false.positive / (results$true.positive + results$false.positive)
+    results$fpr         <- results$false.positive / (results$true.negative + results$false.positive)
+    results$fnr         <- results$false.negative / (results$true.positive + results$false.negative)
+    results$fdr         <- results$false.positive / (results$true.positive + results$false.positive)
     results$accuracy <- (results$true.positive + results$true.negative) /
                         (results$true.positive + results$false.positive + results$true.negative + results$false.negative)
     ## Combine into a summary
