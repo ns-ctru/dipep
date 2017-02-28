@@ -406,12 +406,19 @@ master$unavailable.forms <- read_dipep("Unavailable Forms.csv",
 #######################################################################
 ## Womans details.csv                                                ##
 #######################################################################
-master$womans.details <- read_dipep("Womans details.csv",
+## 2017-02-28 - Screening ID 'N02/02' is missing from this file (and many others,
+##              see master$unavailable.forms), as a consequence they MUST be
+##              added, as it was assumed when writing this code that womans.details
+##              is a master list, and if NOT added then this person is NOT included
+##              in any derived dataset (i.e. dipep dataframe which is used in all
+##              analyses and summaries)
+system('cat Womans*.csv > Womans_details_all.csv')
+master$womans.details <- read_dipep("Womans_details_all.csv",
                                     header           = TRUE,
                                     sep              = ',',
                                     convert.dates    = TRUE,
                                     dictionary       = master$data.dictionary)
-
+system('rm Womans_details_all.csv')
 #######################################################################
 ## Case Review 1.csv                                                 ##
 #######################################################################
@@ -1103,7 +1110,8 @@ event.date.dvt <- dplyr::select(master$screening.dvt,
                                 screening,
                                 group,
                                 site,
-                                consent.date)
+                                completing.date)
+names(event.date.dvt) <- gsub('completing', 'consent', names(event.date.dvt))
 event.date.suspected.pe <- dplyr::select(master$screening.suspected.pe,
                                          screening,
                                          group,
@@ -1115,8 +1123,8 @@ event.date.non.recruited <- dplyr::select(master$screening.non.recruited,
                                           site,
                                           completing.date)
 names(event.date.non.recruited) <- gsub('completing', 'consent', names(event.date.non.recruited))
-event.date.diagnosed.pe <- dplyr::select(master$investigations,
-                                         screening,
+event.date.diagnosed.pe <- dplyr::filter(master$investigations, group == 'Diagnosed PE') %>%
+                           dplyr::select(screening,
                                          group,
                                          site,
                                          pe.date)
@@ -1374,6 +1382,12 @@ dipep <- mutate(dipep,
                 immobil = ifelse(is.na(immobil),
                                             yes = 'No',
                                             no  = as.character(immobil)),
+                injury = ifelse(is.na(injury),
+                                 yes = 'No',
+                                no  = as.character(injury)),
+                thrombosis = ifelse(is.na(thrombosis),
+                                 yes = 'No',
+                                no  = as.character(thrombosis)),
                 ecg = ifelse(is.na(ecg),
                                             yes = 'Not performed',
                                             no  = as.character(ecg))
