@@ -585,6 +585,9 @@ system('./clean_biomarker.sh')
 master$biomarker_raw <- read.table(file   = 'biomarker_clean.csv',
                                    header = TRUE,
                                    sep    = ';')
+## 2017-03-01 - Sample 'D09/01' should be 'S09/02' see email from k.horspool@sheffield.ac.uk
+##              2017-03-01 @ 16:09 subject : Re: [DIPEP] Figures
+master$biomarker_raw$Sample.name <- gsub('D09/01', 'S09/02', master$biomarker_raw$Sample.name)
 master$biomarker_tidy <- master$biomarker_raw
 ## Tidy up the names
 names(master$biomarker_tidy) <- names(master$biomarker_tidy) %>%
@@ -1511,7 +1514,7 @@ dipep <- mutate(dipep,
                                                             ref = 'No previous pregnancies > 24 weeks'),
                 temperature.cat                   = relevel(temperature.cat,
                                                             ref = 'Low'),
-                heart.rate.cat                 = relevel(heart.rate.cat,
+                heart.rate.cat                    = relevel(heart.rate.cat,
                                                          ref = 'Low'),
                 bp.diastolic.cat                  = relevel(bp.diastolic.cat,
                                                             ref = 'Low'),
