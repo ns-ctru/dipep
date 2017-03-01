@@ -1,6 +1,6 @@
 ### Existing Scores {.tabset .tabset-fade .tabset-pills}
 
-```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
     ## ToDp 2017-02-23 - Add in Delphi scores
            dplyr::select(first.st, simplified.pe, wells.pe, perc.pe) %>%
@@ -22,17 +22,21 @@ to.plot <- ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
            ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
            style_roc() + theme_bw()
 ## Calculate AUC
-existing.auc <-
+existing.auc <- calc_auc(to.plot)
 ## Plot graph with AUC tabulated underneath
 to.plot
-kable(existing.auc,
-      caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
+existing.auc %>%
+    mutate(Score = case_when(.$group == 1 ~ 'PERC',
+                                .$group == 2 ~ 'Simplified Revised Geneva',
+                                .$group == 3 ~ 'Wells')) %>%
+    dplyr::select(Score, AUC) %>%
+kable(caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
 ## Extract the existing scores for Likert style plotting
-existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE', 'Non recruited')) %>% dplyr::select(group, wells, simplified, perc)
+existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>% dplyr::select(group, wells, simplified, perc)
 
 ```
 
-**NB** - The results presented here do **NOT** include the `Non recruited` group.
+**NB** - The results presented here do **NOT** include the `Non recruited` group, and there are a number of people for whom a score has not been calculated, so the numbers tabulated will *not* match the expected number of individuals recruited.
 
 #### Simplified Revised Geneva
 
@@ -40,9 +44,11 @@ The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online 
 
 ```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
-simplified <- dipep_existing_sum(df      = dipep,
-                                 title   = 'Simplified Revised Geneva',
-                                 exclude = NULL,
+simplified <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'Simplified Revised Geneva',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
                                  first.st, simplified.pe, simplified)
 ## Plots
 simplified$bar.chart
@@ -67,10 +73,12 @@ The Wells Score (@wells2001) is summarised below.  An [online calculator](https:
 
 ```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
-wells <- dipep_existing_sum(df      = dipep,
-                                 title   = 'Wells',
-                                 exclude = NULL,
-                                 first.st, wells.pe, wells)
+wells <- dipep_existing_sum(df                    = dipep,
+                            title                 = 'Wells',
+                            exclude               = NULL,
+                            exclude.non.recruited = TRUE,
+                            exclude.dvt           = TRUE,
+                            first.st, wells.pe, wells)
 ## Plots
 wells$bar.chart
 wells$likert.plot
@@ -94,9 +102,11 @@ The PERC Score for study participants (@kline2004) is summarised below.  It shou
 
 ```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
-perc <- dipep_existing_sum(df      = dipep,
-                           title   = 'PERC',
-                           exclude = NULL,
+perc <- dipep_existing_sum(df                    = dipep,
+                           title                 = 'PERC',
+                           exclude               = NULL,
+                           exclude.non.recruited = TRUE,
+                           exclude.dvt           = TRUE,
                            first.st, perc.pe, perc)
 ## Plots
 perc$bar.chart
@@ -122,10 +132,12 @@ The Delphi Consensus panel derived three scores, one overall score (`Primary`), 
 
 ```{r results_existing_delphi_primary, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
 ## Summarise
-delphi.primary <- dipep_existing_sum(df      = dipep,
-                                 title   = 'Delphi (Primary)',
-                                 exclude = NULL,
-                                 first.st, delphi.primary.pe, delphi.primary)
+delphi.primary <- dipep_existing_sum(df                    = dipep,
+                                     title                 = 'Delphi (Primary)',
+                                     exclude               = NULL,
+                                     exclude.non.recruited = TRUE,
+                                     exclude.dvt           = TRUE,
+                                     first.st, delphi.primary.pe, delphi.primary)
 ## Plots
 delphi.primary$bar.chart
 delphi.primary$likert.plot
@@ -145,10 +157,12 @@ kable(delphi.primary$performance.table,
 ##### Sensitivity
 
 ```{r results_existing_delphi_sensitivity, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
-delphi.sensitivity <- dipep_existing_sum(df      = dipep,
-                                 title   = 'Delphi (Sensitivity)',
-                                 exclude = NULL,
-                                 first.st, delphi.sensitivity.pe, delphi.sensitivity)
+delphi.sensitivity <- dipep_existing_sum(df                    = dipep,
+                                         title                 = 'Delphi (Sensitivity)',
+                                         exclude               = NULL,
+                                         exclude.non.recruited = TRUE,
+                                         exclude.dvt           = TRUE,
+                                         first.st, delphi.sensitivity.pe, delphi.sensitivity)
 ## Plots
 delphi.sensitivity$bar.chart
 delphi.sensitivity$likert.plot
@@ -168,9 +182,11 @@ kable(delphi.sensitivity$performance.table,
 ##### Specificity
 
 ```{r results_existing_delphi_specificity, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
-delphi.specificity <- dipep_existing_sum(df      = dipep,
-                                 title   = 'Delphi (Specificity)',
-                                 exclude = NULL,
+delphi.specificity <- dipep_existing_sum(df                    = dipep,
+                                         title                 = 'Delphi (Specificity)',
+                                         exclude               = NULL,
+                                         exclude.non.recruited = TRUE,
+                                         exclude.dvt           = TRUE,
                                  first.st, delphi.specificity.pe, delphi.specificity)
 ## Plots
 delphi.specificity$bar.chart
