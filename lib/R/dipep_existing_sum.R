@@ -9,11 +9,15 @@
 #' @param score The score that is to be summarised, either \code{simplified.pe}, \code{wells.pe} or \code{perc.pe}
 #' @param classification Specify the variable that defines the disease status, for this study there are four classifications of diseases ststus, hence the need for flexibility.
 #' @param exclude List of individuals to explicitly exclude.
+#' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
+#' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #'
 #' @export
 dipep_existing_sum <- function(df      = dipep,
                                title   = 'Simplified Geneva',
                                exclude = NULL,
+                               exclude.non.recruited = TRUE,
+                               exclude.dvt       = TRUE,
                                ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
@@ -22,7 +26,12 @@ dipep_existing_sum <- function(df      = dipep,
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
     ## Remove non-recruited and DVT
-    df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE'))
+    if(exclude.non.recruited == TRUE){
+        df <- dplyr::filter(df, group != 'Non recruited')
+    }
+    if(exclude.dvt == TRUE){
+        df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
     df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
