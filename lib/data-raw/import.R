@@ -1774,7 +1774,7 @@ dipep <- mutate(dipep,
                 ##             ## perc.embolism +
                 ##             perc.hormone +
                 ##             perc.dvt.pe,
-                perc = -3.1246 +
+                perc =  1 -  (1 / (1 + exp(-3.1246 +
                         0.5449 * perc.age +
                         0.451 * perc.heart.rate +
                         1.2049 * perc.o2 +
@@ -1784,7 +1784,7 @@ dipep <- mutate(dipep,
                        -0.6072 * perc.breathing +
                         0.6651 * perc.surgery +
                         0.6354 * perc.dvt.pe +
-                        0.5166 * perc.hormone,
+                        0.5166 * perc.hormone))),
                 perc.pe = ifelse(perc >= 2,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
