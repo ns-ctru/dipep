@@ -283,6 +283,9 @@ dplyr::filter(summary.stats$group, Measurement == 'Age') %>%
 
 ```{r  demographics_figure_age_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 dplyr::select(dipep, age, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                             no  = first.st)) %>%
     ggplot(aes(x    = age,
                fill = first.st)) +
     geom_histogram() +
@@ -322,6 +325,9 @@ dplyr::filter(summary.stats$group, Measurement == 'BMI') %>%
 
 ```{r  demographics_figure_bmi_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 dplyr::select(dipep, bmi, first.st) %>%
+    mutate(first.st = ifelse(is.na(first.st),
+                                  yes = 'Exclude',
+                             no  = first.st)) %>%
     ggplot(aes(x    = bmi,
                fill = first.st)) +
     geom_histogram() +
