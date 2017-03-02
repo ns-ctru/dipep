@@ -104,7 +104,7 @@ dipep_existing_sum <- function(df      = dipep,
                      Upper  = quantile(score, probs = 0.75, na.rm = TRUE),
                      Min    = min(score, na.rm = TRUE),
                      Max    = max(score, na.rm = TRUE)) %>%
-        mutate(class.char = 'All')
+           mutate(class.char = 'All')
     group <- mutate(df, score = as.numeric(score)) %>%
             group_by(class.char) %>%
             summarise(N      = sum(!is.na(score)),
