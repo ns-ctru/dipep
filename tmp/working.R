@@ -1,3 +1,161 @@
+## 2017-03-02 Sorting scoring things Mike has highlighted...
+dplyr::filter(dipep,
+              grepl('swollen left calf', other.symptoms.specify, ignore.case = TRUE) |
+              grepl('right calf swelling', other.symptoms.specify, ignore.case = TRUE)) %>%
+    dplyr::select(screening, other.symptoms.specify)
+
+dplyr::filter(dipep,
+              grepl('right calf swelling', other.symptoms.specify, ignore.case = TRUE) |
+              grepl('calf pain', other.symptoms.specify, ignore.case = TRUE) |
+              grepl('painful', other.symptoms.specify, ignore.case = TRUE)
+              ) %>%
+    dplyr::select(screening, other.symptoms.specify)
+
+check <- mutate(dipep, trimester = ifelse(gestation < 98,
+                                   yes = 0,
+                                   no  = ifelse(gestation >= 98 & gestation < 196,
+                                                yes = 1,
+                                                ifelse(gestation >= 196 & preg.post == 'Pregnant',
+                                                       yes = 2,
+                                                       no  = 3))),
+                trimester = ifelse(is.na(trimester),
+                                   yes = 0,
+                                   no  = trimester))
+dplyr::filter(check, screening %in% c('PE_001', 'PE_002')) %>%
+    dplyr::select(screening, event.date, edd, gestation, trimester, preg.post)
+## Now re-write to capture/handle instances like these two...
+check <- dipep %>%
+    mutate(gestation = 280 - (ymd(edd) - ymd(event.date)),
+           preg.post = as.character(preg.post),
+           preg.post = ifelse(!is.na(preg.post),
+                              yes = preg.post,
+                              no  = ifelse(!is.na(delivery.date) & event.date - delivery.date > 0,
+                                           yes = 'Postpartum',
+                                           no  = 'Pregnant')))
+check <- check %>%
+    mutate(trimester = case_when(.$gestation < 98   & !is.na(.$preg.post)                     ~ 0,
+                                 .$gestation >= 98  & .$gestation < 196   & !is.na(.$preg.post) ~ 1,
+                                 .$gestation >= 196 & !is.na(.$preg.post) & .$preg.post == 'Pregnant'   ~ 2,
+                                 .$gestation >= 196 & !is.na(.$preg.post) & .$preg.post == 'Postpartum' ~ 3),
+           trimester = ifelse(is.na(gestation) & is.na(trimester) & !is.na(preg.post) & preg.post == 'Postpartum',
+                              yes = 3,
+                              no  = trimester))
+dplyr::filter(check, screening %in% c('PE_001', 'PE_002', 'N04/06', 'PE_172')) %>%
+    dplyr::select(screening, event.date, delivery.date, edd, gestation, trimester, preg.post)
+
+dplyr::filter(check, gestation >= 196 & is.na(preg.post) & event.date < delivery.date) %>%
+    dplyr::select(screening, event.date, delivery.date, edd, gestation, trimester, preg.post)
+
+
+## 2017-03-01 Why is dipep_existing_sum not giving the right numbers?
+table(dipep$group, dipep$first.st, useNA = 'ifany')
+check <- dipep_existing_sum(df                    = dipep,
+                            title                 = 'Simplified Revised Geneva',
+                            exclude               = NULL,
+                            exclude.non.recruited = TRUE,
+                            exclude.dvt           = TRUE,
+                            first.st, simplified.pe, simplified)
+check$table
+check$summary.table
+not.missing.scores <- dplyr::filter(dipep, !is.na(simplified) & group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+                      dplyr::select(screening, group, simplified.age, simplified.previous,
+                                    simplified.surgery, simplified.neoplasm,
+                                    simplified.lower.limb.unilateral.pain, simplified.haemoptysis,
+                                    simplified.heart.rate, simplified.lower.limb.pain,
+                                    simplified, simplified.risk, simplified.pe)
+table(not.missing.scores$group, not.missing.scores$first.st, useNA = 'ifany')
+missing.scores <- dplyr::filter(dipep, is.na(simplified) & group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+                      dplyr::select(screening, group, simplified.age, simplified.previous,
+                                    simplified.surgery, simplified.neoplasm,
+                                    simplified.lower.limb.unilateral.pain, simplified.haemoptysis,
+                                    simplified.heart.rate, simplified.lower.limb.pain,
+                                    simplified, simplified.risk, simplified.pe)
+nrow(missing.scores)
+table(missing.scores$group)
+
+## 2017-02-28 Turning plotting of biomarker data into a function
+build()
+install()
+dipep_biomarker(df = dipep,
+                exclude = NULL,
+                exclude.non.recruited = TRUE,
+                exclude.non.dvt       = TRUE,
+                first.st, aprothombin)
+
+## 2017-02-28 Rescuing N02/02 from being excluded (damn missing data, demonstrates why
+##            data management should derive datasets instead of me spending time not
+##            doing statistical analysis/reporting)
+dplyr::filter(t1, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t2, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t3, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t4, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t5, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t6, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## Neither present
+dplyr::filter(t7, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t8, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(t9, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## Neither present
+dplyr::filter(t10, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## Neither present
+dplyr::filter(t11, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(master$biomarker_tidy, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## Neither present
+dplyr::filter(master$case.review, screening %in% c('PE_156', 'N02/02')) %>% dplyr::select(screening) ## PE_156
+dplyr::filter(case.review1, screening %in% c('PE_156', 'N02/02'))
+dplyr::filter(case.review2, screening %in% c('PE_156', 'N02/02'))
+dplyr::filter(case.review3, screening %in% c('PE_156', 'N02/02'))
+dplyr::filter(master$case.review, screening %in% c('PE_156', 'N02/02'))
+
+## 2017-02-27 Developing dipep_roc() function, should include calculation of sensitivity,
+##            specificity, ppv and npv using specified threshold
+build()
+install()
+testing <- dipep_roc(df = biomarker$predicted,
+                     to.plot = c('ddimer.elisa'),
+                     threshold = 0.250)
+testing$counts
+
+testing$summary.stats
+
+table(testing$df$D, testing$df$m)
+
+## 2017-02-24 Identifying who is dropped out of Recursive Partitioning due to missing
+##            data.
+check <- dplyr::filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE')) %>%
+               dplyr::select(screening, first.st,
+                             age.cat, smoking, temperature.cat, bp.diastolic.cat, bp.systolic.cat,
+                             o2.saturation.cat, respiratory.rate.cat, bmi.cat,
+                             pregnancies.under.cat, pregnancies.over.cat, prev.preg.problem,
+                             presenting.features.pleuritic,
+                             presenting.features.non.pleuritic, presenting.features.sob.exertion,
+                             presenting.features.sob.rest, presenting.features.haemoptysis,
+                             presenting.features.cough, presenting.features.syncope,
+                             presenting.features.palpitations, presenting.features.other,
+                             surgery, cesarean, thromb.event,
+                             thromboprophylaxis, thrombosis, preg.post, num.fetus)
+table(check$first.st, useNA = 'ifany')
+
+## 2017-02-23 Checking biomarker exclusions
+names(master$biomarker_exclusions_20170207_clean) <- c('screening', 'early.exclude')
+master$biomarker_exclusions_20170223_clean <- dplyr::select(master$biomarker_exclusions_20170223_clean,
+                                                   screening, exclude.anti.coag) %>%
+                                     mutate(exclude.anti.coag = case_when(.$exclude.anti.coag == 'N' ~ 'No',
+                                                                          .$exclude.anti.coag == 'Y' ~ 'Yes'))
+names(master$biomarker_exclusions_20170223_clean) <- c('screening', 'late.exclude')
+dim(master$biomarker_exclusions_20170207_clean)
+dim(master$biomarker_exclusions_20170223_clean)
+check <- left_join(master$biomarker_exclusions_20170223_clean,
+                   master$biomarker_exclusions_20170207_clean)
+table(check$early.exclude, check$late.exclude, useNA = 'ifany')
+## 2017-02-23 Existing score function
+build()
+install()
+testing <- dipep_nse(df             = dipep,
+                     title          = 'Wells',
+                     exclude        = NULL,
+                     first.st, perc.pe, perc)
+
+testing$likert.plot
+
+plot(testing$likert, centered = 4)
+
 ## 2017-02-18 Simple LASSO testing
 build()
 install()
