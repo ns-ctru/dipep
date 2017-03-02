@@ -1477,8 +1477,6 @@ dipep <- dipep %>%
                 ##                            yes = 1,
                 ##                            no  = 0)
                 )
-
-
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -1569,10 +1567,6 @@ dipep <- mutate(dipep,
                 ##                            levels = c(0, 1),
                 ##                            labels = c('Normal', 'Very High'))
                 )
-
-
-
-
 ## Explicitly set the reference level for all factor variables
 dipep <- mutate(dipep,
                 bmi.cat                           = relevel(bmi.cat,
@@ -1743,9 +1737,14 @@ dipep <- mutate(dipep,
                                           yes = 1,
                                           no  = 0),
                 perc.leg.swelling = ifelse(grepl('leg swelling', other.symptoms.specify, ignore.case = TRUE) |
-                                           grepl('legs swelling', other.symptoms.specify, ignore.case = TRUE),
+                                           grepl('legs swelling', other.symptoms.specify, ignore.case = TRUE) |
+                                           grepl('swollen leg', other.symptoms.specify, ignore.case = TRUE) |
+                                           grepl('swollen left calf', other.symptoms.specify, ignore.case = TRUE),
                                            yes = 1,
                                            no  = 0),
+                perc.leg.swelling = ifelse(grepl('both legs swelling', other.symptoms.specify, ignore.case = TRUE),
+                                           yes = 0,
+                                           no  = perc.leg.swelling),
                 perc.surgery = ifelse(surgery == 'Yes' | is.na(surgery),
                                       yes = 1,
                                       no  = 0),
