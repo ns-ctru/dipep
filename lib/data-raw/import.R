@@ -219,6 +219,13 @@ master$med.hist.problems <- read_dipep("Medical History - Medical problems.csv",
                                        sep              = ',',
                                        convert.dates    = TRUE,
                                        dictionary       = master$data.dictionary)
+master$med.hist.problems.scoring <- dplyr::filter(master$med.hist.problems,
+                                                  grepl('thrombosis', medical.other, ignore.case = TRUE) |
+                                                  grepl('embolism', medical.other, ignore.case = TRUE) |
+                                                  grepl('pulmonary', medical.other, ignore.case = FALSE)) %>%
+                                    dplyr::select(screening, group, site, event.name) %>%
+                                    unique() %>%
+                                    mutate(medical.other.dvt.pe = 'Yes')
 #######################################################################
 ## Medical History - Thrombophilia.csv                               ##
 #######################################################################
@@ -990,6 +997,17 @@ t9 <- dplyr::select(master$med.hist.problems,
                   -medical.specify_7, -medical.other_7,
                   -medical.specify_8, -medical.other_8,
                   -medical.specify_9, -medical.other_9)
+## Merge the indicators of previous PE or DVT (derived above 2017-03-02)
+t9 <- merge(t9,
+            master$med.hist.problems.scoring,
+            by = c('screening', 'group', 'site', 'event.name'),
+            all = TRUE) %>%
+    mutate(existing.medical.cancer = ifelse(!is.na(existing.medical.cancer),
+                                            yes = existing.medical.cancer,
+                                            no  = 0),
+           existing.medical = ifelse(!is.na(existing.medical),
+                                            yes = existing.medical,
+                                            no  = 0))
 ## Details of medical history problems
 t10 <- dplyr::select(master$pregnancy.problems,
                      screening,
@@ -1406,8 +1424,11 @@ dipep <- mutate(dipep,
                                  yes = 'No',
                                 no  = as.character(thrombosis)),
                 ecg = ifelse(is.na(ecg),
-                                            yes = 'Not performed',
-                                            no  = as.character(ecg))
+                             yes = 'Not performed',
+                             no  = as.character(ecg)),
+                medical.other.dvt.pe = ifelse(is.na(medical.other.dvt.pe),
+                                              yes = 'No',
+                                              no  = medical.other.dvt.pe)
                 ## D-Dimer
                 ## d.dimer.high = ifelse(d.dimer > ,
                 ##                       yes = 1,
@@ -1479,6 +1500,8 @@ dipep <- mutate(dipep,
                 diagnosis.post.pe = factor(diagnosis.post.pe,
                                            levels = c(0, 1),
                                            labels = c('No PE', 'PE')),
+                medical.other.dvt.pe = factor(medical.other.dvt.pe,
+                                              labels = c('No', 'Yes')),
                 presenting.features.pleuritic      = factor(presenting.features.pleuritic),
                 presenting.features.non.pleuritic  = factor(presenting.features.non.pleuritic),
                 presenting.features.sob.exertion   = factor(presenting.features.sob.exertion),
@@ -1504,6 +1527,10 @@ dipep <- mutate(dipep,
                 ##                            levels = c(0, 1),
                 ##                            labels = c('Normal', 'Very High'))
                 )
+
+
+
+
 ## Explicitly set the reference level for all factor variables
 dipep <- mutate(dipep,
                 bmi.cat                           = relevel(bmi.cat,
@@ -1581,6 +1608,8 @@ dipep <- mutate(dipep,
                 immobil                           = relevel(immobil,
                                                             ref = 'No'),
                 injury                            = relevel(injury,
+                                                            ref = 'No'),
+                medical.other.dvt.pe              = relevel(medical.other.dvt.pe,
                                                             ref = 'No')
                 ## d.dimer.high                   = relevel(d.dimer.high)
                 )
@@ -1665,7 +1694,7 @@ dipep <- mutate(dipep,
                                          yes = 1,
                                          no  = 0),
                 perc.cough = ifelse(presenting.features.cough == 'Ticked' |
-                                    grepl('cought', other.symptoms.specify, ignore.case = TRUE),
+                                    grepl('cough', other.symptoms.specify, ignore.case = TRUE),
                                     yes = 1,
                                     no  = 0),
                 perc.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
@@ -1678,13 +1707,13 @@ dipep <- mutate(dipep,
                 perc.surgery = ifelse(surgery == 'Yes',
                                       yes = 1,
                                       no  = 0),
-                perc.embolism = ifelse(history.thrombosis == 'Yes',
+                perc.embolism = ifelse(thrombo == 'Yes',
                                        yes = 1,
                                        no  = 0),
                 perc.hormone = ifelse(other.medication.specify == 'hrt',
                                       yes = 1,
                                       no  = 0),
-                perc.dvt = ifelse(dvt == 'Yes',
+                perc.dvt.pe = ifelse(medical.other.dvt.pe == 'Yes',
                                   yes = 1,
                                   no  = 0),
                 perc      = perc.age +
@@ -1694,9 +1723,9 @@ dipep <- mutate(dipep,
                             perc.haemoptysis +
                             perc.leg.swelling +
                             perc.surgery +
-                            ## perc.embolism +
+                            perc.embolism +
                             perc.hormone +
-                            perc.dvt,
+                            perc.dvt.pe,
                 perc.pe = ifelse(perc >= 2,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
