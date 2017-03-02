@@ -1528,6 +1528,9 @@ dipep <- mutate(dipep,
                 existing.medical = factor(existing.medical,
                                           levels = c(0, 1),
                                           labels = c('No', 'Yes')),
+                existing.medical.cancer = factor(existing.medical.cancer,
+                                                 levels = c(0, 1),
+                                                 labels = c('No', 'Yes')),
                 this.pregnancy.problems = factor(this.pregnancy.problems,
                                                  levels = c(0, 1),
                                                  labels = c('No', 'Yes')),
@@ -1677,11 +1680,13 @@ dipep <- mutate(dipep,
                 simplified.neoplasm = ifelse(existing.medical.cancer == 'No' | is.na(existing.medical.cancer),
                                              yes = 0,
                                              no  = 1),
-                simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE),
-                                                    yes = 1,
-                                                    no  = 0),
+                simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE) |
+                                                               grepl('calf pain', other.symptoms.specify, ignore.case = TRUE) |
+                                                               grepl('right calf swelling and pain', other.symptoms.specify, ignore.case = TRUE),
+                                                               yes = 1,
+                                                               no  = 0),
                 ## There are however entries of 'Bilateral lower leg pain' which need correcting
-                simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE),
+                simplified.lower.limb.unilateral.pain = ifelse(grepl('bilateral leg pain', other.symptoms.specify, ignore.case = TRUE),
                                                     yes = 0,
                                                     no  = simplified.lower.limb.unilateral.pain),
                 simplified.haemoptysis = ifelse(presenting.features.haemoptysis == 'Not Ticked' | is.na(presenting.features.haemoptysis),
@@ -1690,10 +1695,10 @@ dipep <- mutate(dipep,
                 simplified.heart.rate = ifelse(heart.rate < 75 | is.na(heart.rate),
                                                yes = 0,
                                                no  = 1),
-                simplified.lower.limb.pain = ifelse(grepl('bilateral lower leg pain', other.symptoms.specify, ignore.case = TRUE) |
-                                                    grepl('pain in legs', other.symptoms.specify, ignore.case = TRUE),
-                                                    yes = 1,
-                                                    no  = 0),
+                ## simplified.lower.limb.pain = ifelse(grepl('', other.symptoms.specify, ignore.case = TRUE),
+                ##                                     yes = 1,
+                ##                                     no  = 0),
+                simplified.lower.limb.pain = 0,
                 simplified = simplified.age +
                              simplified.previous +
                              simplified.surgery +
@@ -1796,7 +1801,7 @@ dipep <- mutate(dipep,
                 wells.haemoptysis = ifelse(presenting.features.haemoptysis == 'Not Ticked' | is.na(presenting.features.haemoptysis),
                                           yes = 0,
                                           no  = 1),
-                wells.neoplasm = ifelse(existing.medical.cancer == 0 | is.na(existing.medical.cancer),
+                wells.neoplasm = ifelse(existing.medical.cancer == 'No' | is.na(existing.medical.cancer),
                                         yes = 0,
                                         no  = 1),
                 wells = wells.dvt +
@@ -1816,8 +1821,8 @@ dipep <- mutate(dipep,
                                        no  = 'No Wells PE'),
                 wells         = factor(wells, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
                 wells.pe      = factor(wells.pe,
-                                       levels = c('No Wells PE', 'Wells PE'))) %>%
-    dplyr::select(-existing.medical.cancer)
+                                       levels = c('No Wells PE', 'Wells PE'))) ## %>%
+    ## dplyr::select(-existing.medical.cancer)
 ## Delphi Consensus rule.
 ## Nothings ever simple and they've derived three scores, which will need testing in
 ## however many different cohorts they wish to test sensitivity in!!!
