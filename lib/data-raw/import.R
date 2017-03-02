@@ -1667,9 +1667,10 @@ dipep <- mutate(dipep,
                                         yes = 1,
                                         no  = 0),
                 ## ToDo - Check how to define previous PE
-                simplified.previous = ifelse(dvt == 'No' | is.na(dvt),
-                                             yes = 0,
-                                             no  = 1),
+                simplified.previous = ifelse(medical.other.dvt.pe == 'Yes' |
+                                             thrombo == 'Yes',
+                                             yes = 1,
+                                             no  = 0),
                 simplified.surgery = ifelse(surgery == 'No' | is.na(surgery),
                                             yes = 0,
                                             no  = 1),
@@ -1727,6 +1728,11 @@ dipep <- mutate(dipep,
                                     grepl('cough', other.symptoms.specify, ignore.case = TRUE),
                                     yes = 1,
                                     no  = 0),
+                perc.breathing = ifelse(grepl('asthma', other.symptoms.specify, ignore.case = TRUE) |
+                                        grepl('copd', other.symptoms.specify, ignore.case = TRUE) |
+                                        grepl('wheez', other.symptoms.specify, ignore.case = TRUE),
+                                        yes = 1,
+                                        no  = 0),
                 perc.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
                                           yes = 1,
                                           no  = 0),
@@ -1749,8 +1755,8 @@ dipep <- mutate(dipep,
                 perc.hormone = ifelse(other.medication.specify == 'hrt',
                                       yes = 1,
                                       no  = 0),
-                perc.dvt.pe = ifelse(medical.other.dvt.pe == 'Yes' | is.na(medical.other.dvt.pe) |
-                                     thrombo == 'Yes' | is.na(thrombo),
+                perc.dvt.pe = ifelse(medical.other.dvt.pe == 'Yes' |
+                                     thrombo == 'Yes',
                                      yes = 1,
                                      no  = 0),
                 perc      = perc.age +
