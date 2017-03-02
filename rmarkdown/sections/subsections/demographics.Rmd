@@ -208,8 +208,8 @@ summary.biomarkers$first.st <- dipep_summarise(df           = dipep,
                                           thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                           thrombin.generation.peak, thrombin.generation.time.to.peak,
                                           ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                          soluble.tissue.factor, troponin)
-                                          ## natriuertic.peptide, mrproanp)
+                                          soluble.tissue.factor, troponin,
+                                          natriuertic.peptide, mrproanp)
 summary.biomarkers$second.st <- dipep_summarise(df           = dipep,
                                                 grouping     = 'second.st',
                                                 group.as.col = TRUE,
@@ -217,8 +217,8 @@ summary.biomarkers$second.st <- dipep_summarise(df           = dipep,
                                                 thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                 thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                soluble.tissue.factor, troponin)
-                                                ## natriuertic.peptide, mrproanp)
+                                                soluble.tissue.factor, troponin,
+                                                natriuertic.peptide, mrproanp)
 summary.biomarkers$third.st <- dipep_summarise(df           = dipep,
                                                grouping     = 'third.st',
                                                group.as.col = TRUE,
@@ -226,8 +226,8 @@ summary.biomarkers$third.st <- dipep_summarise(df           = dipep,
                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                               soluble.tissue.factor, troponin)
-                                               ## natriuertic.peptide, mrproanp)
+                                               soluble.tissue.factor, troponin,
+                                               natriuertic.peptide, mrproanp)
 summary.biomarkers$fourth.st <- dipep_summarise(df           = dipep,
                                                 grouping     = 'fourth.st',
                                                 group.as.col = TRUE,
@@ -235,8 +235,8 @@ summary.biomarkers$fourth.st <- dipep_summarise(df           = dipep,
                                                 thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                 thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                soluble.tissue.factor, troponin)
-                                                ## natriuertic.peptide, mrproanp)
+                                                soluble.tissue.factor, troponin,
+                                                natriuertic.peptide, mrproanp)
 
 ```
 
@@ -278,7 +278,7 @@ dplyr::select(dipep, age, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Age') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Age by Group')
+    kable(caption = 'Summary of Age by Recruitment Group')
 ```
 
 ```{r  demographics_figure_age_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
@@ -315,7 +315,7 @@ dplyr::select(dipep, bmi, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'BMI') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of BMI by Group')
+    kable(caption = 'Summary of BMI by Recruitment Group')
 
 
 ```
@@ -354,7 +354,7 @@ dplyr::select(dipep, height, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Height') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Height by Group')
+    kable(caption = 'Summary of Height by Recruitment Group')
 
 ```
 
@@ -394,7 +394,7 @@ dplyr::select(dipep, weight, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Weight') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Weight by Group')
+    kable(caption = 'Summary of Weight by Recruitment Group')
 
 ```
 
@@ -434,7 +434,7 @@ dplyr::select(dipep, heart.rate, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Respiratory Rate by Group')
+    kable(caption = 'Summary of Respiratory Rate by Recruitment Group')
 
 ```
 
@@ -475,7 +475,7 @@ dplyr::select(dipep, respiratory.rate, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Respiratory Rate (BPM) by Group')
+    kable(caption = 'Summary of Respiratory Rate (BPM) by Recruitment Group')
 
 ```
 
@@ -515,7 +515,7 @@ dplyr::select(dipep, bp.systolic, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Systolic BP') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Group')
+    kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Recruitment Group')
 
 ```
 
@@ -555,7 +555,7 @@ dplyr::select(dipep, bp.diastolic, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Diastolic BP') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Group')
+    kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Recruitment Group')
 
 ```
 
@@ -595,7 +595,7 @@ dplyr::select(dipep, o2.saturation, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Oxygen Saturation') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Oxygen Saturation by Group')
+    kable(caption = 'Summary of Oxygen Saturation by Recruitment Group')
 
 ```
 
