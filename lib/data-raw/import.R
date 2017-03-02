@@ -1733,7 +1733,8 @@ dipep <- mutate(dipep,
                 perc.leg.swelling = ifelse(grepl('leg swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('legs swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('swollen leg', other.symptoms.specify, ignore.case = TRUE) |
-                                           grepl('swollen left calf', other.symptoms.specify, ignore.case = TRUE),
+                                           grepl('swollen left calf', other.symptoms.specify, ignore.case = TRUE) |
+                                           grepl('right calf swelling', other.symptoms.specify, ignore.case = TRUE),
                                            yes = 1,
                                            no  = 0),
                 perc.leg.swelling = ifelse(grepl('both legs swelling', other.symptoms.specify, ignore.case = TRUE),
