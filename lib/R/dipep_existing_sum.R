@@ -61,12 +61,14 @@ dipep_existing_sum <- function(df      = dipep,
                                      yes = 'Exclude',
                                      no  = as.character(class)))
     ## Bar chart of frequencies by classification
-    results$bar.chart <- ggplot(df, aes(x = score)) +
-                         geom_bar(aes(fill = class), position = 'dodge') +
-                         ggtitle(paste0(title, ' Scores by clinical classification')) +
-                         xlab(paste0(title, ' Score')) + ylab('N') +
-                         scale_fill_discrete(guide = guide_legend(title = 'Status')) +
-                         theme_bw()
+    if(title != 'Wells'){
+        results$bar.chart <- ggplot(df, aes(x = score)) +
+                             geom_bar(aes(fill = class), position = 'dodge') +
+                             ggtitle(paste0(title, ' Scores by clinical classification')) +
+                             xlab(paste0(title, ' Score')) + ylab('N') +
+                             scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+                             theme_bw()
+    }
     ## Likert-style chart
     ## Set variables the centered value for the plots
     if(levels(df$class.existing)[1] == 'No Simplified PE'){
@@ -87,13 +89,25 @@ dipep_existing_sum <- function(df      = dipep,
     else if(levels(df$class.existing)[2] == 'No Delphi (Specificity) PE'){
         center = 3
     }
-    plot.likert <- dplyr::select(df, score)
-    names(plot.likert) <- paste0(title, ' Score')
-    results$likert <- likert(plot.likert, grouping = df$class.char)
-    results$likert.plot <- plot(results$likert, center = center) +
-                           labs(caption = paste0('Plots are centered on the Risk category (',
-                                                 center,
-                                                 ').\n Percentages indicate the proportion below, within and above this.'))
+    if(title != 'Wells'){
+        plot.likert         <- dplyr::select(df, score)
+        names(plot.likert)  <- paste0(title, ' Score')
+        results$likert      <- likert(plot.likert, grouping = df$class.char)
+        results$likert.plot <- plot(results$likert, center = center) +
+                               labs(caption = paste0('Plots are centered on the Risk category (',
+                                                     center,
+                                                     ').\n Percentages indicate the proportion below, within and above this.'))
+    }
+    ## Histogram
+    if(title == 'Wells'){
+        results$histogram <- ggplot(df, aes(x = score)) +
+                             geom_histogram() +
+                             facet_wrap(~class, ncol = 3) +
+                             ggtitle(paste0(title, ' Scores by clinical classification')) +
+                             xlab(paste0(title, ' Score')) + ylab('N') +
+                             scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+                             theme_bw()
+    }
     ## Summarise the scores in tabular format
     all <- mutate(df, score = as.numeric(score)) %>%
            summarise(N        = sum(!is.na(score)),
