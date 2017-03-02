@@ -1764,16 +1764,27 @@ dipep <- mutate(dipep,
                                      thrombo == 'Yes',
                                      yes = 1,
                                      no  = 0),
-                perc      = perc.age +
-                            perc.heart.rate +
-                            perc.o2 +
-                            perc.cough +
-                            perc.haemoptysis +
-                            perc.leg.swelling +
-                            perc.surgery +
-                            ## perc.embolism +
-                            perc.hormone +
-                            perc.dvt.pe,
+                ## perc      = perc.age +
+                ##             perc.heart.rate +
+                ##             perc.o2 +
+                ##             perc.cough +
+                ##             perc.haemoptysis +
+                ##             perc.leg.swelling +
+                ##             perc.surgery +
+                ##             ## perc.embolism +
+                ##             perc.hormone +
+                ##             perc.dvt.pe,
+                perc = -3.1246 +
+                        0.5449 * perc.age +
+                        0.451 * perc.heart.rate +
+                        1.2049 * perc.o2 +
+                       -0.3768 * perc.cough +
+                        1.0382 * perc.haemoptysis +
+                        1.0844 * perc.leg.swelling +
+                       -0.6072 * perc.breathing +
+                        0.6651 * perc.surgery +
+                        0.6354 * perc.dvt.pe +
+                        0.5166 * perc.hormone,
                 perc.pe = ifelse(perc >= 2,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
