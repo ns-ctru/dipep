@@ -61,7 +61,7 @@ dipep_existing_sum <- function(df      = dipep,
                                      yes = 'Exclude',
                                      no  = as.character(class)))
     ## Bar chart of frequencies by classification
-    if(title != 'Wells'){
+    if(title != 'PERC'){
         results$bar.chart <- ggplot(df, aes(x = score)) +
                              geom_bar(aes(fill = class), position = 'dodge') +
                              ggtitle(paste0(title, ' Scores by clinical classification')) +
@@ -89,7 +89,7 @@ dipep_existing_sum <- function(df      = dipep,
     else if(levels(df$class.existing)[2] == 'No Delphi (Specificity) PE'){
         center = 3
     }
-    if(title != 'Wells'){
+    if(title != 'PERC'){
         plot.likert         <- dplyr::select(df, score)
         names(plot.likert)  <- paste0(title, ' Score')
         results$likert      <- likert(plot.likert, grouping = df$class.char)
