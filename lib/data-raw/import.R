@@ -4,7 +4,6 @@
 ##
 ## Description      Imports the data for the DiPEP study that was exported
 ##                  from Prospect database
-
 ## Load libraries
 library(dplyr)
 library(lubridate)
@@ -153,8 +152,6 @@ master$eq5d$anxiety.depression <- ordered(master$eq5d$anxiety.depression,
 ##                           activity.response = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'),
 ##                           pain.response     = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'),
 ##                           anxiety.response  = c('None', 'Slight', 'Moderate', 'Severe', 'Extreme'))
-
-
 #######################################################################
 ## Events.csv                                                        ##
 #######################################################################
@@ -566,7 +563,6 @@ master$case.review <- left_join(dplyr::select(master$womans.details,
 ##                              quinternary.class = ifelse())
 ## Remove helper funciton and temporary dataframes
 rm(clean_case_review, case.review1, case.review2, case.review3)
-
 #######################################################################
 ## biomarker_clean.csv                                               ##
 #######################################################################
@@ -686,8 +682,6 @@ master$biomarker_tidy <- mutate(master$biomarker_tidy,
                                 thrombin.generation.peak = ifelse(exclude.anti.coag == 'Yes',
                                                                   yes = NA,
                                                                   no  = thrombin.generation.peak))
-
-
 #######################################################################
 ## Combine required variables into one coherent data frame (would be ##
 ## nice if data management provided this functionality in Prospect   ##
@@ -1137,6 +1131,12 @@ t11 <- dplyr::select(master$therapy,
                      event.name,
                      other.medication,
                      other.medication.specify)
+## Delivery date
+t12 <- dplyr::select(master$outcome.infant,
+                     screening,
+                     group,
+                     site,
+                     delivery.date)
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
@@ -1213,6 +1213,10 @@ t <- merge(t1,
           by    = merge.by,
           all   = TRUE) %>%
     merge(.,
+          t12,
+          by    = c('screening', 'group', 'site'),
+          all   = TRUE) %>%
+    merge(.,
           master$biomarker_tidy,
           by    = 'screening',
           all.x = TRUE) %>%
@@ -1235,7 +1239,6 @@ master$missing <- merge(t,
                   filter(is.na(year.of.birth)) %>%
                   dplyr::select(screening, event.date, group, site, year.of.birth)
 ## rm(t, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, event.date)
-
 #######################################################################
 ## Derive variables (something it would be nice if Data Management   ##
 ## could do in Prospect as then BMI, age, etc. would all be          ##
@@ -1245,8 +1248,28 @@ master$missing <- merge(t,
 dipep.raw <- mutate(dipep.raw,
                     bmi = weight / (height / 100)^2,
                     age = year(event.date) - year.of.birth)
+## 2017-03-02 - Some preg.post are missing which messes up derivation of Trimester.
+##              For some reason doesn't work if this is in the same mutate(), hence
+##              its extraction.
 dipep <- mutate(dipep,
-                bmi = weight / (height / 100)^2,
+                edd       = ifelse(edd == '',
+                                   yes = NA,
+                                   no  = edd),
+                preg.post = as.character(preg.post),
+                preg.post = ifelse(!is.na(preg.post),
+                                   yes = preg.post,
+                                   no  = ifelse(!is.na(delivery.date) & event.date - delivery.date > 0,
+                                                yes = 'Postpartum',
+                                                no  = 'Pregnant')),
+                preg.post = ifelse(!is.na(preg.post),
+                                   yes = preg.post,
+                                   no  = ifelse(is.na(delivery.date) & ymd(event.date) - ymd(edd) > 0,
+                                                yes = 'Postpartum',
+                                                no  = 'Pregnant')),
+                gestation = 280 - (ymd(edd) - ymd(event.date)))
+
+dipep <- dipep %>%
+         mutate(bmi = weight / (height / 100)^2,
                 age = year(event.date) - year.of.birth,
                 pregnancies.over.cat = ifelse(pregnancies.over == 0,
                                              yes = 0,
@@ -1296,25 +1319,42 @@ dipep <- mutate(dipep,
                 bmi.cat = ifelse(is.na(bmi),
                                  yes = 0,
                                  no  = bmi.cat),
-                gestation = 280 - (ymd(edd) - ymd(event.date)),
-                trimester = ifelse(gestation < 98,
-                                   yes = 0,
-                                   no  = ifelse(gestation >= 98 & gestation < 196,
-                                                yes = 1,
-                                                ifelse(gestation >= 196 & preg.post == 'Pregnant',
-                                                       yes = 2,
-                                                       no  = 3))),
-                trimester = ifelse(is.na(trimester),
-                                   yes = 0,
+                ## gestation = 280 - (ymd(edd) - ymd(event.date)),
+                ## trimester = ifelse(gestation < 98,
+                ##                    yes = 0,
+                ##                    no  = ifelse(gestation >= 98 & gestation < 196,
+                ##                                 yes = 1,
+                ##                                 ifelse(gestation >= 196 & preg.post == 'Pregnant',
+                ##                                        yes = 2,
+                ##                                        no  = 3))),
+                ## trimester = ifelse(is.na(trimester),
+                ##                    yes = 0,
+                ##                    no  = trimester),
+                ## 2017-03-01 - For some reason there are instances where preg.post is missing
+                ##              These need resolving _before_ trimester can be derived, therefore
+                ##              use the delivery date to do so.
+                trimester = case_when(.$gestation < 98   & !is.na(.$preg.post)                     ~ 0,
+                                      .$gestation >= 98  & .$gestation < 196   & !is.na(.$preg.post) ~ 1,
+                                      .$gestation >= 196 & !is.na(.$preg.post) & .$preg.post == 'Pregnant'   ~ 2,
+                                      .$gestation >= 196 & !is.na(.$preg.post) & .$preg.post == 'Postpartum' ~ 3),
+                trimester = ifelse(is.na(gestation) & is.na(trimester) &
+                                   !is.na(preg.post) & preg.post == 'Postpartum',
+                                   yes = 3,
                                    no  = trimester),
-                heart.rate.cat = ifelse(trimester != 2 & heart.rate > 100,
-                                        yes = 1,
-                                        no  = ifelse(trimester == 2 & heart.rate > 110,
-                                                     yes = 1,
-                                                     no  = 0)),
-                heart.rate.cat = ifelse(is.na(heart.rate.cat),
-                                        yes = 0,
-                                        no  = heart.rate.cat),
+                ## trimester = ifelse(!is.na(gestation) & is.na(trimester) &
+                ##                    is.na(preg.post),
+                ##                    yes = ifelse(gestation < 98,
+                ##                                 yes = 0,
+                ##                                 no  = ifelse(gestation >= 98 & gestation < 196)),
+                ##                    no  = preg.post)
+                ## heart.rate.cat = ifelse(trimester != 2 & heart.rate > 100,
+                ##                         yes = 1,
+                ##                         no  = ifelse(trimester == 2 & heart.rate > 110,
+                ##                                      yes = 1,
+                ##                                      no  = 0)),
+                ## heart.rate.cat = ifelse(is.na(heart.rate.cat),
+                ##                         yes = 0,
+                ##                         no  = heart.rate.cat),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
                 ## ToDo 2017-02-22 - Possible some of these SHOULDN'T be derived for
                 ##                   individuals who are 'Non recruited' since they
@@ -1437,6 +1477,8 @@ dipep <- mutate(dipep,
                 ##                            yes = 1,
                 ##                            no  = 0)
                 )
+
+
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
