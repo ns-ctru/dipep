@@ -1155,7 +1155,8 @@ t12 <- dplyr::select(master$outcome.infant,
                      group,
                      site,
                      delivery.date) %>%
-       unique()
+    unique()
+
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
