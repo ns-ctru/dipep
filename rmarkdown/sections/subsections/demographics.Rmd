@@ -440,7 +440,7 @@ dplyr::select(dipep, heart.rate, group) %>%
     facet_wrap(~group, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$group, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Respiratory Rate by Recruitment Group')
+    kable(caption = 'Summary of Heart Rate by Recruitment Group')
 
 ```
 
@@ -459,7 +459,7 @@ dplyr::select(dipep, heart.rate, first.st) %>%
     facet_wrap(~first.st, ncol = 3) + theme_bw()
 dplyr::filter(summary.stats$first.st, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Respiratory Rate by Primary Classification')
+    kable(caption = 'Summary of Heart Rate by Primary Classification')
 
 ```
 
