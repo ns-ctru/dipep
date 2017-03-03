@@ -54,6 +54,8 @@ dipep_glm <- function(df              = .data,
     else if(classification == 'secondary.dm'){
         df <- dplyr::filter(df, !is.na(secondary.dm))
     }
+    ## ToDo 2017-02-27 - Scatter plot by true status (use jitter should show for
+    ##                   biomarkers lots of overlap and little distinct values)
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
@@ -110,7 +112,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
                              term = gsub('bp.systolic', 'Systolic (Continuous)', term),
                              term = gsub('o2.saturation.catLow', 'O2 Saturation (Low)', term),
-                             term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
+                             term = gsub('o2.saturation.catHigh', 'O2 Saturation (Low)', term),
                              term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
                              term = gsub('respiratory.rate.catLow', 'Respiratory Rate (Low)', term),
                              term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
