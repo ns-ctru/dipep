@@ -294,33 +294,30 @@ dplyr::select(dipep, ethnicity, group) %>%
 The overall mean age in years of those was `r age_mean` (SD `r age_sd`; Median `r age_median` (IQR `r age_p25` to `r age_p75`); Range `r age_min` to `r age_max`) and the distribution of ages by group is summarised in figure and table below.
 
 ```{r  demographics_figure_age_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, age, group) %>%
-    ggplot(aes(x    = age,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Age (Years)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Age (Years)',
+                      title.class           = 'Recruitment',
+                      group, age)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Age') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Age by Recruitment Group')
 ```
 
 ```{r  demographics_figure_age_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, age, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                             no  = first.st)) %>%
-    ggplot(aes(x    = age,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Age (Years)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Age (Years)',
+                      title.class           = 'Primary Classification',
+                      first.st, age)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Age') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Age by Primary Classification')
@@ -334,15 +331,15 @@ The overall mean BMI was `r bmi_mean` (SD `r bmi_sd`; Median `r bmi_median` (IQR
 
 
 ```{r  demographics_figure_bmi_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, bmi, group) %>%
-    ggplot(aes(x    = bmi,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('BMI') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'BMI',
+                      title.class           = 'Recruitment',
+                      group, bmi)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'BMI') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of BMI by Recruitment Group')
@@ -351,18 +348,15 @@ dplyr::filter(summary.stats$group, Measurement == 'BMI') %>%
 ```
 
 ```{r  demographics_figure_bmi_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, bmi, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                             no  = first.st)) %>%
-    ggplot(aes(x    = bmi,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('BMI') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'BMI',
+                      title.class           = 'Primary Classification',
+                      first.st, bmi)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'BMI') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of BMI by Primary Classification')
@@ -376,15 +370,15 @@ The overall mean height in centimetres (cm) was `r height_mean` (SD `r height_sd
 
 
 ```{r  demographics_figure_height_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, height, group) %>%
-    ggplot(aes(x    = height,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Height (cm)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Height (cm)',
+                      title.class           = 'Recruitment',
+                      group, height)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Height') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Height by Recruitment Group')
@@ -392,18 +386,15 @@ dplyr::filter(summary.stats$group, Measurement == 'Height') %>%
 ```
 
 ```{r  demographics_figure_height_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, height, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = height,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Height (cm)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Height (cm)',
+                      title.class           = 'Primary Classification',
+                      first.st, height)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Height') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Height by Primary Classification')
@@ -416,15 +407,15 @@ The mean weight in kilgrams (kg) was `r weight_mean` (SD `r weight_sd`; Median `
 
 
 ```{r  demographics_figure_weight_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, weight, group) %>%
-    ggplot(aes(x    = weight,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Weight (kg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Weight (kg)',
+                      title.class           = 'Recruitment',
+                      group, weight)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Weight') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Weight by Recruitment Group')
@@ -432,18 +423,15 @@ dplyr::filter(summary.stats$group, Measurement == 'Weight') %>%
 ```
 
 ```{r  demographics_figure_weight_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, weight, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = weight,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Weight (kg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Weight (kg)',
+                      title.class           = 'Primary Classification',
+                      first.st, weight)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Weight') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Weight by Primary Classification')
@@ -456,15 +444,15 @@ The overall mean heart rate in beats per minute (BPM) was `r heart_rate_mean` (S
 
 
 ```{r  demographics_figure_heart_rate_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, heart.rate, group) %>%
-    ggplot(aes(x    = heart.rate,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Heart Rate (BPM)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Heart Rate (bpm)',
+                      title.class           = 'Recruitment',
+                      group, heart.rate)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Heart Rate by Recruitment Group')
@@ -472,18 +460,15 @@ dplyr::filter(summary.stats$group, Measurement == 'Heart Rate') %>%
 ```
 
 ```{r  demographics_figure_heart_rate_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, heart.rate, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = heart.rate,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Heart Rate (BPM)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Heart Rate (bpm)',
+                      title.class           = 'Primary Classification',
+                      first.st, heart.rate)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Heart Rate by Primary Classification')
@@ -497,15 +482,15 @@ The overall mean respiratory rate in breaths per minute (BPM) was `r respiratory
 
 
 ```{r  demographics_figure_respiratory_rate_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, respiratory.rate, group) %>%
-    ggplot(aes(x    = respiratory.rate,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Respiratory Rate (BPM)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Respiratory Rate (bpm)',
+                      title.class           = 'Recruitment',
+                      group, respiratory.rate)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate (BPM) by Recruitment Group')
@@ -513,18 +498,15 @@ dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
 ```
 
 ```{r  demographics_figure_respiratory_rate_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, respiratory.rate, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = respiratory.rate,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Respiratory Rate (BPM)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Respiratory Rate (bpm)',
+                      title.class           = 'Primary Classification',
+                      first.st, respiratory.rate)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate (BPM) by Primary Classification')
@@ -537,15 +519,15 @@ The overall mean systolic blood pressure in millimetres of mercury (mmHg) was `r
 
 
 ```{r  demographics_figure_systolic_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, bp.systolic, group) %>%
-    ggplot(aes(x    = bp.systolic,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Systolic Blood Pressure (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Systolic BP (mmHg)',
+                      title.class           = 'Recruitment',
+                      group, bp.systolic)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Systolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Recruitment Group')
@@ -553,18 +535,15 @@ dplyr::filter(summary.stats$group, Measurement == 'Systolic BP') %>%
 ```
 
 ```{r  demographics_figure_systolic_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, bp.systolic, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = bp.systolic,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Systolic Blood Pressure (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Systolic BP (mmHg)',
+                      title.class           = 'Primary Classification',
+                      first.st, bp.systolic)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Systolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Primary Classification')
@@ -577,34 +556,31 @@ The overall mean diastolic blood pressure in millimetres of mercury (mmHg) was `
 
 
 ```{r  demographics_figure_diastolic_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, bp.diastolic, group) %>%
-    ggplot(aes(x    = bp.diastolic,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Diastolic Blood Pressure (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Diastolic BP (mmHg)',
+                      title.class           = 'Recruitment',
+                      group, bp.diastolic)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Diastolic BP') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Recruitment Group')
+    kable(caption = 'Summary of Diastolic Blood Pressure (mmHg) by Recruitment Group')
 
 ```
 
 ```{r  demographics_figure_diastolic_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, bp.diastolic, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = bp.diastolic,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Diastolic Blood Pressure (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Diastolic BP (mmHg)',
+                      title.class           = 'Primary Classification',
+                      first.st, bp.diastolic)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Diastolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Primary Classification')
@@ -617,15 +593,15 @@ The overall mean oxygen saturation as a percentage (%) was `r diastolic_mean` (S
 
 
 ```{r  demographics_figure_o2_saturation_group, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, o2.saturation, group) %>%
-    ggplot(aes(x    = o2.saturation,
-               fill = group)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Oxygen Saturation (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~group, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = FALSE,
+                      exclude.dvt           = FALSE,
+                      title.to.plot         = 'Oxygen Saturation (%)',
+                      title.class           = 'Recruitment',
+                      group, o2.saturation)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$group, Measurement == 'Oxygen Saturation') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Oxygen Saturation by Recruitment Group')
@@ -633,18 +609,15 @@ dplyr::filter(summary.stats$group, Measurement == 'Oxygen Saturation') %>%
 ```
 
 ```{r  demographics_figure_o2_saturation_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, o2.saturation, first.st) %>%
-    mutate(first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = o2.saturation,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Oxygen Saturation (mm/Hg)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df                    = dipep,
+                      exclude               = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot         = 'Oxygen Saturation (%)',
+                      title.class           = 'Primary Classification',
+                      first.st, o2.saturation)
+to.plot$histogram
+## to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Oxygen Saturation') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Oxygen Saturation by Primary Classification')
