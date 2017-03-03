@@ -17,11 +17,21 @@
 dipep_summarise <- function(df              = dipep,
                             grouping        = 'group',
                             group.as.col    = FALSE,
+                            exclude   = NULL,
+                            exclude.non.recruited = TRUE,
+                            exclude.dvt       = TRUE,
                             ...){
     results <- list()
     ## Get the levels for the grouping
     observed.levels <- table(df[grouping], useNA = 'ifany') %>% names()
     observed.levels[is.na(observed.levels)] <- 'Exclude'
+    ## Remove non-recruited and DVT
+    if(exclude.non.recruited == TRUE){
+        df <- dplyr::filter(df, group != 'Non recruited')
+    }
+    if(exclude.dvt == TRUE){
+        df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
     ## Overall summary
     overall <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...)) %>%
                summarise_each(funs(N      = sum(!is.na(.)),
