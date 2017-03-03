@@ -1,0 +1,23 @@
+#### Gestation v D-Dimer  {.tabset .tabset-fade .tabset-pills}
+
+```{r results_biomarker_gestation_ddimer_elisa, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
+    geom_point() +
+    xlab('Gestation') + ylab('D-Dimer - ELISA (ng/l)') +
+    theme_bw() +
+    labs(colour = 'Primary Classification')
+
+```
+
+
+```{r results_biomarker_gestation_ddimer_innovan, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = ddimer.innovan, colour = first.st)) +
+    geom_point() +
+    xlab('Gestation') + ylab('D-Dimer - Innovan (mg/l)') +
+    theme_bw() +
+    labs(colour = 'Primary Classification')
+
+
+```
