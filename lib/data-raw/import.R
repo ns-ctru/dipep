@@ -271,6 +271,23 @@ master$presenting.features <- read_dipep("Presenting features.csv",
                                          sep              = ',',
                                          convert.dates    = TRUE,
                                          dictionary       = master$data.dictionary)
+## 2017-03-03 - The most likely diagnosis, required for one of the existing
+##              scores has been reviewed outside of Prospect and provided as
+##              an Excel (!?!?!?) spreadsheet 'lib/data-raw/xls/PE\ likely\ diagnosis.xlsx
+##              by Steve Goodacre (2017-03-03 @ 14:00; Subject Re: Review of PE).  This has
+##              been saved to text (semi-colon delimited because it includes a free text
+##              field that has commas in it) and is imported here and combined
+##              with master$presenting.features because the classification is to be used
+##              instead of the 'diagnosis.post' variable from presenting features
+master$likely.diagnosis <- read.table("likely_diagnosis.csv",
+                                      header = TRUE,
+                                      sep    = '\t')
+master$likely.diagnosis <- mutate(master$likely.diagnosis,
+                                  likely.diagnosis = factor(likely.diagnosis,
+                                                            levels = c(0, 1, 2),
+                                                            labels = c('Other', 'Possible PE', 'PE')))
+master$presenting.features <- left_join(master$presenting.features,
+                                        master$likely.diagnosis)
 #######################################################################
 ## Previous pregnancies.csv                                          ##
 #######################################################################
@@ -741,6 +758,7 @@ t3 <- dplyr::select(master$presenting.features,
                     xray.specify,
                     life.support.presentation,
                     diagnosis.post,
+                    likely.diagnosis,
                     d.dimer,
                     d.dimer.high)
 ## Thrombotic Event
@@ -1136,7 +1154,8 @@ t12 <- dplyr::select(master$outcome.infant,
                      screening,
                      group,
                      site,
-                     delivery.date)
+                     delivery.date) %>%
+       unique()
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
@@ -1397,11 +1416,19 @@ dipep <- dipep %>%
                                            grepl('p\\.e\\.', diagnosis.post, ignore.case = TRUE),
                                            yes = 1,
                                            no  = 0),
-                ## Some really unhelpful entry that needs correcting
-                diagnosis.post.pe = ifelse(grepl('UNLIKELY P\\.E\\.', diagnosis.post, ignore.case = TRUE) |
-                                           grepl('rule out PE', diagnosis.post, ignore.case = TRUE),
+                ## Some really unhelpful entries that need tidying
+                diagnosis.post.pe = ifelse(grepl('^suspected pulmonary emb', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('^suspected pe', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('^suspected p\\.e', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('^query pe$', diagnosis.post, ignore.case = TRUE),
+                                           yes = 1,
+                                           no  = 0),
+                ## Now convert matches that include secondary possibility to no
+                diagonsis.post.pe = ifelse(grepl('embolus or', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('^suspected p\\.e or', diagnosis.post, ignore.case = TRUE) |
+                                           grepl('^suspected p\\.e, or', diagnosis.post, ignore.case = TRUE),
                                            yes = 0,
-                                           no  = 1),
+                                           no  = diagnosis.post),
                 ## NEW
                 presenting.features.pleuritic = ifelse(is.na(presenting.features.pleuritic),
                                                        yes = 'Not Ticked',
@@ -1726,10 +1753,10 @@ dipep <- mutate(dipep,
                 perc.o2 = ifelse(o2.saturation < 95 | is.na(o2.saturation),
                                          yes = 1,
                                          no  = 0),
-                perc.cough = ifelse(presenting.features.cough == 'Ticked' |
-                                    grepl('cough', other.symptoms.specify, ignore.case = TRUE),
-                                    yes = 1,
-                                    no  = 0),
+                ## perc.cough = ifelse(presenting.features.cough == 'Ticked' |
+                ##                     grepl('cough', other.symptoms.specify, ignore.case = TRUE),
+                ##                     yes = 1,
+                ##                     no  = 0),
                 perc.breathing = ifelse(grepl('asthma', other.symptoms.specify, ignore.case = TRUE) |
                                         grepl('copd', other.symptoms.specify, ignore.case = TRUE) |
                                         grepl('wheez', other.symptoms.specify, ignore.case = TRUE),
@@ -1761,28 +1788,28 @@ dipep <- mutate(dipep,
                                      thrombo == 'Yes',
                                      yes = 1,
                                      no  = 0),
-                ## perc      = perc.age +
-                ##             perc.heart.rate +
-                ##             perc.o2 +
-                ##             perc.cough +
-                ##             perc.haemoptysis +
-                ##             perc.leg.swelling +
-                ##             perc.surgery +
-                ##             ## perc.embolism +
-                ##             perc.hormone +
-                ##             perc.dvt.pe,
-                perc =  1 -  (1 / (1 + exp(-3.1246 +
-                        0.5449 * perc.age +
-                        0.451 * perc.heart.rate +
-                        1.2049 * perc.o2 +
-                       -0.3768 * perc.cough +
-                        1.0382 * perc.haemoptysis +
-                        1.0844 * perc.leg.swelling +
-                       -0.6072 * perc.breathing +
-                        0.6651 * perc.surgery +
-                        0.6354 * perc.dvt.pe +
-                        0.5166 * perc.hormone))),
-                perc.pe = ifelse(perc < 0.018,
+                perc      = perc.age +
+                            perc.heart.rate +
+                            perc.o2 +
+                            ## perc.cough +
+                            perc.haemoptysis +
+                            perc.leg.swelling +
+                            perc.surgery +
+                            ## perc.embolism +
+                            perc.hormone +
+                            perc.dvt.pe,
+                ## perc =  1 -  (1 / (1 + exp(-3.1246 +
+                ##         0.5449 * perc.age +
+                ##         0.451 * perc.heart.rate +
+                ##         1.2049 * perc.o2 +
+                ##        -0.3768 * perc.cough +
+                ##         1.0382 * perc.haemoptysis +
+                ##         1.0844 * perc.leg.swelling +
+                ##        -0.6072 * perc.breathing +
+                ##         0.6651 * perc.surgery +
+                ##         0.6354 * perc.dvt.pe +
+                ##         0.5166 * perc.hormone))),
+                perc.pe = ifelse(perc >= 1,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
                 ## perc          = factor(perc, levels = c(0, 1, 2, 3, 4)),
@@ -1793,9 +1820,9 @@ dipep <- mutate(dipep,
                 wells.dvt = ifelse(dvt == 'Yes',
                                    yes = 3,
                                    no  = 0),
-                ## wells.alternative = ifelse(,
-                ##                            yes = 3,
-                ##                            no  = 0),
+                wells.alternative = ifelse(likely.diagnosis == 'PE',
+                                           yes = 3,
+                                           no  = 0),
                 wells.heart.rate = ifelse(heart.rate < 100 | is.na(heart.rate),
                                           yes = 0,
                                           no  = 1.5),
@@ -1824,7 +1851,7 @@ dipep <- mutate(dipep,
                                        no = ifelse(wells > 2,
                                                    yes = 'Moderate',
                                                    no  = 'Low')),
-                wells.pe      = ifelse(wells > 2,
+                wells.pe      = ifelse(wells > 4,
                                        yes = 'Wells PE',
                                        no  = 'No Wells PE'),
                 wells         = factor(wells, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
