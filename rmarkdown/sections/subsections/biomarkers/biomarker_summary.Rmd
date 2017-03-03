@@ -4,245 +4,220 @@ Biomarkers are summarised below on the basis of the primary classification of Pu
 
 **IMPORTANT** Because of the exclusion of a large amount of Thrombin biomarker data by virtue of individuals (N = `r dplyr::filter(master$biomarker_exclusions_clean, exclude.anti.coag == 'Yes') %>% nrow()`) having received anti-coagulants prior to their blood sample being taken there is a large degree of variation in the y-axis scale of the following histograms.
 
+
+##### Aprothombin
+
+```{r  demographics_biomarker_aprothombin_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Aprothombin (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, aprothombin)
+to.plot$histogram
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Aprothombin') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of Aprothombin by Primary Classification')
+to.plot$scatter
+
+```
+
 ##### Prothombin (Time)
 
 ```{r  demographics_biomarker_prothombin_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, prothombin.time, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = prothombin.time,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Prothombin Time (sec)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Prothombin (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, prothombin.time)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Prothombin (Time)') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Prothombin (Time) by Primary Classification')
+        kable(caption = 'Summary of Prothombin (Time) by Primary Classification')
+to.plot$scatter
 
 ```
 
 ##### Clauss Fibrinogen
 
 ```{r  demographics_biomarker_clauss_fibrinogen_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, clauss.fibrinogen, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = clauss.fibrinogen,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Clauss Fibrinogen (g/l)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Clauss Fibrinogen (g/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, clauss.fibrinogen)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Clauss Fibrinogen') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of Clauss Fibrinogen by Primary Classification')
+        kable(caption = 'Summary of Clauss Fibrinogen by Primary Classification')
+to.plot$scatter
 
 ```
 
 ##### D-Dimer (Innovan)
 
 ```{r  demographics_biomarker_ddimer_innovan_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, ddimer.innovan, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = ddimer.innovan,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('D-Dimer (mg/l)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'D-Dimer - Innovan (mg/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, ddimer.innovan)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'D-Dimer (Innovan)') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of D-Dimer (Innovan) by Primary Classification')
+        kable(caption = 'Summary of D-Dimer (Innovan) by Primary Classification')
+to.plot$scatter
 
 ```
 
 ##### D-Dimer (ELISA)
 
 ```{r  demographics_biomarker_ddimer_elisa_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, ddimer.elisa, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = ddimer.elisa,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('D-Dimer (ng/l)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'D-Dimer - ELISA (ng/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, ddimer.elisa)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'D-Dimer (ELISA)') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Summary of D-Dimer (ELISA) by Primary Classification')
+        kable(caption = 'Summary of D-Dimer (ELISA) by Primary Classification')
+to.plot$scatter
 
 ```
 
 ##### Thrombin Generation (Lag Time)
 
 ```{r  demographics_biomarker_thrombin_generation_lag_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, thrombin.generation.lag.time, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = thrombin.generation.lag.time,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Thrombin Generation - Lag Time (min)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Thrombin Generation - Lag Time (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.lag.time)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Lag Time)') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Thrombin Generation (Lag Time)')
+        kable(caption = 'Thrombin Generation (Lag Time)')
+to.plot$scatter
 
 ```
 
 ##### Thrombin Generation (Endogenous Potential)
 
 ```{r  demographics_biomarker_thrombin_generation_endogenous_potential_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, thrombin.generation.endogenous.potential, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = thrombin.generation.endogenous.potential,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Thrombin Generation Endogenous Potential (nM x min)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Thrombin Generation - Endogenous Potential (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.endogenous.potential)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Endogenous Potential)') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Thrombin Generation (Endogenous Potential)')
+        kable(caption = 'Thrombin Generation (Endogenous Potential)')
+to.plot$scatter
 
 ```
 
 ##### Thrombin Generation (Time to Peak)
 
 ```{r  demographics_biomarker_thrombin_generation_time_to_peak_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, thrombin.generation.time.to.peak, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = thrombin.generation.time.to.peak,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Thrombin Generation - Time to Peak (min)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Thrombin Generation - Time to Peak (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.time.to.peak)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Time to Peak)') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Thrombin Generation (Time to Peak)')
+to.plot$scatter
 
 ```
 
 ##### Thrombin Generation (Peak)
 
 ```{r  demographics_biomarker_thrombin_generation_peak_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, thrombin.generation.peak, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = thrombin.generation.peak,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Thrombin Generation - Peak (nM)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Thrombin Generation - Peak (nM)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.peak)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Peak)') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Thrombin Generation (Peak)')
+to.plot$scatter
 
 ```
 
 ##### Plasmin Antiplasmin
 
 ```{r  demographics_biomarker_plasmin_antiplasmin_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
-dplyr::select(dipep, plasmin.antiplasmin, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = plasmin.antiplasmin,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Plasmin Antiplasmin (sec)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Plasmin Antiplasmin (sec)',
+                      title.class           = 'Primary Classification',
+                      first.st, plasmin.antiplasmin)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Plasmin (Antiplasmin)') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Plasmin Antiplasmin')
+        kable(caption = 'Plasmin Antiplasmin')
+to.plot$scatter
 
 ```
 
 
 ##### Natriuertic Peptide
 
-```{r  demographics_biomarker_natriuertic_peptide_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = FALSE}
-dplyr::select(dipep, natriuertic.peptide, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = natriuertic.peptide,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('Natriuertic Peptide (pg/ml)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+```{r  demographics_biomarker_natriuertic_peptide_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'Natriuertic Peptide (pg/ml)',
+                      title.class           = 'Primary Classification',
+                      first.st, natriuertic.peptide)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'Natriuertic Peptide') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'Natriuertic Peptide')
+        kable(caption = 'Natriuertic Peptide')
+to.plot$scatter
 
 ```
 
 ##### MRproANP
 
-```{r  demographics_biomarker_mrproanp_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = FALSE}
-dplyr::select(dipep, mrproanp, first.st) %>%
-    mutate(first.st = as.character(first.st),
-           first.st = ifelse(is.na(first.st),
-                                  yes = 'Exclude',
-                                  no  = first.st)) %>%
-    ggplot(aes(x    = mrproanp,
-               fill = first.st)) +
-    geom_histogram() +
-    ## stat_bin(binwidth = ggplot2.opts$binwidth) +
-    xlab('MRproANP (pmol/l)') + ylab('N') +
-    guides(fill = guide_legend(NULL)) +
-    theme(axis.text.x = element_text(angle = 90)) +
-    facet_wrap(~first.st, ncol = 3) + theme_bw()
+```{r  demographics_biomarker_mrproanp_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      title.to.plot       = 'MRproANP (pmol/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, mrproanp)
+to.plot$histogram
 dplyr::filter(summary.biomarkers$first.st, Measurement == 'MRproANP') %>%
     dplyr::select(-Measurement) %>%
-    kable(caption = 'MRproANP')
+        kable(caption = 'MRproANP')
+to.plot$scatter
 
 ```
