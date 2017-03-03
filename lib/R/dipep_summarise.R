@@ -12,6 +12,10 @@
 #' @param by Variable to group data by, options are \code{group} | \code{primary.class} | \code{secondary.class}.
 #' @param to.sum Variable to be summarised.
 #' @param group.as.col Logical as to whether to transpose resulting summary data frame to have groups as columns.
+#' @param exclude Vector of \code{screening}  to exclude.
+#' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
+#' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
+#'
 #'
 #' @export
 dipep_summarise <- function(df              = dipep,
@@ -22,9 +26,6 @@ dipep_summarise <- function(df              = dipep,
                             exclude.dvt       = TRUE,
                             ...){
     results <- list()
-    ## Get the levels for the grouping
-    observed.levels <- table(df[grouping], useNA = 'ifany') %>% names()
-    observed.levels[is.na(observed.levels)] <- 'Exclude'
     ## Remove non-recruited and DVT
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
@@ -32,6 +33,9 @@ dipep_summarise <- function(df              = dipep,
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
     }
+    ## Get the levels for the grouping
+    observed.levels <- table(df[grouping], useNA = 'ifany') %>% names()
+    observed.levels[is.na(observed.levels)] <- 'Exclude'
     ## Overall summary
     overall <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...)) %>%
                summarise_each(funs(N      = sum(!is.na(.)),
