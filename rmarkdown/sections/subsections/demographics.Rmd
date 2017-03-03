@@ -438,7 +438,7 @@ dplyr::select(dipep, heart.rate, group) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~group, ncol = 3) + theme_bw()
-dplyr::filter(summary.stats$group, Measurement == 'Respiratory Rate') %>%
+dplyr::filter(summary.stats$group, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate by Recruitment Group')
 
@@ -457,7 +457,7 @@ dplyr::select(dipep, heart.rate, first.st) %>%
     guides(fill = guide_legend(NULL)) +
     theme(axis.text.x = element_text(angle = 90)) +
     facet_wrap(~first.st, ncol = 3) + theme_bw()
-dplyr::filter(summary.stats$first.st, Measurement == 'Respiratory Rate') %>%
+dplyr::filter(summary.stats$first.st, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate by Primary Classification')
 
