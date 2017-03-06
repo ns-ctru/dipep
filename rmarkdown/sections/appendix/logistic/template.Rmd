@@ -1,6 +1,8 @@
 ```{r appendix_logisitc_template, echo = FALSE, cache = FALSE, results = 'markdown', fig_height = 6, fig_width = 6, eval = TRUE}
+kable(logistic$template$table,
+      col.names = c('Predictor', 'Levels', 'No PE', 'PE')
 summary(logistic$template$fitted)
 autoplot(logistic$template$fitted) + theme_bw()
-logistic$template$roc
+## logistic$template$roc
 
 ```
