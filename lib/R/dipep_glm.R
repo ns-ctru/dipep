@@ -80,8 +80,16 @@ dipep_glm <- function(df              = .data,
     }
     ## Cross tabulation of counts for combining
     results$table <- dplyr::group_by_(df, classification, predictor) %>%
-        summarise(n = n())
-    names(results$table) <- c('classification', 'levels', 'n')
+                     dplyr::summarise(n = n()) %>%
+                     dplyr::group_by_(predictor) %>%
+                     dplyr::mutate(N    = sum(n, na.rm = TRUE),
+                                   prop = (n * 100) / N,
+                                   n    = paste0(formatC(n, digits = 0, format = 'f'),
+                                                 ' (',
+                                                 formatC(prop, digits = 2, format = 'f'),
+                                                 '%)'))
+    names(results$table) <- c('classification', 'levels', 'n', 'N', 'prop')
+    results$table <- results$table[c(1:3)]
     results$table <- dcast(results$table, levels ~ classification) %>%
                      mutate(predictor = predictor,
                             predictor = gsub('age.cat', 'Age (Categorised)', predictor),
@@ -133,6 +141,7 @@ dipep_glm <- function(df              = .data,
                             predictor = gsub('troponin', 'Troponin', predictor),
                             predictor = gsub('natriuertic.peptide', 'Natriuertic Peptide', predictor),
                             predictor = gsub('mrproanp', 'MRproANP', predictor))
+    results$table <- results$table[c('predictor', 'levels', 'No PE', 'PE')]
     ## Meaningful label for predictor
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
@@ -176,7 +185,7 @@ dipep_glm <- function(df              = .data,
                              term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
                              term = gsub('bp.systolic', 'Systolic (Continuous)', term),
                              term = gsub('o2.saturation.catLow', 'O2 Saturation (Low)', term),
-                             term = gsub('o2.saturation.catHigh', 'O2 Saturation (Low)', term),
+                             term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
                              term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
                              term = gsub('respiratory.rate.catLow', 'Respiratory Rate (Low)', term),
                              term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
@@ -197,10 +206,10 @@ dipep_glm <- function(df              = .data,
                              term = gsub('presenting.features.syncope', 'Presenting : Syncope', term),
                              term = gsub('presenting.features.palpitations', 'Presenting : Palpitations', term),
                              term = gsub('presenting.features.other', 'Presenting : Other', term),
-                             term = gsub('pregnancies.under.cat', '>= 1 Pregnancy < 24 weeks', term),
-                             term = gsub('pregnancies.over.cat', '>= 1 Pregnancy > 24 weeks', term),
                              term = gsub('pregnancies.under', 'Pregnancies < 24 weeks (Continuous)', term),
                              term = gsub('pregnancies.over', 'Pregnancies > 24 weeks (Continuous)', term),
+                             term = gsub('pregnancies.under.cat', '>= 1 Pregnancy < 24 weeks', term),
+                             term = gsub('pregnancies.over.cat', '>= 1 Pregnancy > 24 weeks', term),
                              term = gsub('prev.preg.problemNo', 'No Previous Pregnancy Problems', term),
                              term = gsub('prev.preg.problemYes', 'Previous Pregnancy Problems', term),
                              term = gsub('history.thrombosisNo', 'No Family History of Thrombosis', term),
