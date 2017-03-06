@@ -147,11 +147,27 @@ logistic$pregnancies.under <- dipep_glm(df = dipep,
                     exclude = NULL,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE)
+## Previous Pregnancies < 24 weeks (Categorised)
+logistic$pregnancies.under.cat <- dipep_glm(df = dipep,
+                                        classification = 'first.st',
+                                        predictor = 'pregnancies.under.cat',
+                                        model = '>= 1 Pregnancy <= 24',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Previous Pregnancies > 24 weeks
 logistic$pregnancies.over <- dipep_glm(df = dipep,
                                        classification = 'first.st',
                                        predictor = 'pregnancies.over',
                                        model = 'Pregnancies >= 24',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
+## Previous Pregnancies > 24 weeks (Categorised)
+logistic$pregnancies.over.cat <- dipep_glm(df = dipep,
+                                       classification = 'first.st',
+                                       predictor = 'pregnancies.over.cat',
+                                       model = '>= 1 Pregnancy >= 24',
                     exclude = NULL,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE)
@@ -370,7 +386,7 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$temperature$tidied,
                          logistic$bp.diastolic.cat$tidied,
                          logistic$bp.diastolic$tidied,
-                         ## logistic$bp.systolic.cat$tidied,
+                         logistic$bp.systolic.cat$tidied,
                          logistic$bp.systolic$tidied,
                          logistic$o2.saturation.cat$tidied,
                          logistic$o2.saturation$tidied,
@@ -381,7 +397,9 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$bmi.cat$tidied,
                          logistic$bmi$tidied,
                          logistic$pregnancies.under$tidied,
+                         logistic$pregnancies.under.cat$tidied,
                          logistic$pregnancies.over$tidied,
+                         logistic$pregnancies.over.cat$tidied,
                          logistic$prev.preg.problem$tidied,
                          logistic$presenting.features.pleuritic$tidied,
                          logistic$presenting.features.non.pleuritic$tidied,
@@ -413,7 +431,7 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$temperature$glance,
                          logistic$bp.diastolic.cat$glance,
                          logistic$bp.diastolic$glance,
-                         ## logistic$bp.systolic.cat$glance,
+                         logistic$bp.systolic.cat$glance,
                          logistic$bp.systolic$glance,
                          logistic$o2.saturation.cat$glance,
                          logistic$o2.saturation$glance,
@@ -424,7 +442,9 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$bmi.cat$glance,
                          logistic$bmi$glance,
                          logistic$pregnancies.under$glance,
+                         logistic$pregnancies.under.cat$glance,
                          logistic$pregnancies.over$glance,
+                         logistic$pregnancies.over.cat$glance,
                          logistic$prev.preg.problem$glance,
                          logistic$presenting.features.pleuritic$glance,
                          logistic$presenting.features.non.pleuritic$glance,
@@ -450,7 +470,6 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$ecg.cat$glance,
                          ## logistic$xray$glance,
                          logistic$xray.cat$glance)
-
 ## Combine all predicted
 logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$age.cat$predicted,
@@ -460,7 +479,7 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$bp.diastolic$predicted,
                             logistic$bp.diastolic.cat$predicted,
                             logistic$bp.systolic$predicted,
-                            ## logistic$bp.systolic.cat$predicted,
+                            logistic$bp.systolic.cat$predicted,
                             logistic$o2.saturation$predicted,
                             logistic$o2.saturation.cat$predicted,
                             logistic$respiratory.rate$predicted,
@@ -470,7 +489,9 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$bmi$predicted,
                             logistic$bmi.cat$predicted,
                             logistic$pregnancies.under$predicted,
+                            logistic$pregnancies.under.cat$predicted,
                             logistic$pregnancies.over$predicted,
+                            logistic$pregnancies.over.cat$predicted,
                             logistic$prev.preg.problem$predicted,
                             logistic$presenting.features.pleuritic$predicted,
                             logistic$presenting.features.non.pleuritic$predicted,
@@ -499,7 +520,41 @@ logistic$predicted <- rbind(logistic$age$predicted,
 ## Remove 'presenting.features.' from name
 logistic$predicted <- mutate(logistic$predicted,
                              name = gsub('presenting.features.', '', name))
-
+## Combine cross-tabulation for all categorical models
+logistic$cross.tab <- rbind(logistic$age.cat$table,
+                            logistic$smoking$table,
+                            logistic$temperature.cat$table,
+                            logistic$bp.diastolic.cat$table,
+                            logistic$bp.systolic.cat$table,
+                            logistic$o2.saturation.cat$table,
+                            logistic$respiratory.rate.cat$table,
+                            logistic$heart.rate.cat$table,
+                            logistic$bmi.cat$table,
+                            logistic$pregnancies.under.cat$table,
+                            logistic$pregnancies.over.cat$table,
+                            logistic$prev.preg.problem$table,
+                            logistic$presenting.features.pleuritic$table,
+                            logistic$presenting.features.non.pleuritic$table,
+                            logistic$presenting.features.sob.rest$table,
+                            logistic$presenting.features.sob.exertion$table,
+                            logistic$presenting.features.haemoptysis$table,
+                            logistic$presenting.features.cough$table,
+                            logistic$presenting.features.syncope$table,
+                            logistic$presenting.features.palpitations$table,
+                            logistic$presenting.features.other$table,
+                            logistic$surgery$table,
+                            logistic$history.thrombosis$table,
+                            logistic$history.veins$table,
+                            logistic$history.iv.drug$table,
+                            logistic$thrombosis$table,
+                            logistic$trimester$table,
+                            logistic$this.pregnancy.problems$table,
+                            logistic$thrombo$table,
+                            logistic$multiple.preg$table,
+                            logistic$travel$table,
+                            logistic$immobil$table,
+                            logistic$ecg$table,
+                            logistic$xray$table)
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
                                 classification = 'first.st',
@@ -541,10 +596,7 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     coord_flip() + geom_hline(yintercept = 0) +
     xlab('Predictor') + ylab('Estimate') +
     ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression') +
-    theme_bw() + theme(legend.position = 'none',
-                    exclude = NULL,
-                    exclude.dvt = TRUE,
-                    exclude.non.recruited = TRUE)
+    theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
 to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
@@ -553,6 +605,14 @@ kable(to.sum,
       digits  = 3,
       caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
 rm(to.sum)
+
+```
+Cross-tabulation of all categorical variables by the Primary Classification is provided in the table below.
+
+```{r results_logistic_regression_cross_tab, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+kable(logistic$cross.tab,
+      col.names = c('Predictor', 'Levels', 'No PE', 'PE'),
+      caption   = 'Cross-tabulation of categorical predictors by Primary Classification of Pulmonary Embolism status')
 
 ```
 
