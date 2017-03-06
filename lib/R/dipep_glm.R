@@ -15,7 +15,9 @@
 #' @param predictor Predictor variable(s) to test.
 #' @param model Name/label of your model.
 #' @param relevel Reference level for logistic regression if different from default.
-#' @param exclude List of individuals to explicitly exclude.
+#' @param exclude Vector of \code{screening}  to exclude.
+#' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
+#' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #'
 #' @export
 dipep_glm <- function(df              = .data,
@@ -24,6 +26,8 @@ dipep_glm <- function(df              = .data,
                       model           = NULL,
                       relevel         = NULL,
                       exclude         = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt       = TRUE,
                       ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
@@ -31,8 +35,13 @@ dipep_glm <- function(df              = .data,
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
-    ## Remove non-recruited
-    df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE'))
+    ## Remove non-recruited and DVT
+    if(exclude.non.recruited == TRUE){
+        df <- dplyr::filter(df, group != 'Non recruited')
+    }
+    if(exclude.dvt == TRUE){
+        df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
     ## Exclude those who are not classified as PE/No PE by
     ## the specified classification
     ## TODO 2017-02-17 : Why doesn dplyr::filter_(df, !is.na(classification)) not work???
@@ -71,8 +80,7 @@ dipep_glm <- function(df              = .data,
     }
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
-    results$df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE')) %>%
-                  dplyr::filter_(!is.na(classification)) %>%
+    results$df <- dplyr::filter_(df, !is.na(classification)) %>%
                   dplyr::select_(.dots = c(classification, predictor)) %>%
                   mutate(obs = rownames(.),
                          use = complete.cases(.)) %>%
