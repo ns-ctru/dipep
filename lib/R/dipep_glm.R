@@ -78,6 +78,9 @@ dipep_glm <- function(df              = .data,
     if(is.null(model)){
         model <- predictor
     }
+    ## Cross tabulation of counts for combining
+    results$table <- dplry::group_by_(df, classification, predictor) %>%
+                     summarise(n = n())
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
     results$df <- dplyr::filter_(df, !is.na(classification)) %>%
