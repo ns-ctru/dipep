@@ -79,8 +79,61 @@ dipep_glm <- function(df              = .data,
         model <- predictor
     }
     ## Cross tabulation of counts for combining
-    results$table <- dplry::group_by_(df, classification, predictor) %>%
-                     summarise(n = n())
+    results$table <- dplyr::group_by_(df, classification, predictor) %>%
+        summarise(n = n())
+    names(results$table) <- c('classification', 'levels', 'n')
+    results$table <- dcast(results$table, levels ~ classification) %>%
+                     mutate(predictor = predictor,
+                            predictor = gsub('age.cat', 'Age (Categorised)', predictor),
+                            predictor = gsub('smoking', 'Smoking Status', predictor),
+                            predictor = gsub('temperature.cat', 'Temperature (Categorised)', predictor),
+                            predictor = gsub('bp.diastolic.cat', 'Diastolic (Categorised)', predictor),
+                            predictor = gsub('bp.systolic.cat', 'Systolic (Categorised)', predictor),
+                            predictor = gsub('o2.saturation.cat', 'O2 Saturation (Categorised)', predictor),
+                            predictor = gsub('respiratory.rate.cat', 'Respiratory Rate (Categorised)', predictor),
+                            predictor = gsub('heart.rate.cat', 'Heart Rate (Categorised)', predictor),
+                            predictor = gsub('bmi.cat', 'BMI (Categorised)', predictor),
+                            predictor = gsub('presenting.features.pleuritic', 'Presenting : Pleuritic', predictor),
+                            predictor = gsub('presenting.features.non.pleuritic', 'Presenting : Non-Pleuritic', predictor),
+                            predictor = gsub('presenting.features.sob.exertion', 'Presenting : Shortness of Breath (Exertion)', predictor),
+                            predictor = gsub('presenting.features.sob.rest', 'Presenting : Shortness of Breath (Rest)', predictor),
+                            predictor = gsub('presenting.features.haemoptysis', 'Presenting : Haemoptysis', predictor),
+                            predictor = gsub('presenting.features.cough', 'Presenting : Cough', predictor),
+                            predictor = gsub('presenting.features.syncope', 'Presenting : Syncope', predictor),
+                            predictor = gsub('presenting.features.palpitations', 'Presenting : Palpitations', predictor),
+                            predictor = gsub('presenting.features.other', 'Presenting : Other', predictor),
+                            predictor = gsub('pregnancies.under.cat', '>= 1 Pregnancy < 24 weeks', predictor),
+                            predictor = gsub('pregnancies.over.cat', '>= 1 Pregnancy > 24 weeks', predictor),
+                            predictor = gsub('prev.preg.problem', 'Previous Pregnancy Problems', predictor),
+                            predictor = gsub('history.thrombosis', 'Family History of Thrombosis', predictor),
+                            predictor = gsub('history.veins', 'History of Varicose Veins', predictor),
+                            predictor = gsub('history.iv.drug', 'History of IV Drug use', predictor),
+                            predictor = gsub('thrombosis', 'History of Thrombosis', predictor),
+                            predictor = gsub('trimester', 'Trimester', predictor),
+                            predictor = gsub('this.pregnancy.problems', 'Problems with this Pregnancy', predictor),
+                            predictor = gsub('surgery', 'Surgery in previous 4 weeks', predictor),
+                            predictor = gsub('thrombo', 'Known Thrombophilia', predictor),
+                            predictor = gsub('multiple.preg', 'Multiple Pregnancy', predictor),
+                            predictor = gsub('travel', 'Long-haul travel during pregnancy', predictor),
+                            predictor = gsub('immobil', '<3 days Immobility/bed rest during pregnancy', predictor),
+                            predictor = gsub('ecg', 'ECG', predictor),
+                            predictor = gsub('xray', 'X-ray', predictor),
+                            predictor = gsub('aprothombin', 'Aprothombin', predictor),
+                            predictor = gsub('prothombin.time', 'Prothombin (Time)', predictor),
+                            predictor = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', predictor),
+                            predictor = gsub('ddimer.innovan', 'D-Dimer (Innovan)', predictor),
+                            predictor = gsub('ddimer.elisa', 'D-Dimer (ELISA)', predictor),
+                            predictor = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', predictor),
+                            predictor = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', predictor),
+                            predictor = gsub('thrombin.generation.peak', 'Thrombin Generation (Peak)', predictor),
+                            predictor = gsub('thrombin.generation.time.to.peak', 'Thrombin Generation (Time to Peak)', predictor),
+                            predictor = gsub('plasmin.antiplasmin', 'Plasmin (Antiplasmin)', predictor),
+                            predictor = gsub('prothrombin.fragments', 'Prothombin Fragments', predictor),
+                            predictor = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', predictor),
+                            predictor = gsub('troponin', 'Troponin', predictor),
+                            predictor = gsub('natriuertic.peptide', 'Natriuertic Peptide', predictor),
+                            predictor = gsub('mrproanp', 'MRproANP', predictor))
+    ## Meaningful label for predictor
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
     results$df <- dplyr::filter_(df, !is.na(classification)) %>%
