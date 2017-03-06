@@ -7,222 +7,354 @@ logistic <- list()
 logistic$age <- dipep_glm(df = dipep,
                           classification = 'first.st',
                           predictor      = 'age',
-                          model          = 'Age')
+                          model          = 'Age',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Age (Categorised)
 logistic$age.cat <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'age.cat',
-                              model     = 'Age (Binary)')
+                              model     = 'Age (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Smoking
 logistic$smoking <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'smoking',
-                              model = 'Smoking')
+                              model = 'Smoking',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Temperature (Categorised)
 logistic$temperature.cat <- dipep_glm(df        = dipep,
                                       classification = 'first.st',
                                       predictor = 'temperature.cat',
-                                      model     = 'Temperature (Binary)')
+                                      model     = 'Temperature (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Temperature
 logistic$temperature <- dipep_glm(df            = dipep,
                                   classification = 'first.st',
                                   predictor     = 'temperature',
-                                  model         = 'Temperature')
+                                  model         = 'Temperature',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## BP Diastolic (Categorised)
 logistic$bp.diastolic.cat <- dipep_glm(df        = dipep,
                                        classification = 'first.st',
                                        predictor = 'bp.diastolic.cat',
-                                       model     = 'Diastolic BP (Binary)')
+                                       model     = 'Diastolic BP (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## BP Diastolic
 logistic$bp.diastolic <- dipep_glm(df        = dipep,
                                    classification = 'first.st',
                                    predictor = 'bp.diastolic',
-                                   model     = 'Diastolic BP')
+                                   model     = 'Diastolic BP',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## BP Systolic (Categorised)
-## logistic$bp.systolic.cat <- dipep_glm(df = dipep,
-##                          classification = 'first.st',
-##                                       predictor = 'bp.systolic.cat',
-##                                       model     = 'Systolic BP (Binary)')
+logistic$bp.systolic.cat <- dipep_glm(df = dipep,
+                                      classification = 'first.st',
+                                      predictor = 'bp.systolic.cat',
+                                      model     = 'Systolic BP (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## BP Systolic
 logistic$bp.systolic <- dipep_glm(df = dipep,
                                   classification = 'first.st',
                                   predictor = 'bp.systolic',
-                                  model     = 'Systolic BP')
+                                  model     = 'Systolic BP',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## O2 Saturation (Categorised)
 logistic$o2.saturation.cat <- dipep_glm(df = dipep,
                                         classification = 'first.st',
                                         predictor = 'o2.saturation.cat',
-                                        model = 'O2 Saturation (Binary)')
+                                        model = 'O2 Saturation (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## O2 Saturation
 logistic$o2.saturation <- dipep_glm(df = dipep,
                                     classification = 'first.st',
                                     predictor = 'o2.saturation',
-                                    model = 'O2 Saturation')
+                                    model = 'O2 Saturation',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Respiratory Rate (Categorised)
 logistic$respiratory.rate.cat <- dipep_glm(df = dipep,
                                            classification = 'first.st',
                                            predictor = 'respiratory.rate.cat',
-                                           model = 'Respiratory Rate (Binary)')
+                                           model = 'Respiratory Rate (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Respiratory Rate
 logistic$respiratory.rate <- dipep_glm(df = dipep,
                                        classification = 'first.st',
                                        predictor = 'respiratory.rate',
-                                       model = 'Respiratory Rate')
+                                       model = 'Respiratory Rate',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Heart Rate (Categorised)
 logistic$heart.rate.cat <- dipep_glm(df = dipep,
                                      classification = 'first.st',
                                      predictor = 'heart.rate.cat',
-                                     model = 'Heart Rate (Binary)')
+                                     model = 'Heart Rate (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Heart Rate
 logistic$heart.rate <- dipep_glm(df = dipep,
                                  classification = 'first.st',
                                  predictor = 'heart.rate',
-                                 model = 'Heart Rate')
+                                 model = 'Heart Rate',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## BMI (Categorised)
 logistic$bmi.cat <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'bmi.cat',
-                              model = 'BMI (Binary)')
+                              model = 'BMI (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## BMI
 logistic$bmi <- dipep_glm(df = dipep,
                           classification = 'first.st',
                           predictor = 'bmi',
-                          model = 'BMI')
+                          model = 'BMI',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Previous Pregnancies < 24 weeks
 logistic$pregnancies.under <- dipep_glm(df = dipep,
                                         classification = 'first.st',
                                         predictor = 'pregnancies.under',
-                                        model = 'Pregnancies <= 24')
+                                        model = 'Pregnancies <= 24',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Previous Pregnancies > 24 weeks
 logistic$pregnancies.over <- dipep_glm(df = dipep,
                                        classification = 'first.st',
                                        predictor = 'pregnancies.over',
-                                       model = 'Pregnancies >= 24')
+                                       model = 'Pregnancies >= 24',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Previous Pregnancy Problems
 logistic$prev.preg.problem <- dipep_glm(df = dipep,
                                         classification = 'first.st',
                                         predictor = 'prev.preg.problem',
-                                        model = 'Previous Pregnancy Problems')
+                                        model = 'Previous Pregnancy Problems',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Pleuritic
 logistic$presenting.features.pleuritic <- dipep_glm(df = dipep,
                                                     classification = 'first.st',
                                                     predictor = 'presenting.features.pleuritic',
-                                                    model = 'Pleuritic')
+                                                    model = 'Pleuritic',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Non-Pleuritic
 logistic$presenting.features.non.pleuritic <- dipep_glm(df = dipep,
                                                         classification = 'first.st',
                                                         predictor = 'presenting.features.non.pleuritic',
-                                                        model = 'Non-Pleuritic')
+                                                        model = 'Non-Pleuritic',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Shortness of Breath (Exertion)
 logistic$presenting.features.sob.exertion <- dipep_glm(df = dipep,
                                                        classification = 'first.st',
                                                        predictor = 'presenting.features.sob.exertion',
-                                                       model = 'Shortness of Breath (Exertion)')
+                                                       model = 'Shortness of Breath (Exertion)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Shortness of Breath (Rest)
 logistic$presenting.features.sob.rest <- dipep_glm(df = dipep,
                                                    classification = 'first.st',
                                                    predictor = 'presenting.features.sob.rest',
-                                                   model = 'Shortness of Breath (Rest)')
+                                                   model = 'Shortness of Breath (Rest)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Haemoptysis
 logistic$presenting.features.haemoptysis <- dipep_glm(df = dipep,
                                                       classification = 'first.st',
                                                       predictor = 'presenting.features.haemoptysis',
-                                                      model = 'Haemoptysis')
+                                                      model = 'Haemoptysis',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Cough
 logistic$presenting.features.cough <- dipep_glm(df = dipep,
                                                 classification = 'first.st',
                                                 predictor = 'presenting.features.cough',
-                                                model = 'Cough')
+                                                model = 'Cough',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Syncope
 logistic$presenting.features.syncope <- dipep_glm(df = dipep,
                                                   classification = 'first.st',
                                                   predictor = 'presenting.features.syncope',
-                                                  model = 'Syncope')
+                                                  model = 'Syncope',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Palpitations
 logistic$presenting.features.palpitations <- dipep_glm(df = dipep,
                                                        classification = 'first.st',
                                                        predictor = 'presenting.features.palpitations',
-                                                       model = 'Palpitations')
+                                                       model = 'Palpitations',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Other Features on Presentation
 logistic$presenting.features.other <- dipep_glm(df = dipep,
                                                 classification = 'first.st',
                                                 predictor = 'presenting.features.other',
-                                                model = 'Other')
+                                                model = 'Other',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Surgery
 logistic$surgery <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'surgery',
-                              model = 'Surgery')
+                              model = 'Surgery',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Family history of thrombosis
 logistic$history.thrombosis <- dipep_glm(df = dipep,
                                          classification = 'first.st',
                                          predictor = 'history.thrombosis',
-                                         model = 'Family History of Thrombosis')
+                                         model = 'Family History of Thrombosis',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## History of varicoseveins
 logistic$history.veins <- dipep_glm(df = dipep,
                                     classification = 'first.st',
                                     predictor = 'history.veins',
-                                    model =  'Varicose Veins')
+                                    model =  'Varicose Veins',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## History of IV Drug use
 logistic$history.iv.drug <- dipep_glm(df = dipep,
                                       classification = 'first.st',
                                       predictor = 'history.iv.drug',
-                                      model = 'History of IV Drug Use')
+                                      model = 'History of IV Drug Use',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Thrombosis
 logistic$thrombosis <- dipep_glm(df = dipep,
                                  classification = 'first.st',
                                  predictor = 'thrombosis',
-                                 model = 'History of Thrombosis')
+                                 model = 'History of Thrombosis',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Trimester
 logistic$trimester <- dipep_glm(df = dipep,
                                 classification = 'first.st',
                                 predictor = 'trimester',
-                                model = 'Trimester')
+                                model = 'Trimester',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Problems with this pregnancy
 logistic$this.pregnancy.problems <- dipep_glm(df = dipep,
                                               classification = 'first.st',
                                               predictor = 'this.pregnancy.problems',
-                                              model = 'Problems During This Pregnancy')
+                                              model = 'Problems During This Pregnancy',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Thrombo
 logistic$thrombo <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'thrombo',
-                              model = 'Known Thrombophilia')
+                              model = 'Known Thrombophilia',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Multiple Pregnancy
 logistic$multiple.preg <- dipep_glm(df = dipep,
                                     classification = 'first.st',
                                     predictor = 'multiple.preg',
-                                    model = 'Multiple Pregnancy')
+                                    model = 'Multiple Pregnancy',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Travel
 logistic$travel <- dipep_glm(df = dipep,
                              classification = 'first.st',
                              predictor = 'travel',
-                             model = 'Long-haul travel during pregnancy')
+                             model = 'Long-haul travel during pregnancy',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Immobility
 logistic$immobil <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'immobil',
-                              model = '>=3 days Immobility/bed rest during pregnancy')
+                              model = '>=3 days Immobility/bed rest during pregnancy',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## ECG (Categorised)
 logistic$ecg.cat <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'ecg.cat',
-                              model = 'ECG (Binary)')
+                              model = 'ECG (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## ECG
 ## logistic$ecg <- dipep_glm(df = dipep,
 ##                           classification = 'first.st',
 ##                           predictor = 'ecg',
-##                           model = 'ECG')
+##                           model = 'ECG',
+##                     exclude = NULL,
+##                     exclude.dvt = TRUE,
+##                     exclude.non.recruited = TRUE)
 ## ECG (Categorised)
 logistic$xray.cat <- dipep_glm(df = dipep,
                                classification = 'first.st',
                                predictor = 'xray.cat',
-                               model = 'X-Ray (Binary)')
+                               model = 'X-Ray (Binary)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## X-Ray
 ## logistic$xray <- dipep_glm(df = dipep,
 ##                            classification = 'first.st',
 ##                            predictor = 'xray',
-##                            model = 'X-Ray')
+##                            model = 'X-Ray',
+##                            exclude = NULL,
+##                            exclude.dvt = TRUE,
+##                            exclude.non.recruited = TRUE)
 ## X-Ray (Categorised)
 logistic$xray.cat <- dipep_glm(df = dipep,
                                classification = 'first.st',
@@ -409,7 +541,10 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     coord_flip() + geom_hline(yintercept = 0) +
     xlab('Predictor') + ylab('Estimate') +
     ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression') +
-    theme_bw() + theme(legend.position = 'none')
+    theme_bw() + theme(legend.position = 'none',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE)
 ## Redo subsetting, include temperature and O2 Saturation
 to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
@@ -481,7 +616,7 @@ logistic$roc.med.hist <- dipep_roc(df      = logistic$predicted,
                           title   = 'Medical History')
 logistic$roc.med.hist$plot
 ## Combine and tabulate the AUC
-rbind(logistic$rocphysiology$plot.auc,
+rbind(logistic$roc.physiology$plot.auc,
       logistic$roc.physiology.cat$plot.auc,
       logistic$roc.presenting$plot.auc,
       logistic$roc.other$plot.auc,
@@ -489,6 +624,14 @@ rbind(logistic$rocphysiology$plot.auc,
     dplyr::select(-c(x, y)) %>%
     kable(digits = 3,
           caption = 'Area Under the Curve (AUC) statistics of predictor variables')
+## Combine and tabulate
+rbind(logistic$roc.physiology$summary.stats,
+      logistic$roc.physiology.cat$summary.stats,
+      logistic$roc.presenting$summary.stats,
+      logistic$roc.other$summary.stats,
+      logistic$roc.med.hist$summary.stats) %>%
+    kable(digits  = 3,
+          caption = 'Summary Statistics for Univariable logistic regression, threshold for dichotomisation is p > 0.5')
 
 ```
 
