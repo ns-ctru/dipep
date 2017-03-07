@@ -14,13 +14,19 @@ shinyServer(function(input, output){
     ############################################################################
     model <- reactive({
         if(input$categorical == TRUE){
-            reformulate(response = 'pe',
+            reformulate(response = input$pe,
                     termlabels = c(input$demog.cat, input$presenting, input$history, input$current))
         }
         else{
-            reformulate(response = 'pe',
+            reformulate(response = input$pe,
                         termlabels = c(input$demog, input$presenting, input$history, input$current))
         }
+    })
+    ############################################################################
+    ## Set up the Data                                                        ##
+    ############################################################################
+    data <- reactive({
+        dplyr::filter(dipep, group %in% input$include)
     })
     ############################################################################
     ## Logistic Regression                                                    ##
@@ -39,8 +45,9 @@ shinyServer(function(input, output){
     ## Fit the full regression tree
     rpart.fit.full <- reactive({
         rpart(formula  = model(),
-              data   = dplyr::filter(dipep, group == 'Suspected PE'),
-              method = 'class',
+              ## data   = dplyr::filter(dipep, group == 'Suspected PE'),
+              data      = data(),
+              method    = 'class',
               minsplit  = input$minsplit,
               minbucket = input$minbucket)
     })
