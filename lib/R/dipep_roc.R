@@ -79,20 +79,20 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('ecg.cat', 'ECG', Predictor),
                                Predictor = gsub('xray', 'X-ray', Predictor),
                                Predictor = gsub('xray.cat', 'X-ray', Predictor),
-                               Predictor = gsub('aprothombin', 'Aprothombin', Predictor),
+                               Predictor = gsub('appt', 'APTT', Predictor),
                                Predictor = gsub('prothombin.time', 'Prothombin (Time)', Predictor),
                                Predictor = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', Predictor),
-                               Predictor = gsub('ddimer.innovan', 'D-Dimer (Innovan)', Predictor),
+                               Predictor = gsub('ddimer.innovanance', 'D-Dimer (Innovance)', Predictor),
                                Predictor = gsub('ddimer.elisa', 'D-Dimer (ELISA)', Predictor),
                                Predictor = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', Predictor),
                                Predictor = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', Predictor),
                                Predictor = gsub('thrombin.generation.peak', 'Thrombin Generation (Peak)', Predictor),
                                Predictor = gsub('thrombin.generation.time.to.peak', 'Thrombin Generation (Time to Peak)', Predictor),
                                Predictor = gsub('plasmin.antiplasmin', 'Plasmin (Antiplasmin)', Predictor),
-                               Predictor = gsub('prothrombin.fragments', 'Prothombin Fragments', Predictor),
-                               Predictor = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', Predictor),
+                               Predictor = gsub('prothrombin.fragments', 'PF 1 + 2', Predictor),
+                               Predictor = gsub('tissue.factor', 'Tissue Factor', Predictor),
                                Predictor = gsub('troponin', 'Troponin', Predictor),
-                               Predictor = gsub('natriuertic.peptide', 'Natriuertic Peptide', Predictor),
+                               Predictor = gsub('nppb', 'NPPB', Predictor),
                                Predictor = gsub('mrproanp', 'MRproANP', Predictor))
     results$plot.auc$x <- 0.75
     results$plot.auc$y <- 0.25
@@ -107,7 +107,7 @@ dipep_roc <- function(df        = logistic$predicted,
     ##                   Negative Predictive Value
     ## Check if threshold (a value which should determine the cut point for
     ## classification) exists in the data, if not then set it
-    results$df <- df
+    results$df <- dplyr::filter(df, name %in% to.plot)
     if(!c('threshold') %in% names(results$df)){
         results$df <- mutate(results$df,
                              threshold = threshold)
