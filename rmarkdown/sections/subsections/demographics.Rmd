@@ -179,8 +179,8 @@ summary.stats$group       <-  dipep_summarise(df                    = dipep,
                                               grouping              = 'group',
                                               group.as.col          = TRUE,
                                               exclude               = NULL,
-                                              exclude.non.recruited = TRUE,
-                                              exclude.dvt           = TRUE,
+                                              exclude.non.recruited = FALSE,
+                                              exclude.dvt           = FALSE,
                                               age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
                                               weight, respiratory.rate, o2.saturation, gestation)
 summary.stats$first.st <- dipep_summarise(df           = dipep,
@@ -215,55 +215,6 @@ summary.stats$fourth.st <- dipep_summarise(df           = dipep,
                                            exclude.dvt           = TRUE,
                        	                   age, bmi, heart.rate, bp.systolic, bp.diastolic, height,
                        	                   weight, respiratory.rate, o2.saturation, gestation)
-summary.biomarkers <- list()
-summary.biomarkers$first.st <- dipep_summarise(df           = dipep,
-                      	                  grouping     = 'first.st',
-                      	                  group.as.col = TRUE,
-                                          exclude               = NULL,
-                                          exclude.non.recruited = TRUE,
-                                          exclude.dvt           = TRUE,
-                      	                  prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
-                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
-                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
-                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                          soluble.tissue.factor, troponin,
-                                          natriuertic.peptide, mrproanp)
-summary.biomarkers$second.st <- dipep_summarise(df           = dipep,
-                                                grouping     = 'second.st',
-                                                group.as.col = TRUE,
-                                                exclude               = NULL,
-                                                exclude.non.recruited = TRUE,
-                                                exclude.dvt           = TRUE,
-                                                prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
-                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
-                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
-                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                soluble.tissue.factor, troponin,
-                                                natriuertic.peptide, mrproanp)
-summary.biomarkers$third.st <- dipep_summarise(df           = dipep,
-                                               grouping     = 'third.st',
-                                               group.as.col = TRUE,
-                                               exclude               = NULL,
-                                               exclude.non.recruited = TRUE,
-                                               exclude.dvt           = TRUE,
-                                               prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
-                                               thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
-                                               thrombin.generation.peak, thrombin.generation.time.to.peak,
-                                               ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                               soluble.tissue.factor, troponin,
-                                               natriuertic.peptide, mrproanp)
-summary.biomarkers$fourth.st <- dipep_summarise(df           = dipep,
-                                                grouping     = 'fourth.st',
-                                                group.as.col = TRUE,
-                                                exclude               = NULL,
-                                                exclude.non.recruited = TRUE,
-                                                exclude.dvt           = TRUE,
-                                                prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
-                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
-                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
-                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                soluble.tissue.factor, troponin,
-                                                natriuertic.peptide, mrproanp)
 
 ```
 
@@ -317,7 +268,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, age)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Age') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Age by Primary Classification')
@@ -356,7 +307,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, bmi)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'BMI') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of BMI by Primary Classification')
@@ -394,7 +345,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, height)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Height') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Height by Primary Classification')
@@ -431,7 +382,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, weight)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Weight') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Weight by Primary Classification')
@@ -468,7 +419,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, heart.rate)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Heart Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Heart Rate by Primary Classification')
@@ -506,7 +457,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, respiratory.rate)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Respiratory Rate') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Respiratory Rate (BPM) by Primary Classification')
@@ -543,7 +494,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, bp.systolic)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Systolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Systolic Blood Pressure (mm/Hg) by Primary Classification')
@@ -580,7 +531,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, bp.diastolic)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Diastolic BP') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Diastolic Blood Pressure (mm/Hg) by Primary Classification')
@@ -617,7 +568,7 @@ to.plot <- dipep_plot(df                    = dipep,
                       title.class           = 'Primary Classification',
                       first.st, o2.saturation)
 to.plot$histogram
-## to.plot$scatter
+to.plot$scatter
 dplyr::filter(summary.stats$first.st, Measurement == 'Oxygen Saturation') %>%
     dplyr::select(-Measurement) %>%
     kable(caption = 'Summary of Oxygen Saturation by Primary Classification')
