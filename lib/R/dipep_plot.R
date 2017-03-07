@@ -82,7 +82,7 @@ dipep_plot <- function(df        = dipep,
                                                                        no  = plasmin.antiplasmin),
                      prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = prothombin.fragments),
+                                                                       no  = prothrombin.fragments),
                      soluble.tissue.factor                    = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = soluble.tissue.factor),
@@ -178,17 +178,20 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('fourth.st',                                'class',   names(df))
     names(df) <- gsub('primary.dm',                               'class',   names(df))
     names(df) <- gsub('secondary.dm',                             'class',   names(df))
-    names(df) <- gsub('aprothombin',                              'to.plot', names(df))
+    names(df) <- gsub('aptt',                                     'to.plot', names(df))
     names(df) <- gsub('prothombin.time',                          'to.plot', names(df))
     names(df) <- gsub('clauss.fibrinogen',                        'to.plot', names(df))
-    names(df) <- gsub('ddimer.innovan',                           'to.plot', names(df))
+    names(df) <- gsub('ddimer.innovance',                         'to.plot', names(df))
     names(df) <- gsub('ddimer.elisa',                             'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.lag.time',             'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.endogenous.potential', 'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.time.to.peak',         'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.peak',                 'to.plot', names(df))
     names(df) <- gsub('plasmin.antiplasmin',                      'to.plot', names(df))
-    names(df) <- gsub('natriuertic.peptide',                      'to.plot', names(df))
+    names(df) <- gsub('prothrombin.fragments',                    'to.plot', names(df))
+    names(df) <- gsub('tissue.factor',                            'to.plot', names(df))
+    names(df) <- gsub('troponon',                                 'to.plot', names(df))
+    names(df) <- gsub('nppb',                                     'to.plot', names(df))
     names(df) <- gsub('mrproanp',                                 'to.plot', names(df))
     names(df) <- gsub('age',                                      'to.plot', names(df))
     names(df) <- gsub('bmi',                                      'to.plot', names(df))
