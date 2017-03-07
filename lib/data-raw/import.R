@@ -683,22 +683,22 @@ master$biomarker_tidy <- left_join(master$biomarker_tidy,
                          mutate(exclude.anti.coag = ifelse(!is.na(exclude.anti.coag),
                                                            yes = exclude.anti.coag,
                                                            no  = 'No'))
-master$biomarker_tidy <- mutate(master$biomarker_tidy,
-                                aprothombin = ifelse(exclude.anti.coag == 'Yes',
-                                                     yes = NA,
-                                                     no  = aprothombin),
-                                thrombin.generation.lag.time = ifelse(exclude.anti.coag == 'Yes',
-                                                                      yes = NA,
-                                                                      no  = thrombin.generation.lag.time),
-                                thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
-                                                                      yes = NA,
-                                                                      no  = thrombin.generation.endogenous.potential),
-                                thrombin.generation.time.to.peak = ifelse(exclude.anti.coag == 'Yes',
-                                                                          yes = NA,
-                                                                          no  = thrombin.generation.time.to.peak),
-                                thrombin.generation.peak = ifelse(exclude.anti.coag == 'Yes',
-                                                                  yes = NA,
-                                                                  no  = thrombin.generation.peak))
+## master$biomarker_tidy <- mutate(master$biomarker_tidy,
+##                                 aprothombin = ifelse(exclude.anti.coag == 'Yes',
+##                                                      yes = NA,
+##                                                      no  = aprothombin),
+##                                 thrombin.generation.lag.time = ifelse(exclude.anti.coag == 'Yes',
+##                                                                       yes = NA,
+##                                                                       no  = thrombin.generation.lag.time),
+##                                 thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+##                                                                       yes = NA,
+##                                                                       no  = thrombin.generation.endogenous.potential),
+##                                 thrombin.generation.time.to.peak = ifelse(exclude.anti.coag == 'Yes',
+##                                                                           yes = NA,
+##                                                                           no  = thrombin.generation.time.to.peak),
+##                                 thrombin.generation.peak = ifelse(exclude.anti.coag == 'Yes',
+##                                                                   yes = NA,
+##                                                                   no  = thrombin.generation.peak))
 #######################################################################
 ## Combine required variables into one coherent data frame (would be ##
 ## nice if data management provided this functionality in Prospect   ##
@@ -1263,6 +1263,14 @@ master$missing <- merge(t,
 ## could do in Prospect as then BMI, age, etc. would all be          ##
 ## standardised and reusable and whoever does the QA will not have to##
 ## duplicate the work of deriving variables).                        ##
+##                                                                   ##
+## IMPORTANT : Where responses are missing the CI (Steve Goodacre)   ##
+##             wishes to have 'normal' used instead.  This is        ##
+##             straight forward for categorical variables, or those  ##
+##             that are dichotomised, less so for continuous         ##
+##             variables, where 'normal' values are meant to be      ##
+##             provided by Steve Goodacre and Gordon Fuller (but are ##
+##             not yet available).                                   ##
 #######################################################################
 dipep.raw <- mutate(dipep.raw,
                     bmi = weight / (height / 100)^2,
@@ -1368,6 +1376,18 @@ dipep <- dipep %>%
                 heart.rate.cat = ifelse(is.na(heart.rate.cat),
                                         yes = 0,
                                         no  = heart.rate.cat),
+                surgery = as.character(surgery),
+                surgery = ifelse(is.na(surgery),
+                                 yes = 'No',
+                                 no  = surgery),
+                surgery = factor(surgery,
+                                 levels = c('No', 'Yes')),
+                prev.preg.problem = as.character(prev.preg.problem),
+                prev.preg.problem = ifelse(is.na(prev.preg.problem),
+                                           yes = 'No',
+                                           no  = prev.preg.problem),
+                prev.preg.problem = factor(prev.preg.problem,
+                                           levels = c('No', 'Yes')),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
                 ## ToDo 2017-02-22 - Possible some of these SHOULDN'T be derived for
                 ##                   individuals who are 'Non recruited' since they
@@ -1378,6 +1398,12 @@ dipep <- dipep %>%
                 cesarean = ifelse(is.na(cesarean),
                                   yes = 0,
                                   no  = cesarean),
+                smoking = as.character(smoking),
+                smoking = ifelse(is.na(smoking),
+                                 yes = 'never',
+                                 no  = smoking),
+                smoking = factor(smoking,
+                                 levels = c('never', 'gave up prior to pregnancy', 'gave up during pregnancy', 'current')),
                 smoking.cat = ifelse(smoking == 'current' | smoking == 'gave up during pregnancy',
                                      yes = 1,
                                      no  = 0),
@@ -1596,6 +1622,8 @@ dipep <- mutate(dipep,
                                                             ref = 'No previous pregnancies < 24 weeks'),
                 pregnancies.over.cat              = relevel(pregnancies.over.cat,
                                                             ref = 'No previous pregnancies > 24 weeks'),
+                pregnancies.over.cat              = relevel(prev.preg.problem,
+                                                            ref = 'No'),
                 temperature.cat                   = relevel(temperature.cat,
                                                             ref = 'Low'),
                 heart.rate.cat                    = relevel(heart.rate.cat,
@@ -1612,6 +1640,8 @@ dipep <- mutate(dipep,
                                                             ref = 'Low'),
                 cesarean                          = relevel(cesarean,
                                                             ref = 'No Cesarean'),
+                surgery                           = relevel(surgery,
+                                                            ref = 'No'),
                 smoking.cat                       = relevel(smoking.cat,
                                                             ref = 'Non-smoker'),
                 age.cat                           = relevel(age.cat,
@@ -1843,6 +1873,7 @@ dipep <- mutate(dipep,
                 ## perc          = factor(perc, levels = c(0, 1, 2, 3, 4)),
                 perc.pe = factor(perc.pe,
                                  levels = c('No PERC PE', 'PERC PE')))
+
 ## Wells
 dipep <- mutate(dipep,
                 wells.dvt = ifelse(dvt == 'Yes',
@@ -1851,9 +1882,13 @@ dipep <- mutate(dipep,
                 wells.dvt = ifelse(is.na(dvt),
                                    yes = 0,
                                    no  = wells.dvt),
-                wells.alternative = ifelse(likely.diagnosis == 'PE',
-                                           yes = 3,
-                                           no  = 0),
+                ## wells.alternative.permissive = ifelse(likely.diagnosis %in% c('Possible PE', 'PE'),
+                wells.alternative.permissive = ifelse(likely.diagnosis == 'Other',
+                                                      yes = 3,
+                                                      no  = 0),
+                wells.alternative.strict = ifelse(likely.diagnosis == 'PE',
+                                                  yes = 3,
+                                                  no  = 0),
                 wells.heart.rate = ifelse(heart.rate <= 100 | is.na(heart.rate),
                                           yes = 0,
                                           no  = 1.5),
@@ -1886,25 +1921,44 @@ dipep <- mutate(dipep,
                 wells.neoplasm = ifelse(existing.medical.cancer == 'No' | is.na(existing.medical.cancer),
                                         yes = 0,
                                         no  = 1),
-                wells = wells.dvt +
-                        ## wells.alternative +
-                        wells.heart.rate +
-                        wells.surgery.immobil +
-                        wells.dvt.pe +
-                        wells.haemoptysis +
-                        wells.neoplasm,
-                wells.pe.risk = ifelse(wells > 6,
+                wells.permissive = wells.dvt +
+                                   wells.alternative.permissive +
+                                   wells.heart.rate +
+                                   wells.surgery.immobil +
+                                   wells.dvt.pe +
+                                   wells.haemoptysis +
+                                   wells.neoplasm,
+                wells.permissive.risk = ifelse(wells.permissive > 6,
+                                               yes = 'High',
+                                               no = ifelse(wells.permissive > 2,
+                                                           yes = 'Moderate',
+                                                           no  = 'Low')),
+                wells.permissive.pe      = ifelse(wells.permissive > 4,
+                                                  yes = 'Wells PE',
+                                                  no  = 'No Wells PE'),
+                wells.permissive         = factor(wells.permissive,
+                                                  levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
+                wells.permissive.pe      = factor(wells.permissive.pe,
+                                                  levels = c('No Wells PE', 'Wells PE')),
+                wells.strict = wells.dvt +
+                               wells.alternative.strict +
+                               wells.heart.rate +
+                               wells.surgery.immobil +
+                               wells.dvt.pe +
+                               wells.haemoptysis +
+                               wells.neoplasm,
+                wells.strict.risk = ifelse(wells.strict > 6,
                                        yes = 'High',
-                                       no = ifelse(wells > 2,
+                                       no = ifelse(wells.strict > 2,
                                                    yes = 'Moderate',
                                                    no  = 'Low')),
-                wells.pe      = ifelse(wells > 4,
-                                       yes = 'Wells PE',
-                                       no  = 'No Wells PE'),
-                wells         = factor(wells, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
-                wells.pe      = factor(wells.pe,
-                                       levels = c('No Wells PE', 'Wells PE'))) ## %>%
-## dplyr::select(-existing.medical.cancer)
+                wells.strict.pe      = ifelse(wells.strict > 4,
+                                                  yes = 'Wells PE',
+                                                  no  = 'No Wells PE'),
+                wells.strict         = factor(wells.strict,
+                                                  levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
+                wells.strict.pe      = factor(wells.strict.pe,
+                                              levels = c('No Wells PE', 'Wells PE')))
 ## Remove extrenuous variables
 dipep <- dplyr::select(dipep,
                        -wells.prev.dvt.pe.thrombosis,
