@@ -123,6 +123,9 @@ shinyServer(function(input, output){
     output$lasso.cvplot <- renderPlot({
         autoplot(cv.lasso.model()) + theme_bw()
     })
+    ## ToDo 2017-03-07 - ROC plots and AUC for LASSO results
+    ## output$lasso.roc <- renderPlot({
+    ## })
     ############################################################################
     ## Regression - Saturated                                                 ##
     ############################################################################
@@ -130,6 +133,15 @@ shinyServer(function(input, output){
         saturated <- glm(data = dplyr::filter(dipep, group == 'Suspected PE'),
                          formula = model(),
                          family  = 'binomial')
+    })
+    output$logistic.tidied <- renderPlot({
+        ci <- confint(logistic.model()) %>%
+              as.data.frame() %>%
+            mutate(term = rownames(.))
+        names(ci) <- gsub('2.5 %',  'lci', names(ci))
+        names(ci) <- gsub('97.5 %', 'uci', names(ci))
+        tidied <- broom::tidy(logistic.model())
+        tidied <- left_join(tidied, ci)
     })
     output$logistic <- renderPrint({
         summary(logistic.model())
