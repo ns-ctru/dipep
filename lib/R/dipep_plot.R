@@ -11,6 +11,7 @@
 #' @param exclude Vector of \code{screening}  to exclude.
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
+#' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
 #' @param title.to.plot Title for Biomarker axes.
 #' @param title.class Title for Classification axes.
 #' @param ... Specify the classification (one of \code{first.st} | \code{second.st} | \code{third.st} | \code{fourth.st}) and the biomarker to be plotted.
@@ -20,6 +21,7 @@ dipep_plot <- function(df        = dipep,
                        exclude   = NULL,
                        exclude.non.recruited = TRUE,
                        exclude.dvt       = TRUE,
+                       exclude.anti.coag = FALSE,
                        title.to.plot     = '',
                        title.class       = '',
                        ...){
@@ -35,6 +37,64 @@ dipep_plot <- function(df        = dipep,
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    if(title.class == 'Recruitment'){
+        ncols <- 4
+    }
+    else{
+        ncols <- 3
+    }
+    ## Remove biomarker data for those on anticoagulents
+    if(exclude.anti.coag == TRUE){
+        df <- mutate(df,
+                     prothombin.time                          = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.time),
+                     aprothombin                              = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = aprothombin),
+                     clauss.fibrinogen                        = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = clauss.fibrinogen),
+                     ddimer.innovan                           = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.innovan),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.lag.time),
+                     thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.endogenous.potential),
+                     thrombin.generation.peak                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.peak),
+                     thrombin.generation.time.to.peak         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.time.to.peak),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     plasmin.antiplasmin                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = plasmin.antiplasmin),
+                     prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.fragments),
+                     soluble.tissue.factor                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = soluble.tissue.factor),
+                     troponin                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = troponin),
+                     natriuertic.peptide                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = natriuertic.peptide),
+                     mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = mrproanp))
     }
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
@@ -111,6 +171,7 @@ dipep_plot <- function(df        = dipep,
     ## }
     ## Rename variables so that they are standardised and I don't have to mess
     ## around with Standard Evaluation v's Non Standard Evaluation any more!
+    names(df) <- gsub('group',                                    'class',   names(df))
     names(df) <- gsub('first.st',                                 'class',   names(df))
     names(df) <- gsub('second.st',                                'class',   names(df))
     names(df) <- gsub('third.st',                                 'class',   names(df))
@@ -150,10 +211,10 @@ dipep_plot <- function(df        = dipep,
     results$histogram <- ggplot(df, aes(x    = to.plot,
                                         fill = class)) +
                          geom_histogram() +
-                         xlab(title.class) + ylab('N') +
+                         xlab(title.to.plot) + ylab('N') +
                          guides(fill = guide_legend(NULL)) +
                          theme(axis.text.x = element_text(angle = 90)) +
-                         facet_wrap(~class, ncol = 3) + theme_bw()
+                         facet_wrap(~class, ncol = ncols) + theme_bw()
     ## Generate scater plot
     results$scatter <- ggplot(df, aes(x = class,
                                       y = to.plot,
