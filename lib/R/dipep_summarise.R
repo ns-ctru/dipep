@@ -15,15 +15,16 @@
 #' @param exclude Vector of \code{screening}  to exclude.
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
-#'
+#' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).#'
 #'
 #' @export
-dipep_summarise <- function(df              = dipep,
-                            grouping        = 'group',
-                            group.as.col    = FALSE,
-                            exclude   = NULL,
+dipep_summarise <- function(df                    = dipep,
+                            grouping              = 'group',
+                            group.as.col          = FALSE,
+                            exclude               = NULL,
                             exclude.non.recruited = TRUE,
-                            exclude.dvt       = TRUE,
+                            exclude.dvt           = TRUE,
+                            exclude.anti.coag     = FALSE,
                             ...){
     results <- list()
     ## Remove non-recruited and DVT
@@ -32,6 +33,58 @@ dipep_summarise <- function(df              = dipep,
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    ## Remove biomarker data for those on anticoagulents
+    if(exclude.anti.coag == TRUE){
+        df <- mutate(df,
+                     prothombin.time                          = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.time),
+                     aprothombin                              = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = aprothombin),
+                     clauss.fibrinogen                        = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = clauss.fibrinogen),
+                     ddimer.innovan                           = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.innovan),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.lag.time),
+                     thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.endogenous.potential),
+                     thrombin.generation.peak                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.peak),
+                     thrombin.generation.time.to.peak         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.time.to.peak),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     plasmin.antiplasmin                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = plasmin.antiplasmin),
+                     prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.fragments),
+                     soluble.tissue.factor                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = soluble.tissue.factor),
+                     troponin                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = troponin),
+                     natriuertic.peptide                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = natriuertic.peptide),
+                     mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = mrproanp))
     }
     ## Get the levels for the grouping
     observed.levels <- table(df[grouping], useNA = 'ifany') %>% names()
