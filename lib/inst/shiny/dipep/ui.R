@@ -13,6 +13,18 @@ shinyUI(
                      checkboxInput('categorical', 'Use categorical variables?',
                                    value = FALSE
                                    ),
+                     selectInput('pe', 'PE Classification:',
+                                 choices = c('Primary',        'first.st',
+                                             'Secondary (S1)', 'second.st',
+                                             'Tertiary (S2)',  'third.st',
+                                             'Quaternary (S3)', 'fourth.st'),
+                                 selected = 'first.st'),
+                     checkboxGroupInput('include','Inclusions...',
+                                        choices = c('Diagnosed PE (UKOSS)'       = 'diagnosed',
+                                                    'Suspected PE'               = 'suspected',
+                                                    'Non Recruited'              = 'nonrecruited',
+                                                    'Diagnosed DVT'              = 'dvt'),
+                                        selected = c('diagnosed', 'suspected')) ,
                      checkboxGroupInput('demog','Demographics (Continuous)...',
                                         choices = c('Age'                                         = 'age',
                                                     'Smoking'                                     = 'smoking',
@@ -69,7 +81,7 @@ shinyUI(
                                                      'presenting.features.other')
                                         ),
                      checkboxGroupInput('current', 'Current Pregnancy...',
-                                        choices                                         = c('Multiple Pregnancy'  = 'multiple.preg',
+                                        choices = c('Multiple Pregnancy'                = 'multiple.preg',
                                                     'Cesarean'                          = 'cesarean',
                                                     'Injury'                            = 'injury',
                                                     'Trimester'                         = 'trimester',
@@ -77,6 +89,25 @@ shinyUI(
                                                     'Existing Medical Problems'         = 'existing.medical',
                                                     'Long-haul travel during pregnancy' = 'travel',
                                                     '>= 3 days Immobility'              = 'immobil'),
+                                        selected = c('multiple.preg', 'cesarean', 'injury', 'trimester',
+                                                     'thrombo', 'existing.medical', 'travel', 'immobil')),
+                     checkboxGroupInput('biomarkers', 'Biomarkers...',
+                                        choices = c('Exclude Anti-coagulents'           = 'anticoag',
+                                                    'Prothombin (Time)'                 = 'prothombin.time',
+                                                    'Aprothombin'                       = 'aprothombin',
+                                                    'Clauss Fibrinogen'                 = 'clauss.fibrinogen',
+                                                    'D-Dimer (Innovan)'                 = 'ddimer.innovan',
+                                                    'D-Dimer (ELISA)'                   = 'ddimer.elisa',
+                                                    'Plasma Antiplasmin'                = 'plasma.antiplasmin',
+                                                    'Prothombin Fragments'              = 'prothombin.fragments',
+                                                    'Soluble Tissue Factor'             = 'soluble.tissue.factor',
+                                                    'Troponin'                          = 'troponin',
+                                                    'Natriueritc Peptide'               = 'natriuertic.peptide',
+                                                    'MRProANP'                          = 'mrproanp',
+                                                    'Thrombin Generation - Lag Time'    = 'thrombin.generation.lag.time',
+                                                    'Thrombin Generation - Endogenous Potential' = 'thrombin.generation.endogenous.potential',
+                                                    'Thrombin Generation - Time to Peak' = 'thrombin.generation.time.to.peak',
+                                                    'Thrombin Generation - Peak' = 'thrombin.generation.peak'),
                                         selected = c('multiple.preg', 'cesarean', 'injury', 'trimester',
                                                      'thrombo', 'existing.medical', 'travel', 'immobil')),
                      sliderInput('minsplit',
@@ -150,11 +181,10 @@ shinyUI(
                                      tabPanel('ToDo',
                                               fluidRow(p('Everything needs doing, this list is not exhaustive...'),
                                                        HTML('<ul>
-                                                              <li> Recursive Partitioning (dendogram in ggplot2; summary table).
+                                                              <li> Remove legend from LASSO plot.
                                                               <li> LASSO regression results; summary table of coefficients.
-                                                              <li> Saturated regression show all coefficients/model summary.
                                                               <li> Table comparing the utility (sensitivity, specificity, PPV, NPV, ROC AUC, pseudo-R2, etc.) of all models.
-                                                              <li> Finish of References list (include R packages used)
+                                                              <li> Finish of References list (include R packages used ideally automagically).
                                                             </ul>'))
                                               ),
                                      tabPanel('References',
