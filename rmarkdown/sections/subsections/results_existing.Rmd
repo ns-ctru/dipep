@@ -3,7 +3,8 @@
 ```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
     ## ToDp 2017-02-23 - Add in Delphi scores
-           dplyr::select(first.st, simplified.pe, wells.pe, perc.pe) %>%
+           dplyr::select(first.st, simplified.pe, wells.permissive.pe, wells.strict.pe, perc.pe) %>%
+           ## dplyr::select(first.st, simplified.pe, wells.pe, perc.pe) %>%
            tidyr::gather(key = first.st)##  %>%
            ## mutate(value = ifelse(grepl('No', value),
            ##                       0,
@@ -13,9 +14,10 @@ names(to.plot) <- c('D', 'Score', 'value')
 ## Convert String variable to 0/1 for predicted probabilities
 to.plot <- to.plot %>%
            dplyr::mutate(M     = ifelse(grepl('No', value), 0, 1),
-                         Score = case_when(.$Score == 'simplified.pe' ~ 'Simplified Revised Geneva',
-                                           .$Score == 'perc.pe'       ~ 'PERC',
-                                           .$Score == 'wells.pe'      ~ 'Wells'))
+                         Score = case_when(.$Score == 'simplified.pe'       ~ 'Simplified Revised Geneva',
+                                           .$Score == 'perc.pe'             ~ 'PERC',
+                                           .$Score == 'wells.permissive.pe' ~ 'Wells (Permissive)',
+                                           .$Score == 'wells.strict.pe' ~ 'Wells (Strict)'))
 to.plot <- ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
            geom_roc() +
            guides(guide = guide_legend(title = 'Predictor Score...')) +
@@ -28,11 +30,12 @@ to.plot
 existing.auc %>%
     mutate(Score = case_when(.$group == 1 ~ 'PERC',
                                 .$group == 2 ~ 'Simplified Revised Geneva',
-                                .$group == 3 ~ 'Wells')) %>%
+                                .$group == 3 ~ 'Wells (Permissive)',
+                                .$group == 3 ~ 'Wells (Strict)')) %>%
     dplyr::select(Score, AUC) %>%
 kable(caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
 ## Extract the existing scores for Likert style plotting
-existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>% dplyr::select(group, wells, simplified, perc)
+existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>% dplyr::select(group, wells.permissive, wells.strict, simplified, perc)
 
 ```
 
@@ -40,7 +43,7 @@ existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE',
 
 #### Simplified Revised Geneva
 
-The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online calculator](https://www.mdcalc.com/geneva-score-revised-pulmonary-embolism) is available.  A score $> X$ is taken as indicative of PE.
+The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online calculator](https://www.mdcalc.com/geneva-score-revised-pulmonary-embolism) is available.  A score $>= 4$ is taken as indicative of PE.
 
 ```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
@@ -67,38 +70,69 @@ kable(simplified$performance.table,
 ```
 
 
-#### Wells Score
+#### Wells Score (Permissive)
 
-The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> X$ is taken as indicative of PE.
+The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> 4$ is taken as indicative of PE.
 
-```{r results_existing_wells, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+**NB** - Permissive means that for the item "*Pulmonary embolism is the most or equally likely diagnosis*" that "*Possibly PE*" have been included.
+
+```{r results_existing_wells_permissive, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
-wells <- dipep_existing_sum(df                    = dipep,
+wells.permissive <- dipep_existing_sum(df                    = dipep,
                             title                 = 'Wells',
                             exclude               = NULL,
                             exclude.non.recruited = TRUE,
                             exclude.dvt           = TRUE,
-                            first.st, wells.pe, wells)
+                            first.st, wells.permissive.pe, wells.permissive)
 ## Plots
-wells$bar.chart
-wells$likert.plot
+wells.permissive$bar.chart
+wells.permissive$likert.plot
 ## Tables
-kable(wells$summary.table,
-      caption = 'Summary of Wells score',
+kable(wells.permissive$summary.table,
+      caption = 'Summary of Wells score (Permissive)',
       digits = 3)
-kable(wells$table,
+kable(wells.permissive$table,
       digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score.')
-kable(wells$performance.table,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score (Permissive).')
+kable(wells.permissive$performance.table,
       digits  = 3,
-      caption = 'Performance indicators for the Wells Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+      caption = 'Performance indicators for the Wells Score (Permissive) for Pulmonary Embolism applied retrospectively to the DiPEP data.')
 
 ```
 
+#### Wells Score (Strict)
+
+The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> 4$ is taken as indicative of PE.
+
+**NB** - Permissive means that for the item "*Pulmonary embolism is the most or equally likely diagnosis*" that "*Possibly PE*" have been excluded.
+
+```{r results_existing_wells_strict, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
+## Summarise
+wells.strict <- dipep_existing_sum(df                    = dipep,
+                            title                 = 'Wells',
+                            exclude               = NULL,
+                            exclude.non.recruited = TRUE,
+                            exclude.dvt           = TRUE,
+                            first.st, wells.strict.pe, wells.strict)
+## Plots
+wells.strict$bar.chart
+wells.strict$likert.plot
+## Tables
+kable(wells.strict$summary.table,
+      caption = 'Summary of Wells score (Strict)',
+      digits = 3)
+kable(wells.strict$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score (Strict).')
+kable(wells.strict$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the Wells Score (Strict) for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
 
 #### PERC Score
 
-The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $> 2$ (Moderate Risk) is taken as indicative of PE.
+The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $>= 1$ is taken as indicative of PE.
 
 ```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
 ## Summarise
@@ -111,6 +145,7 @@ perc <- dipep_existing_sum(df                    = dipep,
 ## Plots
 perc$bar.chart
 perc$likert.plot
+## perc$histogram
 ## Tables
 kable(perc$summary.table,
       caption = 'Summary of Perc score',
