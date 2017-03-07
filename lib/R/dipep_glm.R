@@ -18,6 +18,7 @@
 #' @param exclude Vector of \code{screening}  to exclude.
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
+#' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
 #'
 #' @export
 dipep_glm <- function(df              = .data,
@@ -28,6 +29,7 @@ dipep_glm <- function(df              = .data,
                       exclude         = NULL,
                       exclude.non.recruited = TRUE,
                       exclude.dvt       = TRUE,
+                      exclude.anti.coag = FALSE,
                       ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
@@ -63,8 +65,58 @@ dipep_glm <- function(df              = .data,
     else if(classification == 'secondary.dm'){
         df <- dplyr::filter(df, !is.na(secondary.dm))
     }
-    ## ToDo 2017-02-27 - Scatter plot by true status (use jitter should show for
-    ##                   biomarkers lots of overlap and little distinct values)
+    ## Remove biomarker data for those on anticoagulents
+    if(exclude.anti.coag == TRUE){
+        df <- mutate(df,
+                     prothombin.time                          = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.time),
+                     aprothombin                              = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = aprothombin),
+                     clauss.fibrinogen                        = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = clauss.fibrinogen),
+                     ddimer.innovan                           = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.innovan),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.lag.time),
+                     thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.endogenous.potential),
+                     thrombin.generation.peak                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.peak),
+                     thrombin.generation.time.to.peak         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.time.to.peak),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     plasmin.antiplasmin                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = plasmin.antiplasmin),
+                     prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothrombin.fragments),
+                     soluble.tissue.factor                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = soluble.tissue.factor),
+                     troponin                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = troponin),
+                     natriuertic.peptide                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = natriuertic.peptide),
+                     mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = mrproanp))
+    }
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
