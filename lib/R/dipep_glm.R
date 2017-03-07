@@ -296,21 +296,21 @@ dipep_glm <- function(df              = .data,
                              term = gsub('xrayAbnormal', 'X-ray : Abnormal', term),
                              term = gsub('xrayNot performed', 'X-ray : Not Performed', term),
                              term = gsub('xray.catAbnormal X-Ray', 'X-ray (Binary) : Abnormal', term),
-                             term = gsub('aprothombin', 'Aprothombin', term),
+                             term = gsub('aptt', 'APTT', term),
                              term = gsub('prothombin.time', 'Prothombin (Time)', term),
                              term = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', term),
-                             term = gsub('ddimer.innovan', 'D-Dimer (Innovan)', term),
+                             term = gsub('ddimer.innovance', 'D-Dimer (Innovance)', term),
                              term = gsub('ddimer.elisa', 'D-Dimer (ELISA)', term),
                              term = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', term),
                              term = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', term),
                              term = gsub('thrombin.generation.peak', 'Thrombin Generation (Peak)', term),
                              term = gsub('thrombin.generation.time.to.peak', 'Thrombin Generation (Time to Peak)', term),
                              term = gsub('plasmin.antiplasmin', 'Plasmin (Antiplasmin)', term),
-                             term = gsub('prothrombin.fragments', 'Prothombin Fragments', term),
-                             term = gsub('soluble.tissue.factor', 'Soluble Tissue Factor', term),
+                             term = gsub('prothrombin.fragments', 'PF 1 + 2', term),
+                             term = gsub('tissue.factor', 'Tissue Factor', term),
                              term = gsub('troponin', 'Troponin', term),
-                             term = gsub('natriuertic.peptide', 'Natriuertic Peptide', term),
-                             term = gsub('mrproanp', 'MRproANP', term))
+                             term = gsub('nppb', 'NPPB', term),
+                             term = gsub('mrproanp', 'MRProANP', term))
     ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
     results$glance    <- broom::glance(results$fitted)
