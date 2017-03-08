@@ -615,9 +615,9 @@ names(master$biomarker_tidy) <- names(master$biomarker_tidy) %>%
 names(master$biomarker_tidy) <- gsub('sample.number', 'sample', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('sample.name', 'screening', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('pt', 'prothombin.time', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('aprothombin.timet.sp.liquid', 'aprothombin', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('aprothombin.timet.sp.liquid', 'aptt', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('clauss.fibrinogen', 'clauss.fibrinogen', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('d.dimer.innovan.latex.test', 'ddimer.innovan', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('d.dimer.innovan.latex.test', 'ddimer.innovance', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('lagtime', 'thrombin.generation.lag.time', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('etp', 'thrombin.generation.endogenous.potential', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('ttpeak', 'thrombin.generation.time.to.peak', names(master$biomarker_tidy))
@@ -626,10 +626,10 @@ names(master$biomarker_tidy) <- gsub('error.message..comment', 'error.message', 
 names(master$biomarker_tidy) <- gsub('d.dimer.eliza.zymutest..hyphen.', 'ddimer.elisa', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('pap', 'plasmin.antiplasmin', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('pf.1.2', 'prothrombin.fragments', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('tf', 'soluble.tissue.factor', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('tf', 'tissue.factor', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('troponin.1', 'troponin', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('nppb', 'natriuertic.peptide', names(master$biomarker_tidy))
-names(master$biomarker_tidy) <- gsub('mproanp', 'mrproamp', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('nppb', 'nppb', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('mproanp', 'mrproanp', names(master$biomarker_tidy))
 ## Remove extrenuous columns
 master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(sample, error.message, comments, key, x))
 ## UNCONFIRMED - But it looks like a value of '-1' has been used to indicate missing data
@@ -1719,25 +1719,13 @@ dipep <- dipep %>%
 ## Wells (http://dx.doi.org/10.7326/0003-4819-135-2-200107170-00010) ##
 #######################################################################
 ## Simplified Geneva
-dipep <- mutate(dipep,
-                simplified.age = ifelse(age <= 65 | is.na(age),
+dipep <- dipep %>%
+         mutate(simplified.age = ifelse(age <= 65 | is.na(age),
                                         yes = 0,
                                         no  = 1),
-                ## ToDo - Check how to define previous PE
-                simplified.prev.dvt.pe.thrombosis = ifelse(thrombosis == 'No' | is.na(thrombosis),
-                                                      yes = 0,
-                                                      no  = 1.5),
-                simplified.prev.dvt.pe.thrombo = ifelse(thrombo == 'No' | is.na(thrombo),
-                                                   yes = 0,
-                                                   no  = 1.5),
-                simplified.current.dvt.pe.thromb.event  = ifelse(thromb.event == 'No' | is.na(thromb.event),
-                                               yes = 0,
-                                               no = 1.5),
-                simplified.pe = ifelse(simplified.prev.dvt.pe.thrombosis == 0 &
-                                       simplified.prev.dvt.pe.thrombo    == 0 &
-                                       simplified.current.dvt.pe.thromb.event == 0,
-                                       yes = 0,
-                                       no  = 1),
+                simplified.prev.dvt.pe = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                yes = 0,
+                                                no  = 3),
                 simplified.surgery = ifelse(surgery == 'No' | is.na(surgery),
                                             yes = 0,
                                             no  = 1),
@@ -1758,37 +1746,39 @@ dipep <- mutate(dipep,
                 simplified.haemoptysis = ifelse(presenting.features.haemoptysis == 'Not Ticked' | is.na(presenting.features.haemoptysis),
                                                 yes = 0,
                                                 no  = 1),
-                simplified.heart.rate = ifelse(heart.rate < 75 | is.na(heart.rate),
-                                               yes = 0,
-                                               no  = 1),
-                simplified.pain.palpitations = ifelse(grepl('right calf swelling', other.symptoms.specify, ignore.case = TRUE) |
+                simplified.heart.rate = case_when(.$heart.rate < 75                      ~ 0,
+                                                  .$heart.rate >= 75 & .$heart.rate < 94 ~ 3,
+                                                  .$heart.rate >= 95                     ~ 5),
+                ## 2017-03-07 - Use Clinical signs of DVT to assess pain on palpitations
+                ##              See emails from s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:04
+                ##                              s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:07
+                simplified.pain.palpitations = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE) |
                                                       grepl('calf pain', other.symptoms.specify, ignore.case = TRUE) |
-                                                      grepl('leg', other.symptoms.specify, ignore.case = TRUE) |
-                                                      grepl('pain in left leg', other.symptoms.specify, ignore.case = TRUE) |
-                                                      grepl('Rt leg pain', other.symptoms.specify, ignore.case = TRUE)  |
-                                                      grepl('painful (r) leg', other.symptoms.specify, ignore.case = TRUE),
-                                                      yes = 1,
+                                                      grepl('right calf swelling and pain', other.symptoms.specify, ignore.case = TRUE) |
+                                                      grepl('painful \\(r\\) leg', other.symptoms.specify, ignore.case = TRUE),
+                                                      yes = 4,
                                                       no  = 0),
                 simplified = simplified.age +
-                             simplified.pe +
+                             simplified.prev.dvt.pe +
                              simplified.surgery +
                              simplified.neoplasm +
                              simplified.lower.limb.unilateral.pain +
                              simplified.haemoptysis +
                              simplified.heart.rate +
                              simplified.pain.palpitations,
+                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)),
                 simplified.risk = ifelse(simplified < 4,
                                          yes = 'Low',
                                          no  = ifelse(simplified >= 11,
                                                       yes = 'High',
                                                       no  = 'Moderate')),
+                simplified.risk = factor(simplified.risk,
+                                         levels = c('Low', 'Moderate', 'High')),
                 simplified.pe = ifelse(simplified >= 4,
                                        yes = 'Simplified PE',
                                        no  = 'No Simplified PE'),
-                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7)),
                 simplified.pe = factor(simplified.pe,
                                        levels = c('No Simplified PE', 'Simplified PE')))
-
 ## PERC
 dipep <- mutate(dipep,
                 perc.age = ifelse(age < 50 | is.na(age),
@@ -1798,20 +1788,20 @@ dipep <- mutate(dipep,
                                          yes = 0,
                                          no  = 1),
                 perc.o2 = ifelse(o2.saturation < 95 | is.na(o2.saturation),
-                                         yes = 1,
-                                         no  = 0),
-                ## perc.cough = ifelse(presenting.features.cough == 'Ticked' |
-                ##                     grepl('cough', other.symptoms.specify, ignore.case = TRUE),
-                ##                     yes = 1,
-                ##                     no  = 0),
-                perc.breathing = ifelse(grepl('asthma', other.symptoms.specify, ignore.case = TRUE) |
-                                        grepl('copd', other.symptoms.specify, ignore.case = TRUE) |
-                                        grepl('wheez', other.symptoms.specify, ignore.case = TRUE),
-                                        yes = 1,
-                                        no  = 0),
+                                 yes = 1,
+                                 no  = 0),
+                perc.prev.dvt.pe = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                          yes = 0,
+                                          no  = 1.5),
+                perc.surgery = ifelse(surgery == 'No' | is.na(surgery),
+                                      yes = 0,
+                                      no  = 1),
                 perc.haemoptysis = ifelse(presenting.features.haemoptysis == 'Ticked',
                                           yes = 1,
                                           no  = 0),
+                perc.hormone = ifelse(other.medication.specify == 'hrt',
+                                      yes = 1,
+                                      no  = 0),
                 perc.leg.swelling = ifelse(grepl('leg swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('legs swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('swollen leg', other.symptoms.specify, ignore.case = TRUE) |
@@ -1819,70 +1809,31 @@ dipep <- mutate(dipep,
                                            grepl('right calf swelling', other.symptoms.specify, ignore.case = TRUE),
                                            yes = 1,
                                            no  = 0),
+                ## Recode bilateral instances
                 perc.leg.swelling = ifelse(grepl('both legs swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('swollen legs', other.symptoms.specify, ignore.case = TRUE),
                                            yes = 0,
                                            no  = perc.leg.swelling),
-                perc.surgery = ifelse(surgery == 'No' | is.na(surgery),
-                                      yes = 0,
-                                      no  = 1),
-                ## perc.embolism = ifelse(thrombo == 'Yes' | is.na(thrombo),
-                ##                        yes = 1,
-                ##                        no  = 0),
-                perc.hormone = ifelse(other.medication.specify == 'hrt',
-                                      yes = 1,
-                                      no  = 0),
-                perc.prev.dvt.pe.thrombosis = ifelse(thrombosis == 'No' | is.na(thrombosis),
-                                                      yes = 0,
-                                                      no  = 1.5),
-                perc.prev.dvt.pe.thrombo = ifelse(thrombo == 'No' | is.na(thrombo),
-                                                   yes = 0,
-                                                   no  = 1.5),
-                perc.current.dvt.pe.thromb.event  = ifelse(thromb.event == 'No' | is.na(thromb.event),
-                                               yes = 0,
-                                               no = 1.5),
-                perc.dvt.pe = ifelse(perc.prev.dvt.pe.thrombosis == 0 &
-                                     perc.prev.dvt.pe.thrombo    == 0 &
-                                     perc.current.dvt.pe.thromb.event == 0,
-                                     yes = 0,
-                                     no  = 1),
                 perc      = perc.age +
                             perc.heart.rate +
                             perc.o2 +
-                            ## perc.cough +
-                            perc.haemoptysis +
-                            perc.leg.swelling +
+                            perc.prev.dvt.pe +
                             perc.surgery +
-                            ## perc.embolism +
+                            perc.haemoptysis +
                             perc.hormone +
-                            perc.dvt.pe,
-                ## perc =  1 -  (1 / (1 + exp(-3.1246 +
-                ##         0.5449 * perc.age +
-                ##         0.451 * perc.heart.rate +
-                ##         1.2049 * perc.o2 +
-                ##        -0.3768 * perc.cough +
-                ##         1.0382 * perc.haemoptysis +
-                ##         1.0844 * perc.leg.swelling +
-                ##        -0.6072 * perc.breathing +
-                ##         0.6651 * perc.surgery +
-                ##         0.6354 * perc.dvt.pe +
-                ##         0.5166 * perc.hormone))),
+                            perc.leg.swelling,
                 perc.pe = ifelse(perc >= 1,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
-                ## perc          = factor(perc, levels = c(0, 1, 2, 3, 4)),
+                perc          = factor(perc, levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8.5)),
                 perc.pe = factor(perc.pe,
                                  levels = c('No PERC PE', 'PERC PE')))
-
 ## Wells
 dipep <- mutate(dipep,
-                wells.dvt = ifelse(dvt == 'Yes',
-                                   yes = 3,
-                                   no  = 0),
-                wells.dvt = ifelse(is.na(dvt),
+                wells.dvt = ifelse(dvt == 'No' | is.na(dvt),
                                    yes = 0,
-                                   no  = wells.dvt),
-                ## wells.alternative.permissive = ifelse(likely.diagnosis %in% c('Possible PE', 'PE'),
+                                   no  = 3),
+                ## Two definitions of PE is primary diagnosis OR equally likely...
                 wells.alternative.permissive = ifelse(likely.diagnosis == 'Other',
                                                       yes = 3,
                                                       no  = 0),
@@ -1892,10 +1843,10 @@ dipep <- mutate(dipep,
                 wells.heart.rate = ifelse(heart.rate <= 100 | is.na(heart.rate),
                                           yes = 0,
                                           no  = 1.5),
-                wells.surgery = ifelse(surgery == 'No' | is.na(surgery),
+                wells.immobil = ifelse(immobil == 'No' | is.na(immobil),
                                        yes = 0,
                                        no  = 1.5),
-                wells.immobil = ifelse(immobil == 'No' | is.na(immobil),
+                wells.surgery = ifelse(surgery == 'No' | is.na(surgery),
                                        yes = 0,
                                        no  = 1.5),
                 wells.surgery.immobil = ifelse(wells.surgery != 0 | wells.immobil != 0,
@@ -1904,14 +1855,13 @@ dipep <- mutate(dipep,
                 wells.prev.dvt.pe.thrombosis = ifelse(thrombosis == 'No' | is.na(thrombosis),
                                                       yes = 0,
                                                       no  = 1.5),
-                wells.prev.dvt.pe.thrombo = ifelse(thrombo == 'No' | is.na(thrombo),
-                                                   yes = 0,
-                                                   no  = 1.5),
+                ## 2017-03-07 - Email from s.goodacre@sheffield.ac.uk 2016-03-07 @ 09:04
+                ##              staqtes that previous thrombosis (thrombosis) AND
+                ##              thrombosis during pregnancy are to be used
                 wells.current.dvt.pe.thromb.event  = ifelse(thromb.event == 'No' | is.na(thromb.event),
-                                               yes = 0,
-                                               no = 1.5),
+                                                            yes = 0,
+                                                            no = 1.5),
                 wells.dvt.pe = ifelse(wells.prev.dvt.pe.thrombosis      == 0 &
-                                      wells.prev.dvt.pe.thrombo         == 0 &
                                       wells.current.dvt.pe.thromb.event == 0,
                                       yes = 0,
                                       no  = 1.5),
@@ -1962,14 +1912,7 @@ dipep <- mutate(dipep,
 ## Remove extrenuous variables
 dipep <- dplyr::select(dipep,
                        -wells.prev.dvt.pe.thrombosis,
-                       -wells.prev.dvt.pe.thrombo,
-                       -wells.current.dvt.pe.thromb.event,
-                       -perc.prev.dvt.pe.thrombosis,
-                       -perc.prev.dvt.pe.thrombo,
-                       -perc.current.dvt.pe.thromb.event,
-                       -simplified.prev.dvt.pe.thrombosis,
-                       -simplified.prev.dvt.pe.thrombo,
-                       -simplified.current.dvt.pe.thromb.event)
+                       -wells.current.dvt.pe.thromb.event)
 ## Delphi Consensus rule.
 ## Nothings ever simple and they've derived three scores, which will need testing in
 ## however many different cohorts they wish to test sensitivity in!!!
