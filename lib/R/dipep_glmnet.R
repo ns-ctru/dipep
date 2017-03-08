@@ -13,23 +13,27 @@
 #' @param df Data frame to analyse (default is \code{dipep} and shouldn't need changing)
 #' @param classification Specify the variable that defines the disease status, for this study there are four classifications of diseases ststus, hence the need for flexibility.
 #' @param predictor Predictor variable(s) to test.
+#' @param alpha Elasticnet mixing parameter, \code{1} is the LASSO penalty, \code{0} is the Ridge-regression penalty.
 #' @param model Name/label of your model.
 #' @param relevel Reference level for logistic regression if different from default.
 #' @param exclude Vector of \code{screening}  to exclude.
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
+#' @param legend Logical indicator of whether to include a legend in the LASSO normalisation plot.
 #'
 #'
 #' @export
 dipep_glmnet <- function(df           = dipep,
                          classification  = 'first.st',
                          predictor       = c('age'),
+                         alpha           = 1,
                          model           = NULL,
                          exclude         = NULL,
                          exclude.non.recruited = TRUE,
                          exclude.dvt       = TRUE,
                          exclude.anti.coag = FALSE,
+                         legend            = TRUE,
                          ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
@@ -119,31 +123,164 @@ dipep_glmnet <- function(df           = dipep,
     }
     ## Remove those who are 'Exclude' for the current classification
     df <- dplyr::filter_(df, !is.na(classification))
-    dim(df) %>% print()
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
     ## Fit model
     results$lasso <- glmnetUtils::glmnet(data = df,
                                          .formula,
-                                         family = 'binomial')
+                                         family = 'binomial',
+                                         alpha  = alpha)
     ## Cross validation
     ## Forced to Leave One Out by virtue of setting folds to number of observations (rows)
-    results$lasso.cv <- glmnetUtils::glmnet(data = df,
-                                            .formula,
-                                            family = 'binomial',
-                                            nfolds = nrow(df))
-    ## Cross validation
+    results$lasso.cv <- glmnetUtils::cv.glmnet(data = df,
+                                               .formula,
+                                               family = 'binomial',
+                                               alpha  = alpha,
+                                               nfolds = nrow(df))
+    ## Cross validation maximising AUC
     results$lasso.cv.auc <- glmnetUtils::cv.glmnet(data = df,
                                                    .formula,
                                                    family  = 'binomial',
+                                                   alpha  = alpha,
                                                    type.measure = 'auc',
                                                    nfolds = nrow(df))
+    ## Obtain thresholds for lambda (1 SE and Min)
+    results$lasso.cv.lambda.1se <- which(results$cv.lasso$lambda == results$cv.lasso$lambda.1se)
+    results$lasso.cv.lambda.min <- which(results$cv.lasso$lambda == results$cv.lasso$lambda.min)
     ## Plot LASSO
-    results$lasso.plot <- autoplot(results$lasso) + theme_bw() + guides(colour = FALSE)
+    results$lasso.plot <- autoplot(results$lasso) +
+                          geom_vline(xintercept = c(results$lasso.cv.lambda.1se,
+                                                    results$lasso.cv.lambda.min)) +
+        theme_bw()
+    if(legend == FALSE){
+        results$lasso.plot <- results$lasso.plot + guides(colour = FALSE)
+    }
     ## Plot Cross-Validation
     results$lasso.cv.plot      <- autoplot(results$lasso.cv) + theme_bw()
     ## Plot Cross-Validation AUC
-    results$lasso.cv.auc.plot
+    results$lasso.cv.auc.plot <- autoplot(results$lasso.cv.auc) + theme_bw()
+    ## Extract Coefficients for different lambda
+    coef.extract <- function(x = results$lasso.cv,
+                             s = 'lambda.1se'){
+        x <- coef(x, s = s) %>% as.matrix() %>% as.data.frame()
+        x$term <- rownames(x)
+        rownames(x) <- NULL
+        x <- mutate(x,
+                    term = gsub('age.catYoung', 'Age (Young)', term),
+                    term = gsub('age.catOld', 'Age (Old)', term),
+                    term = gsub('age', 'Age (Continuous)', term),
+                    term = gsub('smokinggave up prior to pregnancy', 'Ex-smoker (Prior)', term),
+                    term = gsub('smokinggave up during pregnancy', 'Ex-smoker (During)', term),
+                    term = gsub('smokingcurrent', 'Current Smoker', term),
+                    term = gsub('temperature.catLow', 'Temperature (Low)', term),
+                    term = gsub('temperature.catHigh', 'Temperature (High)', term),
+                    term = gsub('temperature', 'Temperature (Continuous)', term),
+                    term = gsub('bp.diastolic.catLow', 'Diastolic (Low)', term),
+                    term = gsub('bp.diastolic.catHigh', 'Diastolic (High)', term),
+                    term = gsub('bp.diastolic', 'Diastolic (Continuous)', term),
+                    term = gsub('bp.systolic.catLow', 'Systolic (Low)', term),
+                    term = gsub('bp.systolic.catHigh', 'Systolic (High)', term),
+                    term = gsub('bp.systolic', 'Systolic (Continuous)', term),
+                    term = gsub('o2.saturation.catLow', 'O2 Saturation (Low)', term),
+                    term = gsub('o2.saturation.catHigh', 'O2 Saturation (High)', term),
+                    term = gsub('o2.saturation', 'O2 Saturation (Continuous)', term),
+                    term = gsub('respiratory.rate.catLow', 'Respiratory Rate (Low)', term),
+                    term = gsub('respiratory.rate.catHigh', 'Respiratory Rate (High)', term),
+                    term = gsub('respiratory.rate', 'Respiratory Rate (Continuous)', term),
+                    term = gsub('heart.rate.catLow', 'Heart Rate (Low)', term),
+                    term = gsub('heart.rate.catHigh', 'Heart Rate (High)', term),
+                    term = gsub('heart.rate', 'Heart Rate (Continuous)', term),
+                    term = gsub('bmi.catLow', 'BMI (Low)', term),
+                    term = gsub('bmi.catHigh', 'BMI (High)', term),
+                    term = gsub('bmi', 'BMI (Continuous)', term),
+                    term = gsub('Ticked', '', term),
+                    term = gsub('presenting.features.pleuritic', 'Presenting : Pleuritic', term),
+                    term = gsub('presenting.features.non.pleuritic', 'Presenting : Non-Pleuritic', term),
+                    term = gsub('presenting.features.sob.exertion', 'Presenting : Shortness of Breath (Exertion)', term),
+                    term = gsub('presenting.features.sob.rest', 'Presenting : Shortness of Breath (Rest)', term),
+                    term = gsub('presenting.features.haemoptysis', 'Presenting : Haemoptysis', term),
+                    term = gsub('presenting.features.cough', 'Presenting : Cough', term),
+                    term = gsub('presenting.features.syncope', 'Presenting : Syncope', term),
+                    term = gsub('presenting.features.palpitations', 'Presenting : Palpitations', term),
+                    term = gsub('presenting.features.other', 'Presenting : Other', term),
+                    term = gsub('pregnancies.under.cat', '>= 1 Pregnancy < 24 weeks', term),
+                    term = gsub('pregnancies.over.cat', '>= 1 Pregnancy > 24 weeks', term),
+                    term = gsub('pregnancies.under', 'Pregnancies < 24 weeks (Continuous)', term),
+                    term = gsub('pregnancies.over', 'Pregnancies > 24 weeks (Continuous)', term),
+                    term = gsub('prev.preg.problemNo', 'No Previous Pregnancy Problems', term),
+                    term = gsub('prev.preg.problemYes', 'Previous Pregnancy Problems', term),
+                    term = gsub('history.thrombosisNo', 'No Family History of Thrombosis', term),
+                    term = gsub('history.thrombosisYes', 'Family History of Thrombosis', term),
+                    term = gsub('history.veinsNo', 'No History of Varicose Veins', term),
+                    term = gsub('history.veinsYes', 'History of Varicose Veins', term),
+                    term = gsub('history.iv.drugNo', 'No History of IV Drug use', term),
+                    term = gsub('history.iv.drugYes', 'History of IV Drug use', term),
+                    term = gsub('thrombosisNo', 'No History of Thrombosis', term),
+                    term = gsub('thrombosisYes', 'History of Thrombosis', term),
+                    term = gsub('trimester1st Trimester', '1st Trimester', term),
+                    term = gsub('trimester2nd Trimester', '2nd Trimester', term),
+                    term = gsub('trimester3rd Trimester', '3rd Trimester', term),
+                    term = gsub('trimesterPost-Partum', 'Post-Partum Trimester', term),
+                    term = gsub('cesareanCesarean', 'Cesarean', term),
+                    term = gsub('cesareanNo Cesarean', 'No Cesarean', term),
+                    term = gsub('preg.postPostpartum', 'Post-partum', term),
+                    term = gsub('preg.postPregnant', 'Pregnant', term),
+                    term = gsub('existing.medicalNo', 'No Exiting Medical', term),
+                    term = gsub('existing.medicalYes', 'Exiting Medical', term),
+                    term = gsub('injuryNo', 'No Injury', term),
+                    term = gsub('injuryYes', 'Injury', term),
+                    term = gsub('this.pregnancy.problemsYes', 'Problems with this Pregnancy', term),
+                    term = gsub('this.pregnancy.problemsNo', 'No Problems with this Pregnancy', term),
+                    term = gsub('surgeryYes', 'Surgery in previous 4 weeks', term),
+                    term = gsub('surgeryNo', 'No Surgery in previous 4 weeks', term),
+                    term = gsub('thromboYes', 'Known Thrombophilia', term),
+                    term = gsub('thromboNo', 'No Known Thrombophilia', term),
+                    term = gsub('multiple.pregYes', 'Multiple Pregnancy', term),
+                    term = gsub('multiple.pregNo', 'No Multiple Pregnancy', term),
+                    term = gsub('travelYes', 'Long-haul travel during pregnancy', term),
+                    term = gsub('travelNo', 'No Long-haul travel during pregnancy', term),
+                    term = gsub('immobilYes', '>=3 days Immobility/bed rest during pregnancy', term),
+                    term = gsub('immobilNo', '<3 days Immobility/bed rest during pregnancy', term),
+                    term = gsub('ecgNormal ECG', 'ECG : Normal', term),
+                    term = gsub('ecgAbnormal ECG', 'ECG : Abnormal', term),
+                    term = gsub('ecgNot performed', 'ECG : Not Performed', term),
+                    term = gsub('ecg.catAbnormal ECG', 'ECG (Binary) : Abnormal', term),
+                    term = gsub('ecg.catNormal ECG', 'ECG (Binary) : Normal', term),
+                    term = gsub('xrayNormal', 'X-ray : Normal', term),
+                    term = gsub('xrayAbnormal', 'X-ray : Abnormal', term),
+                    term = gsub('xrayNot performed', 'X-ray : Not Performed', term),
+                    term = gsub('xray.catAbnormal X-Ray', 'X-ray (Binary) : Abnormal', term),
+                    term = gsub('aptt', 'APTT', term),
+                    term = gsub('prothombin.time', 'Prothombin (Time)', term),
+                    term = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', term),
+                    term = gsub('ddimer.innovance', 'D-Dimer (Innovance)', term),
+                    term = gsub('ddimer.elisa', 'D-Dimer (ELISA)', term),
+                    term = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', term),
+                    term = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', term),
+                    term = gsub('thrombin.generation.peak', 'Thrombin Generation (Peak)', term),
+                    term = gsub('thrombin.generation.time.to.peak', 'Thrombin Generation (Time to Peak)', term),
+                    term = gsub('plasmin.antiplasmin', 'Plasmin (Antiplasmin)', term),
+                    term = gsub('prothrombin.fragments', 'PF 1 + 2', term),
+                    term = gsub('tissue.factor', 'Tissue Factor', term),
+                    term = gsub('troponin', 'Troponin', term),
+                    term = gsub('nppb', 'NPPB', term),
+                    term = gsub('mrproanp', 'MRProANP', term))
+        x <- x[,c('term', '1')]
+        names(x) <- c('Term', 'Coefficient')
+        return(x)
+    }
+    results$coef.lambda.1se <- coef.extract(x = results$lasso.cv,
+                                            s = 'lambda.1se')
+    results$coef.lambda.min <- coef.extract(x = results$lasso.cv,
+                                            s = 'lambda.min')
+    ## Bind the two together
+    results$coef.lambda <- merge(results$coef.lambda.1se,
+                                 results$coef.lambda.min,
+                                 by      = c('Term'),
+                                 all     = TRUE)
+    names(results$coef.lambda) <- c('Term', '1 SE', 'Min')
+    ## Replace the variable names with meaningful descriptions (pinched from dipep_glm())
+    ## Obtain predicted probabilities for each level and convert to data frame
     return(results)
 }
