@@ -1,4 +1,290 @@
+## 2017-03-08 - LASSO function testing of dipep_glmnet_orig() which DOESN'T utilise glmnetUtils()
+classification <- 'first.st'
+predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat')
+## predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
+##                'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
+##                'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
+##                'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
+##                'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+##                'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+##                'presenting.features.haemoptysis', 'presenting.features.cough',
+##                'presenting.features.syncope', 'presenting.features.palpitations',
+##                'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
+##                'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
+lasso.categorical <- dipep_glmnet_orig(df          = dipep,
+                                       classification = classification,
+                                       predictor      = predictor,
+                                       alpha          = 1,
+                                       model          = 'LASSO : Pre-Categorised Variables',
+                                       exclude        = NULL,
+                                       exclude.non.recruited = TRUE,
+                                       exclude.dvt           = TRUE,
+                                       exclude.anti.coag     = FALSE,
+                                       legend                = FALSE)
+
+## 2017-03-08 - LASSO function testing of dipep_glmnet() which utilises glmnetUtils().
+classification <- 'first.st'
+predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
+               'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
+               'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
+               'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
+               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+               'presenting.features.haemoptysis', 'presenting.features.cough',
+               'presenting.features.syncope', 'presenting.features.palpitations',
+               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
+               'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
+lasso.categorical <- dipep_glmnet(df          = dipep,
+                                  classification = classification,
+                                  predictor      = predictor,
+                                  alpha          = 1,
+                                  model          = 'LASSO : Pre-Categorised Variables',
+                                  exclude        = NULL,
+                                  exclude.non.recruited = TRUE,
+                                  exclude.dvt           = TRUE,
+                                  exclude.anti.coag     = FALSE,
+                                  legend                = TRUE)
+lasso.categorical$coef.lambda
+
+## 2017-03-07 - Checking exclusion of biomarkers
+check <- list()
+check$summary.include.anti.coag <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
+                      	                  group.as.col = TRUE,
+                                          exclude               = NULL,
+                                          exclude.non.recruited = TRUE,
+                                          exclude.dvt           = TRUE,
+                                          exclude.anti.coag     = FALSE,
+                      	                  prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
+                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                          soluble.tissue.factor, troponin,
+                                          natriuertic.peptide, mrproanp)
+check$summary.exclude.anti.coag <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
+                      	                  group.as.col = TRUE,
+                                          exclude               = NULL,
+                                          exclude.non.recruited = TRUE,
+                                          exclude.dvt           = TRUE,
+                                          exclude.anti.coag     = TRUE,
+                      	                  prothombin.time, aprothombin, clauss.fibrinogen, ddimer.innovan,
+                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                          soluble.tissue.factor, troponin,
+                                          natriuertic.peptide, mrproanp)
+stopifnot(check$summary.include.anti.coag == check$summary.exclude.anti.coag)
+check$plot.include.anti.coag <- dipep_plot(df      = dipep,
+                                           exclude = NULL,
+                                           exclude.non.recruited = TRUE,
+                                           exclude.dvt           = TRUE,
+                                           exclude.anti.coag     = FALSE,
+                                           title.to.plot         = 'Aprothombin (min)',
+                                           title.class           = 'Primary Classification',
+                                           first.st, aprothombin)
+check$plot.exclude.anti.coag <- dipep_plot(df      = dipep,
+                                           exclude = NULL,
+                                           exclude.non.recruited = TRUE,
+                                           exclude.dvt           = TRUE,
+                                           exclude.anti.coag     = TRUE,
+                                           title.to.plot         = 'Aprothombin (min)',
+                                           title.class           = 'Primary Classification',
+                                           first.st, aprothombin)
+check$plot.include.anti.coag$scatter
+check$plot.exclude.anti.coag$scatter
+check$glm.include.anti.coag <- dipep_glm(df = dipep,
+                                   exclude.dvt           = TRUE,
+                                   exclude.non.recruited = TRUE,
+                                   exclude.anti.coag     = FALSE,
+                                   classification = 'first.st',
+                                   predictor      = 'aprothombin',
+                                   model          = 'Aprothombin')
+check$glm.exclude.anti.coag <- dipep_glm(df = dipep,
+                                         exclude.dvt           = TRUE,
+                                         exclude.non.recruited = TRUE,
+                                         exclude.anti.coag     = TRUE,
+                                         classification = 'first.st',
+                                         predictor      = 'aprothombin',
+                                         model          = 'Aprothombin')
+check$glm.include.anti.coag$tidied
+check$glm.exclude.anti.coag$tidied
+
+## 2017-03-06 - Cross tabulation development
+build()
+install()
+checking <- dipep_glm(df = dipep,
+                      classification = 'first.st',
+                      predictor = 'travel',
+                      model     = 'Age (Binary)',
+                      exclude   = NULL,
+                      exclude.dvt = TRUE,
+                      excliude.non.recruited = TRUE)
+checking$table
+
+## 2017-03-06 - Checking other problems in 'Diagnosed PE' (/UKOSS) at Kim Horspools request (see
+##              email 2017-03-06 @ 11:24 Re : CDR criteria)
+checking <- dplyr::select(master$pregnancy.problems,
+                     screening,
+                     group,
+                     site,
+                     event.name,
+                     this.preg.problem.specify,
+                     this.preg.problem.other) %>%
+    melt(id.vars = c('screening', 'group', 'site', 'event.name')) %>%
+    group_by(screening, variable) %>%
+    mutate(n = row_number()) %>%
+    dcast(screening + group + site + event.name ~ variable + n) %>%
+    mutate(this.pregnancy.problems.dehydration = ifelse(this.preg.problem.specify_1 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_2 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_3 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_4 == 'Dehydration requiring admission' |
+                                                        this.preg.problem.specify_5 == 'Dehydration requiring admission',
+                                                        yes = 1,
+                                                        no  = 0),
+           this.pregnancy.problems.eclampsia =  ifelse(this.preg.problem.specify_1 == 'Eclampsia' |
+                                                        this.preg.problem.specify_2 == 'Eclampsia' |
+                                                        this.preg.problem.specify_3 == 'Eclampsia' |
+                                                        this.preg.problem.specify_4 == 'Eclampsia' |
+                                                        this.preg.problem.specify_5 == 'Eclampsia',
+                                                        yes = 1,
+                                                        no  = 0),
+           this.pregnancy.problems.gestational.diabetes =  ifelse(this.preg.problem.specify_1 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_2 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_3 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_4 == 'Gestational diabetes' |
+                                                                  this.preg.problem.specify_5 == 'Gestational diabetes',
+                                                                  yes = 1,
+                                                                  no  = 0),
+           this.pregnancy.problems.haemorrhage =  ifelse(this.preg.problem.specify_1 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_2 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_3 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_4 == 'Haemorrhage' |
+                                                         this.preg.problem.specify_5 == 'Haemorrhage',
+                                                         yes = 1,
+                                                         no  = 0),
+           this.pregnancy.problems.hyperemesis =  ifelse(this.preg.problem.specify_1 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_2 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_3 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_4 == 'Hyperemesis requiring admission' |
+                                                         this.preg.problem.specify_5 == 'Hyperemesis requiring admission',
+                                                         yes = 1,
+                                                         no  = 0),
+           this.pregnancy.problems.ovarian.hyperstimulation =  ifelse(this.preg.problem.specify_1 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_2 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_3 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_4 == 'Ovarian hyperstimulation syndrome' |
+                                                                      this.preg.problem.specify_5 == 'Ovarian hyperstimulation syndrome',
+                                                                      yes = 1,
+                                                                      no  = 0),
+           this.pregnancy.problems.postpartum.haemorrhage =  ifelse(this.preg.problem.specify_1 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_2 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_3 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_4 == 'Post-partum haemorrhage requiring transfusion' |
+                                                                    this.preg.problem.specify_5 == 'Post-partum haemorrhage requiring transfusion',
+                                                                    yes = 1,
+                                                                    no  = 0),
+           this.pregnancy.problems.preeclampsia =  ifelse(this.preg.problem.specify_1 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_2 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_3 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_4 == 'Pre-eclampsia (hypertension and proteinuria)' |
+                                                          this.preg.problem.specify_5 == 'Pre-eclampsia (hypertension and proteinuria)',
+                                                          yes = 1,
+                                                          no  = 0),
+           this.pregnancy.problems.preterm =  ifelse(this.preg.problem.specify_1 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_2 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_3 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_4 == 'Preterm birth or mid trimester loss' |
+                                                     this.preg.problem.specify_5 == 'Preterm birth or mid trimester loss',
+                                                     yes = 1,
+                                                     no  = 0),
+           this.pregnancy.problems.severe.infection =  ifelse(this.preg.problem.specify_1 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_2 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_3 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_4 == 'Severe infection e.g. pyelonephritis' |
+                                                              this.preg.problem.specify_5 == 'Severe infection e.g. pyelonephritis',
+                                                              yes = 1,
+                                                              no  = 0),
+           this.pregnancy.problems.stillbirth =  ifelse(this.preg.problem.specify_1 == 'Stillbirth' |
+                                                        this.preg.problem.specify_2 == 'Stillbirth' |
+                                                        this.preg.problem.specify_3 == 'Stillbirth' |
+                                                        this.preg.problem.specify_4 == 'Stillbirth' |
+                                                        this.preg.problem.specify_5 == 'Stillbirth',
+                                                        yes = 1,
+                                                        no  = 0),
+           this.pregnancy.problems = ifelse(this.pregnancy.problems.dehydration == 1 |
+                                            this.pregnancy.problems.eclampsia == 1 |
+                                            this.pregnancy.problems.gestational.diabetes == 1 |
+                                            this.pregnancy.problems.haemorrhage == 1 |
+                                            this.pregnancy.problems.hyperemesis == 1 |
+                                            this.pregnancy.problems.ovarian.hyperstimulation == 1 |
+                                            this.pregnancy.problems.postpartum.haemorrhage == 1 |
+                                            this.pregnancy.problems.preeclampsia == 1 |
+                                            this.pregnancy.problems.preterm == 1 |
+                                            this.pregnancy.problems.severe.infection == 1 |
+                                            this.pregnancy.problems.stillbirth == 1,
+                                            yes = 1,
+                                            no  = 0),
+                this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
+                                                 yes = 0,
+                                                 no  = this.pregnancy.problems)) %>%
+    dplyr::filter(group == 'Diagnosed PE') %>%
+    dplyr::select(screening, group,
+                  this.preg.problem.specify_1, this.preg.problem.other_1)
+    dplyr::select(screening, medical.specify)
+missing <- is.na(checking)
+table(missing[,1])
+table(missing[,2])
+table(missing[,3])
+table(missing[,4])
+table(missing[,5])
+table(missing[,6])
+table(missing[,7])
+table(missing[,8])
+table(missing[,9])
+table(missing[,10])
+table(missing[,11])
+table(missing[,12])
+
+## 2017-03-06 - Checking swelling/pain/pain on palpitation in single legs/both legs for Simplified and PERC
+dplyr::filter(dipep, screening %in% c('N01/03',
+                                      'N01/27',
+                                      'N02/03',
+                                      'PE_037 ',
+                                      'PE_208',
+                                      'PE_260',
+                                      'PE_208',
+                                      'PE_271',
+                                      'PE_276',
+                                      'PE_294',
+                                      'PE_324',
+                                      'S03/34',
+                                      'S05/15',
+                                      'S05/30',
+                                      'S07/24',
+                                      'S09/05',
+                                      'S11/09')) %>%
+    dplyr::select(screening, other.symptoms.specify, simplified.pain.palpitations, simplified.lower.limb.unilateral.pain, perc.leg.swelling)
+
+## 2017-03-03 Duplicates have crept in...where are they from?
+dplyr::select(t1, screening) %>% duplicated() %>% table()
+dplyr::select(t2, screening) %>% duplicated() %>% table()
+dplyr::select(t3, screening) %>% duplicated() %>% table()
+dplyr::select(t4, screening) %>% duplicated() %>% table()
+dplyr::select(t5, screening) %>% duplicated() %>% table()
+dplyr::select(t6, screening) %>% duplicated() %>% table()
+dplyr::select(t7, screening) %>% duplicated() %>% table()
+dplyr::select(t8, screening) %>% duplicated() %>% table()
+dplyr::select(t9, screening) %>% duplicated() %>% table()
+dplyr::select(t10, screening) %>% duplicated() %>% table()
+dplyr::select(t11, screening) %>% duplicated() %>% table()
+dplyr::select(t12, screening) %>% duplicated() %>% table()
+dplyr::filter(t12, screening %in% c('PE_047', 'PE_079', 'PE_092', 'PE_223'))
+
 ## 2017-03-02 Sorting scoring things Mike has highlighted...
+dplyr::filter(dipep, simplified.lower.limb.unilateral.pain == 1) %>%
+    dplyr::select(screening, simplified.lower.limb.unilateral.pain, other.symptoms.specify)
+
 dplyr::filter(dipep,
               grepl('swollen left calf', other.symptoms.specify, ignore.case = TRUE) |
               grepl('right calf swelling', other.symptoms.specify, ignore.case = TRUE)) %>%
