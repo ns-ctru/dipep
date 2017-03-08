@@ -15,74 +15,113 @@
 #' @param predictor Predictor variable(s) to test.
 #' @param model Name/label of your model.
 #' @param relevel Reference level for logistic regression if different from default.
+#' @param exclude Vector of \code{screening}  to exclude.
+#' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
+#' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
+#' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
 #'
 #'
 #' @export
 dipep_glmnet <- function(df           = dipep,
                          classification  = 'first.st',
-                         predictor       = 'age',
+                         predictor       = c('age'),
                          model           = NULL,
-                         relevel         = NULL,
                          exclude         = NULL,
+                         exclude.non.recruited = TRUE,
+                         exclude.dvt       = TRUE,
+                         exclude.anti.coag = FALSE,
                          ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
     if(!is.null(exclude)){
         df <- df[!(df$screening %in% exclude),]
+        ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
-    ## Remove non-recruited
-    df <- dplyr::filter(df, group %in% c('Diagnosed PE', 'Suspected PE'))
+    ## Remove non-recruited and DVT
+    if(exclude.non.recruited == TRUE){
+        df <- dplyr::filter(df, group != 'Non recruited')
+    }
+    if(exclude.dvt == TRUE){
+        df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
     ## Exclude those who are not classified as PE/No PE by
     ## the specified classification
     ## TODO 2017-02-17 : Why doesn dplyr::filter_(df, !is.na(classification)) not work???
     if(classification == 'first.st'){
         df <- dplyr::filter(df, !is.na(first.st))
-        y  <- ifelse(df$first.st == 'PE', 1, 0)
     }
     else if(classification == 'second.st'){
         df <- dplyr::filter(df, !is.na(second.st))
-        y  <- ifelse(df$second.st == 'PE', 1, 0)
     }
     else if(classification == 'third.st'){
         df <- dplyr::filter(df, !is.na(third.st))
-        y  <- ifelse(df$third.st == 'PE', 1, 0)
     }
     else if(classification == 'fourth.st'){
         df <- dplyr::filter(df, !is.na(fourth.st))
-        y  <- ifelse(df$fourth.st == 'PE', 1, 0)
     }
     else if(classification == 'primary.dm'){
         df <- dplyr::filter(df, !is.na(primary.dm))
-        y  <- ifelse(df$primary.dm == 'PE', 1, 0)
     }
     else if(classification == 'secondary.dm'){
         df <- dplyr::filter(df, !is.na(secondary.dm))
-        y  <- ifelse(df$secondary.dm == 'PE', 1, 0)
     }
-    # Matrix of predictors
-    x <- subset(df, select = predictor) %>% data.matrix()
+    ## Remove biomarker data for those on anticoagulents
+    if(exclude.anti.coag == TRUE){
+        df <- mutate(df,
+                     prothombin.time                          = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.time),
+                     aptt                                     = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = aptt),
+                     clauss.fibrinogen                        = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = clauss.fibrinogen),
+                     ddimer.innovance                         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.innovance),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.lag.time),
+                     thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.endogenous.potential),
+                     thrombin.generation.peak                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.peak),
+                     thrombin.generation.time.to.peak         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.time.to.peak),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     plasmin.antiplasmin                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = plasmin.antiplasmin),
+                     prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothrombin.fragments),
+                     tissue.factor                            = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = tissue.factor),
+                     troponin                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = troponin),
+                     nppb                                     = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = nppb),
+                     mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = mrproanp))
+    }
+    ## Remove those who are 'Exclude' for the current classification
+    df <- dplyr::filter_(df, !is.na(classification))
+    dim(df) %>% print()
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
-    ## Run analyses for a range of parameters of alpha (the trade off-between)
-    ## LASSO and Ridge Regression.  The regularisation parameter, lambda
-    ## is by default run for a range of values
-    interim <- list()
-    ## for(alpha = seq(from = 0, to = 1, by = 0.05)){
-        alpha <- 0
-        lasso <- glmnet(y = y,
-                        x = x,
-                        family = 'binomial',
-                        alpha = alpha)
-        tidy_lasso   <- tidy(lasso)
-        glance_lasso <- glance(lasso)
-        cv_lasso <- cv.glmnet(y = y,
-                              x = x,
-                              family = 'binomial',
-                              alpha = alpha)
-        tidy_cv_lasso <- tidy(cv_lasso)
-        glance_cv_lasso <- glance(cv_lasso)
-        ## TODO - Obtain AUC for each model
-    ## }
-    ## TODO -
+    return(results)
 }
