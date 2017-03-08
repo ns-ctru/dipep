@@ -123,5 +123,27 @@ dipep_glmnet <- function(df           = dipep,
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
+    ## Fit model
+    results$lasso <- glmnetUtils::glmnet(data = df,
+                                         .formula,
+                                         family = 'binomial')
+    ## Cross validation
+    ## Forced to Leave One Out by virtue of setting folds to number of observations (rows)
+    results$lasso.cv <- glmnetUtils::glmnet(data = df,
+                                            .formula,
+                                            family = 'binomial',
+                                            nfolds = nrow(df))
+    ## Cross validation
+    results$lasso.cv.auc <- glmnetUtils::cv.glmnet(data = df,
+                                                   .formula,
+                                                   family  = 'binomial',
+                                                   type.measure = 'auc',
+                                                   nfolds = nrow(df))
+    ## Plot LASSO
+    results$lasso.plot <- autoplot(results$lasso) + theme_bw() + guides(colour = FALSE)
+    ## Plot Cross-Validation
+    results$lasso.cv.plot      <- autoplot(results$lasso.cv) + theme_bw()
+    ## Plot Cross-Validation AUC
+    results$lasso.cv.auc.plot
     return(results)
 }
