@@ -48,27 +48,29 @@ dipep_glmnet <- function(df           = dipep,
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
     }
+    ## Remove those who are 'Exclude' for the current classification
+    df <- dplyr::filter_(df, !is.na(classification))
     ## Exclude those who are not classified as PE/No PE by
     ## the specified classification
     ## TODO 2017-02-17 : Why doesn dplyr::filter_(df, !is.na(classification)) not work???
-    if(classification == 'first.st'){
-        df <- dplyr::filter(df, !is.na(first.st))
-    }
-    else if(classification == 'second.st'){
-        df <- dplyr::filter(df, !is.na(second.st))
-    }
-    else if(classification == 'third.st'){
-        df <- dplyr::filter(df, !is.na(third.st))
-    }
-    else if(classification == 'fourth.st'){
-        df <- dplyr::filter(df, !is.na(fourth.st))
-    }
-    else if(classification == 'primary.dm'){
-        df <- dplyr::filter(df, !is.na(primary.dm))
-    }
-    else if(classification == 'secondary.dm'){
-        df <- dplyr::filter(df, !is.na(secondary.dm))
-    }
+    ## if(classification == 'first.st'){
+    ##     df <- dplyr::filter(df, !is.na(first.st))
+    ## }
+    ## else if(classification == 'second.st'){
+    ##     df <- dplyr::filter(df, !is.na(second.st))
+    ## }
+    ## else if(classification == 'third.st'){
+    ##     df <- dplyr::filter(df, !is.na(third.st))
+    ## }
+    ## else if(classification == 'fourth.st'){
+    ##     df <- dplyr::filter(df, !is.na(fourth.st))
+    ## }
+    ## else if(classification == 'primary.dm'){
+    ##     df <- dplyr::filter(df, !is.na(primary.dm))
+    ## }
+    ## else if(classification == 'secondary.dm'){
+    ##     df <- dplyr::filter(df, !is.na(secondary.dm))
+    ## }
     ## Remove biomarker data for those on anticoagulents
     if(exclude.anti.coag == TRUE){
         df <- mutate(df,
@@ -121,8 +123,6 @@ dipep_glmnet <- function(df           = dipep,
                                                                        yes = NA,
                                                                        no  = mrproanp))
     }
-    ## Remove those who are 'Exclude' for the current classification
-    df <- dplyr::filter_(df, !is.na(classification))
     ## Build the formula
     .formula <- reformulate(response = classification,
                             termlabels = predictor)
@@ -150,9 +150,9 @@ dipep_glmnet <- function(df           = dipep,
     results$lasso.cv.lambda.min <- which(results$cv.lasso$lambda == results$cv.lasso$lambda.min)
     ## Plot LASSO
     results$lasso.plot <- autoplot(results$lasso) +
-                          geom_vline(xintercept = c(results$lasso.cv.lambda.1se,
-                                                    results$lasso.cv.lambda.min)) +
-        theme_bw()
+                          geom_vline(xintercept = results$lasso.cv.lambda.1se) +
+                          geom_vline(xintercept = results$lasso.cv.lambda.min, lty = 2) +
+                          theme_bw()
     if(legend == FALSE){
         results$lasso.plot <- results$lasso.plot + guides(colour = FALSE)
     }
