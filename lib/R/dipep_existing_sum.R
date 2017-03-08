@@ -45,8 +45,10 @@ dipep_existing_sum <- function(df      = dipep,
     names(df) <- gsub('secondary.dm',          'class',    names(df))
     names(df) <- gsub('simplified.pe',         'class.existing', names(df))
     names(df) <- gsub('simplified',            'score',    names(df))
-    names(df) <- gsub('wells.pe',              'class.existing', names(df))
-    names(df) <- gsub('wells',                 'score',    names(df))
+    names(df) <- gsub('wells.permissive.pe',   'class.existing', names(df))
+    names(df) <- gsub('wells.permissive',      'score',    names(df))
+    names(df) <- gsub('wells.strict.pe',       'class.existing', names(df))
+    names(df) <- gsub('wells.strict',          'score',    names(df))
     names(df) <- gsub('perc.pe',               'class.existing', names(df))
     names(df) <- gsub('perc',                  'score',    names(df))
     names(df) <- gsub('delphi.primary.pe',     'class.existing', names(df))
@@ -61,14 +63,14 @@ dipep_existing_sum <- function(df      = dipep,
                                      yes = 'Exclude',
                                      no  = as.character(class)))
     ## Bar chart of frequencies by classification
-    if(title != 'PERC'){
+    ## if(title != 'PERC'){
         results$bar.chart <- ggplot(df, aes(x = score)) +
                              geom_bar(aes(fill = class), position = 'dodge') +
                              ggtitle(paste0(title, ' Scores by clinical classification')) +
                              xlab(paste0(title, ' Score')) + ylab('N') +
                              scale_fill_discrete(guide = guide_legend(title = 'Status')) +
                              theme_bw()
-    }
+    ## }
     ## Likert-style chart
     ## Set variables the centered value for the plots
     if(levels(df$class.existing)[1] == 'No Simplified PE'){
@@ -89,7 +91,7 @@ dipep_existing_sum <- function(df      = dipep,
     else if(levels(df$class.existing)[2] == 'No Delphi (Specificity) PE'){
         center = 3
     }
-    if(title != 'PERC'){
+    ## if(title != 'PERC'){
         plot.likert         <- dplyr::select(df, score)
         names(plot.likert)  <- paste0(title, ' Score')
         results$likert      <- likert(plot.likert, grouping = df$class.char)
@@ -97,17 +99,17 @@ dipep_existing_sum <- function(df      = dipep,
                                labs(caption = paste0('Plots are centered on the Risk category (',
                                                      center,
                                                      ').\n Percentages indicate the proportion below, within and above this.'))
-    }
+    ## }
     ## Histogram
-    if(title == 'Wells'){
-        results$histogram <- ggplot(df, aes(x = score)) +
+    ## if(title == 'PERC'){
+        results$histogram <- ggplot(df, aes(x = score, fill = class)) +
                              geom_histogram() +
                              facet_wrap(~class, ncol = 3) +
                              ggtitle(paste0(title, ' Scores by clinical classification')) +
                              xlab(paste0(title, ' Score')) + ylab('N') +
                              scale_fill_discrete(guide = guide_legend(title = 'Status')) +
                              theme_bw()
-    }
+    ## }
     ## Summarise the scores in tabular format
     all <- mutate(df, score = as.numeric(score)) %>%
            summarise(N        = sum(!is.na(score)),
