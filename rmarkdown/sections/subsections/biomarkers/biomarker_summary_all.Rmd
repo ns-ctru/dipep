@@ -1,4 +1,4 @@
-##### Descriptive Summaries (All) {.tabset .tabset-fade .tabset-pills}
+##### Descriptive Summaries {.tabset .tabset-fade .tabset-pills}
 
 Biomarkers are summarised below on the basis of the primary classification of Pulmonary Embolism status.  Histograms of the distribution within each classification (`PE`, `No PE` or `Exclude`) are displayed followed by a table showing the number, mean, standard deviation, median and inter-quartile range and the minimum and maximum values observed.  No formal statistical tests for differences are shown since these are provided by the Logistic Regression analyses.
 
