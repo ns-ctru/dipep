@@ -681,7 +681,7 @@ rbind(logistic$roc.physiology$plot.auc,
       logistic$roc.presenting$plot.auc,
       logistic$roc.other$plot.auc,
       logistic$roc.med.hist$plot.auc) %>%
-    dplyr::select(-c(x, y)) %>%
+    ## dplyr::select(-c(x, y)) %>%
     kable(digits = 3,
           caption = 'Area Under the Curve (AUC) statistics of predictor variables')
 ## Combine and tabulate
