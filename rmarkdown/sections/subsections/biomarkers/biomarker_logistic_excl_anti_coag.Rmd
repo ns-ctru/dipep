@@ -9,7 +9,7 @@ biomarker.excl.anti.coag$prothombin.time <- dipep_glm(df = dipep,
                                        classification = 'first.st',
                                        predictor      = 'prothombin.time',
                                        model          = 'Prothombin (Time)')
-## Aprothombin
+## APTT
 biomarker.excl.anti.coag$aptt <- dipep_glm(df = dipep,
                                    exclude.dvt           = TRUE,
                                    exclude.non.recruited = TRUE,
@@ -229,7 +229,7 @@ biomarker.excl.anti.coag$roc.thrombin$plot
 ## Combine the AUC and print as table
 rbind(biomarker.excl.anti.coag$roc.other$plot.auc,
       biomarker.excl.anti.coag$roc.thrombin$plot.auc) %>%
-    dplyr::select(-c(x, y)) %>%
+    ## dplyr::select(-c(x, y)) %>%
     kable(caption = 'Area Under the Curve (AUC) statistics of ROC curves for Biomarkers')
 
 ```
