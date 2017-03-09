@@ -30,6 +30,8 @@ dipep_roc <- function(df        = logistic$predicted,
     ## Calculate AUC, extract values and label
     results$auc <- calc_auc(results$plot)
     plot.auc <- cbind(to.plot, results$auc$AUC) %>% as.data.frame()
+    print(results$plot)
+    print(plot.auc)
     names(plot.auc) <- c('Predictor', 'AUC')
     results$plot.auc <- mutate(plot.auc,
                                Predictor = gsub('age.cat', 'Age (Categorical)', Predictor),
@@ -94,8 +96,8 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('troponin', 'Troponin', Predictor),
                                Predictor = gsub('nppb', 'NPPB', Predictor),
                                Predictor = gsub('mrproanp', 'MRproANP', Predictor))
-    results$plot.auc$x <- 0.75
-    results$plot.auc$y <- 0.25
+    ## results$plot.auc$x <- 0.75
+    ## results$plot.auc$y <- 0.25
     ## ToDo - How to annotate plot with the Predictor and AUC components???
     ## Add AUC to plot
     ## results$plot <- results$plot +
