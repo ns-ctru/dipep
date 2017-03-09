@@ -13,7 +13,7 @@ predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pre
                'presenting.features.haemoptysis', 'presenting.features.cough',
                'presenting.features.syncope',
                ## 'presenting.features.palpitations',
-               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
+               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate.cat',
                'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
 lasso.categorical <- dipep_glmnet_orig(df          = dipep,
                                        classification = classification,
