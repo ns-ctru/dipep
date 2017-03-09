@@ -1,4 +1,4 @@
-#### Descriptive Summaries (All) {.tabset .tabset-fade .tabset-pills}
+##### Descriptive Summaries (All) {.tabset .tabset-fade .tabset-pills}
 
 Biomarkers are summarised below on the basis of the primary classification of Pulmonary Embolism status.  Histograms of the distribution within each classification (`PE`, `No PE` or `Exclude`) are displayed followed by a table showing the number, mean, standard deviation, median and inter-quartile range and the minimum and maximum values observed.  No formal statistical tests for differences are shown since these are provided by the Logistic Regression analyses.
 
@@ -61,7 +61,7 @@ summary.biomarkers$fourth.st <- dipep_summarise(df           = dipep,
 
 ```
 
-##### APTT
+###### APTT
 
 ```{r  demographics_biomarker_all_aptt_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -80,7 +80,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'APTT') %>%
 
 ```
 
-##### Prothombin (Time)
+###### Prothombin (Time)
 
 ```{r  demographics_biomarker_all_prothombin_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -99,7 +99,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Prothombin (Time)') %
 
 ```
 
-##### Clauss Fibrinogen
+###### Clauss Fibrinogen
 
 ```{r  demographics_biomarker_all_clauss_fibrinogen_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -118,7 +118,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Clauss Fibrinogen') %
 
 ```
 
-##### D-Dimer (Innovance)
+###### D-Dimer (Innovance)
 
 ```{r  demographics_biomarker_all_ddimer_innovan_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -137,7 +137,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'D-Dimer (Innovance)')
 
 ```
 
-##### D-Dimer (ELISA)
+###### D-Dimer (ELISA)
 
 ```{r  demographics_biomarker_all_ddimer_elisa_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -156,7 +156,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'D-Dimer (ELISA)') %>%
 
 ```
 
-##### Thrombin Generation (Lag Time)
+###### Thrombin Generation (Lag Time)
 
 ```{r  demographics_biomarker_all_thrombin_generation_lag_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -175,7 +175,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (
 
 ```
 
-##### Thrombin Generation (Endogenous Potential)
+###### Thrombin Generation (Endogenous Potential)
 
 ```{r  demographics_biomarker_all_thrombin_generation_endogenous_potential_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -194,7 +194,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (
 
 ```
 
-##### Thrombin Generation (Time to Peak)
+###### Thrombin Generation (Time to Peak)
 
 ```{r  demographics_biomarker_all_thrombin_generation_time_to_peak_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -213,7 +213,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (
 
 ```
 
-##### Thrombin Generation (Peak)
+###### Thrombin Generation (Peak)
 
 ```{r  demographics_biomarker_all_thrombin_generation_peak_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -232,7 +232,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (
 
 ```
 
-##### Plasmin Antiplasmin
+###### Plasmin Antiplasmin
 
 ```{r  demographics_biomarker_all_plasmin_antiplasmin_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -252,7 +252,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Plasmin (Antiplasmin)
 ```
 
 
-##### NPPB
+###### NPPB
 
 ```{r  demographics_biomarker_all_nppb_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -271,7 +271,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'NPPB') %>%
 
 ```
 
-##### MRproANP
+###### MRproANP
 
 ```{r  demographics_biomarker_all_mrproanp_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -290,7 +290,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'MRproANP') %>%
 
 ```
 
-##### Tissue Factor
+###### Tissue Factor
 
 ```{r  demographics_biomarker_all_tissue_factor_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
@@ -309,7 +309,7 @@ dplyr::filter(summary.biomarkers$first.st, Measurement == 'Tissue Factor') %>%
 
 ```
 
-##### PF 1 + 2
+###### PF 1 + 2
 
 ```{r  demographics_biomarker_all_pf12_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
