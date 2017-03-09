@@ -172,7 +172,8 @@ biomarker.excl.anti.coag$predicted <- rbind(biomarker.excl.anti.coag$prothombin.
 
 
 ```
-#### Logistic Regression
+
+##### Logistic Regression (Excluding Anti-Coagulation)
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
 
@@ -196,7 +197,7 @@ rm(to.sum)
 
 ```
 
-##### ROC Curves
+###### ROC Curves
 
 [Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
 
