@@ -23,15 +23,13 @@ dipep_roc <- function(df        = logistic$predicted,
     results$plot <- ggplot(dplyr::filter(df, name %in% to.plot),
                     aes(d = D, m = M, colour = term)) +
                     geom_roc() +
-                    ggtitle(paste0('ROC curves for ', title, ' Univariable Logistic Regression')) +
+                    ggtitle(paste0('ROC curves for ', title)) +
                     labs(colour = 'Predictor...') +
                     style_roc() + theme_bw() ## +
                     ## guides(guide = guide_legend(title = 'Predictor...'))
     ## Calculate AUC, extract values and label
     results$auc <- calc_auc(results$plot)
     plot.auc <- cbind(to.plot, results$auc$AUC) %>% as.data.frame()
-    print(results$plot)
-    print(plot.auc)
     names(plot.auc) <- c('Predictor', 'AUC')
     results$plot.auc <- mutate(plot.auc,
                                Predictor = gsub('age.cat', 'Age (Categorical)', Predictor),
@@ -95,7 +93,17 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('tissue.factor', 'Tissue Factor', Predictor),
                                Predictor = gsub('troponin', 'Troponin', Predictor),
                                Predictor = gsub('nppb', 'NPPB', Predictor),
-                               Predictor = gsub('mrproanp', 'MRproANP', Predictor))
+                               Predictor = gsub('mrproanp', 'MRproANP', Predictor),
+                               Predictor = gsub('lambda.min.class', 'Lambda Min (Classification)', Predictor),
+                               Predictor = gsub('lambda.min.response',
+                                                paste0('Lambda Min (Response p = ',
+                                                       threshold,')'),
+                                                Predictor),
+                               Predictor = gsub('lambda.1se.class', 'Lambda 1se (Classification)', Predictor),
+                               Predictor = gsub('lambda.1se.response',
+                                                paste0('Lambda 1se (Response p = ',
+                                                       threshold,')'),
+                                                Predictor))
     ## results$plot.auc$x <- 0.75
     ## results$plot.auc$y <- 0.25
     ## ToDo - How to annotate plot with the Predictor and AUC components???
