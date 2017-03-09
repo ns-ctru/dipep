@@ -1734,6 +1734,7 @@ dipep <- dipep %>%
                                              no  = 1),
                 simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('calf pain', other.symptoms.specify, ignore.case = TRUE) |
+                                                               grepl('pain in left leg', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('right calf swelling and pain', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('painful \\(r\\) leg', other.symptoms.specify, ignore.case = TRUE),
                                                                yes = 1,
@@ -1788,8 +1789,8 @@ dipep <- mutate(dipep,
                                          yes = 0,
                                          no  = 1),
                 perc.o2 = ifelse(o2.saturation >= 95,
-                                 yes = 1,
-                                 no  = 0),
+                                 yes = 0,
+                                 no  = 1),
                 perc.o2 = ifelse(is.na(o2.saturation),
                                  yes = 0,
                                  no  = perc.o2),
