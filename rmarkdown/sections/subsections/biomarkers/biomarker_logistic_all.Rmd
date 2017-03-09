@@ -172,7 +172,7 @@ biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
 
 
 ```
-##### Logistic Regression (All)
+##### Logistic Regression
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
 
