@@ -23,7 +23,7 @@ $$
 pulmonary embolism classification ~ predictors
 $$
 
-Exactly what predictors are included/used in a model varies.  Strictly the Statistical Analysis Plan states that may of the continuous physiological variables are to be dichotomised prior to analysis.  This is however not advisable for [various reasons]()(@altman2006,  @royston2006, @dawson2012), in particular @steyerberg2001 demonstrated that doing so results in a reduction in available information in the setting of prognostic modelling.  To this end the models have been tested using the raw continuous variables as well.
+Exactly what predictors are included/used in a model varies.  Strictly the Statistical Analysis Plan states that many of the continuous physiological variables are to be dichotomised prior to analysis.  This is however not advisable for [various reasons](http://biostat.mc.vanderbilt.edu/wiki/Main/CatContinuous)(@altman2006,  @royston2006, @heavner2010, @dawson2012), in particular @steyerberg2001 demonstrated that doing so results in a reduction in available information in the setting of prognostic modelling.  To this end the models have been tested using the raw continuous variables as well.
 
 <!-- The plot below shows the change in the coefficients for each predictor variable over iterations of estimation via LASSO. L1 Norm is a constraint placed on the analsyis for the sum of all coefficients and is one of the unique features of the LASSO.  For further details on L1 normalisation please refer to [this article](http://people.duke.edu/~hpgavin/SystemID/References/Schmidt-LASSO-2005.pdf). -->
 
@@ -34,5 +34,5 @@ Exactly what predictors are included/used in a model varies.  Strictly the Stati
 ```{r child='lasso/continuous.Rmd', eval = TRUE}
 ```
 
-```{r child='lasso/staged.Rmd', eval = TRUE}
+```{r child='lasso/staged.Rmd', eval = FALSE}
 ```
