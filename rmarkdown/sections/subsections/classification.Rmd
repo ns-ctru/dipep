@@ -29,7 +29,7 @@ Four classifications were derived and are summarised in the tables that follow.
 
 #### Reviewer 1
 
-```{r results_classification_reviewer1, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_classification_reviewer1, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 group_by(master$case.review, group, img.class1, trt.class1, fup.class1) %>%
     summarise(n = n()) %>%
     dplyr::filter(group != 'Diagnosed DVT') %>%
@@ -41,7 +41,7 @@ group_by(master$case.review, group, img.class1, trt.class1, fup.class1) %>%
 
 #### Reviewer 2
 
-```{r results_classification_reviewer2, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_classification_reviewer2, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 group_by(master$case.review, group, img.class2, trt.class2, fup.class2) %>%
     summarise(n = n()) %>%
     dplyr::filter(group != 'Diagnosed DVT') %>%
@@ -53,7 +53,7 @@ group_by(master$case.review, group, img.class2, trt.class2, fup.class2) %>%
 
 #### Reviewer 3
 
-```{r results_classification_reviewer3, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_classification_reviewer3, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 group_by(master$case.review, group, img.class3, trt.class3, fup.class3) %>%
     summarise(n = n()) %>%
     dplyr::filter(group != 'Diagnosed DVT') %>%
@@ -67,7 +67,7 @@ group_by(master$case.review, group, img.class3, trt.class3, fup.class3) %>%
 #### Overall Classifications
 
 
-```{r results_classification_overall, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_classification_overall, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 
 ## Remove DVT
 to.table <- dplyr::filter(dipep, group != 'Diagnosed DVT') %>%
