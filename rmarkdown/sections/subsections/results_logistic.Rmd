@@ -1,6 +1,6 @@
 ### Logistic Regression {.tabset .tabset-fade .tabset-pills}
 
-```{r results_logistic_regression, echo = FALSE, cache = FALSE, message = FALSE, results = 'hide', eval = TRUE}
+```{r results_logistic_regression, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'hide', eval = TRUE}
 ## Test each outcome for association, then gather them (using broom) into one dataset for summarisation
 logistic <- list()
 ## Age
@@ -376,6 +376,11 @@ logistic$xray.cat <- dipep_glm(df = dipep,
                                classification = 'first.st',
                                predictor = 'xray.cat',
                                model = 'X-Ray (Binary)')
+## Thromboprophylaxis (Categorised)
+logistic$thromboprophylaxis <- dipep_glm(df = dipep,
+                                         classification = 'first.st',
+                                         predictor = 'thromboprophylaxis',
+                                         model = 'Thromboprophylaxis')
 
 
 ## Combine all three sets of tidied output from each model
@@ -424,7 +429,8 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          ## logistic$ecg$tidied,
                          logistic$ecg.cat$tidied,
                          ## logistic$xray$tidied,
-                         logistic$xray.cat$tidied)
+                         logistic$xray.cat$tidied,
+                         logistic$thromboprophylaxis$tidied)
 logistic$glance <- rbind(logistic$age$glance,
                          logistic$smoking$glance,
                          logistic$temperature.cat$glance,
@@ -469,7 +475,8 @@ logistic$glance <- rbind(logistic$age$glance,
                          ## logistic$ecg$glance,
                          logistic$ecg.cat$glance,
                          ## logistic$xray$glance,
-                         logistic$xray.cat$glance)
+                         logistic$xray.cat$glance,
+                         logistic$thromboprophylaxis$glance)
 ## Combine all predicted
 logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$age.cat$predicted,
@@ -516,7 +523,8 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             ## logistic$ecg$predicted,
                             logistic$ecg.cat$predicted,
                             ## logistic$xray.cat$predicted,
-                            logistic$xray$predicted)
+                            logistic$xray$predicted,
+                            logistic$thromboprophylaxis$predicted)
 ## Remove 'presenting.features.' from name
 logistic$predicted <- mutate(logistic$predicted,
                              name = gsub('presenting.features.', '', name))
@@ -547,6 +555,7 @@ logistic$cross.tab <- rbind(logistic$age.cat$table,
                             logistic$history.veins$table,
                             logistic$history.iv.drug$table,
                             logistic$thrombosis$table,
+                            logistic$thromboprophylaxis,
                             logistic$trimester$table,
                             logistic$this.pregnancy.problems$table,
                             logistic$thrombo$table,
@@ -576,6 +585,7 @@ logistic$saturated <- dipep_glm(df = dipep,
 ```
 
 #### Univariable Regression
+
 Its is not advisable to use the results of univariable regression to shape your choice of variables to include in multi-variable models for the simple reason that the coefficients obtained for a variable in isolation will not be the same as those from a multi-variable model.  Thus something that appears to be significant under univariable analysis may well not be under multi-variable analysis.  A better strategy is to use expert clinical knowledge as to what factors are important to determine which variables are included in a multi-variable model.
 
 Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.  For the full output of each univariable logistic regression model please refer to the [Appendix](dipep.html#appendix).
@@ -585,7 +595,7 @@ Regardless each of the individual variables has been analysed under a univariabl
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.  Both raw continuous and categorised variables are included to provide comparison.
 
-```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
           ## Remove temperature and O2 Saturation as CI is HUGE
           ## dplyr::filter(term != 'Temperature (High)') %>%
@@ -609,7 +619,7 @@ rm(to.sum)
 ```
 Cross-tabulation of all categorical variables by the Primary Classification is provided in the table below.
 
-```{r results_logistic_regression_cross_tab, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_logistic_regression_cross_tab, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 kable(logistic$cross.tab,
       col.names = c('Predictor', 'Levels', 'No PE', 'PE'),
       caption   = 'Cross-tabulation of categorical predictors by Primary Classification of Pulmonary Embolism status')
@@ -620,7 +630,7 @@ kable(logistic$cross.tab,
 
 [Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
 
-```{r results_logistic_regression_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_logistic_regression_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
 ## ROC for continuous variables
 logistic$roc.physiology <- dipep_roc(df      = logistic$predicted,
@@ -676,14 +686,14 @@ logistic$roc.med.hist <- dipep_roc(df      = logistic$predicted,
                           title   = 'Medical History')
 logistic$roc.med.hist$plot
 ## Combine and tabulate the AUC
-rbind(logistic$roc.physiology$plot.auc,
-      logistic$roc.physiology.cat$plot.auc,
-      logistic$roc.presenting$plot.auc,
-      logistic$roc.other$plot.auc,
-      logistic$roc.med.hist$plot.auc) %>%
-    ## dplyr::select(-c(x, y)) %>%
-    kable(digits = 3,
-          caption = 'Area Under the Curve (AUC) statistics of predictor variables')
+## rbind(logistic$roc.physiology$plot.auc,
+##       logistic$roc.physiology.cat$plot.auc,
+##       logistic$roc.presenting$plot.auc,
+##       logistic$roc.other$plot.auc,
+##       logistic$roc.med.hist$plot.auc) %>%
+##     ## dplyr::select(-c(x, y)) %>%
+##     kable(digits = 3,
+##           caption = 'Area Under the Curve (AUC) statistics of predictor variables')
 ## Combine and tabulate
 rbind(logistic$roc.physiology$summary.stats,
       logistic$roc.physiology.cat$summary.stats,
@@ -701,7 +711,7 @@ In a situation where you are likely to have information on all possible variable
 
 **NB** - History of IV Drug use and Long-haul travel have explicitly been excluded due to problems, this may be rectified in the future.
 
-```{r results_logistic_regression_multi_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_logistic_regression_multi_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- logistic$saturated$tidied %>%
           dplyr::select(term, estimate, lci, uci, p.value) %>%
           dplyr::filter(term != '(Intercept)')
@@ -718,7 +728,8 @@ rm(to.sum)
 
 ```
 
-```{r results_logistic_regression_multi_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_logistic_regression_multi_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 logistic$saturated$roc
+## logistic$saturated$summary.stats
 
 ```
