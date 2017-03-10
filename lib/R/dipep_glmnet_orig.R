@@ -315,12 +315,13 @@ dipep_glmnet_orig <- function(df              = dipep,
                                                     labels = c('No PE', 'PE')),
                                          M = as.numeric(M))
     roc <- dipep_roc(df        = results$lasso.cv.predicted,
-                     to.plot   = c('lambda.min.class', 'lambda.min.response',
-                                 'lambda.1se.class', 'lambda.1se.response'),
+                     to.plot   = c('lambda.min.response',
+                                   'lambda.1se.response'),
                      title     = 'Cross-Validated LASSO',
                      threshold = threshold)
     results$lasso.cv.roc           <- roc$plot
     results$lasso.cv.auc           <- roc$plot.auc
     results$lasso.cv.summary.stats <- roc$summary.stats
+    results$threshold              <- threshold
     return(results)
 }
