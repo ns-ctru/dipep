@@ -672,6 +672,7 @@ logistic$roc.other <- dipep_roc(df      = logistic$predicted,
                                    'pregnancies.under',
                                    'xray.cat',
                                    'ecg.cat',
+                                   'thromboprophylaxis',
                                    'this.pregnancy.problems'),
                        title   = 'Other Features')
 logistic$roc.other$plot
