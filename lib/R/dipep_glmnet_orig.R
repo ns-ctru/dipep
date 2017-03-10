@@ -146,6 +146,8 @@ dipep_glmnet_orig <- function(df              = dipep,
     # Matrix of predictors
     x <- subset(df, select = predictor) %>% data.matrix()
     ## Bind the response vector and predictor vector into a data frame
+    results$x  <- x
+    results$y  <- y
     results$df <- rbind(y, x) %>%
                   as.data.frame()
     ## Run LASSO
@@ -276,38 +278,37 @@ dipep_glmnet_orig <- function(df              = dipep,
                                           all     = TRUE)
     names(results$lasso.cv.coef.lambda) <- c('Term', '1 SE', 'Min')
     ## Generate predictions at both threshold for lambda for Cross-Validated fit
-    results$lasso.cv.lambda.min.class <- predict(results$lasso.cv,
-                                                 newx = x,
-                                                 s = 'lambda.min',
-                                                 type = 'class')
-    results$lasso.cv.lambda.min.response <- predict(results$lasso.cv,
+    lasso.cv.lambda.min.response <- predict(results$lasso.cv,
                                                     newx = x,
                                                     s = 'lambda.min',
                                                     type = 'response')
-    results$lasso.cv.lambda.1se.class <- predict(results$lasso.cv,
-                                                 newx = x,
-                                                 s = 'lambda.1se',
-                                                 type = 'class')
-    results$lasso.cv.lambda.1se.response <- predict(results$lasso.cv,
+    lasso.cv.lambda.1se.response <- predict(results$lasso.cv,
                                                     newx = x,
                                                     s = 'lambda.1se',
                                                     type = 'response')
+    ## Predict overall
+    lasso.cv.all <- predict(results$lasso.cv,
+                                    newx = x,
+                                    s    = results$lasso.cv$lambda,
+                            type = 'response')
+    ## Bind all predictions together and reshape for plotting
     results$lasso.cv.predicted <- cbind(y,
-                                        results$lasso.cv.lambda.min.class,
-                                        results$lasso.cv.lambda.min.response,
-                                        results$lasso.cv.lambda.1se.class,
-                                        results$lasso.cv.lambda.1se.response) %>%
+                                        lasso.cv.lambda.min.response,
+                                        lasso.cv.lambda.1se.response) %>%
                                   as.data.frame()
-    names(results$lasso.cv.predicted) <- c('D',
-                                           'lambda.min.class', 'lambda.min.response',
-                                           'lambda.1se.class', 'lambda.1se.response')
+    names(results$lasso.cv.predicted) <- c('D', 'min.response', '1se.response')
+    results$lasso.cv.predicted <- cbind(results$lasso.cv.predicted,
+                                        lasso.cv.all)
+    names(results$lasso.cv.predicted) <- gsub('^*', 'Step ', names(results$lasso.cv.predicted))
+    names(results$lasso.cv.predicted) <- gsub('Step D', 'D', names(results$lasso.cv.predicted))
     results$lasso.cv.predicted <- melt(results$lasso.cv.predicted,
                                        id.vars = c('D')) %>%
                                   mutate(name = variable,
-                                         variable = case_when(.$variable == 'lambda.min.class' ~ 'Lambda Min (Classification)',
-                                                              .$variable == 'lambda.min.response' ~ 'Lambda Min (Response)',
-                                                              .$variable == 'lambda.1se.class' ~ 'Lambda 1se (Classification)',
-                                                              .$variable == 'lambda.1se.response' ~ 'Lambda 1se (Response)'))
+                                         variable = gsub('Step min.response', 'Lambda Min', variable),
+                                         variable = gsub('Step 1se.response', 'Lambda 1SE', variable),
+                                         variable = gsub('Step ', '', variable)
+                                         )
+    ## Sort names and levels of D for passing to dipep_roc
     names(results$lasso.cv.predicted) <- c('D', 'term', 'M', 'name')
     results$lasso.cv.predicted <- mutate(results$lasso.cv.predicted,
                                          D = factor(D,
@@ -315,13 +316,27 @@ dipep_glmnet_orig <- function(df              = dipep,
                                                     labels = c('No PE', 'PE')),
                                          M = as.numeric(M))
     roc <- dipep_roc(df        = results$lasso.cv.predicted,
-                     to.plot   = c('lambda.min.response',
-                                   'lambda.1se.response'),
+                     to.plot   = c('Step min.response',
+                                   'Step 1se.response'),
                      title     = 'Cross-Validated LASSO',
-                     threshold = threshold)
+                     threshold = threshold,
+                     lasso     = FALSE)
     results$lasso.cv.roc           <- roc$plot
     results$lasso.cv.auc           <- roc$plot.auc
     results$lasso.cv.summary.stats <- roc$summary.stats
     results$threshold              <- threshold
+    ## Get all predictions
+    ## to.plot <- paste0('Step ', seq(1:length(results$lasso.cv$lambda)))
+    to.plot <- seq(1:length(results$lasso.cv$lambda))
+    roc <- dipep_roc(df        = results$lasso.cv.predicted,
+                     to.plot   = to.plot,
+                     title     = 'all steps of Cross-Validated LASSO',
+                     threshold = threshold,
+                     lasso     = TRUE)
+    print(roc$plot.auc)
+    print(roc$summary.stats)
+    results$lasso.cv.roc.all           <- roc$plot
+    results$lasso.cv.auc.all           <- roc$plot.auc
+    results$lasso.cv.summary.stats.all <- roc$summary.stats
     return(results)
 }
