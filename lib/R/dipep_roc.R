@@ -11,18 +11,20 @@
 #' @param to.plot Vector of variables to plot.
 #' @param title Title for ROC plot.
 #' @param threshold Threshold (\code{0 < x < 1}) for classification if not already part of the data frame.
+#' @param labels Whether to apply labels to the ROC curve (option passed to \code{geom_roc()}).
 #'
 #' @export
 dipep_roc <- function(df        = logistic$predicted,
                       to.plot   = c('history.thrombosis', 'history.iv.drug', 'history.veins', 'thrombo', 'surgery', 'thrombosis'),
                       title     = 'Medical History',
                       threshold = 0.5,
+                      labels    = FALSE,
                       ...){
     results <- list()
     ## Generate plot
     results$plot <- ggplot(dplyr::filter(df, name %in% to.plot),
                     aes(d = D, m = M, colour = term)) +
-                    geom_roc() +
+                    geom_roc(labels = labels) +
                     ggtitle(paste0('ROC curves for ', title)) +
                     labs(colour = 'Predictor...') +
                     style_roc() + theme_bw() ## +
