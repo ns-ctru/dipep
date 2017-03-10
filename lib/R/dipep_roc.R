@@ -47,7 +47,6 @@ dipep_roc <- function(df        = logistic$predicted,
         results$plot <- results$plot +
                         labs(colour = 'Predictor...')
     }
-    results$plot %>% print()
     ## Calculate AUC, extract values and label
     results$auc <- calc_auc(results$plot)
     plot.auc <- cbind(to.plot, results$auc$AUC) %>% as.data.frame()
