@@ -133,7 +133,8 @@ dipep_glm <- function(df              = .data,
     ## Cross tabulation of counts for combining
     results$table <- dplyr::group_by_(df, classification, predictor) %>%
                      dplyr::summarise(n = n()) %>%
-                     dplyr::group_by_(predictor) %>%
+                     dplyr::group_by_(classification) %>%
+                     ## dplyr::group_by_(predictor) %>%
                      dplyr::mutate(N    = sum(n, na.rm = TRUE),
                                    prop = (n * 100) / N,
                                    n    = paste0(formatC(n, digits = 0, format = 'f'),
@@ -227,6 +228,8 @@ dipep_glm <- function(df              = .data,
                              term = gsub('smokinggave up prior to pregnancy', 'Ex-smoker (Prior)', term),
                              term = gsub('smokinggave up during pregnancy', 'Ex-smoker (During)', term),
                              term = gsub('smokingcurrent', 'Current Smoker', term),
+                             term = gsub('smoking.catNon-smoker', 'Smoking (Binary) : Non-Smoker', term),
+                             term = gsub('smoking.Smoker', 'Smoking (Binary) : Smoker', term),
                              term = gsub('temperature.catLow', 'Temperature (Low)', term),
                              term = gsub('temperature.catHigh', 'Temperature (High)', term),
                              term = gsub('temperature', 'Temperature (Continuous)', term),
