@@ -170,7 +170,8 @@ dipep_roc <- function(df        = logistic$predicted,
     names(t) <- gsub('Predictor', 'term', names(t))
     if(lasso == TRUE){
         t <- mutate(t,
-                    term = as.numeric(term))
+                    term = as.numeric(term),
+                    AUC  = as.numeric(AUC))
     }
     results$summary.stats <- left_join(results$summary.stats,
                                        t) %>%
