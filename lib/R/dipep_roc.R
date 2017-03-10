@@ -115,16 +115,8 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('troponin', 'Troponin', Predictor),
                                Predictor = gsub('nppb', 'NPPB', Predictor),
                                Predictor = gsub('mrproanp', 'MRproANP', Predictor),
-                               Predictor = gsub('lambda.min.class', 'Lambda Min (Classification)', Predictor),
-                               Predictor = gsub('lambda.min.response',
-                                                paste0('Lambda Min (Response p = ',
-                                                       threshold,')'),
-                                                Predictor),
-                               Predictor = gsub('lambda.1se.class', 'Lambda 1se (Classification)', Predictor),
-                               Predictor = gsub('lambda.1se.response',
-                                                paste0('Lambda 1se (Response p = ',
-                                                       threshold,')'),
-                                                Predictor))
+                               Predictor = gsub('Step min.response', 'Lambda Min', Predictor),
+                               Predictor = gsub('Step 1se.response', 'Lambda 1SE', Predictor))
     ## results$plot.auc$x <- 0.75
     ## results$plot.auc$y <- 0.25
     ## ToDo - How to annotate plot with the Predictor and AUC components???
@@ -166,7 +158,7 @@ dipep_roc <- function(df        = logistic$predicted,
     ## By term summarise counts of
     results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
                              dcast(term ~ classification) %>%
-                             mutate(sensitvity  = true_positive  / (true_positive + false_negative),
+                             mutate(sensitivity = true_positive  / (true_positive + false_negative),
                                     specificity = true_negative  / (true_negative + false_positive),
                                     ppv         = true_positive  / (true_positive + false_positive),
                                     npv         = true_negative  / (true_negative + false_negative),
@@ -175,12 +167,16 @@ dipep_roc <- function(df        = logistic$predicted,
                                     fdr         = false_positive / (true_positive + false_positive),
                                     accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative))
     ## Bind AUC in with summary statistics
-    t <- results$auc
+    t <- results$plot.auc
     names(t) <- gsub('Predictor', 'term', names(t))
+    if(lasso == TRUE){
+        t <- mutate(t,
+                    term = as.numeric(term))
+    }
     results$summary.stats <- left_join(results$summary.stats,
                                        t) %>%
-        dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
-                      AUC, sensitivity, specificity, ppv, npv, fpr, fnr, fdr, accuracy)
+                             dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
+                                           AUC, sensitivity, specificity, ppv, npv, fpr, fnr, fdr, accuracy)
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC',
                                       'Sensitivity', 'Specificity', 'PPV', 'NPV', 'FPR', 'FNR', 'FDR', 'Accuracy')
     return(results)
