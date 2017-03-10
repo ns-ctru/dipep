@@ -12,6 +12,7 @@
 #' @param title Title for ROC plot.
 #' @param threshold Threshold (\code{0 < x < 1}) for classification if not already part of the data frame.
 #' @param labels Whether to apply labels to the ROC curve (option passed to \code{geom_roc()}).
+#' @param lasso Logical if predicted values are from steps of a LASSO, forces numbering to be numeric
 #'
 #' @export
 dipep_roc <- function(df        = logistic$predicted,
@@ -19,16 +20,34 @@ dipep_roc <- function(df        = logistic$predicted,
                       title     = 'Medical History',
                       threshold = 0.5,
                       labels    = FALSE,
+                      lasso     = FALSE,
                       ...){
     results <- list()
+    if(lasso == TRUE){
+        df <- dplyr::filter(df, !(term %in% c('Lambda 1SE', 'Lambda Min'))) %>%
+              mutate(term = as.numeric(term))
+        df <- dplyr::filter(df, term %in% to.plot)
+    }
+    else{
+        df <- dplyr::filter(df, name %in% to.plot)
+    }
     ## Generate plot
-    results$plot <- ggplot(dplyr::filter(df, name %in% to.plot),
-                    aes(d = D, m = M, colour = term)) +
+    results$plot <- ggplot(df,
+                    aes(d = D, m = M, colour = as.factor(term))) +
                     geom_roc(labels = labels) +
                     ggtitle(paste0('ROC curves for ', title)) +
-                    labs(colour = 'Predictor...') +
+                    labs(colour = 'Step...') +
                     style_roc() + theme_bw() ## +
-                    ## guides(guide = guide_legend(title = 'Predictor...'))
+    ## guides(guide = guide_legend(title = 'Predictor...'))
+    if(lasso == TRUE){
+        results$plot <- results$plot +
+                        labs(colour = 'Step...')
+    }
+    else{
+        results$plot <- results$plot +
+                        labs(colour = 'Predictor...')
+    }
+    results$plot %>% print()
     ## Calculate AUC, extract values and label
     results$auc <- calc_auc(results$plot)
     plot.auc <- cbind(to.plot, results$auc$AUC) %>% as.data.frame()
@@ -119,7 +138,7 @@ dipep_roc <- function(df        = logistic$predicted,
     ##                   Negative Predictive Value
     ## Check if threshold (a value which should determine the cut point for
     ## classification) exists in the data, if not then set it
-    results$df <- dplyr::filter(df, name %in% to.plot)
+    results$df <- df
     if(!c('threshold') %in% names(results$df)){
         results$df <- mutate(results$df,
                              threshold = threshold)
@@ -155,5 +174,14 @@ dipep_roc <- function(df        = logistic$predicted,
                                     fnr         = false_negative / (true_positive + false_negative),
                                     fdr         = false_positive / (true_positive + false_positive),
                                     accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative))
+    ## Bind AUC in with summary statistics
+    t <- results$auc
+    names(t) <- gsub('Predictor', 'term', names(t))
+    results$summary.stats <- left_join(results$summary.stats,
+                                       t) %>%
+        dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
+                      AUC, sensitivity, specificity, ppv, npv, fpr, fnr, fdr, accuracy)
+    names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC',
+                                      'Sensitivity', 'Specificity', 'PPV', 'NPV', 'FPR', 'FNR', 'FDR', 'Accuracy')
     return(results)
 }
