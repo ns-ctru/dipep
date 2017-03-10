@@ -227,11 +227,6 @@ biomarker.excl.anti.coag$roc.thrombin <- dipep_roc(df      = biomarker.excl.anti
                                                    title    = 'Thrombin/Prothombin Biomarkers',
                                                    threshold = threshold)
 biomarker.excl.anti.coag$roc.thrombin$plot
-## Combine the AUC and print as table
-## rbind(biomarker.excl.anti.coag$roc.other$plot.auc,
-##       biomarker.excl.anti.coag$roc.thrombin$plot.auc) %>%
-##     ## dplyr::select(-c(x, y)) %>%
-##     kable(caption = 'Area Under the Curve (AUC) statistics of ROC curves for Biomarkers')
 
 ```
 
