@@ -240,8 +240,7 @@ The performance of biomarkers in making predictions is summarised in terms of th
 ```{r results_biomarker_logistic_excl_anti_coag_performance, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
       biomarker.excl.anti.coag$roc.thrombin$summary.stats) %>%
-    kable(caption = paste0('Summary Statistics for Biomarkers using p > ', threshold, ' to classify predicted probabilities as PE.'),
-          col.names = c('Marker', 'False -ve', 'False +ve', 'True -ve', 'True +ve', 'Sensitivity', 'Specificity', 'PPV', 'NPV', 'FPR', 'FNR', 'FDR', 'Accuracy'))
+    kable(caption = paste0('Summary Statistics for Biomarkers using p > ', threshold, ' to classify predicted probabilities as PE.'))
 
 
 ```
