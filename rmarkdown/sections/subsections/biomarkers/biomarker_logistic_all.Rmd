@@ -1,4 +1,4 @@
-```{r biomarkers_logistic_all, echo = FALSE, cache = FALSE, message = FALSE, results = 'hide', eval = TRUE}
+```{r biomarkers_logistic_all, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'hide', eval = TRUE}
 ## Test association of each biomarker
 biomarker.all <- list()
 ## Prothombin (Time)
@@ -176,7 +176,7 @@ biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
 
-```{r results_biomarker_logistic_all_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_summary, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
@@ -200,7 +200,7 @@ rm(to.sum)
 
 [Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
 
-```{r results_biomarker_logistic_all_roc, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_roc, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
 ## ROC for continuous variables
 threshold <- 0.15
@@ -226,17 +226,12 @@ biomarker.all$roc.thrombin <- dipep_roc(df      = biomarker.all$predicted,
                                     title    = 'Thrombin/Prothombin Biomarkers',
                                     threshold = threshold)
 biomarker.all$roc.thrombin$plot
-## Combine the AUC and print as table
-rbind(biomarker.all$roc.other$plot.auc,
-      biomarker.all$roc.thrombin$plot.auc) %>%
-    ## dplyr::select(-c(x, y)) %>%
-    kable(caption = 'Area Under the Curve (AUC) statistics of ROC curves for Biomarkers')
 
 ```
 
 The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable.
 
-```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
 rbind(biomarker.all$roc.other$summary.stats,
       biomarker.all$roc.thrombin$summary.stats) %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using p > ', threshold, ' to classify predicted probabilities as PE.'))
