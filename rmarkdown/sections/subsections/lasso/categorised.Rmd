@@ -45,8 +45,6 @@ lasso.categorical$lasso.plot + guides(colour = FALSE)
 
 ```{r results_lasso_categorical_cross_validation_plot, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
 lasso.categorical$lasso.cv.plot
-lasso.categorical$coef.lambda %>%
-    kable(caption = 'Cross-validated coefficients for minimum Lambda and 1 x SE')
 
 ```
 
@@ -56,9 +54,18 @@ Having selected an optimal value for Lambda the predicted probabilities are then
 
 ```{r results_lasso_categorical_roc, echo = FALSE, cache = FALSE,  fig.width = 10, results = 'markup', eval = TRUE}
 lasso.categorical$lasso.cv.roc
-lasso.categorical$lasso.cv.auc %>%
+lasso.categorical$lasso.cv.summary.stats %>%
     kable(caption = 'AUC for Cross-Validated LASSO for varying Lambda thresholds.')
 lasso.categorical$lasso.cv.coef.lambda %>%
     kable(caption = 'Coefficients for Lambda thresholds.')
+
+```
+The question naturally arises as to whether a parsimonious model with less variables from an earlier stage in the LASSO can be used without losing predictive ability of the model.  It is self-evident that simpler models will have poorer predictive value because they use less information in order to make the prediction, but in order to provide a visual overview and numerical quantification of the trade-off between complexity and predictive value *all* steps from the LASSO ROC curves and goodness of fit statistics have been plotted/summarised for each sequential step.
+
+
+```{r results_lasso_categorical_roc_all, echo = FALSE, cache = FALSE, results = 'asis', eval = TRUE}
+lasso.categorical$lasso.cv.roc.all
+lasso.categorical$lasso.cv.summary.stats.all %>%
+    kable(caption = 'Predictive statistics for sequential steps of LASSO.')
 
 ```
