@@ -113,3 +113,75 @@ kable(to.table,
 rm(to.table)
 
 ```
+
+#### Inter-Rater Reliability
+
+```{r results_inter_rater_reliability, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
+## Number of reviews performed by reviewer 3
+n.reviewer3 <- dplyr::filter(master$case.review, !is.na(first.st3)) %>% nrow()
+
+## IRR for different components between reviewer 1 and 2
+check <- dplyr::filter(master$case.review, group != 'Diagnosed DVT')
+irr.first   <- kappa2(check[,c('first.st1',  'first.st2')])
+irr.second  <- kappa2(check[,c('second.st1', 'second.st2')])
+irr.third   <- kappa2(check[,c('third.st1',  'third.st2')])
+irr.fourth  <- kappa2(check[,c('fourth.st1', 'fourth.st2')])
+irr.imaging <- kappa2(check[,c('img.class1', 'img.class2')])
+irr.trt     <- kappa2(check[,c('trt.class1', 'trt.class2')])
+irr.fup     <- kappa2(check[,c('fup.class1', 'fup.class2')])
+## Bind components into a data frame
+irr <- cbind(rbind('Primary',
+                   'Secondary',
+                   'Tertiary',
+                   'Quaternary',
+                   'Imaging',
+                   'Treatment',
+                   'Follow-Up'),
+             rbind(irr.first$subjects,
+                   irr.second$subjects,
+                   irr.third$subjects,
+                   irr.fourth$subjects,
+                   irr.imaging$subjects,
+                   irr.trt$subjects,
+                   irr.fup$subjects),
+             rbind(irr.first$raters,
+                   irr.second$raters,
+                   irr.third$raters,
+                   irr.fourth$raters,
+                   irr.imaging$raters,
+                   irr.trt$raters,
+                   irr.fup$raters),
+             rbind(irr.first$value,
+                   irr.second$value,
+                   irr.third$value,
+                   irr.fourth$value,
+                   irr.imaging$value,
+                   irr.trt$value,
+                   irr.fup$value),
+             rbind(irr.first$statistic,
+                   irr.second$statistic,
+                   irr.third$statistic,
+                   irr.fourth$statistic,
+                   irr.imaging$statistic,
+                   irr.trt$statistic,
+                   irr.fup$statistic),
+             rbind(irr.first$p.value,
+                   irr.second$p.value,
+                   irr.third$p.value,
+                   irr.fourth$p.value,
+                   irr.imaging$p.value,
+                   irr.trt$p.value,
+                   irr.fup$p.value)) %>%
+    as.data.frame()
+names(irr) <- c('Component', 'Subjects', 'Raters', 'Kappa', 'z', 'p')
+
+```
+The [Inter-Rater Reliatibility](https://en.wikipedia.org/wiki/Inter-rater_agreement (IRR)) between a pair of raters can be quantified using [Cohen's Kappa](https://en.wikipedia.org/wiki/Cohen's_kappa) which takes into account the possibility of agreement by chance alone.  Since Reviewer 3 only performed `r n.reviewer3` reviews it does not make sense to compute the IRR for this reviewer, but all components used to make classification are assessed as well as the overall agreement for Reviewer 1 and 2.
+
+
+
+```{r results_inter_rater_reliability_results, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
+kable(irr,
+      caption = "Cohen's Kappa Inter-Rater Reliability for overall")
+
+```
