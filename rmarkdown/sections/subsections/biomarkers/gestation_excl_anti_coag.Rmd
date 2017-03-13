@@ -6,10 +6,11 @@ A possibly useful reference when considering D-Dimer is *Gestation-specific D-di
 
 Crude plot of D-Dimer (ELISA) levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_ddimer_elisa, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_ddimer_elisa, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -20,10 +21,11 @@ ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
 
 Crude plot of D-Dimer (Innovance) levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_ddimer_innovan, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_ddimer_innovan, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = ddimer.innovance, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('D-Dimer - Innovance (mg/l)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -35,10 +37,11 @@ ggplot(aes(x = gestation, y = ddimer.innovance, colour = first.st)) +
 
 Crude plot of APTT levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_aptt, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_aptt, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = aptt, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('APTT (Min)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -50,10 +53,11 @@ ggplot(aes(x = gestation, y = aptt, colour = first.st)) +
 
 Crude plot of Prothombin (Time) levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_prothombin, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_prothombin, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = prothombin.time, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Prothombin Time (Min)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -65,10 +69,11 @@ ggplot(aes(x = gestation, y = prothombin.time, colour = first.st)) +
 
 Crude plot of Clauss Fibrinogen levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_clauss_fibrinogen, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_clauss_fibrinogen, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = clauss.fibrinogen, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Clauss Fibrinogen (g/l)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -79,10 +84,11 @@ ggplot(aes(x = gestation, y = clauss.fibrinogen, colour = first.st)) +
 
 Crude plot of Thrombin Generation Lag Time levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_lag_time, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_lag_time, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = thrombin.generation.lag.time, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Lag Time (Min)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -94,10 +100,11 @@ ggplot(aes(x = gestation, y = thrombin.generation.lag.time, colour = first.st)) 
 
 Crude plot of Thrombin Generation Endogenous Potential levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_endogenous_potential, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_endogenous_potential, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = thrombin.generation.endogenous.potential, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Endogenous Potential (Min)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -109,10 +116,11 @@ ggplot(aes(x = gestation, y = thrombin.generation.endogenous.potential, colour =
 
 Crude plot of Thrombin Generation Peak levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_peak, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_peak, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = thrombin.generation.peak, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Peak (nM)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -124,10 +132,11 @@ ggplot(aes(x = gestation, y = thrombin.generation.peak, colour = first.st)) +
 
 Crude plot of Thrombin Generation Time to Peak levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_time_to_peak, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_thrombin_generation_time_to_peak, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = thrombin.generation.time.to.peak, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Time To Peak (Min)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -139,10 +148,11 @@ ggplot(aes(x = gestation, y = thrombin.generation.time.to.peak, colour = first.s
 
 Crude plot of Plasmin Antiplasmin levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_plasmin_antiplasmin, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_plasmin_antiplasmin, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = plasmin.antiplasmin, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Plasmin Antiplasmin (sec)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -154,10 +164,11 @@ ggplot(aes(x = gestation, y = plasmin.antiplasmin, colour = first.st)) +
 
 Crude plot of NPPB levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_nppb, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_nppb, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = nppb, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('NPPB (pg/ml)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -169,10 +180,11 @@ ggplot(aes(x = gestation, y = nppb, colour = first.st)) +
 
 Crude plot of MRProANP levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_mrproanp, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_mrproanp, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('MRProANP (pmol/l)') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -184,10 +196,11 @@ ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
 
 Crude plot of Tissue Factor levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_tissue_factor, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_tissue_factor, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Tissue Factor ()') +
     theme_bw() +
     labs(colour = 'Primary Classification')
@@ -199,10 +212,11 @@ ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
 
 Crude plot of PF 1 + 2 levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
 
-```{r results_biomarker_excl_anti_coag_gestation_prothrombin_fragments, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+```{r results_biomarker_excl_anti_coag_gestation_prothrombin_fragments, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', , eval = TRUE}
 dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = prothrombin.fragments, colour = first.st)) +
     geom_point() +
+    geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('PF 1 + 2 ()') +
     theme_bw() +
     labs(colour = 'Primary Classification')
