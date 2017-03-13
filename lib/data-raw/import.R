@@ -1155,7 +1155,45 @@ t12 <- dplyr::select(master$outcome.infant,
                      group,
                      site,
                      delivery.date) %>%
-       unique()
+        unique()
+## Yet MORE data from outside the relational database, this time
+## definitions of whether individuals have 'active clinical comorbidities'
+## and/or 'obstetric complications' which are two of the criteria for
+## the Delphi Consensus Clinical Decision Rule.
+##
+## These were NOT part of Prospect and have been derived seperately and
+## attachd to an email from s.goodacre@sheffield.ac.uk 2017-03-06 @ 09:38
+## Subject : CDR criteria (filenames have been changed for brevity)
+master$cdr.active.medical.comorbidities.raw <- read.csv(file = 'cdr_active_medical_comorbidities.csv')
+master$cdr.active.medical.comorbidities.clean <- dplyr::select(master$cdr.active.medical.comorbidities.raw,
+                                                               Participant.No., group, Medical.co.morbidity.0.no.1.yes)
+names(master$cdr.active.medical.comorbidities.clean) <- c('screening', 'group', 'medical.comorbidity')
+master$cdr.obstetric.complications.raw <- read.csv(file = 'cdr_obstetric_complications.csv')
+master$cdr.obstetric.complications.clean <- dplyr::select(master$cdr.obstetric.complications.raw,
+                                                          Participant.No., group, Obstetric.complications.0.no.1.yes)
+names(master$cdr.obstetric.complications.clean) <- c('screening', 'group', 'obstetric.complications')
+## Combine, retaining all from both
+master$cdr.supplementary <- merge(master$cdr.active.medical.comorbidities.clean,
+                                  master$cdr.obstetric.complications.clean,
+                                  by    = c('screening', 'group'),
+                                  all   = TRUE)
+## Ah, but there are DUPLICATES in these files, likely because some
+## people have multiple medical co-morbidities, how inconvenient, we now
+## de-duplicate the data
+master$cdr.supplementary[is.na(master$cdr.supplementary)] <- 0
+master$cdr.supplementary <- group_by(master$cdr.supplementary, screening) %>%
+                            mutate(any.medical = sum(medical.comorbidity),
+                                   any.obstetric = sum(obstetric.complications)) %>%
+                            dplyr::select(-medical.comorbidity, -obstetric.complications) %>%
+                            unique() %>%
+                            mutate(medical.comorbidity = ifelse(any.medical > 0,
+                                                                yes = 1,
+                                                                no  = 0),
+                                   obstetric.complications = ifelse(any.obstetric > 0,
+                                                                    yes = 1,
+                                                                    no  = 0)) %>%
+                            dplyr::select(-any.medical, -any.obstetric) %>%
+                            unique()
 ## Extract the event date from the screening froms as
 ## for some reason the event.date is not recorded in any
 ## form and instead the consent.date is to be used as a
@@ -1242,7 +1280,23 @@ t <- merge(t1,
     merge(.,
           dplyr::select(master$case.review, screening, group, primary.dm, secondary.dm, first.st, second.st, third.st, fourth.st),
           by    = c('screening', 'group'),
+          all.x = TRUE) %>%
+    merge(.,
+          dplyr::select(master$service.receipt, screening, group, admitted.hospital),
+          by    = c('screening', 'group'),
+          all.x = TRUE) %>%
+    merge(.,
+          master$cdr.supplementary,
+          by    = c('screening', 'group'),
           all.x = TRUE)
+## Replace the cdr.supplementary from missing to 0 for medical.comorbidity and obstetric.complications
+t <- mutate(t,
+            medical.comorbidity = ifelse(is.na(medical.comorbidity),
+                                         yes = 0,
+                                         no  = medical.comorbidity),
+            obstetric.complications = ifelse(is.na(obstetric.complications),
+                                             yes = 0,
+                                             no  = obstetric.complications))
 ## Now do three merges with the event.date, one to get a master dataset (excluding those who were Non recruited)...
 dipep <- merge(t,
                event.date,
@@ -1726,18 +1780,24 @@ dipep <- dipep %>%
                 simplified.prev.dvt.pe = ifelse(thrombosis == 'No' | is.na(thrombosis),
                                                 yes = 0,
                                                 no  = 3),
+                simplified.prev.dvt.pe = ifelse(thromb.event == 'Yes',
+                                                yes = 3,
+                                                no  = simplified.prev.dvt.pe),
+                simplified.prev.dvt.pe = ifelse(is.na(thromb.event),
+                                                yes = 0,
+                                                no  = simplified.prev.dvt.pe),
                 simplified.surgery = ifelse(surgery == 'No' | is.na(surgery),
                                             yes = 0,
-                                            no  = 1),
+                                            no  = 2),
                 simplified.neoplasm = ifelse(existing.medical.cancer == 'No' | is.na(existing.medical.cancer),
                                              yes = 0,
-                                             no  = 1),
+                                             no  = 2),
                 simplified.lower.limb.unilateral.pain = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('calf pain', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('pain in left leg', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('right calf swelling and pain', other.symptoms.specify, ignore.case = TRUE) |
                                                                grepl('painful \\(r\\) leg', other.symptoms.specify, ignore.case = TRUE),
-                                                               yes = 1,
+                                                               yes = 3,
                                                                no  = 0),
                 ## There are however entries of 'Bilateral lower leg pain' which need correcting
                 simplified.lower.limb.unilateral.pain = ifelse(grepl('bilateral lower leg pain', other.symptoms.specify, ignore.case = TRUE) |
@@ -1746,10 +1806,11 @@ dipep <- dipep %>%
                                                     no  = simplified.lower.limb.unilateral.pain),
                 simplified.haemoptysis = ifelse(presenting.features.haemoptysis == 'Not Ticked' | is.na(presenting.features.haemoptysis),
                                                 yes = 0,
-                                                no  = 1),
+                                                no  = 2),
                 simplified.heart.rate = case_when(.$heart.rate < 75                      ~ 0,
                                                   .$heart.rate >= 75 & .$heart.rate < 94 ~ 3,
-                                                  .$heart.rate >= 95                     ~ 5),
+                                                  .$heart.rate >= 95                     ~ 5)
+                                                  ## is.na(.$heart.rate)                    ~ 0),
                 ## 2017-03-07 - Use Clinical signs of DVT to assess pain on palpitations
                 ##              See emails from s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:04
                 ##                              s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:07
@@ -1781,8 +1842,8 @@ dipep <- dipep %>%
                 simplified.pe = factor(simplified.pe,
                                        levels = c('No Simplified PE', 'Simplified PE')))
 ## PERC
-dipep <- mutate(dipep,
-                perc.age = ifelse(age < 50 | is.na(age),
+dipep <- dipep %>%
+         mutate(perc.age = ifelse(age < 50 | is.na(age),
                                   yes = 0,
                                   no  = 1),
                 perc.heart.rate = ifelse(heart.rate < 100 | is.na(heart.rate),
@@ -1797,6 +1858,16 @@ dipep <- mutate(dipep,
                 perc.prev.dvt.pe = ifelse(thrombosis == 'No' | is.na(thrombosis),
                                           yes = 0,
                                           no  = 1),
+                perc.prev.dvt.pe = ifelse(thromb.event == 'Yes',
+                                          yes = 1,
+                                          no  = perc.prev.dvt.pe),
+                perc.prev.dvt.pe = ifelse(is.na(thromb.event),
+                                          yes = 0,
+                                          no  = perc.prev.dvt.pe),
+                ## perc.prev.dvt.pe = case_when(.$thrombosis == 'No'  | is.na(.$thrombosis)     ~ 0,
+                ##                              .$thrombosis == 'Yes'                           ~ 1,
+                ##                              .$thromb.event == 'No'  | is.na(.$thromb.event) ~ 0,
+                ##                              .$thromb.event == 'Yes'                         ~ 1),
                 perc.surgery = ifelse(surgery == 'No' | is.na(surgery),
                                       yes = 0,
                                       no  = 1),
@@ -1808,7 +1879,7 @@ dipep <- mutate(dipep,
                                       no  = 1),
                 perc.hormone = ifelse(is.na(other.medication.specify),
                                       yes = 0,
-                                      no  = 1),
+                                      no  = perc.hormone),
                 perc.leg.swelling = ifelse(grepl('leg swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('legs swelling', other.symptoms.specify, ignore.case = TRUE) |
                                            grepl('swollen leg', other.symptoms.specify, ignore.case = TRUE) |
@@ -1954,10 +2025,10 @@ dipep <- dplyr::select(dipep,
 ##                                                               yes = 1,
 ##                                                               no  = 0),
 ##                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
-##                delphi.primary.obstetric.complication = ifelse(,
+##                delphi.primary.obstetric.complication = ifelse(obstetric.complications,
 ##                                                               yes = ,
 ##                                                               no  = 0),
-##                delphi.primary.medical.complication   = ifelse(,
+##                delphi.primary.medical.complication   = ifelse(medical.comorbidity,
 ##                                                               yes = ,
 ##                                                               no  = 0),
 ##                delphi.primary.gestation              = ifelse(gestation > 180,
