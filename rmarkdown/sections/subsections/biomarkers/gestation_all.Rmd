@@ -13,6 +13,7 @@ ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l)') +
     theme_bw() +
+    ggtitle('D-Dimer - ELISA v Gestation') +
     labs(colour = 'Primary Classification')
 
 ```
@@ -28,6 +29,7 @@ ggplot(aes(x = gestation, y = ddimer.innovance, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('D-Dimer - Innovance (mg/l)') +
     theme_bw() +
+    ggtitle('D-Dimer - Innovance v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -44,6 +46,7 @@ ggplot(aes(x = gestation, y = aptt, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('APTT (Min)') +
     theme_bw() +
+    ggtitle('APTT v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -60,6 +63,7 @@ ggplot(aes(x = gestation, y = prothombin.time, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Prothombin Time (Min)') +
     theme_bw() +
+    ggtitle('Prothombin Time v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -76,6 +80,7 @@ ggplot(aes(x = gestation, y = clauss.fibrinogen, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Clauss Fibrinogen (g/l)') +
     theme_bw() +
+    ggtitle('Clauss Fibrinogen v Gestation') +
     labs(colour = 'Primary Classification')
 
 ```
@@ -91,6 +96,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.lag.time, colour = first.st)) 
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Lag Time (Min)') +
     theme_bw() +
+    ggtitle('Thrombin Generation Lag Time v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -107,6 +113,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.endogenous.potential, colour =
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Endogenous Potential (Min)') +
     theme_bw() +
+    ggtitle('Thrombin Generation Endogenous Potential v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -123,6 +130,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.peak, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Peak (nM)') +
     theme_bw() +
+    ggtitle('Thrombin Generation Peak v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -139,6 +147,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.time.to.peak, colour = first.s
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Thrombin Generation Time To Peak (Min)') +
     theme_bw() +
+    ggtitle('Thrombin Generation Time to Peak v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -155,6 +164,7 @@ ggplot(aes(x = gestation, y = plasmin.antiplasmin, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Plasmin Antiplasmin (sec)') +
     theme_bw() +
+    ggtitle('Plasmin Antiplasmin v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -171,6 +181,7 @@ ggplot(aes(x = gestation, y = nppb, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('NPPB (pg/ml)') +
     theme_bw() +
+    ggtitle('NPPB v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -187,6 +198,7 @@ ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('MRProANP (pmol/l)') +
     theme_bw() +
+    ggtitle('MRProANP  v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -203,6 +215,7 @@ ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('Tissue Factor ()') +
     theme_bw() +
+    ggtitle('Tissue Factor v Gestation') +
     labs(colour = 'Primary Classification')
 
 
@@ -219,6 +232,7 @@ ggplot(aes(x = gestation, y = prothrombin.fragments, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('PF 1 + 2 ()') +
     theme_bw() +
+    ggtitle('PF 1 + 2 v Gestation') +
     labs(colour = 'Primary Classification')
 
 
