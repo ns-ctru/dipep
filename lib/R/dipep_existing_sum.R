@@ -91,25 +91,20 @@ dipep_existing_sum <- function(df      = dipep,
     else if(levels(df$class.existing)[1] == 'No Delphi Specificity PE'){
         center = 3
     }
-    ## if(title != 'PERC'){
-        plot.likert         <- dplyr::select(df, score)
-        names(plot.likert)  <- paste0(title, ' Score')
-        results$likert      <- likert(plot.likert, grouping = df$class.char)
-        results$likert.plot <- plot(results$likert, center = center) +
-                               labs(caption = paste0('Plots are centered on the Risk category (',
-                                                     center,
-                                                     ').\n Percentages indicate the proportion below, within and above this.'))
-    ## }
-    ## Histogram
-    ## if(title == 'PERC'){
-        results$histogram <- ggplot(df, aes(x = score, fill = class)) +
-                             geom_histogram() +
-                             facet_wrap(~class, ncol = 3) +
-                             ggtitle(paste0(title, ' Scores by clinical classification')) +
-                             xlab(paste0(title, ' Score')) + ylab('N') +
-                             scale_fill_discrete(guide = guide_legend(title = 'Status')) +
-                             theme_bw()
-    ## }
+    plot.likert         <- dplyr::select(df, score)
+    names(plot.likert)  <- paste0(title, ' Score')
+    results$likert      <- likert(plot.likert, grouping = df$class.char)
+    results$likert.plot <- plot(results$likert, center = center) +
+                           labs(caption = paste0('Plots are centered on the Risk category (',
+                                                 center,
+                                                 ').\n Percentages indicate the proportion below, within and above this.'))
+    results$histogram <- ggplot(df, aes(x = score, fill = class)) +
+                         geom_histogram() +
+                         facet_wrap(~class, ncol = 3) +
+                         ggtitle(paste0(title, ' Scores by clinical classification')) +
+                         xlab(paste0(title, ' Score')) + ylab('N') +
+                         scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+                         theme_bw()
     ## Summarise the scores in tabular format
     all <- mutate(df, score = as.numeric(score)) %>%
            summarise(N        = sum(!is.na(score)),
