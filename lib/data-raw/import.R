@@ -2124,20 +2124,20 @@ dipep <- mutate(dipep,
                                                                yes = 0,
                                                                no  = 1),
                 delphi.sensitivity =  delphi.sensitivity.syncope +
-                                            delphi.sensitivity.pleuritic +
-                                            delphi.sensitivity.history.dvt.pe +
-                                            delphi.sensitivity.history.iv.drug +
-                                            delphi.sensitivity.family.history +
-                                            delphi.sensitivity.medical.history +
-                                            delphi.sensitivity.obstetric.complication +
-                                            delphi.sensitivity.medical.complication +
-                                            delphi.sensitivity.gestation +
-                                            delphi.sensitivity.clinical.dvt +
-                                            delphi.sensitivity.o2.saturation +
-                                            delphi.sensitivity.heart.rate.110.bpm +
-                                            delphi.sensitivity.heart.rate.100.bpm +
-                                            delphi.sensitivity.respiratory.rate +
-                                            delphi.sensitivity.bmi,
+                                      delphi.sensitivity.pleuritic +
+                                      delphi.sensitivity.history.dvt.pe +
+                                      delphi.sensitivity.history.iv.drug +
+                                      delphi.sensitivity.family.history +
+                                      delphi.sensitivity.medical.history +
+                                      delphi.sensitivity.obstetric.complication +
+                                      delphi.sensitivity.medical.complication +
+                                      delphi.sensitivity.gestation +
+                                      delphi.sensitivity.clinical.dvt +
+                                      delphi.sensitivity.o2.saturation +
+                                      delphi.sensitivity.heart.rate.110.bpm +
+                                      delphi.sensitivity.heart.rate.100.bpm +
+                                      delphi.sensitivity.respiratory.rate +
+                                      delphi.sensitivity.bmi,
                 delphi.sensitivity.pe = ifelse(delphi.sensitivity >= 1,
                                                yes = 'Delphi Sensitivity PE',
                                                no  = 'No Delphi Sensitivity PE'),
@@ -2225,7 +2225,7 @@ dipep <- mutate(dipep,
                                                no  = 'No Delphi Specificity PE'),
                 delphi.specificity.pe = factor(delphi.specificity.pe,
                                                levels = c('No Delphi Specificity PE', 'Delphi Specificity PE')),
-                delphi.sensitivity = factor(delphi.sensitivity,
+                delphi.specificity = factor(delphi.specificity,
                                             levels = seq(0:30)))
 #######################################################################
 ## Derive an imputed data set                                        ##
