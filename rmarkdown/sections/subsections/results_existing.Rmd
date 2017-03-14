@@ -1,9 +1,10 @@
-### Existing Scores {.tabset .tabset-fade .tabset-pills}
+### PE Scores {.tabset .tabset-fade .tabset-pills}
 
 ```{r results_existing_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'rmarkdown', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
     ## ToDp 2017-02-23 - Add in Delphi scores
-           dplyr::select(first.st, simplified.pe, wells.permissive.pe, wells.strict.pe, perc.pe) %>%
+           dplyr::select(first.st, simplified.pe, wells.permissive.pe, wells.strict.pe, perc.pe,
+                         delphi.primary.pe, delphi.sensitivity.pe, delphi.specificity.pe) %>%
            ## dplyr::select(first.st, simplified.pe, wells.pe, perc.pe) %>%
            tidyr::gather(key = first.st)##  %>%
            ## mutate(value = ifelse(grepl('No', value),
@@ -14,10 +15,13 @@ names(to.plot) <- c('D', 'Score', 'value')
 ## Convert String variable to 0/1 for predicted probabilities
 to.plot <- to.plot %>%
            dplyr::mutate(M     = ifelse(grepl('No', value), 0, 1),
-                         Score = case_when(.$Score == 'simplified.pe'       ~ 'Simplified Revised Geneva',
-                                           .$Score == 'perc.pe'             ~ 'PERC',
-                                           .$Score == 'wells.permissive.pe' ~ 'Wells (Permissive)',
-                                           .$Score == 'wells.strict.pe' ~ 'Wells (Strict)'))
+                         Score = case_when(.$Score == 'simplified.pe'         ~ 'Simplified Revised Geneva',
+                                           .$Score == 'perc.pe'               ~ 'PERC',
+                                           .$Score == 'wells.permissive.pe'   ~ 'Wells (Permissive)',
+                                           .$Score == 'wells.strict.pe'       ~ 'Wells (Strict)',
+                                           .$Score == 'delphi.primary.pe'     ~ 'Delphi (Primary)',
+                                           .$Score == 'delphi.sensitivity.pe' ~ 'Delphi (Sensitivity)',
+                                           .$Score == 'delphi.specificity.pe' ~ 'Delphi (Specificity)'))
 to.plot <- ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
            geom_roc() +
            guides(guide = guide_legend(title = 'Predictor Score...')) +
@@ -28,10 +32,13 @@ existing.auc <- calc_auc(to.plot)
 ## Plot graph with AUC tabulated underneath
 to.plot
 existing.auc %>%
-    mutate(Score = case_when(.$group == 1 ~ 'PERC',
-                                .$group == 2 ~ 'Simplified Revised Geneva',
-                                .$group == 3 ~ 'Wells (Permissive)',
-                                .$group == 3 ~ 'Wells (Strict)')) %>%
+    mutate(Score = case_when(.$group == 1 ~ 'Delphi (Primary)',
+                             .$group == 2 ~ 'Delphi (Sensitivity)',
+                             .$group == 3 ~ 'Delphi (Specificity)',
+                             .$group == 4 ~ 'Wells (Strict)',
+                             .$group == 5 ~ 'Simplified Revised Geneva',
+                             .$group == 6 ~ 'Wells (Permissive)',
+                             .$group == 7 ~ 'Wells (Strict)')) %>%
     dplyr::select(Score, AUC) %>%
 kable(caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
 ## Extract the existing scores for Likert style plotting
