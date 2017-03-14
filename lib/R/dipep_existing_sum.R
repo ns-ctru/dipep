@@ -82,13 +82,13 @@ dipep_existing_sum <- function(df      = dipep,
     else if(levels(df$class.existing)[1] == 'No PERC PE'){
         center = 2
     }
-    else if(levels(df$class.existing)[2] == 'No Delphi (Primary) PE'){
+    else if(levels(df$class.existing)[1] == 'No Delphi Primary PE'){
         center = 2
     }
-    else if(levels(df$class.existing)[2] == 'No Delphi (Sensitivity) PE'){
+    else if(levels(df$class.existing)[1] == 'No Delphi Sensitivity PE'){
         center = 1
     }
-    else if(levels(df$class.existing)[2] == 'No Delphi (Specificity) PE'){
+    else if(levels(df$class.existing)[1] == 'No Delphi Specificity PE'){
         center = 3
     }
     ## if(title != 'PERC'){
