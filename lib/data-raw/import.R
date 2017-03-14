@@ -2062,7 +2062,9 @@ dipep <- mutate(dipep,
                 delphi.primary.pe = factor(delphi.primary.pe,
                                            levels = c('No Delphi Primary PE', 'Delphi Primary PE')),
                 delphi.primary = factor(delphi.primary,
-                                        levels = seq(0:23)),
+                                        levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                                   '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+                                                   '20', '21', '22', '23')),
                 ## Now derive the Sensitive score
                 delphi.sensitivity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
                                                                yes = 1,
@@ -2144,7 +2146,8 @@ dipep <- mutate(dipep,
                 delphi.sensitivity.pe = factor(delphi.sensitivity.pe,
                                                levels = c('No Delphi Sensitivity PE', 'Delphi Sensitivity PE')),
                 delphi.sensitivity = factor(delphi.sensitivity,
-                                            levels = seq(0:16)),
+                                            levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                                   '10', '11', '12', '13', '14', '15', '16')),
                 ## Now derive the Specific score
                 delphi.specificity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
                                                                yes = 3,
@@ -2226,7 +2229,9 @@ dipep <- mutate(dipep,
                 delphi.specificity.pe = factor(delphi.specificity.pe,
                                                levels = c('No Delphi Specificity PE', 'Delphi Specificity PE')),
                 delphi.specificity = factor(delphi.specificity,
-                                            levels = seq(0:30)))
+                                            levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                                   '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+                                                   '20', '21', '22', '23', '24', '25', '26', '27', '28', '29')))
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
