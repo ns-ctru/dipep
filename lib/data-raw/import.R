@@ -1802,7 +1802,7 @@ dipep <- dipep %>%
                                                       grepl('painful \\(r\\) leg', other.symptoms.specify, ignore.case = TRUE),
                                                       yes = 4,
                                                       no  = 0),
-                simplified.score = simplified.age +
+                simplified = simplified.age +
                                    simplified.prev.dvt.pe +
                                    simplified.surgery +
                                    simplified.neoplasm +
@@ -1870,7 +1870,7 @@ dipep <- dipep %>%
                                            grepl('swollen legs', other.symptoms.specify, ignore.case = TRUE),
                                            yes = 0,
                                            no  = perc.leg.swelling),
-                perc.score      = perc.age +
+                perc      = perc.age +
                                   perc.heart.rate +
                                   perc.o2 +
                                   perc.prev.dvt.pe +
@@ -1930,7 +1930,7 @@ dipep <- mutate(dipep,
                 wells.neoplasm = ifelse(existing.medical.cancer == 'No' | is.na(existing.medical.cancer),
                                         yes = 0,
                                         no  = 1),
-                wells.permissive.score = wells.dvt +
+                wells.permissive = wells.dvt +
                                          wells.alternative.permissive +
                                          wells.heart.rate +
                                          wells.surgery.immobil +
@@ -1949,7 +1949,7 @@ dipep <- mutate(dipep,
                                                   levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
                 wells.permissive.pe      = factor(wells.permissive.pe,
                                                   levels = c('No Wells PE', 'Wells PE')),
-                wells.strict.score = wells.dvt +
+                wells.strict = wells.dvt +
                                      wells.alternative.strict +
                                      wells.heart.rate +
                                      wells.surgery.immobil +
@@ -2041,7 +2041,7 @@ dipep <- mutate(dipep,
                 delphi.primary.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
                                                                yes = 0,
                                                                no  = 1),
-                delphi.primary.score = delphi.primary.syncope +
+                delphi.primary = delphi.primary.syncope +
                                        delphi.primary.pleuritic +
                                        delphi.primary.history.dvt.pe +
                                        delphi.primary.history.iv.drug +
@@ -2056,7 +2056,7 @@ dipep <- mutate(dipep,
                                        delphi.primary.heart.rate.100.bpm +
                                        delphi.primary.respiratory.rate +
                                        delphi.primary.bmi,
-                delphi.primary.pe = ifelse(delphi.primary.score >= 2,
+                delphi.primary.pe = ifelse(delphi.primary >= 2,
                                         yes = 1,
                                         no  = 0),
                 ## Now derive the Sensitive score
@@ -2119,7 +2119,7 @@ dipep <- mutate(dipep,
                 delphi.sensitivity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
                                                                yes = 0,
                                                                no  = 1),
-                delphi.sensitivity.score =  delphi.sensitivity.syncope +
+                delphi.sensitivity =  delphi.sensitivity.syncope +
                                             delphi.sensitivity.pleuritic +
                                             delphi.sensitivity.history.dvt.pe +
                                             delphi.sensitivity.history.iv.drug +
@@ -2134,7 +2134,7 @@ dipep <- mutate(dipep,
                                             delphi.sensitivity.heart.rate.100.bpm +
                                             delphi.sensitivity.respiratory.rate +
                                             delphi.sensitivity.bmi,
-                delphi.sensitivity.pe = ifelse(delphi.sensitivity.score >= 1,
+                delphi.sensitivity.pe = ifelse(delphi.sensitivity >= 1,
                                         yes = 1,
                                         no  = 0),
                 ## Now derive the Specific score
@@ -2197,7 +2197,7 @@ dipep <- mutate(dipep,
                 delphi.specificity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
                                                                yes = 0,
                                                                no  = 1),
-                delphi.specificity.score =  delphi.specificity.syncope +
+                delphi.specificity =  delphi.specificity.syncope +
                                             delphi.specificity.pleuritic +
                                             delphi.specificity.history.dvt.pe +
                                             delphi.specificity.history.iv.drug +
@@ -2212,7 +2212,7 @@ dipep <- mutate(dipep,
                                             delphi.specificity.heart.rate.100.bpm +
                                             delphi.specificity.respiratory.rate +
                                             delphi.specificity.bmi,
-                delphi.specificity.pe = ifelse(delphi.specificity.score >= 3,
+                delphi.specificity.pe = ifelse(delphi.specificity >= 3,
                                                yes = 1,
                                                no  = 0))
 #######################################################################
