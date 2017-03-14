@@ -1,0 +1,5 @@
+#### Wells Score (Permissive)
+
+The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> 4$ is taken as indicative of PE.
+
+**NB** - Permissive means that for the item "*Pulmonary embolism is the most or equally likely diagnosis*" that "*Possibly PE*" have been included.
