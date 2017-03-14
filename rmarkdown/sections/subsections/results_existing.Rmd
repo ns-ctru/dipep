@@ -1,6 +1,6 @@
 ### Existing Scores {.tabset .tabset-fade .tabset-pills}
 
-```{r results_existing_roc, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
+```{r results_existing_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'rmarkdown', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
     ## ToDp 2017-02-23 - Add in Delphi scores
            dplyr::select(first.st, simplified.pe, wells.permissive.pe, wells.strict.pe, perc.pe) %>%
@@ -41,200 +41,23 @@ existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE',
 
 **NB** - The results presented here do **NOT** include the `Non recruited` group, and there are a number of people for whom a score has not been calculated, so the numbers tabulated will *not* match the expected number of individuals recruited.
 
-#### Simplified Revised Geneva
-
-The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online calculator](https://www.mdcalc.com/geneva-score-revised-pulmonary-embolism) is available.  A score $>= 4$ is taken as indicative of PE.
-
-```{r results_existing_simplified_revised_geneva, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-## Summarise
-simplified <- dipep_existing_sum(df                    = dipep,
-                                 title                 = 'Simplified Revised Geneva',
-                                 exclude               = NULL,
-                                 exclude.non.recruited = TRUE,
-                                 exclude.dvt           = TRUE,
-                                 first.st, simplified.pe, simplified)
-## Plots
-simplified$bar.chart
-simplified$likert.plot
-## Tables
-kable(simplified$summary.table,
-      caption = 'Summary of Simplified GENEVA score',
-      digits = 3)
-kable(simplified$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Simplified Revised Geneva Score.')
-kable(simplified$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the Simplified Revised Geneva Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/simplified.Rmd', eval = TRUE}
 ```
 
-
-#### Wells Score (Permissive)
-
-The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> 4$ is taken as indicative of PE.
-
-**NB** - Permissive means that for the item "*Pulmonary embolism is the most or equally likely diagnosis*" that "*Possibly PE*" have been included.
-
-```{r results_existing_wells_permissive, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-## Summarise
-wells.permissive <- dipep_existing_sum(df                    = dipep,
-                            title                 = 'Wells',
-                            exclude               = NULL,
-                            exclude.non.recruited = TRUE,
-                            exclude.dvt           = TRUE,
-                            first.st, wells.permissive.pe, wells.permissive)
-## Plots
-wells.permissive$bar.chart
-wells.permissive$likert.plot
-## Tables
-kable(wells.permissive$summary.table,
-      caption = 'Summary of Wells score (Permissive)',
-      digits = 3)
-kable(wells.permissive$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score (Permissive).')
-kable(wells.permissive$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the Wells Score (Permissive) for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/perc.Rmd', eval = TRUE}
 ```
 
-#### Wells Score (Strict)
-
-The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> 4$ is taken as indicative of PE.
-
-**NB** - Permissive means that for the item "*Pulmonary embolism is the most or equally likely diagnosis*" that "*Possibly PE*" have been excluded.
-
-```{r results_existing_wells_strict, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-## Summarise
-wells.strict <- dipep_existing_sum(df                    = dipep,
-                            title                 = 'Wells',
-                            exclude               = NULL,
-                            exclude.non.recruited = TRUE,
-                            exclude.dvt           = TRUE,
-                            first.st, wells.strict.pe, wells.strict)
-## Plots
-wells.strict$bar.chart
-wells.strict$likert.plot
-## Tables
-kable(wells.strict$summary.table,
-      caption = 'Summary of Wells score (Strict)',
-      digits = 3)
-kable(wells.strict$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score (Strict).')
-kable(wells.strict$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the Wells Score (Strict) for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/wells_permissive.Rmd', eval = TRUE}
 ```
 
-#### PERC Score
-
-The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $>= 1$ is taken as indicative of PE.
-
-```{r results_existing_perc, echo = FALSE, cache = FALSE, results = 'markdown', eval = TRUE}
-## Summarise
-perc <- dipep_existing_sum(df                    = dipep,
-                           title                 = 'PERC',
-                           exclude               = NULL,
-                           exclude.non.recruited = TRUE,
-                           exclude.dvt           = TRUE,
-                           first.st, perc.pe, perc)
-## Plots
-perc$bar.chart
-perc$likert.plot
-## perc$histogram
-## Tables
-kable(perc$summary.table,
-      caption = 'Summary of Perc score',
-      digits = 3)
-kable(perc$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on PERC Score.')
-kable(perc$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the PERC Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/wells_strict.Rmd', eval = TRUE}
 ```
 
-#### Delphi Consensus  {.tabset .tabset-fade .tabset-pills}
-
-The Delphi Consensus panel derived three scores, one overall score (`Primary`), one hoped to maximise sensitivity (`Sensitivity`), and one hoped to maximise specificity (`Specificity`).
-
-##### Primary
-
-```{r results_existing_delphi_primary, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
-## Summarise
-delphi.primary <- dipep_existing_sum(df                    = dipep,
-                                     title                 = 'Delphi (Primary)',
-                                     exclude               = NULL,
-                                     exclude.non.recruited = TRUE,
-                                     exclude.dvt           = TRUE,
-                                     first.st, delphi.primary.pe, delphi.primary)
-## Plots
-delphi.primary$bar.chart
-delphi.primary$likert.plot
-## Tables
-kable(delphi.primary$summary.table,
-      caption = 'Summary of Delphi (Primary) score',
-      digits = 3)
-kable(delphi.primary$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi (Primary) Score.')
-kable(delphi.primary$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the Delphi (Primary) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/delphi_primary.Rmd', eval = TRUE}
 ```
 
-##### Sensitivity
-
-```{r results_existing_delphi_sensitivity, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
-delphi.sensitivity <- dipep_existing_sum(df                    = dipep,
-                                         title                 = 'Delphi (Sensitivity)',
-                                         exclude               = NULL,
-                                         exclude.non.recruited = TRUE,
-                                         exclude.dvt           = TRUE,
-                                         first.st, delphi.sensitivity.pe, delphi.sensitivity)
-## Plots
-delphi.sensitivity$bar.chart
-delphi.sensitivity$likert.plot
-## Tables
-kable(delphi.sensitivity$summary.table,
-      caption = 'Summary of Delphi (Sensitivity) score',
-      digits = 3)
-kable(delphi.sensitivity$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi (Sensitivity) Score.')
-kable(delphi.sensitivity$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the Delphi (Sensitivity) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/delphi_sensitivity.Rmd', eval = TRUE}
 ```
 
-##### Specificity
-
-```{r results_existing_delphi_specificity, echo = FALSE, cache = FALSE, results = 'markdown', eval = FALSE}
-delphi.specificity <- dipep_existing_sum(df                    = dipep,
-                                         title                 = 'Delphi (Specificity)',
-                                         exclude               = NULL,
-                                         exclude.non.recruited = TRUE,
-                                         exclude.dvt           = TRUE,
-                                 first.st, delphi.specificity.pe, delphi.specificity)
-## Plots
-delphi.specificity$bar.chart
-delphi.specificity$likert.plot
-## Tables
-kable(delphi.specificity$summary.table,
-      caption = 'Summary of Delphi (Specificity) score',
-      digits = 3)
-kable(delphi.specificity$table,
-      digits  = 3,
-      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi (Specificity) Score.')
-kable(delphi.specificity$performance.table,
-      digits  = 3,
-      caption = 'Performance indicators for the Delphi (Specificity) Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
-
+```{r child='existing/delphi_specificity.Rmd', eval = TRUE}
 ```
