@@ -2057,8 +2057,12 @@ dipep <- mutate(dipep,
                                        delphi.primary.respiratory.rate +
                                        delphi.primary.bmi,
                 delphi.primary.pe = ifelse(delphi.primary >= 2,
-                                        yes = 1,
-                                        no  = 0),
+                                        yes = 'Delphi Primary PE',
+                                        no  = 'No Delphi Primary PE'),
+                delphi.primary.pe = factor(delphi.primary.pe,
+                                           levels = c('No Delphi Primary PE', 'Delphi Primary PE')),
+                delphi.primary = factor(delphi.primary,
+                                        levels = seq(0:23)),
                 ## Now derive the Sensitive score
                 delphi.sensitivity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
                                                                yes = 1,
@@ -2135,8 +2139,12 @@ dipep <- mutate(dipep,
                                             delphi.sensitivity.respiratory.rate +
                                             delphi.sensitivity.bmi,
                 delphi.sensitivity.pe = ifelse(delphi.sensitivity >= 1,
-                                        yes = 1,
-                                        no  = 0),
+                                               yes = 'Delphi Sensitivity PE',
+                                               no  = 'No Delphi Sensitivity PE'),
+                delphi.sensitivity.pe = factor(delphi.sensitivity.pe,
+                                               levels = c('No Delphi Sensitivity PE', 'Delphi Sensitivity PE')),
+                delphi.sensitivity = factor(delphi.sensitivity,
+                                            levels = seq(0:16)),
                 ## Now derive the Specific score
                 delphi.specificity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
                                                                yes = 3,
@@ -2213,8 +2221,12 @@ dipep <- mutate(dipep,
                                             delphi.specificity.respiratory.rate +
                                             delphi.specificity.bmi,
                 delphi.specificity.pe = ifelse(delphi.specificity >= 3,
-                                               yes = 1,
-                                               no  = 0))
+                                               yes = 'Delphi Specificity PE',
+                                               no  = 'No Delphi Specificity PE'),
+                delphi.specificity.pe = factor(delphi.specificity.pe,
+                                               levels = c('No Delphi Specificity PE', 'Delphi Specificity PE')),
+                delphi.sensitivity = factor(delphi.sensitivity,
+                                            levels = seq(0:30)))
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
