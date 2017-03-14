@@ -1430,16 +1430,14 @@ dipep <- dipep %>%
                 heart.rate.cat = ifelse(is.na(heart.rate.cat),
                                         yes = 0,
                                         no  = heart.rate.cat),
-                surgery = as.character(surgery),
                 surgery = ifelse(is.na(surgery),
                                  yes = 'No',
-                                 no  = surgery),
+                                 no  = as.character(surgery)),
                 surgery = factor(surgery,
                                  levels = c('No', 'Yes')),
-                prev.preg.problem = as.character(prev.preg.problem),
                 prev.preg.problem = ifelse(is.na(prev.preg.problem),
                                            yes = 'No',
-                                           no  = prev.preg.problem),
+                                           no  = as.character(prev.preg.problem)),
                 prev.preg.problem = factor(prev.preg.problem,
                                            levels = c('No', 'Yes')),
                 ## See email 2016-10-27 @ 10:46 from s.goodacre@sheffield.ac.uk
@@ -1452,10 +1450,9 @@ dipep <- dipep %>%
                 cesarean = ifelse(is.na(cesarean),
                                   yes = 0,
                                   no  = cesarean),
-                smoking = as.character(smoking),
                 smoking = ifelse(is.na(smoking),
                                  yes = 'never',
-                                 no  = smoking),
+                                 no  = as.character(smoking)),
                 smoking = factor(smoking,
                                  levels = c('never', 'gave up prior to pregnancy', 'gave up during pregnancy', 'current')),
                 smoking.cat = ifelse(smoking == 'current' | smoking == 'gave up during pregnancy',
@@ -1569,15 +1566,10 @@ dipep <- dipep %>%
                              no  = as.character(ecg)),
                 medical.other.dvt.pe = ifelse(is.na(medical.other.dvt.pe),
                                               yes = 'No',
-                                              no  = medical.other.dvt.pe)
-                ## D-Dimer
-                ## d.dimer.high = ifelse(d.dimer > ,
-                ##                       yes = 1,
-                ##                       no  = 0),
-                ## d.dimer.very.high = ifelse(d.dimer > ,
-                ##                            yes = 1,
-                ##                            no  = 0)
-                )
+                                              no  = medical.other.dvt.pe),
+                admitted.hospital = ifelse(is.na(admitted.hospital),
+                                           yes = 'No',
+                                           no  = as.character(admitted.hospital)))
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -1643,6 +1635,8 @@ dipep <- mutate(dipep,
                                            labels = c('No PE', 'PE')),
                 medical.other.dvt.pe = factor(medical.other.dvt.pe,
                                               labels = c('No', 'Yes')),
+                admitted.hospital    = factor(admitted.hospital,
+                                              levels = c('No', 'Yes')),
                 presenting.features.pleuritic      = factor(presenting.features.pleuritic),
                 presenting.features.non.pleuritic  = factor(presenting.features.non.pleuritic),
                 presenting.features.sob.exertion   = factor(presenting.features.sob.exertion),
@@ -1659,15 +1653,7 @@ dipep <- mutate(dipep,
                 thrombosis                         = factor(thrombosis),
                 injury                             = factor(injury),
                 travel                             = factor(travel),
-                immobil                            = factor(immobil)
-                ## ToDo - Thresholds
-                ## d.dimer.high = factor(d.dimer.high,
-                ##                       levels = c(0, 1),
-                ##                       labels = c('Normal', 'High')),
-                ## d.dimer.very.high = ifelse(d.dimer.very.high,
-                ##                            levels = c(0, 1),
-                ##                            labels = c('Normal', 'Very High'))
-                )
+                immobil                            = factor(immobil))
 ## Explicitly set the reference level for all factor variables
 dipep <- mutate(dipep,
                 bmi.cat                           = relevel(bmi.cat,
@@ -1695,6 +1681,8 @@ dipep <- mutate(dipep,
                 cesarean                          = relevel(cesarean,
                                                             ref = 'No Cesarean'),
                 surgery                           = relevel(surgery,
+                                                            ref = 'No'),
+                admitted.hospital                 = relevel(admitted.hospital,
                                                             ref = 'No'),
                 smoking.cat                       = relevel(smoking.cat,
                                                             ref = 'Non-smoker'),
@@ -1751,20 +1739,12 @@ dipep <- mutate(dipep,
                 injury                            = relevel(injury,
                                                             ref = 'No'),
                 medical.other.dvt.pe              = relevel(medical.other.dvt.pe,
-                                                            ref = 'No')
-                ## d.dimer.high                   = relevel(d.dimer.high)
-                )
-## Add a dummy for PE for now
-## dipep$pe <- ifelse(runif(n = nrow(dipep)) > 0.7, 1, 0)
-## dipep$pe <- factor(dipep$pe,
-##                    levels = c(0, 1),
-##                    labels = c('No PE', 'PE'))
+                                                            ref = 'No'))
 ## Derive binary indicator for Suspected v's Diagnosed PE
 dipep <- dipep %>%
          mutate(pe = case_when(.$group == 'Suspected PE' ~ 'Suspected PE',
                                .$group == 'Diagnosed PE' ~ 'Diagnosed PE'),
                 pe = factor(pe, levels = c('Suspected PE', 'Diagnosed PE')))
-
 #######################################################################
 ## Derive clinical rules based on...                                 ##
 ##                                                                   ##
@@ -1809,8 +1789,10 @@ dipep <- dipep %>%
                                                 no  = 2),
                 simplified.heart.rate = case_when(.$heart.rate < 75                      ~ 0,
                                                   .$heart.rate >= 75 & .$heart.rate < 94 ~ 3,
-                                                  .$heart.rate >= 95                     ~ 5)
-                                                  ## is.na(.$heart.rate)                    ~ 0),
+                                                  .$heart.rate >= 95                     ~ 5),
+                simplified.heart.rate = ifelse(is.na(simplified.heart.rate),
+                                               yes = 0,
+                                               no  = simplified.heart.rate),
                 ## 2017-03-07 - Use Clinical signs of DVT to assess pain on palpitations
                 ##              See emails from s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:04
                 ##                              s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:07
@@ -1820,15 +1802,14 @@ dipep <- dipep %>%
                                                       grepl('painful \\(r\\) leg', other.symptoms.specify, ignore.case = TRUE),
                                                       yes = 4,
                                                       no  = 0),
-                simplified = simplified.age +
-                             simplified.prev.dvt.pe +
-                             simplified.surgery +
-                             simplified.neoplasm +
-                             simplified.lower.limb.unilateral.pain +
-                             simplified.haemoptysis +
-                             simplified.heart.rate +
-                             simplified.pain.palpitations,
-                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)),
+                simplified.score = simplified.age +
+                                   simplified.prev.dvt.pe +
+                                   simplified.surgery +
+                                   simplified.neoplasm +
+                                   simplified.lower.limb.unilateral.pain +
+                                   simplified.haemoptysis +
+                                   simplified.heart.rate +
+                                   simplified.pain.palpitations,
                 simplified.risk = ifelse(simplified < 4,
                                          yes = 'Low',
                                          no  = ifelse(simplified >= 11,
@@ -1840,7 +1821,8 @@ dipep <- dipep %>%
                                        yes = 'Simplified PE',
                                        no  = 'No Simplified PE'),
                 simplified.pe = factor(simplified.pe,
-                                       levels = c('No Simplified PE', 'Simplified PE')))
+                                       levels = c('No Simplified PE', 'Simplified PE')),
+                simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)))
 ## PERC
 dipep <- dipep %>%
          mutate(perc.age = ifelse(age < 50 | is.na(age),
@@ -1864,10 +1846,6 @@ dipep <- dipep %>%
                 perc.prev.dvt.pe = ifelse(is.na(thromb.event),
                                           yes = 0,
                                           no  = perc.prev.dvt.pe),
-                ## perc.prev.dvt.pe = case_when(.$thrombosis == 'No'  | is.na(.$thrombosis)     ~ 0,
-                ##                              .$thrombosis == 'Yes'                           ~ 1,
-                ##                              .$thromb.event == 'No'  | is.na(.$thromb.event) ~ 0,
-                ##                              .$thromb.event == 'Yes'                         ~ 1),
                 perc.surgery = ifelse(surgery == 'No' | is.na(surgery),
                                       yes = 0,
                                       no  = 1),
@@ -1892,14 +1870,14 @@ dipep <- dipep %>%
                                            grepl('swollen legs', other.symptoms.specify, ignore.case = TRUE),
                                            yes = 0,
                                            no  = perc.leg.swelling),
-                perc      = perc.age +
-                            perc.heart.rate +
-                            perc.o2 +
-                            perc.prev.dvt.pe +
-                            perc.surgery +
-                            perc.haemoptysis +
-                            perc.hormone +
-                            perc.leg.swelling,
+                perc.score      = perc.age +
+                                  perc.heart.rate +
+                                  perc.o2 +
+                                  perc.prev.dvt.pe +
+                                  perc.surgery +
+                                  perc.haemoptysis +
+                                  perc.hormone +
+                                  perc.leg.swelling,
                 perc.pe = ifelse(perc >= 1,
                                  yes = 'PERC PE',
                                  no  = 'No PERC PE'),
@@ -1936,8 +1914,8 @@ dipep <- mutate(dipep,
                 wells.prev.dvt.pe.thrombosis = ifelse(thrombosis == 'No' | is.na(thrombosis),
                                                       yes = 0,
                                                       no  = 1.5),
-                ## 2017-03-07 - Email from s.goodacre@sheffield.ac.uk 2016-03-07 @ 09:04
-                ##              staqtes that previous thrombosis (thrombosis) AND
+                ## 2017-03-07 - Email from s.goodacre@sheffield.ac.uk 2017-03-07 @ 09:04
+                ##              states that previous thrombosis (thrombosis) AND
                 ##              thrombosis during pregnancy are to be used
                 wells.current.dvt.pe.thromb.event  = ifelse(thromb.event == 'No' | is.na(thromb.event),
                                                             yes = 0,
@@ -1952,13 +1930,13 @@ dipep <- mutate(dipep,
                 wells.neoplasm = ifelse(existing.medical.cancer == 'No' | is.na(existing.medical.cancer),
                                         yes = 0,
                                         no  = 1),
-                wells.permissive = wells.dvt +
-                                   wells.alternative.permissive +
-                                   wells.heart.rate +
-                                   wells.surgery.immobil +
-                                   wells.dvt.pe +
-                                   wells.haemoptysis +
-                                   wells.neoplasm,
+                wells.permissive.score = wells.dvt +
+                                         wells.alternative.permissive +
+                                         wells.heart.rate +
+                                         wells.surgery.immobil +
+                                         wells.dvt.pe +
+                                         wells.haemoptysis +
+                                         wells.neoplasm,
                 wells.permissive.risk = ifelse(wells.permissive > 6,
                                                yes = 'High',
                                                no = ifelse(wells.permissive > 2,
@@ -1971,13 +1949,13 @@ dipep <- mutate(dipep,
                                                   levels = c(0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12.5)),
                 wells.permissive.pe      = factor(wells.permissive.pe,
                                                   levels = c('No Wells PE', 'Wells PE')),
-                wells.strict = wells.dvt +
-                               wells.alternative.strict +
-                               wells.heart.rate +
-                               wells.surgery.immobil +
-                               wells.dvt.pe +
-                               wells.haemoptysis +
-                               wells.neoplasm,
+                wells.strict.score = wells.dvt +
+                                     wells.alternative.strict +
+                                     wells.heart.rate +
+                                     wells.surgery.immobil +
+                                     wells.dvt.pe +
+                                     wells.haemoptysis +
+                                     wells.neoplasm,
                 wells.strict.risk = ifelse(wells.strict > 6,
                                        yes = 'High',
                                        no = ifelse(wells.strict > 2,
@@ -2001,75 +1979,242 @@ dipep <- dplyr::select(dipep,
 ## Details are in the following document
 ##
 ## ../projects/DiPEP/08. Study Management/PMG/07 Jun 16 - PMG + Delphi Meeting/Documents for Delphi Consensus Meeting/DIPEP CLINICAL DECISION RULE FEEDBACK_7June2016.docx
-## dipe <- mutate(dipep,
-##                delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked',
-##                                                               yes = 2,
-##                                                               no  = 0),
-##                delphi.primary.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
-##                                                               yes = 2,
-##                                                               no  = 0),
-##                delphi.primary.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
-##                                                               yes = 1,
-##                                                               no  = 0),
-##                delphi.primary.history.dvt.pe         = ifelse(dvt,
-##                                                               yes = 2,
-##                                                               no  = 0),
-##                delphi.primary.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
-##                                                               yes = 2,
-##                                                               no  = 0),
-##                delphi.primary.family.history         = ifelse(history.thrombosis == 'Yes',
-##                                                               yes = 1,
-##                                                               no  = 0),
-##                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
-##                delphi.primary.medical.history        = ifelse(injury == 'Yes' | surgery == 'Yes',
-##                                                               yes = 1,
-##                                                               no  = 0),
-##                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
-##                delphi.primary.obstetric.complication = ifelse(obstetric.complications,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.medical.complication   = ifelse(medical.comorbidity,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.gestation              = ifelse(gestation > 180,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.clinical.dvt           = ifelse(,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.o2.saturation.cat      = ifelse(o2.saturation < 94,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.heart.rate.110.bpm     = ifelse(heart.rate > 110,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.heart.rate.100.bpm     = ifelse(heart.rate > 100,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.respiratory.rate       = ifelse(respiratory.rate > 20,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                delphi.primary.bmi                    = ifelse(bmi > 30,
-##                                                               yes = ,
-##                                                               no  = 0),
-##                 delphi.primary.score = sum(delphi.primary.syncope
-##                                            delphi.primary.pleuritic
-##                                            delphi.primary.chest.pain
-##                                            delphi.primary.history.dvt.pe
-##                                            delphi.primary.history.iv.drug
-##                                            delphi.primary.family.history
-##                                            delphi.primary.medical.history
-##                                            delphi.primary.obstetric.complication
-##                                            delphi.primary.medical.complication
-##                                            delphi.primary.gestation
-##                                            delphi.primary.clinical.dvt
-##                                            delphi.primary.o2.saturation.cat
-##                                            delphi.primary.heart.rate.110.bpm
-##                                            delphi.primary.heart.rate.100.bpm
-##                                            delphi.primary.respiratory.rate
-##                                            delphi.primary.bmi, na.rm = TRUE)
-##                delphi.primary = ifelse())
-
+dipep <- mutate(dipep,
+                ## Three forms of the Delphi Consensus score are required.  Start
+                ## with the Primary
+                delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+                                                               yes = 2,
+                                                               no  = 0),
+                delphi.primary.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                               yes = 2,
+                                                               no  = 0),
+                delphi.primary.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.primary.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
+                                                               yes = 0,
+                                                               no  = 2),
+                delphi.primary.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                               yes = delphi.primary.history.dvt.pe,
+                                                               no  = 2),
+                delphi.primary.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+                                                               yes = 2,
+                                                               no  = 0),
+                delphi.primary.family.history         = ifelse(history.thrombosis == 'Yes',
+                                                               yes = 1,
+                                                               no  = 0),
+                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+                delphi.primary.medical.history        = ifelse(injury == 'No' | is.na(injury),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.primary.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
+                                                               yes = delphi.primary.medical.history,
+                                                               no  = 1),
+                delphi.primary.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
+                                                               yes = delphi.primary.medical.history,
+                                                               no  = 1),
+                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
+                delphi.primary.obstetric.complication = ifelse(obstetric.complications,
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.primary.medical.complication   = ifelse(medical.comorbidity,
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.primary.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.primary.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
+                                                               yes = 0,
+                                                               no  = 2),
+                delphi.primary.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
+                                                               yes = 0,
+                                                               no  = 2),
+                delphi.primary.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
+                                                               yes = 0,
+                                                               no  = 2),
+                delphi.primary.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.primary.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.primary.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.primary.score = delphi.primary.syncope +
+                                       delphi.primary.pleuritic +
+                                       delphi.primary.history.dvt.pe +
+                                       delphi.primary.history.iv.drug +
+                                       delphi.primary.family.history +
+                                       delphi.primary.medical.history +
+                                       delphi.primary.obstetric.complication +
+                                       delphi.primary.medical.complication +
+                                       delphi.primary.gestation +
+                                       delphi.primary.clinical.dvt +
+                                       delphi.primary.o2.saturation +
+                                       delphi.primary.heart.rate.110.bpm +
+                                       delphi.primary.heart.rate.100.bpm +
+                                       delphi.primary.respiratory.rate +
+                                       delphi.primary.bmi,
+                delphi.primary.pe = ifelse(delphi.primary.score >= 2,
+                                        yes = 1,
+                                        no  = 0),
+                ## Now derive the Sensitive score
+                delphi.sensitivity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                               yes = delphi.sensitivity.history.dvt.pe,
+                                                               no  = 1),
+                delphi.sensitivity.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.family.history         = ifelse(history.thrombosis == 'Yes',
+                                                               yes = 1,
+                                                               no  = 0),
+                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+                delphi.sensitivity.medical.history        = ifelse(injury == 'No' | is.na(injury),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
+                                                               yes = delphi.sensitivity.medical.history,
+                                                               no  = 1),
+                delphi.sensitivity.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
+                                                               yes = delphi.sensitivity.medical.history,
+                                                               no  = 1),
+                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
+                delphi.sensitivity.obstetric.complication = ifelse(obstetric.complications,
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.medical.complication   = ifelse(medical.comorbidity,
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.sensitivity.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.sensitivity.score =  delphi.sensitivity.syncope +
+                                            delphi.sensitivity.pleuritic +
+                                            delphi.sensitivity.history.dvt.pe +
+                                            delphi.sensitivity.history.iv.drug +
+                                            delphi.sensitivity.family.history +
+                                            delphi.sensitivity.medical.history +
+                                            delphi.sensitivity.obstetric.complication +
+                                            delphi.sensitivity.medical.complication +
+                                            delphi.sensitivity.gestation +
+                                            delphi.sensitivity.clinical.dvt +
+                                            delphi.sensitivity.o2.saturation +
+                                            delphi.sensitivity.heart.rate.110.bpm +
+                                            delphi.sensitivity.heart.rate.100.bpm +
+                                            delphi.sensitivity.respiratory.rate +
+                                            delphi.sensitivity.bmi,
+                delphi.sensitivity.pe = ifelse(delphi.sensitivity.score >= 1,
+                                        yes = 1,
+                                        no  = 0),
+                ## Now derive the Specific score
+                delphi.specificity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+                                                               yes = 3,
+                                                               no  = 0),
+                delphi.specificity.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                               yes = 3,
+                                                               no  = 0),
+                delphi.specificity.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.specificity.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
+                                                               yes = 0,
+                                                               no  = 3),
+                delphi.specificity.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                               yes = delphi.specificity.history.dvt.pe,
+                                                               no  = 3),
+                delphi.specificity.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+                                                               yes = 3,
+                                                               no  = 0),
+                delphi.specificity.family.history         = ifelse(history.thrombosis == 'Yes',
+                                                               yes = 1,
+                                                               no  = 0),
+                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+                delphi.specificity.medical.history        = ifelse(injury == 'No' | is.na(injury),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.specificity.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
+                                                               yes = delphi.specificity.medical.history,
+                                                               no  = 1),
+                delphi.specificity.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
+                                                               yes = delphi.specificity.medical.history,
+                                                               no  = 1),
+                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
+                delphi.specificity.obstetric.complication = ifelse(obstetric.complications,
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.specificity.medical.complication   = ifelse(medical.comorbidity,
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.specificity.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
+                                                               yes = 1,
+                                                               no  = 0),
+                delphi.specificity.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
+                                                               yes = 0,
+                                                               no  = 3),
+                delphi.specificity.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
+                                                               yes = 0,
+                                                               no  = 3),
+                delphi.specificity.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
+                                                               yes = 0,
+                                                               no  = 3),
+                delphi.specificity.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.specificity.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.specificity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
+                                                               yes = 0,
+                                                               no  = 1),
+                delphi.specificity.score =  delphi.specificity.syncope +
+                                            delphi.specificity.pleuritic +
+                                            delphi.specificity.history.dvt.pe +
+                                            delphi.specificity.history.iv.drug +
+                                            delphi.specificity.family.history +
+                                            delphi.specificity.medical.history +
+                                            delphi.specificity.obstetric.complication +
+                                            delphi.specificity.medical.complication +
+                                            delphi.specificity.gestation +
+                                            delphi.specificity.clinical.dvt +
+                                            delphi.specificity.o2.saturation +
+                                            delphi.specificity.heart.rate.110.bpm +
+                                            delphi.specificity.heart.rate.100.bpm +
+                                            delphi.specificity.respiratory.rate +
+                                            delphi.specificity.bmi,
+                delphi.specificity.pe = ifelse(delphi.specificity.score >= 3,
+                                               yes = 1,
+                                               no  = 0))
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
@@ -2079,8 +2224,9 @@ missing.data <- do.call(rbind, sapply(dipep, function(i) is.na(i) %>% table())) 
     as.data.frame()
 missing.data$variable <- rownames(missing.data)
 names(missing.data) <- c('Present', 'Missing', 'variable')
+obs <- nrow(dipep)
 missing.data <- mutate(missing.data,
-                       Missing = ifelse(Missing == 482,
+                       Missing = ifelse(Missing == obs,
                                         yes = 0,
                                         no  = Missing)) %>%
                 arrange(variable, Present, Missing)
@@ -2352,10 +2498,13 @@ write.table(classification,
 ## dplyr::select(dipep, -life.support.presentation, -incidental) %>%
 ##     write.dta(file = 'dipep.dta')
 dipep_ <- dipep
-names(dipep_) <- gsub("\\.", "_", names(dipep_))
-names(dipep_) <- gsub("presenting_features", "presenting", names(dipep_))
-names(dipep_) <- gsub("simplified_", "simp_", names(dipep_))
-names(dipep_) <- gsub("thrombin_generation_", "tg_", names(dipep_))
+names(dipep_) <- gsub('\\.', '_', names(dipep_))
+names(dipep_) <- gsub('presenting_features', 'presenting', names(dipep_))
+names(dipep_) <- gsub('simplified_', 'simp_', names(dipep_))
+names(dipep_) <- gsub('thrombin_generation_', 'tg_', names(dipep_))
+names(dipep_) <- gsub('delphi_primary_', 'dp_pri_', names(dipep_))
+names(dipep_) <- gsub('delphi_sensitivity_', 'dp_sen_', names(dipep_))
+names(dipep_) <- gsub('delphi_specificity_', 'dp_spe_', names(dipep_))
 write_dta(dipep_, version = 14, path = 'stata/dipep.dta')
 write_dta(dipep.README.variables$dipep, version = 14, path = 'stata/dipep_description.dta')
 rm(dipep_)
