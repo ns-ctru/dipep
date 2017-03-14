@@ -1,0 +1,3 @@
+#### Simplified Revised Geneva
+
+The Simplified Revised Geneva score(@klok2008) is summarised below.  An [online calculator](https://www.mdcalc.com/geneva-score-revised-pulmonary-embolism) is available.  A score $>= 4$ is taken as indicative of PE.
