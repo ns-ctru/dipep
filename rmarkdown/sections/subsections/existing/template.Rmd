@@ -1,0 +1,30 @@
+```{r results_existing_CHUNK, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+## Summarise
+RESULTS <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'SCORE',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 first.st, score.pe, score)
+## Plots
+RESULTS$bar.chart
+RESULTS$likert.plot
+## Tables
+kable(RESULTS$summary.table,
+      caption = 'Summary of SCORE',
+      digits = 3)
+kable(RESULTS$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on SCORE.')
+kable(RESULTS$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the SCORE for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+The SCORE has also been analysed using the calculated scores rather than dichotomisation, the ROC curve below shows its performance.
+
+```{r results_existing_CHUNK_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+RESULTS$roc.plot
+
+```
