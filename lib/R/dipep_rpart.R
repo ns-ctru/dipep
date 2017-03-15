@@ -24,14 +24,6 @@
 #' @param rpart.opts.minsplit \code{minsplit} option passed to \code{rpart()} (see \code{?rpart} for full details).
 #' @param rpart.opts.minbucket \code{minbucket} option passed to \code{rpart()} (see \code{?rpart} for full details).
 #' @param rpart.opts.cp \code{cp} option passed to \code{rpart()} (see \code{?rpart} for full details).
-#' @param printcp.opts.digits \code{digits} option passed to \code{printcp()} (see \code{?printcp} for full details).
-#' @param prp.opts.type \code{type} option passed to \code{prp()} (see \code{?prp} for full details).
-#' @param prp.opts.extra \code{extra} option passed to \code{prp()} (see \code{?prp} for full details).
-#' @param prp.opts.box.palette \code{box.palette} option passed to \code{prp()} (see \code{?prp} for full details).
-#' @param prp.opts.yesno \code{yesno} option passed to \code{prp()} (see \code{?prp} for full details).
-#' @param prp.opts.branch \code{branch} option passed to \code{prp()} (see \code{?prp} for full details).
-#' @param prp.opts.varlen \code{varlen} option passed to \code{prp()} (see \code{?prp} for full details).
-#' @param prp.opts.faclen \code{faclen} option passed to \code{prp()} (see \code{?prp} for full details).
 #'
 #'
 #' @export
@@ -51,15 +43,6 @@ dipep_rpart <- function(df              = dipep,
                         rpart.opts.minsplit  = 4,
                         rpart.opts.minbucket = 2,
                         rpart.opts.cp        = -1,
-                        printcp.opts.digits  = 5,
-                        ## prp options
-                        ## prp.opts.type        = 2,
-                        ## prp.opts.extra       = 'auto',
-                        ## prp.opts.box.palette = c('green', 'red'),
-                        ## prp.opts.yesno       = 1,
-                        ## prp.opts.branch      = 1,
-                        ## prp.opts.varlen      = 0,
-                        ## prp.opts.faclen      = 0,
                         ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
