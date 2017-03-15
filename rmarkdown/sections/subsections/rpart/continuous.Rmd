@@ -78,6 +78,9 @@ The question arises though whether it is possible to utilise a simpler, more par
 
 ```{r results_rpart_continuous_roc_all, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
 continuous$roc.all$plot
-continuous$roc.all$summary.stats
+continuous$roc.all$summary.stats %>%
+    kable(caption = paste0('Predictive statistics fo sequential splits of Recursive Partitioning using a cut point of p = ',
+                           continuous$threshold,
+                           ',')
 
 ```
