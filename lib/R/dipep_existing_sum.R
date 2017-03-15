@@ -35,6 +35,7 @@ dipep_existing_sum <- function(df      = dipep,
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
     df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
+    vars <- names(df)
     ## Rename variables so they are standardised and I don't have to mess around
     ## with Standard Evaluation v's Non Standard Evaulation any more!
     names(df) <- gsub('first.st',              'class',    names(df))
@@ -83,13 +84,13 @@ dipep_existing_sum <- function(df      = dipep,
         center = 2
     }
     else if(levels(df$class.existing)[1] == 'No Delphi Primary PE'){
-        center = 2
+        center = 3
     }
     else if(levels(df$class.existing)[1] == 'No Delphi Sensitivity PE'){
-        center = 1
+        center = 2
     }
     else if(levels(df$class.existing)[1] == 'No Delphi Specificity PE'){
-        center = 3
+        center = 4
     }
     plot.likert         <- dplyr::select(df, score)
     names(plot.likert)  <- paste0(title, ' Score')
@@ -175,5 +176,35 @@ dipep_existing_sum <- function(df      = dipep,
                                          results$fdr,
                                          results$accuracy)) %>% as.data.frame()
     names(results$performance.table) <- c('Performance Metric', 'Value')
+    ## Perform simple logistic regression of score on specified outcome
+    results$score <- glm(class ~ score,
+                         data = df,
+                         family = binomial)
+    ## Make predictions and bind to observed classification
+    predicted <- predict(results$score,
+                         type = 'response')
+    results$predicted <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score)),
+                                   predicted) %>%
+                         dplyr::select(class, predicted)
+    names(results$predicted) <- c('D', 'M')
+    ## Add a term/name based on the arguments and get meaningful title
+    if(grepl('first.st', vars)){
+        case.review <- 'Primary'
+    }
+    else if(grepl('second.st', vars)){
+        case.review <- 'Secondary'
+    }
+    if(grepl('perc', vars)){
+        title <- 'PERC Score'
+    }
+    results$predicted$term <- title
+    results$predicted$name <- title
+    results$score.roc <- dipep_roc(df = results$predicted,
+                                   to.plot = title,
+                                   title = paste0(title, ' vs ', case.review, ' classification'))
+    ## Add the AUC to the plot
+    results$roc.plot <- results$score.roc$plot +
+                        annotate('text', x = 0.75, y = 0.25,
+                                 label = paste0('AUC = ', round(results$score.roc$auc$AUC, 3)))
     return(results)
 }
