@@ -1,0 +1,210 @@
+#' Wrapper for running rpart() on Dipep
+#'
+#' @description Wrapper for running roart() on Dipep
+#'
+#' @details
+#'
+#' This wrapper runs recursive partitioning models for a given predictor variable
+#' and returns the fitted model(s) (for combining using broom()) along with the
+#' predicted values for each pruning  step and associated ROC curves and summary statistics.
+#'
+#'
+#' @param df Data frame to analyse (default is \code{dipep} and shouldn't need changing)
+#' @param classification Specify the variable that defines the disease status, for this study there are four classifications of diseases ststus, hence the need for flexibility.
+#' @param predictor Predictor variable(s) to test.
+#' @param model Name/label of your model.
+#' @param relevel Reference level for logistic regression if different from default.
+#' @param exclude Vector of \code{screening}  to exclude.
+#' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
+#' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
+#' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
+#' @param legend Logical indicator of whether to include a legend in the LASSO normalisation plot.
+#' @param threshold Threshold for dichotomisation of predicted probabilities (by default \code{0.5} is used for classification so responses match class, this permits alternative thresholds to be passed to \code{dipep_roc()}).
+#' @param rpart.opts.method \code{method} option passed to \code{rpart()} (see \code{?rpart} for full details).
+#' @param rpart.opts.minsplit \code{minsplit} option passed to \code{rpart()} (see \code{?rpart} for full details).
+#' @param rpart.opts.minbucket \code{minbucket} option passed to \code{rpart()} (see \code{?rpart} for full details).
+#' @param rpart.opts.cp \code{cp} option passed to \code{rpart()} (see \code{?rpart} for full details).
+#' @param printcp.opts.digits \code{digits} option passed to \code{printcp()} (see \code{?printcp} for full details).
+#' @param prp.opts.type \code{type} option passed to \code{prp()} (see \code{?prp} for full details).
+#' @param prp.opts.extra \code{extra} option passed to \code{prp()} (see \code{?prp} for full details).
+#' @param prp.opts.box.palette \code{box.palette} option passed to \code{prp()} (see \code{?prp} for full details).
+#' @param prp.opts.yesno \code{yesno} option passed to \code{prp()} (see \code{?prp} for full details).
+#' @param prp.opts.branch \code{branch} option passed to \code{prp()} (see \code{?prp} for full details).
+#' @param prp.opts.varlen \code{varlen} option passed to \code{prp()} (see \code{?prp} for full details).
+#' @param prp.opts.faclen \code{faclen} option passed to \code{prp()} (see \code{?prp} for full details).
+#'
+#'
+#' @export
+dipep_rpart <- function(df              = dipep,
+                        classification  = 'first.st',
+                        predictor       = 'age',
+                        model           = NULL,
+                        relevel         = NULL,
+                        exclude         = NULL,
+                        exclude.non.recruited = TRUE,
+                        exclude.dvt       = TRUE,
+                        exclude.anti.coag = FALSE,
+                        legend            = FALSE,
+                        threshold         = 0.5,
+                        ## Rpart options
+                        rpart.opts.method    = 'class',
+                        rpart.opts.minsplit  = 4,
+                        rpart.opts.minbucket = 2,
+                        rpart.opts.cp        = -1,
+                        printcp.opts.digits  = 5,
+                        ## prp options
+                        ## prp.opts.type        = 2,
+                        ## prp.opts.extra       = 'auto',
+                        ## prp.opts.box.palette = c('green', 'red'),
+                        ## prp.opts.yesno       = 1,
+                        ## prp.opts.branch      = 1,
+                        ## prp.opts.varlen      = 0,
+                        ## prp.opts.faclen      = 0,
+                        ...){
+    results <- list()
+    ## Remove individuals who are explicitly to be removed
+    if(!is.null(exclude)){
+        df <- df[!(df$screening %in% exclude),]
+    }
+    ## Remove non-recruited and DVT
+    if(exclude.non.recruited == TRUE){
+        df <- dplyr::filter(df, group != 'Non recruited')
+    }
+    if(exclude.dvt == TRUE){
+        df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    ## Remove biomarker data for those on anticoagulents
+    if(exclude.anti.coag == TRUE){
+        df <- mutate(df,
+                     prothombin.time                          = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothombin.time),
+                     aptt                                     = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = aptt),
+                     clauss.fibrinogen                        = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = clauss.fibrinogen),
+                     ddimer.innovance                         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.innovance),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.lag.time),
+                     thrombin.generation.endogenous.potential = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.endogenous.potential),
+                     thrombin.generation.peak                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.peak),
+                     thrombin.generation.time.to.peak         = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = thrombin.generation.time.to.peak),
+                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa),
+                     plasmin.antiplasmin                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = plasmin.antiplasmin),
+                     prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = prothrombin.fragments),
+                     tissue.factor                            = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = tissue.factor),
+                     troponin                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = troponin),
+                     nppb                                     = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = nppb),
+                     mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = mrproanp))
+    }
+    ## Obtain the numbre of missing for the current classified
+    results$n.exclude <- dplyr::filter(df, is.na(classification)) %>% nrow()
+    ## Remove those who are 'Exclude' for the current classification
+    if(classification == 'first.st'){
+        df <- subset(df, !is.na(first.st))
+        results$observed <- df$first.st
+    }
+    else if(classification == 'second.st'){
+        df <- subset(df, !is.na(second.st))
+        results$observed <- df$second.st
+    }
+    else if(classification == 'third.st'){
+        df <- subset(df, !is.na(third.st))
+        results$observed <- df$third.st
+    }
+    else if(classification == 'fourth.st'){
+        df <- subset(df, !is.na(fourth.st))
+        results$observed <- df$fourth.st
+    }
+    else if(classification == 'primary.dm'){
+        df <- subset(df, !is.na(primary.dm))
+        results$observed <- df$primary.dm
+    }
+    else if(classification == 'secondary.dm'){
+        df <- subset(df, !is.na(secondary.dm))
+        results$observed <- df$secondary.dm
+    }
+    results$observed %>% head() %>% print()
+    names(results$observed) <- c('D')
+    ## Define the mode
+    results$model <- reformulate(response   = classification,
+                                 termlabels = predictor)
+    results$rpart.full <- rpart(results$model,
+                           data    = df,
+                           method  = rpart.opts.method,
+                           control = rpart.control(minsplit  =- rpart.opts.minsplit,
+                                                   minbucket = rpart.opts.minbucket,
+                                                   cp        = rpart.opts.cp))
+    ## Plot of full (over-fitted tree)
+    ## results$rpart.full.prp <- prp(results$rpart,
+    ##                               type        = prp.opts.type,
+    ##                               extra       = prp.opts.extra,
+    ##                               box.palette = prp.opts.box.palette,
+    ##                               yesno       = prp.opts.yesno,
+    ##                               branch      = prp.opts.branch,
+    ##                               varlen      = prp.opts.varlen,
+    ##                               faclen      = prp.opts.faclen)
+    ## Complexity Parameter selection, extract to a data frame
+    results$rpart.full.cp <- results$rpart.full$cptable %>% as.data.frame()
+    ## Loop over all values of the Complexity Parameter, pruning the full
+    results$assess <- list()
+    for(i in 1:nrow(results$rpart.full.cp)){
+        results$prune$pruned[[i]] <- prune(results$rpart.full, cp = results$rpart.full$cptable[i,1])
+        ## Build a data frame of predicted probabilities from all steps of the tree
+        if(i == 1){
+            results$predicted      <- predict(results$prune$pruned[[i]]) %>% as.data.frame()
+            results$predicted$term <- i
+            results$predicted$name <- results$rpart.full$cptable[i,1]
+            results$predicted <- cbind(results$observed,
+                                       results$predicted)
+        }
+        else{
+            current           <- predict(results$prune$pruned[[i]]) %>% as.data.frame()
+            current$term      <- i
+            current$name      <- results$rpart.full$cptable[i,1]
+            current           <- cbind(results$observed,
+                                       current)
+            results$predicted <- rbind(results$predicted,
+                                       current)
+        }
+    }
+    ## Rename and Remove prediction of No PE
+    names(results$predicted) <- c('D', 'remove', 'M', 'term', 'name')
+    results$predicted <- dplyr::select(results$predicted, -remove)
+    ## Plot all terms
+    results$roc <- dipep_roc(df        = results$predicted,
+                             to.plot   = seq(1:nrow(results$rpart.full.cp)),
+                             title     = 'each Pruned Tree',
+                             threshold = threshold,
+                             lasso     = TRUE)
+    ## Return results
+    return(results)
+}
