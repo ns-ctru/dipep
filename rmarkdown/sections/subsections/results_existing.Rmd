@@ -23,7 +23,7 @@ to.plot <- to.plot %>%
                                            .$Score == 'delphi.sensitivity.pe' ~ 'Delphi (Sensitivity)',
                                            .$Score == 'delphi.specificity.pe' ~ 'Delphi (Specificity)'))
 to.plot <- ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
-           geom_roc() +
+           geom_roc(labels = FALSE) +
            guides(guide = guide_legend(title = 'Predictor Score...')) +
            ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
            style_roc() + theme_bw()
