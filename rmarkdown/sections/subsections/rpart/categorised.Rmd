@@ -26,7 +26,7 @@ categorical <- dipep_rpart(df             = dipep,
 
 ```
 
-This section shows the results from applying recursive partitioning.  Leave One Out Cross-Validation (LOOCV) is performed automatically by the `rpart` package at each partition and the resulting estimates used in summarising and prunning the tree.
+This section shows the results from applying recursive partitioning to pre-categorised continuous variables.  Leave One Out Cross-Validation (LOOCV) is performed automatically by the `rpart` package at each partition and the resulting estimates used in summarising and prunning the tree.
 
 
 
@@ -76,9 +76,10 @@ We now need to calculate the sensitivity and specificity.  There is no single va
 categorical$roc.min$plot
 
 ```
+
 The question arises though whether it is possible to utilise a simpler, more parsimonious tree with less splits, yet still retain the ability to make useful and accurate predictions.  To this end the ROC curve for each step/split in the recursive partitioning process are plotted below and a table of the performance statistics is provided for each step.
 
-```{r results_rpart_categorical_roc_min, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
+```{r results_rpart_categorical_roc_all, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
 categorical$roc.all$plot
 categorical$roc.all$summary.stats
 
