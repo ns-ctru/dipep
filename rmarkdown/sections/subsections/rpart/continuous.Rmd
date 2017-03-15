@@ -81,6 +81,6 @@ continuous$roc.all$plot
 continuous$roc.all$summary.stats %>%
     kable(caption = paste0('Predictive statistics fo sequential splits of Recursive Partitioning using a cut point of p = ',
                            continuous$threshold,
-                           ',')
+                           ','))
 
 ```
