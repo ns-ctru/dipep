@@ -1,16 +1,82 @@
-## 2017-03-08 - LASSO function testing of dipep_glmnet_orig() which DOESN'T utilise glmnetUtils()
+## 2017-03-15 - Developing dipep_rpart() function to
+check <- dipep_rpart(df       = dipep,
+                     classification = 'first.st',
+                     predictor      = c('age', 'bmi'),
+                     exclude.non.recruited = TRUE,
+                     exclude.dvt           = TRUE,
+                     legend                = FALSE,
+                     threshold             = 0.5,
+                     rpart.opts.method     = 'class',
+                     rpart.opts.minsplit   = 4,
+                     rpart.opts.minbucket  = 2,
+                     rpart.opts.cp         = -1,
+                     printcp.opts.digits   = 5,
+                     prp.opts.type         = 2,
+                     prp.opts.extra        = 'auto',
+                     prp.opts.box.palette  = c('green', 'red'),
+                     prp.opts.yesno        = 1,
+                     prp.opts.branch       = 1,
+                     prp.opts.varlen       = 0,
+                     prp.opts.faclen       = 0)
+
+## 2017-03-14 - Checking Delphi derivation
+print('Syncope')
+table(dipep$delphi.primary.syncope, dipep$presenting.features.syncope, useNA = 'ifany')
+print('Haemoptysis')
+table(dipep$delphi.primary.haemoptysis, dipep$presenting.features.haemoptysis, useNA = 'ifany')
+print('Pleuritic')
+table(dipep$delphi.primary.pleuritic, dipep$presenting.features.pleuritic, useNA = 'ifany')
+print('History DVT/PE')
+table(dipep$delphi.primary.history.dvt.pe, dipep$thromb.event, useNA = 'ifany')
+table(dipep$delphi.primary.history.dvt.pe, dipep$thrombosis, useNA = 'ifany')
+print('History IV Drug')
+table(dipep$delphi.primary.history.iv.drug, dipep$history.iv.drug, useNA = 'ifany')
+print('Family History')
+table(dipep$delphi.primary.family.history, dipep$history.thrombosis, useNA = 'ifany')
+print('Medical History')
+table(dipep$delphi.primary.medical.history, dipep$injury, useNA = 'ifany')
+table(dipep$delphi.primary.medical.history, dipep$surgery, useNA = 'ifany')
+table(dipep$delphi.primary.medical.history, dipep$admitted.hospital, useNA = 'ifany')
+
+dplyr::filter(dipep, delphi.primary.medical.history == 1) %>%
+    dplyr::select(screening, injury, surgery, admitted.hospital) %>%
+    dplyr::filter(injury == 'Yes' & surgery == 'Yes' & admitted.hospital == 'Yes') %>%
+    head(n = 15)
+
+print('Obstetric Complications')
+table(dipep$delphi.primary.obstetric.complication, dipep$obstetric.complications, useNA = 'ifany')
+print('Medical Complications')
+table(dipep$delphi.primary.medical.complication, dipep$medical.comorbidity, useNA = 'ifany')
+print('Gestation')
+table(dipep$delphi.primary.gestation, dipep$trimester, useNA = 'ifany')
+print('Clinical DVT')
+table(dipep$delphi.primary.clinical.dvt, dipep$dvt, useNA = 'ifany')
+print('O2 Saturation')
+table(dipep$delphi.primary.o2.saturation, dipep$o2.saturation, useNA = 'ifany')
+print('Heart Rate 110bpm')
+table(dipep$delphi.primary.heart.rate.110.bpm, dipep$heart.rate, useNA = 'ifany')
+print('Heart Rate 100bpm')
+table(dipep$delphi.primary.heart.rate.100.bpm, dipep$heart.rate, useNA = 'ifany')
+print('Respiratory Rate')
+table(dipep$delphi.primary.respiratory.rate, dipep$respiratory.rate, useNA = 'ifany')
+print('BMI')
+table(dipep$delphi.primary.bmi, dipep$bmi, useNA = 'ifany')
+
+## 2017-03-10 - Predictions for ALL steps in the LASSO
 classification <- 'first.st'
-predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat')
-## predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
-##                'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-##                'injury', 'thrombosis', 'existing.medical', 'preg.post', 'trimester', 'multiple.preg',
-##                'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-##                'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-##                'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-##                'presenting.features.haemoptysis', 'presenting.features.cough',
-##                'presenting.features.syncope', 'presenting.features.palpitations',
-##                'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
-##                'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
+predictor <- predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
+               'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
+               'injury', 'thrombosis', 'existing.medical',
+               ## 'preg.post',
+               'trimester', 'multiple.preg',
+               'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
+               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+               'presenting.features.haemoptysis', 'presenting.features.cough',
+               'presenting.features.syncope',
+               ## 'presenting.features.palpitations',
+               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
+               'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
 lasso.categorical <- dipep_glmnet_orig(df          = dipep,
                                        classification = classification,
                                        predictor      = predictor,
@@ -20,7 +86,63 @@ lasso.categorical <- dipep_glmnet_orig(df          = dipep,
                                        exclude.non.recruited = TRUE,
                                        exclude.dvt           = TRUE,
                                        exclude.anti.coag     = FALSE,
-                                       legend                = FALSE)
+                                       legend                = TRUE,
+                                       threshold             = 0.3)
+
+to.plot <- seq(1:length(lasso.categorical$lasso.cv$lambda))
+table(lasso.categorical$lasso.cv.predicted$name)
+table(lasso.categorical$lasso.cv.predicted$term)
+dipep_roc(df = lasso.categorical$lasso.cv.predicted,
+          to.plot = to.plot,
+          title = 'all steps of Cross-Validated LASSO',
+          threshold = 0.3,
+          lasso = TRUE)
+
+
+lasso.categorical$lasso.cv.roc
+
+## 2017-03-09 - Why can't all variables be used?
+predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
+               'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
+               'injury', 'thrombosis', 'existing.medical',
+               ## 'preg.post',
+               'trimester', 'multiple.preg',
+               'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
+               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
+               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
+               'presenting.features.haemoptysis', 'presenting.features.cough',
+               'presenting.features.syncope',
+               ## 'presenting.features.palpitations',
+               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
+               'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
+lasso.categorical <- dipep_glmnet_orig(df          = dipep,
+                                       classification = classification,
+                                       predictor      = predictor,
+                                       alpha          = 1,
+                                       model          = 'LASSO : Pre-Categorised Variables',
+                                       exclude        = NULL,
+                                       exclude.non.recruited = TRUE,
+                                       exclude.dvt           = TRUE,
+                                       exclude.anti.coag     = FALSE,
+                                       legend                = TRUE,
+                                       threshold             = 0.3)
+lasso.categorical$lasso.cv.auc
+lasso.categorical$lasso.cv.roc
+lasso.categorical$lasso.cv.summary.stats
+
+## 2017-03-08 - LASSO function testing of dipep_glmnet_orig() which DOESN'T utilise glmnetUtils()
+classification <- 'first.st'
+predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat')
+lasso.categorical <- dipep_glmnet_orig(df          = dipep,
+                                       classification = classification,
+                                       predictor      = predictor,
+                                       alpha          = 1,
+                                       model          = 'LASSO : Pre-Categorised Variables',
+                                       exclude        = NULL,
+                                       exclude.non.recruited = TRUE,
+                                       exclude.dvt           = TRUE,
+                                       exclude.anti.coag     = FALSE,
+                                       legend                = TRUE)
 
 ## 2017-03-08 - LASSO function testing of dipep_glmnet() which utilises glmnetUtils().
 classification <- 'first.st'
@@ -34,7 +156,7 @@ predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pre
                'presenting.features.syncope', 'presenting.features.palpitations',
                'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
                'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
-lasso.categorical <- dipep_glmnet(df          = dipep,
+lasso.categorical.check <- dipep_glmnet(df          = dipep,
                                   classification = classification,
                                   predictor      = predictor,
                                   alpha          = 1,
@@ -44,6 +166,9 @@ lasso.categorical <- dipep_glmnet(df          = dipep,
                                   exclude.dvt           = TRUE,
                                   exclude.anti.coag     = FALSE,
                                   legend                = TRUE)
+lasso.categorical$lasso.plot
+lasso.categorical.check$lasso.plot
+
 lasso.categorical$coef.lambda
 
 ## 2017-03-07 - Checking exclusion of biomarkers
