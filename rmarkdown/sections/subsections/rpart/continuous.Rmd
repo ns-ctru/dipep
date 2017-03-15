@@ -2,29 +2,29 @@
 
 ```{r results_rpart_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Repeat using continuous variables
-model <- reformulate(response = 'first.st',
-                     termlabels = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
-                                    'o2.saturation', 'respiratory.rate', 'bmi',
-                                    'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
-                                    'presenting.features.pleuritic',
-                                    'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
-                                    'presenting.features.sob.rest', 'presenting.features.haemoptysis',
-                                    'presenting.features.cough', 'presenting.features.syncope',
-                                    'presenting.features.palpitations', 'presenting.features.other',
-                                    'surgery', 'cesarean', 'thromb.event',
-                                    'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'))
-## Test model
-continuous <- filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
-continuous.n.missing <- dplyr::filter(continuous, is.na(first.st)) %>% nrow()
-continuous <- rpart(model,
-                    data = continuous,
-                    method = rpart.opts$method,
-                    control = rpart.control(minsplit  = rpart.opts$minsplit,
-                                            minbucket = rpart.opts$minbucket,
-                                            ## xval      = nrow(continuous),
-                                            cp        = rpart.opts$cp))
+continuous <- dipep_rpart(df             = dipep,
+                           predictor      = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
+                                              'o2.saturation', 'respiratory.rate', 'bmi',
+                                              'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
+                                              'presenting.features.pleuritic',
+                                              'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
+                                              'presenting.features.sob.rest', 'presenting.features.haemoptysis',
+                                              'presenting.features.cough', 'presenting.features.syncope',
+                                              'presenting.features.palpitations', 'presenting.features.other',
+                                              'surgery', 'cesarean', 'thromb.event',
+                                              'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'),
+                           exclude.non.recruited = TRUE,
+                           exclude.dvt           = TRUE,
+                           legend                = FALSE,
+                           threshold             = 0.5,
+                           rpart.opts.method     = 'class',
+                           rpart.opts.minsplit   = 4,
+                           rpart.opts.minbucket  = 2,
+                           rpart.opts.cp         = -1)
 
 ```
+
+This section shows the results from applying recursive partitioning to raw continuous variables, allowing the recursive partitioning algorithm to determine the optimal split at each point.  Leave One Out Cross-Validation (LOOCV) is performed automatically by the `rpart` package at each partition and the resulting estimates used in summarising and prunning the tree.
 
 The [dendrogram](https://en.wikipedia.org/wiki/Dendrogram) below shows the full, over-fitted.  As its over-fitted there are a lot of splits and the graph is barely legible.
 
@@ -32,7 +32,7 @@ The [dendrogram](https://en.wikipedia.org/wiki/Dendrogram) below shows the full,
 
 
 ```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
-prp(continuous,
+prp(continuous$rpart.full,
     type        = prp.opts$type,
     extra       = prp.opts$extra,
     box.palette = prp.opts$box.palette,
@@ -43,27 +43,19 @@ prp(continuous,
 
 ```
 
-This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter of the smallest tree within one standard deviation of the smallest reported `xerror` (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) is plotted below for each split of the over-fitted full tree.
+This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter that corresponds to the minimum cross-validated error (`xerror` in the table below) (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) along with associated cross-validated error (`xerror`) is tabulated below and a plot of the two parameters is shown.
 
 ```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-printcp(continuous)
-plotcp(continuous)
+continuous$rpart.full.cp %>%
+    kable(caption = 'Summary table for over-fitted full model.')
+plotcp(continuous$rpart.full)
 
 ```
 
-The horizontal dashed line shows the threshold for selecting the Complexity Parameter to prune the tree, and a value corresponding to the first point **below** this line is selected and applied to the data.
+The Complexity Parameter (CP) at the step/number of splits (`r continuous$rpart.full.splits.min`) that corresponds to the minimum cross-validated error is `r continuous$rpart.full.cp.min`.
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
-## Selecting cp for pruning...
-## https://stats.stackexchange.com/questions/122333/interpreting-rpart-output-for-decision-trees?rq=1
-cp.table <- categorical$cptable %>%
-            as.data.frame() %>%
-            mutate(mean = mean(xerror))
-cp <- filter(cp.table, CP < mean)[1,1] / 10
-continuous_prune <- prune(continuous, cp = cp)
-printcp(continuous_prune,
-        digits = printcp.opts$digits)
-prp(continuous_prune,
+prp(continuous$pruned.min,
     type        = prp.opts$type,
     extra       = prp.opts$extra,
     box.palette = prp.opts$box.palette,
@@ -74,28 +66,18 @@ prp(continuous_prune,
 
 ```
 
-We now need to calculate the sensitivity and specificity.  There is no single value since the cut-point for classifying can vary depending on the complexity value we wish to use, i.e. do we favour sensitivity over specificity or vice-versa.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).
+We now need to calculate the sensitivity and specificity.  There is no single value for either of these metrics since individuals have a predicted probability of classification in the range of $0 < p < 1$ rather than a binary classification.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and calculating the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) which captures the probability of correctly classifying true positives compared to true negatives.
 
-```{r results_rpart_continuous_roc, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
-## .predict <- predict(continuous_prune, type = 'prob')
-## .predicted <- prediction(.predict[,2] %>% as.vector(), continuous_prune$y)
-## pred.obs <- cbind(.predict[,2] %>% as.vector(), continuous_prune$y) %>% as.data.frame()
-pred.obs <- cbind(predict(continuous_prune, type = 'prob')[,2],
-                  continuous_prune$y) %>%
-            as.data.frame()
-names(pred.obs) <- c('predicted', 'obs')
-roc <- ggplot(pred.obs, aes(d = obs, m = predicted)) +
-       geom_roc(n.cuts = 10) + style_roc() +
-       ggtitle(paste0('ROC Curve for Pruned Continuous Tree (CP = ', round(cp, 5), ')'))
-    ## Calculate AUC and add to plot
-roc + annotate('text', x = 0.75, y = 0.25,
-               label = paste0('AUC = ', round(calc_auc(roc)$AUC, 3)))
+**IMPORTANT** - Until a threshold for dichotomising individuals predicted probability of disease is selected (which can be done based on the ROC Curve) it is not possible to calculate the Sensitivity, Specificity point estimates nor the Positive or Negative Predictive Value.
+
+```{r results_rpart_continuous_roc_min, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
+continuous$roc.min$plot
 
 ```
+The question arises though whether it is possible to utilise a simpler, more parsimonious tree with less splits, yet still retain the ability to make useful and accurate predictions.  To this end the ROC curve for each step/split in the recursive partitioning process are plotted below and a table of the performance statistics is provided for each step.
 
-The full summary of the pruned tree is provided.  The `r continuous.n.missing` `observations deleted due to missingness` are those classified as `exclude` rather than to a disease status and not because of missing observations in the predictor variables.
-
-```{r results_rpart_continuous_summary, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-summary(categorical_prune)
+```{r results_rpart_continuous_roc_all, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
+continuous$roc.all$plot
+continuous$roc.all$summary.stats
 
 ```
