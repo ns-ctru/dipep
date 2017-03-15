@@ -147,10 +147,28 @@ dipep_rpart <- function(df              = dipep,
                                                    cp        = rpart.opts.cp))
     ## Complexity Parameter selection, extract to a data frame
     results$rpart.full.cp <- results$rpart.full$cptable %>% as.data.frame()
-    ## Obtain the complexity parameter corresponding to the minimum value cross-validated
-    ## error
+    ## Obtain the complexity parameter and number of splits corresponding to the
+    ## minimum value cross-validated error
     results$rpart.full.cp.min <- results$rpart.full.cp[which.min(results$rpart.full.cp[, 'xerror']), 'CP']
+    results$rpart.full.splits.min <- results$rpart.full.cp[which.min(results$rpart.full.cp[, 'xerror']), 'CP']
+    ## Prune the tree based on this, make predictions and plot the ROC
     results$pruned.min <- prune(results$rpart.full, cp = results$rpart.full.cp.min)
+    results$pruned.min.predicted <- predict(results$pruned.min) %>% as.data.frame()
+    results$pruned.min.predicted <- cbind(results$observed,
+                                          results$pruned.min.predicted)
+    results$pruned.min.predicted$term   <- paste0('CP = ', round(results$rpart.full.cp.min, digits = 5))
+    results$pruned.min.predicted$name   <- 'min'
+    names(results$pruned.min.predicted) <- c('D', 'remove', 'M', 'term', 'name')
+    results$pruned.min.predicted <- dplyr::select(results$pruned.min.predicted, -remove)
+    results$roc.min <- dipep_roc(df        = results$pruned.min.predicted,
+                                 to.plot   = c('min'),
+                                 title     = 'Pruned Tree minimising cross-validation error.',
+                                 threshold = threshold,
+                                 lasso     = FALSE)
+    ## Add the AUC to the plot
+    results$roc.min$plot <- results$roc.min$plot +
+                           annotate('text', x = 0.75, y = 0.25,
+                                    label = paste0('AUC = ', round(results$roc.min$auc$AUC, digits = 3)))
     ## Loop over all values of the Complexity Parameter, pruning the full
     results$pruned.all <- list()
     for(i in 1:nrow(results$rpart.full.cp)){
