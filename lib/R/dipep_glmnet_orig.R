@@ -4,10 +4,9 @@
 #'
 #' @details
 #'
-#' This wrapper runs logistic regression models for a given predictor variable
+#' This wrapper runs LASSO regression models for a given predictor variable
 #' and returns the fitted model (for combining using broom()) along with the
-#' predicted values (for calculation of sensitivity and specificity) as well
-#' as other summary statistics
+#' predicted values for each step and associated ROC curves and summary statistics.
 #'
 #'
 #' @param df Data frame to analyse (default is \code{dipep} and shouldn't need changing)
@@ -333,8 +332,6 @@ dipep_glmnet_orig <- function(df              = dipep,
                      title     = 'all steps of Cross-Validated LASSO',
                      threshold = threshold,
                      lasso     = TRUE)
-    print(roc$plot.auc)
-    print(roc$summary.stats)
     results$lasso.cv.roc.all           <- roc$plot
     results$lasso.cv.auc.all           <- roc$plot.auc
     results$lasso.cv.summary.stats.all <- roc$summary.stats
