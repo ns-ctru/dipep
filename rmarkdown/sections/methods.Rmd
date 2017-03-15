@@ -70,7 +70,7 @@ The number of individuals with and without PE will be calculated and their basel
 
 ### Missing and Spurious Data
 
-There will be no missing data for the reference standard because all women will be classified as having or not having PE based on the available data.  However, for the predictor variables there is scope for missing data if the attending clinician fails to measure or record the data.  This is most likely to happen when the variable is anticipated to be or recorded as negative or normal, and thus unlikely to change clinical care.  To address this missing values will be imputed based on clinically determined "normal" values defined by [Prof Steve Goodacre](mailto:s.goodacre@sheffield.ac.uk) and [Dr Gordon Fuller](mailto:g.fuller@sheffield.ac.uk).  Sensitivity will be assessed by comparing these results to complete cases.  Multiple imputation was to be investigated it is not advisable as it has been demonstrated to perform poorly for recurrsive partitioning(@hapfelmeier2012), and there are parctical issues to performing analysis of multiply-imputed datasets via recursive partitioning and LASSO (i.e. the statistician doesn't know how to do this).
+There will be no missing data for the reference standard because all women will be classified as having or not having PE based on the available data.  However, for the predictor variables there is scope for missing data if the attending clinician fails to measure or record the data.  This is most likely to happen when the variable is anticipated to be or recorded as negative or normal, and thus unlikely to change clinical care.  To address this missing values will be imputed based on clinically determined "normal" values defined by [Prof Steve Goodacre](mailto:s.goodacre@sheffield.ac.uk) and [Dr Gordon Fuller](mailto:g.fuller@sheffield.ac.uk).  Sensitivity will be assessed by comparing these results to complete cases.  Multiple imputation was to be investigated it is not advisable as it has been demonstrated to perform poorly for recurrsive partitioning(@hapfelmeier2012) and can lead to biased point estimates and are inefficient compared to other methods (@sullivan2016).  There are parctical issues to performing analysis of multiply-imputed datasets via recursive partitioning and LASSO (i.e. the statistician doesn't know how to do this).
 
 #### Withdrawals
 
@@ -88,6 +88,13 @@ The blood biomarkers that are to be assayed and analysed for their predictive va
 ### Modelling
 
 Two approaches are to be taken to deriving a model to predict Pulmonary Embolisms in pregnant women, [recrusive partitioning](https://en.wikipedia.org/wiki/Recursive_partitioning) implemented in the [`rpart`](https://cran.r-project.org/package=rpart) package and [LASSO regression](https://en.wikipedia.org/wiki/Lasso_(statistics)) (@friedman2010) implemented in the [`glmnet`](https://cran.r-project.org/package=glmnet) package.  Both require the inclusion of putative risk factors that are thought to be of some predictive value and will then attempt to derive a minimal subset of variables that maximises the predictive value.  Models are then validated by [leave one out cross-validation]()
+
+#### LASSO
+
+The implementation of the LASSO model that is being used is implemented in the R package [`glmnet`](https://cran.r-project.org/package=glmnet) which uses ridge and LASSO penatlities simultaneously.  Fitting models using this approach is controlled by two parameters, $\alpha$ which when set to 1 uses pure LASSO penalty and when 0 uses pure ridge-regression penalties and $\lambda$ which is the overall penalisation to be used.
+
+#### Recursive Partitioning
+
 
 #### Risk Variables
 Risk variables are detailed in the following table, many of the continuous variables where the risk is non-linear are to be categorised, despite the reduction in prognostic accuracy this results in (@steyerberg2001) and the rules for doing so are shown in table below.
@@ -200,12 +207,6 @@ Troponin I										| $< X$   | 0                   | `?`
 Troponin I										| $\ge X$ | 1                   | `?`
 B-Type Natriuretic Peptide						| $< X$   | 0                   | `?`
 B-Type Natriuretic Peptide						| $\ge X$ | 1                   | `?`
-
-#### LASSO
-
-The implementation of the LASSO model that is being used is implemented in the R package [`glmnet`](https://cran.r-project.org/package=glmnet) which uses ridge and LASSO penatlities simultaneously.  Fitting models using this approach is controlled by two parameters, $\alpha$ which when set to 1 uses pure LASSO penalty and when 0 uses pure ridge-regression penalties and $\lambda$ which is the overall penalisation to be used.
-
-#### Recursive Partitioning
 
 ### Model Assessment
 
