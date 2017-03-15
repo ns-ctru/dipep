@@ -48,7 +48,7 @@ This model, because it was forced to fit a full model that categorised everyone,
 ```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
 continuous$rpart.full.cp %>%
     kable(caption = 'Summary table for over-fitted full model.',
-          col.names = c('Complexity Parameter', 'Splits', 'Relative Error', 'Cross-Validated Error', 'Cross-Validated SD')
+          col.names = c('Complexity Parameter', 'Splits', 'Relative Error', 'Cross-Validated Error', 'Cross-Validated SD'))
 plotcp(continuous$rpart.full)
 
 ```
