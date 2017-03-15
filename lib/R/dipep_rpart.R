@@ -135,7 +135,6 @@ dipep_rpart <- function(df              = dipep,
         df <- subset(df, !is.na(secondary.dm))
         results$observed <- df$secondary.dm
     }
-    results$observed %>% head() %>% print()
     names(results$observed) <- c('D')
     ## Define the mode
     results$model <- reformulate(response   = classification,
@@ -157,6 +156,10 @@ dipep_rpart <- function(df              = dipep,
     ##                               faclen      = prp.opts.faclen)
     ## Complexity Parameter selection, extract to a data frame
     results$rpart.full.cp <- results$rpart.full$cptable %>% as.data.frame()
+    ## Obtain the complexity parameter corresponding to the minimum value cross-validated
+    ## error
+    results$rpart.full.cp.min <- results$rpart.full.cp[which.min(results$rpart.full.cp[, 'xerror']), 'CP']
+    results$rpart.pruned.min <- prune(results$rpart.full, cp = results$rpart.full.cp.min)
     ## Loop over all values of the Complexity Parameter, pruning the full
     results$assess <- list()
     for(i in 1:nrow(results$rpart.full.cp)){
