@@ -45,6 +45,7 @@ dipep_rpart <- function(df              = dipep,
                         rpart.opts.cp        = -1,
                         ...){
     results <- list()
+    results$threshold <- threshold
     ## Remove individuals who are explicitly to be removed
     if(!is.null(exclude)){
         df <- df[!(df$screening %in% exclude),]
