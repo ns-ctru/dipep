@@ -145,35 +145,26 @@ dipep_rpart <- function(df              = dipep,
                            control = rpart.control(minsplit  =- rpart.opts.minsplit,
                                                    minbucket = rpart.opts.minbucket,
                                                    cp        = rpart.opts.cp))
-    ## Plot of full (over-fitted tree)
-    ## results$rpart.full.prp <- prp(results$rpart,
-    ##                               type        = prp.opts.type,
-    ##                               extra       = prp.opts.extra,
-    ##                               box.palette = prp.opts.box.palette,
-    ##                               yesno       = prp.opts.yesno,
-    ##                               branch      = prp.opts.branch,
-    ##                               varlen      = prp.opts.varlen,
-    ##                               faclen      = prp.opts.faclen)
     ## Complexity Parameter selection, extract to a data frame
     results$rpart.full.cp <- results$rpart.full$cptable %>% as.data.frame()
     ## Obtain the complexity parameter corresponding to the minimum value cross-validated
     ## error
     results$rpart.full.cp.min <- results$rpart.full.cp[which.min(results$rpart.full.cp[, 'xerror']), 'CP']
-    results$rpart.pruned.min <- prune(results$rpart.full, cp = results$rpart.full.cp.min)
+    results$pruned.min <- prune(results$rpart.full, cp = results$rpart.full.cp.min)
     ## Loop over all values of the Complexity Parameter, pruning the full
-    results$assess <- list()
+    results$pruned.all <- list()
     for(i in 1:nrow(results$rpart.full.cp)){
-        results$prune$pruned[[i]] <- prune(results$rpart.full, cp = results$rpart.full$cptable[i,1])
+        results$pruned.all[[i]] <- prune(results$rpart.full, cp = results$rpart.full$cptable[i,1])
         ## Build a data frame of predicted probabilities from all steps of the tree
         if(i == 1){
-            results$predicted      <- predict(results$prune$pruned[[i]]) %>% as.data.frame()
+            results$predicted      <- predict(results$pruned.all[[i]]) %>% as.data.frame()
             results$predicted$term <- i
             results$predicted$name <- results$rpart.full$cptable[i,1]
             results$predicted <- cbind(results$observed,
                                        results$predicted)
         }
         else{
-            current           <- predict(results$prune$pruned[[i]]) %>% as.data.frame()
+            current           <- predict(results$pruned.all[[i]]) %>% as.data.frame()
             current$term      <- i
             current$name      <- results$rpart.full$cptable[i,1]
             current           <- cbind(results$observed,
@@ -186,11 +177,11 @@ dipep_rpart <- function(df              = dipep,
     names(results$predicted) <- c('D', 'remove', 'M', 'term', 'name')
     results$predicted <- dplyr::select(results$predicted, -remove)
     ## Plot all terms
-    results$roc <- dipep_roc(df        = results$predicted,
-                             to.plot   = seq(1:nrow(results$rpart.full.cp)),
-                             title     = 'each Pruned Tree',
-                             threshold = threshold,
-                             lasso     = TRUE)
+    results$roc.all <- dipep_roc(df        = results$predicted,
+                                 to.plot   = seq(1:nrow(results$rpart.full.cp)),
+                                 title     = 'each Pruned Tree',
+                                 threshold = threshold,
+                                 lasso     = TRUE)
     ## Return results
     return(results)
 }
