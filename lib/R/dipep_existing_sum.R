@@ -201,22 +201,22 @@ dipep_existing_sum <- function(df      = dipep,
     if(grepl('perc', vars)){
         title <- 'PERC Score'
     }
-    else if(grepl('wells\\.permissive')){
+    else if(grepl('wells\\.permissive', vars)){
         title <- 'Wells (Permissive)'
     }
-    else if(grepl('wells\\.strict')){
+    else if(grepl('wells\\.strict', vars)){
         title <- 'Wells (Strict)'
     }
-    else if(grepl('simplified')){
+    else if(grepl('simplified', vars)){
         title <- 'Simplified Revised Geneva'
     }
-    else if(grepl('delphi\\.primary')){
+    else if(grepl('delphi\\.primary', vars)){
         title <- 'Delphi (Primary)'
     }
-    else if(grepl('delphi\\.sensitivity')){
+    else if(grepl('delphi\\.sensitivity', vars)){
         title <- 'Delphi (Sensitivity)'
     }
-    else if(grepl('delphi\\.specificity')){
+    else if(grepl('delphi\\.specificity', vars)){
         title <- 'Delphi (Specificity)'
     }
     results$predicted$term <- title
