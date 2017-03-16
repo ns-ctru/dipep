@@ -1979,259 +1979,265 @@ dipep <- dplyr::select(dipep,
 ## Details are in the following document
 ##
 ## ../projects/DiPEP/08. Study Management/PMG/07 Jun 16 - PMG + Delphi Meeting/Documents for Delphi Consensus Meeting/DIPEP CLINICAL DECISION RULE FEEDBACK_7June2016.docx
-dipep <- mutate(dipep,
-                ## Three forms of the Delphi Consensus score are required.  Start
-                ## with the Primary
-                delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked',
-                                                               yes = 2,
-                                                               no  = 0),
-                delphi.primary.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
-                                                               yes = 2,
-                                                               no  = 0),
-                delphi.primary.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.primary.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
-                                                               yes = 0,
-                                                               no  = 2),
-                delphi.primary.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
-                                                               yes = delphi.primary.history.dvt.pe,
-                                                               no  = 2),
-                delphi.primary.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
-                                                               yes = 2,
-                                                               no  = 0),
-                delphi.primary.family.history         = ifelse(history.thrombosis == 'Yes',
-                                                               yes = 1,
-                                                               no  = 0),
-                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
-                delphi.primary.medical.history        = ifelse(injury == 'No' | is.na(injury),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.primary.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
-                                                               yes = delphi.primary.medical.history,
-                                                               no  = 1),
-                delphi.primary.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
-                                                               yes = delphi.primary.medical.history,
-                                                               no  = 1),
-                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
-                delphi.primary.obstetric.complication = ifelse(obstetric.complications,
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.primary.medical.complication   = ifelse(medical.comorbidity,
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.primary.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.primary.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
-                                                               yes = 0,
-                                                               no  = 2),
-                delphi.primary.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
-                                                               yes = 0,
-                                                               no  = 2),
-                delphi.primary.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
-                                                               yes = 0,
-                                                               no  = 2),
-                delphi.primary.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.primary.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.primary.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.primary = delphi.primary.syncope +
-                                       delphi.primary.pleuritic +
-                                       delphi.primary.history.dvt.pe +
-                                       delphi.primary.history.iv.drug +
-                                       delphi.primary.family.history +
-                                       delphi.primary.medical.history +
-                                       delphi.primary.obstetric.complication +
-                                       delphi.primary.medical.complication +
-                                       delphi.primary.gestation +
-                                       delphi.primary.clinical.dvt +
-                                       delphi.primary.o2.saturation +
-                                       delphi.primary.heart.rate.110.bpm +
-                                       delphi.primary.heart.rate.100.bpm +
-                                       delphi.primary.respiratory.rate +
-                                       delphi.primary.bmi,
-                delphi.primary.pe = ifelse(delphi.primary >= 2,
-                                        yes = 'Delphi Primary PE',
-                                        no  = 'No Delphi Primary PE'),
-                delphi.primary.pe = factor(delphi.primary.pe,
-                                           levels = c('No Delphi Primary PE', 'Delphi Primary PE')),
-                delphi.primary = factor(delphi.primary,
-                                        levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                                                   '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
-                                                   '20', '21', '22', '23')),
-                ## Now derive the Sensitive score
-                delphi.sensitivity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
-                                                               yes = delphi.sensitivity.history.dvt.pe,
-                                                               no  = 1),
-                delphi.sensitivity.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.family.history         = ifelse(history.thrombosis == 'Yes',
-                                                               yes = 1,
-                                                               no  = 0),
-                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
-                delphi.sensitivity.medical.history        = ifelse(injury == 'No' | is.na(injury),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
-                                                               yes = delphi.sensitivity.medical.history,
-                                                               no  = 1),
-                delphi.sensitivity.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
-                                                               yes = delphi.sensitivity.medical.history,
-                                                               no  = 1),
-                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
-                delphi.sensitivity.obstetric.complication = ifelse(obstetric.complications,
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.medical.complication   = ifelse(medical.comorbidity,
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.sensitivity.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.sensitivity =  delphi.sensitivity.syncope +
-                                      delphi.sensitivity.pleuritic +
-                                      delphi.sensitivity.history.dvt.pe +
-                                      delphi.sensitivity.history.iv.drug +
-                                      delphi.sensitivity.family.history +
-                                      delphi.sensitivity.medical.history +
-                                      delphi.sensitivity.obstetric.complication +
-                                      delphi.sensitivity.medical.complication +
-                                      delphi.sensitivity.gestation +
-                                      delphi.sensitivity.clinical.dvt +
-                                      delphi.sensitivity.o2.saturation +
-                                      delphi.sensitivity.heart.rate.110.bpm +
-                                      delphi.sensitivity.heart.rate.100.bpm +
-                                      delphi.sensitivity.respiratory.rate +
-                                      delphi.sensitivity.bmi,
-                delphi.sensitivity.pe = ifelse(delphi.sensitivity >= 1,
-                                               yes = 'Delphi Sensitivity PE',
-                                               no  = 'No Delphi Sensitivity PE'),
-                delphi.sensitivity.pe = factor(delphi.sensitivity.pe,
-                                               levels = c('No Delphi Sensitivity PE', 'Delphi Sensitivity PE')),
-                delphi.sensitivity = factor(delphi.sensitivity,
-                                            levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                                                   '10', '11', '12', '13', '14', '15', '16')),
-                ## Now derive the Specific score
-                delphi.specificity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
-                                                               yes = 3,
-                                                               no  = 0),
-                delphi.specificity.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
-                                                               yes = 3,
-                                                               no  = 0),
-                delphi.specificity.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.specificity.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
-                                                               yes = 0,
-                                                               no  = 3),
-                delphi.specificity.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
-                                                               yes = delphi.specificity.history.dvt.pe,
-                                                               no  = 3),
-                delphi.specificity.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
-                                                               yes = 3,
-                                                               no  = 0),
-                delphi.specificity.family.history         = ifelse(history.thrombosis == 'Yes',
-                                                               yes = 1,
-                                                               no  = 0),
-                ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
-                delphi.specificity.medical.history        = ifelse(injury == 'No' | is.na(injury),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.specificity.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
-                                                               yes = delphi.specificity.medical.history,
-                                                               no  = 1),
-                delphi.specificity.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
-                                                               yes = delphi.specificity.medical.history,
-                                                               no  = 1),
-                ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
-                delphi.specificity.obstetric.complication = ifelse(obstetric.complications,
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.specificity.medical.complication   = ifelse(medical.comorbidity,
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.specificity.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
-                                                               yes = 1,
-                                                               no  = 0),
-                delphi.specificity.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
-                                                               yes = 0,
-                                                               no  = 3),
-                delphi.specificity.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
-                                                               yes = 0,
-                                                               no  = 3),
-                delphi.specificity.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
-                                                               yes = 0,
-                                                               no  = 3),
-                delphi.specificity.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.specificity.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.specificity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
-                                                               yes = 0,
-                                                               no  = 1),
-                delphi.specificity =  delphi.specificity.syncope +
-                                            delphi.specificity.pleuritic +
-                                            delphi.specificity.history.dvt.pe +
-                                            delphi.specificity.history.iv.drug +
-                                            delphi.specificity.family.history +
-                                            delphi.specificity.medical.history +
-                                            delphi.specificity.obstetric.complication +
-                                            delphi.specificity.medical.complication +
-                                            delphi.specificity.gestation +
-                                            delphi.specificity.clinical.dvt +
-                                            delphi.specificity.o2.saturation +
-                                            delphi.specificity.heart.rate.110.bpm +
-                                            delphi.specificity.heart.rate.100.bpm +
-                                            delphi.specificity.respiratory.rate +
-                                            delphi.specificity.bmi,
-                delphi.specificity.pe = ifelse(delphi.specificity >= 3,
-                                               yes = 'Delphi Specificity PE',
-                                               no  = 'No Delphi Specificity PE'),
-                delphi.specificity.pe = factor(delphi.specificity.pe,
-                                               levels = c('No Delphi Specificity PE', 'Delphi Specificity PE')),
-                delphi.specificity = factor(delphi.specificity,
-                                            levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                                                   '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
-                                                   '20', '21', '22', '23', '24', '25', '26', '27', '28', '29')))
+dipep <- dipep %>%
+    mutate(## Three forms of the Delphi Consensus score are required.  Start
+        ## with the Primary
+        delphi.primary.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+                                                       yes = 2,
+                                                       no  = 0),
+        delphi.primary.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                       yes = 2,
+                                                       no  = 0),
+        delphi.primary.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+                                                       yes = 1,
+                                                       no  = 0),
+        delphi.primary.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
+                                                       yes = 0,
+                                                       no  = 2),
+        delphi.primary.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                       yes = delphi.primary.history.dvt.pe,
+                                                       no  = 2),
+        delphi.primary.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+                                                       yes = 2,
+                                                       no  = 0),
+        delphi.primary.family.history         = ifelse(history.thrombosis == 'Yes',
+                                                       yes = 1,
+                                                       no  = 0),
+        ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+        delphi.primary.medical.history        = ifelse(injury == 'No' | is.na(injury),
+                                                       yes = 0,
+                                                       no  = 1),
+        delphi.primary.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
+                                                       yes = delphi.primary.medical.history,
+                                                       no  = 1),
+        delphi.primary.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
+                                                       yes = delphi.primary.medical.history,
+                                                       no  = 1),
+        ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
+        delphi.primary.obstetric.complication = ifelse(obstetric.complications,
+                                                       yes = 1,
+                                                       no  = 0),
+        delphi.primary.medical.complication   = ifelse(medical.comorbidity,
+                                                       yes = 1,
+                                                       no  = 0),
+        delphi.primary.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
+                                                       yes = 1,
+                                                       no  = 0),
+        delphi.primary.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
+                                                       yes = 0,
+                                                       no  = 2),
+        delphi.primary.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
+                                                       yes = 0,
+                                                       no  = 2),
+        delphi.primary.heart.rate             = case_when(is.na(.$heart.rate)  ~ 0,
+                                                          .$heart.rate <= 100  ~ 0,
+                                                          .$heart.rate > 100 & .$heart.rate <= 110 ~ 1,
+                                                          .$heart.rate > 110   ~ 2),
+        delphi.primary.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
+                                                       yes = 0,
+                                                       no  = 1),
+        delphi.primary.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
+                                                       yes = 0,
+                                                       no  = 1),
+        delphi.primary = delphi.primary.pleuritic +
+            delphi.primary.history.dvt.pe +
+            delphi.primary.history.iv.drug +
+            delphi.primary.family.history +
+            delphi.primary.medical.history +
+            delphi.primary.obstetric.complication +
+            delphi.primary.medical.complication +
+            delphi.primary.gestation +
+            delphi.primary.clinical.dvt +
+            delphi.primary.o2.saturation +
+            delphi.primary.heart.rate +
+            delphi.primary.respiratory.rate +
+            delphi.primary.bmi,
+        ## Add Syncope if other elements present
+        delphi.primary = ifelse(delphi.primary > 0,
+                                yes = delphi.primary + delphi.primary.syncope,
+                                no  = delphi.primary),
+        delphi.primary.pe = ifelse(delphi.primary >= 2,
+                                   yes = 'Delphi Primary PE',
+                                   no  = 'No Delphi Primary PE'),
+        delphi.primary.pe = factor(delphi.primary.pe,
+                                   levels = c('No Delphi Primary PE', 'Delphi Primary PE')),
+        delphi.primary = factor(delphi.primary,
+                                levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                           '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+                                           '20', '21', '22', '23')),
+        ## Now derive the Sensitive score
+        delphi.sensitivity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.sensitivity.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                           yes = delphi.sensitivity.history.dvt.pe,
+                                                           no  = 1),
+        delphi.sensitivity.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.family.history         = ifelse(history.thrombosis == 'Yes',
+                                                           yes = 1,
+                                                           no  = 0),
+        ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+        delphi.sensitivity.medical.history        = ifelse(injury == 'No' | is.na(injury),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.sensitivity.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
+                                                           yes = delphi.sensitivity.medical.history,
+                                                           no  = 1),
+        delphi.sensitivity.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
+                                                           yes = delphi.sensitivity.medical.history,
+                                                           no  = 1),
+        ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
+        delphi.sensitivity.obstetric.complication = ifelse(obstetric.complications,
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.medical.complication   = ifelse(medical.comorbidity,
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.sensitivity.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.sensitivity.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.sensitivity.heart.rate             = case_when(is.na(.$heart.rate)  ~ 0,
+                                                              .$heart.rate <= 100  ~ 0,
+                                                              .$heart.rate > 100 & .$heart.rate <= 110 ~ 1,
+                                                              .$heart.rate > 110   ~ 1),
+        delphi.sensitivity.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.sensitivity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.sensitivity =  delphi.sensitivity.pleuritic +
+            delphi.sensitivity.history.dvt.pe +
+            delphi.sensitivity.history.iv.drug +
+            delphi.sensitivity.family.history +
+            delphi.sensitivity.medical.history +
+            delphi.sensitivity.obstetric.complication +
+            delphi.sensitivity.medical.complication +
+            delphi.sensitivity.gestation +
+            delphi.sensitivity.clinical.dvt +
+            delphi.sensitivity.o2.saturation +
+            delphi.sensitivity.heart.rate +
+            delphi.sensitivity.respiratory.rate +
+            delphi.sensitivity.bmi,
+        ## Add Syncope if other elements present
+        delphi.sensitivity = ifelse(delphi.sensitivity > 0,
+                                    yes = delphi.sensitivity + delphi.sensitivity.syncope,
+                                    no  = delphi.sensitivity),
+        delphi.sensitivity.pe = ifelse(delphi.sensitivity >= 1,
+                                       yes = 'Delphi Sensitivity PE',
+                                       no  = 'No Delphi Sensitivity PE'),
+        delphi.sensitivity.pe = factor(delphi.sensitivity.pe,
+                                       levels = c('No Delphi Sensitivity PE', 'Delphi Sensitivity PE')),
+        delphi.sensitivity = factor(delphi.sensitivity,
+                                    levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                               '10', '11', '12', '13', '14', '15', '16')),
+        ## Now derive the Specific score
+        delphi.specificity.syncope                = ifelse(presenting.features.syncope == 'Ticked',
+                                                           yes = 3,
+                                                           no  = 0),
+        delphi.specificity.haemoptysis            = ifelse(presenting.features.haemoptysis == 'Ticked',
+                                                           yes = 3,
+                                                           no  = 0),
+        delphi.specificity.pleuritic              = ifelse(presenting.features.pleuritic == 'Ticked',
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.specificity.history.dvt.pe         = ifelse(thromb.event == 'No' | is.na(thromb.event),
+                                                           yes = 0,
+                                                           no  = 3),
+        delphi.specificity.history.dvt.pe         = ifelse(thrombosis == 'No' | is.na(thrombosis),
+                                                           yes = delphi.specificity.history.dvt.pe,
+                                                           no  = 3),
+        delphi.specificity.history.iv.drug        = ifelse(history.iv.drug == 'Yes',
+                                                           yes = 3,
+                                                           no  = 0),
+        delphi.specificity.family.history         = ifelse(history.thrombosis == 'Yes',
+                                                           yes = 1,
+                                                           no  = 0),
+        ## ToDo 2017-02-22 - Need to include 'admitted_hospital' from Client Service REceipt Inventory
+        delphi.specificity.medical.history        = ifelse(injury == 'No' | is.na(injury),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.specificity.medical.history        = ifelse(surgery == 'No' | is.na(surgery),
+                                                           yes = delphi.specificity.medical.history,
+                                                           no  = 1),
+        delphi.specificity.medical.history        = ifelse(admitted.hospital == 'No' | is.na(admitted.hospital),
+                                                           yes = delphi.specificity.medical.history,
+                                                           no  = 1),
+        ## ToDo 2017-02-22 - Awaiting clarification of how to determine the next two scores
+        delphi.specificity.obstetric.complication = ifelse(obstetric.complications,
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.specificity.medical.complication   = ifelse(medical.comorbidity,
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.specificity.gestation              = ifelse(trimester %in% c('3rd Trimester', 'Post-Partum'),
+                                                           yes = 1,
+                                                           no  = 0),
+        delphi.specificity.clinical.dvt           = ifelse(dvt != 'Yes' | is.na(dvt),
+                                                           yes = 0,
+                                                           no  = 3),
+        delphi.specificity.o2.saturation          = ifelse(o2.saturation >= 94 | is.na(o2.saturation),
+                                                           yes = 0,
+                                                           no  = 3),
+        delphi.specificity.heart.rate             = case_when(is.na(.$heart.rate)  ~ 0,
+                                                              .$heart.rate <= 100  ~ 0,
+                                                              .$heart.rate > 100 & .$heart.rate <= 110 ~ 1,
+                                                              .$heart.rate > 110   ~ 3),
+        delphi.specificity.heart.rate.110.bpm     = ifelse(heart.rate <= 110 | is.na(heart.rate),
+                                                           yes = 0,
+                                                           no  = 3),
+        delphi.specificity.heart.rate.100.bpm     = ifelse(heart.rate <= 100 | is.na(heart.rate),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.specificity.respiratory.rate       = ifelse(respiratory.rate <= 20 | is.na(respiratory.rate),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.specificity.bmi                    = ifelse(bmi <= 30 | is.na(bmi),
+                                                           yes = 0,
+                                                           no  = 1),
+        delphi.specificity =  delphi.specificity.pleuritic +
+            delphi.specificity.history.dvt.pe +
+            delphi.specificity.history.iv.drug +
+            delphi.specificity.family.history +
+            delphi.specificity.medical.history +
+            delphi.specificity.obstetric.complication +
+            delphi.specificity.medical.complication +
+            delphi.specificity.gestation +
+            delphi.specificity.clinical.dvt +
+            delphi.specificity.o2.saturation +
+            delphi.specificity.heart.rate +
+            delphi.specificity.respiratory.rate +
+            delphi.specificity.bmi,
+        ## Add Syncope if other elements present
+        delphi.specificity = ifelse(delphi.specificity > 0,
+                                    yes = delphi.specificity + delphi.specificity.syncope,
+                                    no  = delphi.specificity),
+        delphi.specificity.pe = ifelse(delphi.specificity >= 3,
+                                       yes = 'Delphi Specificity PE',
+                                       no  = 'No Delphi Specificity PE'),
+        delphi.specificity.pe = factor(delphi.specificity.pe,
+                                       levels = c('No Delphi Specificity PE', 'Delphi Specificity PE')),
+        delphi.specificity = factor(delphi.specificity,
+                                    levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                               '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+                                               '20', '21', '22', '23', '24', '25', '26', '27', '28', '29')))
 #######################################################################
 ## Derive an imputed data set                                        ##
 ## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
@@ -2246,7 +2252,7 @@ missing.data <- mutate(missing.data,
                        Missing = ifelse(Missing == obs,
                                         yes = 0,
                                         no  = Missing)) %>%
-                arrange(variable, Present, Missing)
+    arrange(variable, Present, Missing)
 write.csv(missing.data, file = '../../tmp/missing.data.csv')
 
 dipep.imputed <- mutate(dipep,
