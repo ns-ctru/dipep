@@ -97,7 +97,7 @@ dipep_existing_sum <- function(df      = dipep,
     results$likert      <- likert(plot.likert, grouping = df$class.char)
     results$likert.plot <- plot(results$likert, center = center) +
                            labs(caption = paste0('Plots are centered on the Risk category (',
-                                                 center,
+                                                 (center - 1),
                                                  ').\n Percentages indicate the proportion below, within and above this.'))
     results$histogram <- ggplot(df, aes(x = score, fill = class)) +
                          geom_histogram() +
