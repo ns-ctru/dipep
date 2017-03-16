@@ -58,20 +58,18 @@ dipep_existing_sum <- function(df      = dipep,
     names(df) <- gsub('delphi.sensitivity',    'score',    names(df))
     names(df) <- gsub('delphi.specificity.pe', 'class.existing', names(df))
     names(df) <- gsub('delphi.specificity',    'score',    names(df))
+    ## table(df$class, df$score, useNA = 'ifany') %>% print()
     ## Replace NA classification with 'Exclude'
     df <- mutate(df,
                  class.char = ifelse(is.na(class),
                                      yes = 'Exclude',
                                      no  = as.character(class)))
-    ## Bar chart of frequencies by classification
-    ## if(title != 'PERC'){
-        results$bar.chart <- ggplot(df, aes(x = score)) +
-                             geom_bar(aes(fill = class), position = 'dodge') +
-                             ggtitle(paste0(title, ' Scores by clinical classification')) +
-                             xlab(paste0(title, ' Score')) + ylab('N') +
-                             scale_fill_discrete(guide = guide_legend(title = 'Status')) +
-                             theme_bw()
-    ## }
+    results$bar.chart <- ggplot(df, aes(x = score)) +
+                         geom_bar(aes(fill = class), position = 'dodge') +
+                         ggtitle(paste0(title, ' Scores by clinical classification')) +
+                         xlab(paste0(title, ' Score')) + ylab('N') +
+                         scale_fill_discrete(guide = guide_legend(title = 'Status')) +
+                         theme_bw()
     ## Likert-style chart
     ## Set variables the centered value for the plots
     if(levels(df$class.existing)[1] == 'No Simplified PE'){
@@ -194,8 +192,32 @@ dipep_existing_sum <- function(df      = dipep,
     else if(grepl('second.st', vars)){
         case.review <- 'Secondary'
     }
+    else if(grepl('third.st', vars)){
+        case.review <- 'Tertiary'
+    }
+    else if(grepl('second.st', vars)){
+        case.review <- 'Quaternary'
+    }
     if(grepl('perc', vars)){
         title <- 'PERC Score'
+    }
+    else if(grepl('wells\\.permissive')){
+        title <- 'Wells (Permissive)'
+    }
+    else if(grepl('wells\\.strict')){
+        title <- 'Wells (Strict)'
+    }
+    else if(grepl('simplified')){
+        title <- 'Simplified Revised Geneva'
+    }
+    else if(grepl('delphi\\.primary')){
+        title <- 'Delphi (Primary)'
+    }
+    else if(grepl('delphi\\.sensitivity')){
+        title <- 'Delphi (Sensitivity)'
+    }
+    else if(grepl('delphi\\.specificity')){
+        title <- 'Delphi (Specificity)'
     }
     results$predicted$term <- title
     results$predicted$name <- title
