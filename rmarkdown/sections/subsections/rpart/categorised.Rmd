@@ -5,6 +5,7 @@
 ##
 ## http://gormanalysis.com/decision-trees-in-r-using-rpart/
 categorical <- dipep_rpart(df             = dipep,
+                           classification = 'first.st',
                            predictor      = c('age.cat', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
                                               'o2.saturation.cat', 'respiratory.rate.cat', 'bmi.cat',
                                               'pregnancies.under.cat', 'pregnancies.over.cat', 'prev.preg.problem',
