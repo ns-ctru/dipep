@@ -69,12 +69,13 @@ prp(continuous$pruned.min,
 
 We now need to calculate the sensitivity and specificity.  There is no single value for either of these metrics since individuals have a predicted probability of classification in the range of $0 < p < 1$ rather than a binary classification.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and calculating the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) which captures the probability of correctly classifying true positives compared to true negatives.
 
-**IMPORTANT** - Until a threshold for dichotomising individuals predicted probability of disease is selected (which can be done based on the ROC Curve) it is not possible to calculate the Sensitivity, Specificity point estimates nor the Positive or Negative Predictive Value.
+**IMPORTANT** - Dichotomising individuals predicted probability of disease is required in order to calculate the Sensitivity, Specificity point estimates nor the Positive or Negative Predictive Value.  For now a cut-point of `p = 0.5` has been used, but this is unlikely to be optimal for any of the trees.
 
 ```{r results_rpart_continuous_roc_min, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
 continuous$roc.min$plot
 
 ```
+
 The question arises though whether it is possible to utilise a simpler, more parsimonious tree with less splits, yet still retain the ability to make useful and accurate predictions.  To this end the ROC curve for each step/split in the recursive partitioning process are plotted below and a table of the performance statistics is provided for each step.
 
 ```{r results_rpart_continuous_roc_all, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
