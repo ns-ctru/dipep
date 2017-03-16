@@ -1,18 +1,5 @@
 ### LASSO
 
-
-
-```{r results_lasso_save, echo = FALSE, cache = FALSE, results = 'hide', eval = FALSE}
-save(lasso.categorical, cv.lasso.categorical,
-     lasso.continuous, cv.lasso.continuous,
-     file = '../../data/results/lasso.RData')
-
-```
-```{r results_lasso_load, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-load(file = '../../data/results/lasso.RData')
-
-```
-
 The [LASSO (Least Absolute Shrinkage and Selection Operator)](https://en.wikipedia.org/wiki/Lasso_(statistics)) is a method of automated selection of covariates/predictor variables that maximises the accuracy of the model without inflating the estimated coefficients for each variable.  The [R](https://www.r-project.org/) package [glmnet](https://cran.r-project.org/web/packages/glmnet/) has been used to fit a model using the LASSO and if you are interested in learning about the LASSO or fitting with this model it is recommended you read the packages [vignette](https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet\_beta.html), in particular the section on logistic regression.
 
 #### Model {.tabset .tabset-fade .tabset-pills}
