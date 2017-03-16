@@ -1,5 +1,5 @@
 ---
-title: DiPEP - Statistical Report
+title: DiPEP - Statistical Report (Primary Analyses)
 runtime: shiny
 output: html_document
 bibliography: sections/bibliography.bib
@@ -54,7 +54,7 @@ system(cmd)
 
 ## Methods {.tabset .tabset-fade .tabset-pills}
 
-```{r child = 'sections/methods.Rmd', eval = TRUE}
+```{r child = 'sections/methods.Rmd', eval = FALSE}
 ```
 
 <!--- Run all analyses --->
