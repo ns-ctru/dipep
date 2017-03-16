@@ -4,11 +4,14 @@
 ```{r child = 'appendix/eq5d5l.Rmd', eval = TRUE}
 ```
 
-```{r child = 'appendix/logistic.Rmd', eval = FALSE}
+```{r child = 'appendix/logistic.Rmd', eval = TRUE}
 ```
 
 ```{r child = 'appendix/misc.Rmd', eval = TRUE}
 ```
 
 ```{r child = 'appendix/software.Rmd', eval = TRUE}
+```
+
+```{r child = 'appendix/links.Rmd', eval = TRUE}
 ```
