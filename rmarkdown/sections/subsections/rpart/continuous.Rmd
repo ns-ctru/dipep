@@ -3,24 +3,25 @@
 ```{r results_rpart_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Repeat using continuous variables
 continuous <- dipep_rpart(df             = dipep,
-                           predictor      = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
-                                              'o2.saturation', 'respiratory.rate', 'bmi',
-                                              'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
-                                              'presenting.features.pleuritic',
-                                              'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
-                                              'presenting.features.sob.rest', 'presenting.features.haemoptysis',
-                                              'presenting.features.cough', 'presenting.features.syncope',
-                                              'presenting.features.palpitations', 'presenting.features.other',
-                                              'surgery', 'cesarean', 'thromb.event',
-                                              'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'),
-                           exclude.non.recruited = TRUE,
-                           exclude.dvt           = TRUE,
-                           legend                = FALSE,
-                           threshold             = 0.5,
-                           rpart.opts.method     = 'class',
-                           rpart.opts.minsplit   = 4,
-                           rpart.opts.minbucket  = 2,
-                           rpart.opts.cp         = -1)
+                          classification = 'first.st',
+                          predictor      = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
+                                             'o2.saturation', 'respiratory.rate', 'bmi',
+                                             'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
+                                             'presenting.features.pleuritic',
+                                             'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
+                                             'presenting.features.sob.rest', 'presenting.features.haemoptysis',
+                                             'presenting.features.cough', 'presenting.features.syncope',
+                                             'presenting.features.palpitations', 'presenting.features.other',
+                                             'surgery', 'cesarean', 'thromb.event',
+                                             'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'),
+                          exclude.non.recruited = TRUE,
+                          exclude.dvt           = TRUE,
+                          legend                = FALSE,
+                          threshold             = 0.5,
+                          rpart.opts.method     = 'class',
+                          rpart.opts.minsplit   = 4,
+                          rpart.opts.minbucket  = 2,
+                          rpart.opts.cp         = -1)
 
 ```
 
