@@ -1,0 +1,11 @@
+### Links
+
+Some useful links, mostly concerned with the practical side of using the various R packages, some about statistical issues (most are covered by peer-reviewed publications detailed under References though).
+
+#### Software/Technical issues
+
+* [Calculate sensitivity/specificity/PPV/NPV from `glmnet`/`rpart` objects](https://stackoverflow.com/questions/35482094/glmnet-caret-roc-sensitivity-specificity-of-training-model)
+
+#### Statistical Issues
+
+* [Why categorising continuous variables is wrong](http://biostat.mc.vanderbilt.edu/wiki/Main/CatContinuous)
