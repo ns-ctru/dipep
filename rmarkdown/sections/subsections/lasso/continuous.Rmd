@@ -39,7 +39,7 @@ lasso.continuous$lasso.plot + guides(colour = FALSE)
 
 ###### Cross-Validation
 
-[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised internally at each step of the fitting of the LASSO to shrink the point estimate and inform the next iteration.  The model should not be over-fitted though and this can be achieved by considering the parameter Lambda and either taking the minimum value or the value corresponding 1 x SE of the point-estimate of the Mean Squared Error **ToDo** - Check this explanation.
+[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised internally at each step of the fitting of the LASSO to shrink the point estimate and inform the next iteration.  The model should not be over-fitted though and this can be achieved by considering the parameter Lambda and either taking the minimum value or the value corresponding 1 x SE of the point-estimate of the Mean Squared Error.
 
 <!--- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
 
@@ -50,7 +50,7 @@ lasso.continuous$lasso.cv.plot
 
 ###### ROC Curve
 
-Having selected an optimal value for Lambda the predicted probabilities are then obtained and ROC curves plotted along with the calculated Area Under the Curve (AUC) statistic.  A cut-point for probability can be chosen and we can **ToDo** [Calculate sensitivity/specificity/PPV/NPV from glmnet object](https://stackoverflow.com/questions/35482094/glmnet-caret-roc-sensitivity-specificity-of-training-model)
+Having selected an optimal value for Lambda the predicted probabilities are then obtained and ROC curves plotted along with the calculated Area Under the Curve (AUC) statistic.  A cut-point for probability can be chosen but in the absence of any choice a default of `p = 0.5` has been used for now in order to calculate the various performance metrics.
 
 ```{r results_lasso_continuous_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'asis', eval = TRUE}
 lasso.continuous$lasso.cv.roc
