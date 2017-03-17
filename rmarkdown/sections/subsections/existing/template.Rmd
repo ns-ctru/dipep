@@ -22,9 +22,16 @@ kable(RESULTS$performance.table,
 
 ```
 
-The SCORE has also been analysed using the calculated scores rather than dichotomisation, the ROC curve below shows its performance.
+The SCORE has also been analysed using the calculated scores rather than dichotomisation, the ROC curve below shows its performance treating the SCORE as a categorical variable.
 
 ```{r results_existing_CHUNK_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
-RESULTS$roc.plot
+RESULTS$roc.cat.plot
+
+```
+
+Whilst the ROC curve below shows its performance treating the SCORE as a continuous variable.
+
+```{r results_existing_CHUNK_extra2, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+RESULTS$roc.con.plot
 
 ```
