@@ -175,16 +175,16 @@ dipep_existing_sum <- function(df      = dipep,
                                          results$accuracy)) %>% as.data.frame()
     names(results$performance.table) <- c('Performance Metric', 'Value')
     ## Perform simple logistic regression of score on specified outcome
-    results$score <- glm(class ~ score,
-                         data = df,
-                         family = binomial)
+    results$score.cat <- glm(class ~ score,
+                             data = df,
+                             family = binomial)
     ## Make predictions and bind to observed classification
-    predicted <- predict(results$score,
+    predicted <- predict(results$score.cat,
                          type = 'response')
-    results$predicted <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score)),
+    results$predicted.cat <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score.cat)),
                                    predicted) %>%
-                         dplyr::select(class, predicted)
-    names(results$predicted) <- c('D', 'M')
+                             dplyr::select(class, predicted)
+    names(results$predicted.cat) <- c('D', 'M')
     ## Add a term/name based on the arguments and get meaningful title
     if(grepl('first.st', vars)){
         case.review <- 'Primary'
@@ -219,14 +219,35 @@ dipep_existing_sum <- function(df      = dipep,
     else if(grepl('delphi\\.specificity', vars)){
         title <- 'Delphi (Specificity)'
     }
-    results$predicted$term <- title
-    results$predicted$name <- title
-    results$score.roc <- dipep_roc(df = results$predicted,
-                                   to.plot = title,
-                                   title = paste0(title, ' vs ', case.review, ' classification'))
+    results$predicted.cat$term <- title
+    results$predicted.cat$name <- title
+    results$score.cat.roc      <- dipep_roc(df = results$predicted.cat,
+                                            to.plot = title,
+                                            title = paste0(title, ' vs ', case.review, ' classification'))
     ## Add the AUC to the plot
-    results$roc.plot <- results$score.roc$plot +
-                        annotate('text', x = 0.75, y = 0.25,
-                                 label = paste0('AUC = ', round(results$score.roc$auc$AUC, 3)))
+    results$roc.cat.plot <- results$score.cat.roc$plot +
+                            annotate('text', x = 0.75, y = 0.25,
+                                     label = paste0('AUC = ', round(results$score.cat.roc$auc$AUC, 3)))
+    ## Repeat but treating the score as a continuous variable (WRONG but its what
+    ## I've been told to do)
+    results$score.con <- glm(class ~ score,
+                             data = df,
+                             family = binomial)
+    ## Make predictions and bind to observed classification
+    predicted <- predict(results$score.con,
+                         type = 'response')
+    results$predicted.con <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score.con)),
+                                   predicted) %>%
+                             dplyr::select(class, predicted)
+    names(results$predicted.con) <- c('D', 'M')
+    results$predicted.con$term <- title
+    results$predicted.con$name <- title
+    results$score.con.roc      <- dipep_roc(df = results$predicted.con,
+                                            to.plot = title,
+                                            title = paste0(title, ' vs ', case.review, ' classification'))
+    ## Add the AUC to the plot
+    results$roc.con.plot <- results$score.con.roc$plot +
+                            annotate('text', x = 0.75, y = 0.25,
+                                     label = paste0('AUC = ', round(results$score.con.roc$auc$AUC, 3)))
     return(results)
 }
