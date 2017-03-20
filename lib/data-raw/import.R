@@ -2470,29 +2470,6 @@ dipep.README.variables$womans.details                 <- fields_dipep(df     = m
                                                                       fields = fields)
 dipep.README.variables$dipep <- fields_dipep(df = dipep,
                                              fields = fields)
-## ToDo (2016-12-07) - Add in derived scores etc.
-## dipep.README.variables$perc <-rbind(c('perc.age', 'PERC Score - Age'),
-##                                     c('perc.heart.rate', 'PERC Score - Heart Rate'),
-##                                     c('perc.o2', 'PERC Score - O2 Saturation'),
-##                                     c('perc.cough', 'PERC Score - Cough'),
-##                                     c('perc.haemoptysis', 'PERC Score - Haemoptysis'),
-##                                     c('perc.leg.swelling', 'PERC Score - Leg Swelling'),
-##                                     c('perc.surgery', 'PERC Score - Surgery'),
-##                                     c('perc.embolism', 'PERC Score - Embolism'),
-##                                     c('perc.hormone', 'PERC Score - Hormone'),
-##                                     c('perc.dvt', 'PERC Score - DVT'),
-##                                     c('perc.risk', 'PERC Score - Overall Risk'),
-##                                     c('perc.pe', 'PERC Score - Pulmonary Embolism'))
-## dipep.README.variables$wells <- rbind(c('wells.dvt', 'Wells Score - DVT'),
-##                                       c('wells.alternative', 'Wells Score - Alternative'),
-##                                       c('wells.heart.rate', 'Wells Score - Heart Rate'),
-##                                       c('wells.surgery.immobil', 'Wells Score - Surgery/Immobile'),
-##                                       c('wells.previous.dvt.pe', 'Wells Score - Previous DVT/PE'),
-##                                       c('wells.haemoptysis', 'Wells Score - Haemoptysis'),
-##                                       c('wells.neoplasm', 'Wells Score - Neoplasm'),
-##                                       c('wells', 'Wells Score - Overall'),
-##                                       c('wells.pe.risk', 'Wells Score - Risk'),
-##                                       c('wells.pe', 'Wells Score - Pulmonary Embolism'))
 
 #######################################################################
 ## Save all data frames                                              ##
