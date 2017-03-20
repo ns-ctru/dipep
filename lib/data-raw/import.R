@@ -1787,21 +1787,18 @@ dipep <- dipep %>%
                 simplified.haemoptysis = ifelse(presenting.features.haemoptysis == 'Not Ticked' | is.na(presenting.features.haemoptysis),
                                                 yes = 0,
                                                 no  = 2),
-                simplified.heart.rate = case_when(.$heart.rate < 75                      ~ 0,
-                                                  .$heart.rate >= 75 & .$heart.rate < 94 ~ 3,
-                                                  .$heart.rate >= 95                     ~ 5),
+                simplified.heart.rate = case_when(.$heart.rate < 75                       ~ 0,
+                                                  .$heart.rate >= 75 & .$heart.rate < 94  ~ 3,
+                                                  .$heart.rate >= 94                      ~ 5),
                 simplified.heart.rate = ifelse(is.na(simplified.heart.rate),
                                                yes = 0,
                                                no  = simplified.heart.rate),
                 ## 2017-03-07 - Use Clinical signs of DVT to assess pain on palpitations
-                ##              See emails from s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:04
-                ##                              s.goodacre@sheffield.ac.uk 2017-03-7 @ 09:07
-                simplified.pain.palpitations = ifelse(grepl('leg pain', other.symptoms.specify, ignore.case = TRUE) |
-                                                      grepl('calf pain', other.symptoms.specify, ignore.case = TRUE) |
-                                                      grepl('right calf swelling and pain', other.symptoms.specify, ignore.case = TRUE) |
-                                                      grepl('painful \\(r\\) leg', other.symptoms.specify, ignore.case = TRUE),
-                                                      yes = 4,
-                                                      no  = 0),
+                ##              See emails from s.goodacre@sheffield.ac.uk 2017-03-07 @ 09:04
+                ##                              s.goodacre@sheffield.ac.uk 2017-03-07 @ 09:07
+                simplified.pain.palpitations = ifelse(dvt == 'No' | dvt == 'Not answered' | dvt == 'Not recorded' | is.na(dvt),
+                                                      yes = 0,
+                                                      no  = 4),
                 simplified = simplified.age +
                                    simplified.prev.dvt.pe +
                                    simplified.surgery +
@@ -2017,6 +2014,9 @@ dipep <- dipep %>%
         delphi.primary.obstetric.complication = ifelse(obstetric.complications,
                                                        yes = 1,
                                                        no  = 0),
+        delphi.primary.obstetric.complication = ifelse(preg.post == 'Postpartum' & surgery == 'Yes',
+                                                       yes = 1,
+                                                       no  = obstetric.complications),
         delphi.primary.medical.complication   = ifelse(medical.comorbidity,
                                                        yes = 1,
                                                        no  = 0),
@@ -2101,6 +2101,9 @@ dipep <- dipep %>%
         delphi.sensitivity.obstetric.complication = ifelse(obstetric.complications,
                                                            yes = 1,
                                                            no  = 0),
+        delphi.sensitivity.obstetric.complication = ifelse(preg.post == 'Postpartum' & surgery == 'Yes',
+                                                       yes = 1,
+                                                       no  = obstetric.complications),
         delphi.sensitivity.medical.complication   = ifelse(medical.comorbidity,
                                                            yes = 1,
                                                            no  = 0),
@@ -2184,6 +2187,9 @@ dipep <- dipep %>%
         delphi.specificity.obstetric.complication = ifelse(obstetric.complications,
                                                            yes = 1,
                                                            no  = 0),
+        delphi.specificity.obstetric.complication = ifelse(preg.post == 'Postpartum' & surgery == 'Yes',
+                                                       yes = 1,
+                                                       no  = obstetric.complications),
         delphi.specificity.medical.complication   = ifelse(medical.comorbidity,
                                                            yes = 1,
                                                            no  = 0),
@@ -2238,42 +2244,7 @@ dipep <- dipep %>%
                                     levels = c('0',  '1', '2', '3', '4', '5', '6', '7', '8', '9',
                                                '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
                                                '20', '21', '22', '23', '24', '25', '26', '27', '28', '29')))
-#######################################################################
-## Derive an imputed data set                                        ##
-## ToDo 2016-10-14 - Obtain mean values to impute when missing so far##
-##                   only works on the dichotomised values           ##
-#######################################################################
-missing.data <- do.call(rbind, sapply(dipep, function(i) is.na(i) %>% table())) %>%
-    as.data.frame()
-missing.data$variable <- rownames(missing.data)
-names(missing.data) <- c('Present', 'Missing', 'variable')
-obs <- nrow(dipep)
-missing.data <- mutate(missing.data,
-                       Missing = ifelse(Missing == obs,
-                                        yes = 0,
-                                        no  = Missing)) %>%
-    arrange(variable, Present, Missing)
-write.csv(missing.data, file = '../../tmp/missing.data.csv')
 
-dipep.imputed <- mutate(dipep,
-                        surgery   = ifelse(is.na(surgery), yes = 'No', no = surgery),
-                        travel    = ifelse(is.na(travel), yes = 'No', no = travel),
-                        immobil   = ifelse(is.na(immobil), yes = 'No', no = travel),
-                        pregnancies.over.cat = ifelse(is.na(pregnancies.over.cat),
-                                                      yes = 'No previous pregnancies < 24 weeks',
-                                                      no = pregnancies.over.cat),
-                        pregnancies.under.cat = ifelse(is.na(pregnancies.under.cat),
-                                                       yes = 'No previous pregnancies < 24 weeks',
-                                                       no = pregnancies.under.cat),
-                        bp.diastolic.cat = ifelse(is.na(bp.diastolic.cat), yes = 'Low', no = bp.diastolic.cat),
-                        bp.systolic.cat = ifelse(is.na(bp.systolic.cat), yes = 'Low', no = bp.systolic.cat),
-                        heart.rate.cat = ifelse(is.na(heart.rate.cat), yes = 'Low', no = heart.rate.cat),
-                        bmi.cat = ifelse(is.na(bmi.cat), yes = 'Low', no = bmi.cat),
-                        smoking.cat = ifelse(is.na(smoking.cat), yes = 'Non-smoker', no = smoking.cat),
-                        age.cat = ifelse(is.na(age.cat), yes = 'Young', no = age.cat)
-                        ## heart.rate.cat = ifelse(is.na(), yes = , no = ),
-                        ## heart.rate.cat = ifelse(is.na(), yes = , no = )
-                        )
 
 #######################################################################
 ## UKOSS Exclusions                                                  ##
@@ -2294,6 +2265,29 @@ master$ukoss.exclusions <- mutate(master$ukoss.exclusions,
                                   screening = ifelse(nchar(screening) == 4,
                                                  yes = gsub('E', 'PE_', screening),
                                                  no  = screening))
+
+#######################################################################
+## Other exclusions...                                               ##
+#######################################################################
+## Who      : k.horspool@sheffield.ac.uk                             ##
+## Date     : 2017-03-20 @ 08:20                                     ##
+## Subject  : Fwd: DiPEP data_problems with this pregnancy and XRAY/ ##
+##                 ECG                                               ##
+## Details  : Remove X-Ray for...                                    ##
+##                                                                   ##
+##              N01/16                                               ##
+##              S08/07                                               ##
+##              PE_280                                               ##
+##              PE_269                                               ##
+#######################################################################
+xray <- c('N01/16', 'S08/07', 'PE_280', 'PE_269')
+dipep <- dipep %>%
+         mutate(xray     = ifelse(screening %in% xray,
+                                  yes = NA,
+                                  no  = xray),
+                xray.cat = ifelse(screening %in% xray,
+                                  yes = NA,
+                                  no  = xray))
 
 #######################################################################
 ## Database Specification                                            ##
