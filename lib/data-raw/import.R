@@ -1636,7 +1636,7 @@ dipep <- mutate(dipep,
                 medical.other.dvt.pe = factor(medical.other.dvt.pe,
                                               labels = c('No', 'Yes')),
                 thromboprophylaxis   = factor(thromboprophylaxis,
-                                              labels = c('No', 'Yes'))
+                                              labels = c('No', 'Yes')),
                 admitted.hospital    = factor(admitted.hospital,
                                               levels = c('No', 'Yes')),
                 presenting.features.pleuritic      = factor(presenting.features.pleuritic),
@@ -2249,6 +2249,28 @@ dipep <- dipep %>%
                                                '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
                                                '20', '21', '22', '23', '24', '25', '26', '27', '28', '29')))
 
+#######################################################################
+## Date    : 2017-03-20 @ 11:32                                      ##
+## From    : s.goodacre@sheffield.ac.uk                              ##
+## Subject : DiPEP analysis                                          ##
+## Details : Use the Delphi Obstetric/Medical complications in       ##
+##           univariable logistic regression.                        ##
+#######################################################################
+dipep <- dipep %>%
+         mutate(medical.complication = ifelse(delphi.primary.medical.complication == 0 | is.na(delphi.primary.medical.complication),
+                                         yes = 'No',
+                                         no  = 'Yes'),
+                medical.complication = factor(medical.complication,
+                                              labels = c('No', 'Yes')),
+                medical.complication = relevel(medical.complication,
+                                               ref = 'No'),
+                obstetric.complication = ifelse(delphi.primary.obstetric.complication == 0 | is.na(delphi.primary.obstetric.complication),
+                                         yes = 'No',
+                                         no  = 'Yes'),
+                obstetric.complication = factor(obstetric.complication,
+                                                labels = c('No', 'Yes')),
+                obstetric.complication = relevel(obstetric.complication,
+                                                 ref = 'No'))
 
 #######################################################################
 ## UKOSS Exclusions                                                  ##
