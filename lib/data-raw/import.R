@@ -1635,6 +1635,8 @@ dipep <- mutate(dipep,
                                            labels = c('No PE', 'PE')),
                 medical.other.dvt.pe = factor(medical.other.dvt.pe,
                                               labels = c('No', 'Yes')),
+                thromboprophylaxis   = factor(thromboprophylaxis,
+                                              labels = c('No', 'Yes'))
                 admitted.hospital    = factor(admitted.hospital,
                                               levels = c('No', 'Yes')),
                 presenting.features.pleuritic      = factor(presenting.features.pleuritic),
@@ -1739,6 +1741,8 @@ dipep <- mutate(dipep,
                 injury                            = relevel(injury,
                                                             ref = 'No'),
                 medical.other.dvt.pe              = relevel(medical.other.dvt.pe,
+                                                            ref = 'No'),
+                thromboprophylaxis                = relevel(thromboprophylaxis,
                                                             ref = 'No'))
 ## Derive binary indicator for Suspected v's Diagnosed PE
 dipep <- dipep %>%
