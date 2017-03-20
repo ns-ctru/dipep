@@ -2025,11 +2025,11 @@ dipep <- dipep %>%
                                                          .$obstetric.complication == 0   ~ FALSE,
                                                          .$obstetric.complication == 1   ~ TRUE),
                 delphi.obstetric.complication = ifelse(.$preg.post == 'Postpartum' & .$surgery == 'Yes',
-                                                      yes = TRUE,
-                                                      no  = delphi.obstetric.complication),
-                delphi.medical.complication = case_when(is.na(.$medical.complication)   ~ FALSE,
-                                                       .$medical.complication == 'No'  ~ FALSE,
-                                                       .$medical.complication == 'Yes' ~ TRUE),
+                                                       yes = TRUE,
+                                                       no  = delphi.obstetric.complication),
+                delphi.medical.complication = case_when(is.na(.$medical.comorbidity)   ~ FALSE,
+                                                       .$medical.comorbidity == 0  ~ FALSE,
+                                                       .$medical.comorbidity == 1 ~ TRUE),
                 delphi.gestation = case_when(is.na(.$trimester)             ~ FALSE,
                                             .$trimester == '1st Trimester' ~ FALSE,
                                             .$trimester == '2nd Trimester' ~ FALSE,
@@ -2052,8 +2052,8 @@ dipep <- dipep %>%
                                              .$trimester == 2 & .$heart.rate <= 110 ~ FALSE,
                                              .$trimester == 2 & .$heart.rate > 110  ~ TRUE),
                 delphi.respiratory.rate = case_when(is.na(.$respiratory.rate) ~ FALSE,
-                                                   .$respiratory.rate <= 24  ~ FALSE,
-                                                   .$respiratory.rate > 34   ~ TRUE),
+                                                   .$respiratory.rate <= 24   ~ FALSE,
+                                                   .$respiratory.rate > 24    ~ TRUE),
                 ## Now that there are binary indicators for each component derive an overall
                 ## score for each of the rules scaling as required
                 delphi.primary       = (delphi.haemoptysis             * 3) +
@@ -2061,7 +2061,7 @@ dipep <- dipep %>%
                                        (delphi.history.dvt.pe          * 3) +
                                        (delphi.family.history          * 0) +
                                        (delphi.medical.history         * 2) +
-                                       ## (delphi.obstetric.complication  * 1) +
+                                       (delphi.obstetric.complication  * 1) +
                                        (delphi.medical.complication    * 2) +
                                        (delphi.gestation               * 1) +
                                        (delphi.bmi                     * 1) +
@@ -2083,7 +2083,7 @@ dipep <- dipep %>%
                                            (delphi.history.dvt.pe          * 1) +
                                            (delphi.family.history          * 1) +
                                            (delphi.medical.history         * 1) +
-                                           ## (delphi.obstetric.complication  * 1) +
+                                           (delphi.obstetric.complication  * 1) +
                                            (delphi.medical.complication    * 1) +
                                            (delphi.gestation               * 1) +
                                            (delphi.bmi                     * 1) +
@@ -2104,7 +2104,7 @@ dipep <- dipep %>%
                                         (delphi.history.dvt.pe          * 4) +
                                         (delphi.family.history          * 0) +
                                         (delphi.medical.history         * 1) +
-                                        ## (delphi.obstetric.complication  * 0) +
+                                        (delphi.obstetric.complication  * 0) +
                                         (delphi.medical.complication    * 1) +
                                         (delphi.gestation               * 0) +
                                         (delphi.bmi                     * 0) +
