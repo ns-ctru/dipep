@@ -381,6 +381,11 @@ logistic$thromboprophylaxis <- dipep_glm(df = dipep,
                                          classification = 'first.st',
                                          predictor = 'thromboprophylaxis',
                                          model = 'Thromboprophylaxis')
+## Injury
+logistic$injury <- dipep_glm(df = dipep,
+                             classification = 'first.st',
+                             predictor = 'injury',
+                             model = 'Significant Injury')
 
 
 ## Combine all three sets of tidied output from each model
@@ -422,7 +427,7 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$thrombosis$tidied,
                          logistic$trimester$tidied,
                          logistic$this.pregnancy.problems$tidied,
-                         logistic$thrombo$tidied$tidied,
+                         logistic$thrombo$tidied,
                          logistic$multiple.preg$tidied,
                          logistic$travel$tidied,
                          logistic$immobil$tidied,
@@ -555,7 +560,7 @@ logistic$cross.tab <- rbind(logistic$age.cat$table,
                             logistic$history.veins$table,
                             logistic$history.iv.drug$table,
                             logistic$thrombosis$table,
-                            logistic$thromboprophylaxis,
+                            logistic$thromboprophylaxis$table,
                             logistic$trimester$table,
                             logistic$this.pregnancy.problems$table,
                             logistic$thrombo$table,
@@ -595,6 +600,7 @@ Regardless each of the individual variables has been analysed under a univariabl
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.  Both raw continuous and categorised variables are included to provide comparison.
 
+
 ```{r results_logistic_regression_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
           ## Remove temperature and O2 Saturation as CI is HUGE
@@ -622,7 +628,7 @@ Cross-tabulation of all categorical variables by the Primary Classification is p
 ```{r results_logistic_regression_cross_tab, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 kable(logistic$cross.tab,
       col.names = c('Predictor', 'Levels', 'No PE', 'PE'),
-      caption   = 'Cross-tabulation of categorical predictors by Primary Classification of Pulmonary Embolism status')
+      caption   = 'Cross-tabulation of categorical predictors by Primary Classification of Pulmonary Embolism status. ')
 
 ```
 
