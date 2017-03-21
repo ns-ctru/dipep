@@ -2132,20 +2132,89 @@ dipep <- dipep %>%
 ##           univariable logistic regression.                        ##
 #######################################################################
 dipep <- dipep %>%
-         mutate(medical.complication = ifelse(delphi.primary.medical.complication == 0 | is.na(delphi.primary.medical.complication),
+         mutate(medical.complication = ifelse(delphi.medical.complication == 0 | is.na(delphi.medical.complication),
                                          yes = 'No',
                                          no  = 'Yes'),
                 medical.complication = factor(medical.complication,
                                               labels = c('No', 'Yes')),
                 medical.complication = relevel(medical.complication,
                                                ref = 'No'),
-                obstetric.complication = ifelse(delphi.primary.obstetric.complication == 0 | is.na(delphi.primary.obstetric.complication),
+                obstetric.complication = ifelse(delphi.obstetric.complication == 0 | is.na(delphi.obstetric.complication),
                                          yes = 'No',
                                          no  = 'Yes'),
                 obstetric.complication = factor(obstetric.complication,
                                                 labels = c('No', 'Yes')),
                 obstetric.complication = relevel(obstetric.complication,
                                                  ref = 'No'))
+
+#######################################################################
+## Date    : 2017-03-21 @ 11:32                                      ##
+## From    : s.goodacre@sheffield.ac.uk                              ##
+## Subject : DiPEP analysis                                          ##
+## Details : Clarification of what files to use to get classification##
+##           of ECG and X-Ray in relation to PE                      ##
+#######################################################################
+master$ecg.pe.classification.raw <- read.csv(file = 'ecg_pe_classification.csv',
+                                             sep  = ';')
+names(master$ecg.pe.classification.raw) <- gsub('Participant\\.No\\.',
+                                                'screening',
+                                                names(master$ecg.pe.classification.raw))
+names(master$ecg.pe.classification.raw) <- gsub('PE\\.related\\.abnormality',
+                                                'ecg.pe',
+                                                names(master$ecg.pe.classification.raw))
+## dplyr::select(master$ecg.pe.classification.raw,
+##               screening,
+##               ecg.pe)
+master$xray.pe.classification.raw <- read.csv(file = 'xray_pe_classification.csv',
+                                              sep  = ';')
+names(master$xray.pe.classification.raw) <- gsub('Participant\\.No\\.',
+                                                 'screening',
+                                                 names(master$xray.pe.classification.raw))
+names(master$xray.pe.classification.raw) <- gsub('PE\\.related\\.abnormality',
+                                                 'xray.pe',
+                                                 names(master$xray.pe.classification.raw))
+## dplyr::select(master$xray.pe.classification.raw,
+##               screening,
+##               xray.pe)
+## Merge with the dipep data frame and derive new variables for Xray reconciling with
+## the existing abnormal classification.
+dipep <- left_join(dipep,
+                   dplyr::select(master$xray.pe.classification.raw,
+                                 screening,
+                                 xray.pe)) %>%
+         mutate(xray.pe = ifelse(is.na(xray.pe) | xray.pe == '',
+                                 yes = 'No',
+                                 no  = xray.pe)) %>%
+         left_join(.,
+                   dplyr::select(master$ecg.pe.classification.raw,
+                                 screening,
+                                 ecg.pe)) %>%
+         mutate(ecg.pe = ifelse(is.na(ecg.pe) | ecg.pe == '',
+                                yes = 'No',
+                                no  = ecg.pe)) %>%
+         ## Finally derive new variables with informative levels and ensure factors
+         ## with correct levels
+         mutate(xray.pe = case_when((is.na(.$xray) | .$xray== 'Not performed' | .$xray == 'Normal') & .$xray.pe == 'No' ~ 'Normal / Not Performed / Missing',
+                                    .$xray == 'Abnormal' & .$xray.pe == 'No'  ~ 'Abnormal - Other',
+                                    .$xray == 'Abnormal' & .$xray.pe == 'Yes' ~ 'Abnormal - PE'),
+                ecg.pe = case_when((is.na(.$ecg) | .$ecg== 'Not performed' | .$ecg == 'Normal') & .$ecg.pe == 'No' ~ 'Normal / Not Performed / Missing',
+                                    .$ecg == 'Abnormal' & .$ecg.pe == 'No'  ~ 'Normal / Not Performed / Missing',
+                                    .$ecg == 'Abnormal' & .$ecg.pe == 'Yes' ~ 'Abnormal - PE'))
+## Tabulate to check (commented out)
+## print('Original X-Ray (Row) v X-Ray PE')
+## table(dipep$xray, dipep$xray.pe, useNA = 'ifany')
+## print('Combined X-Ray')
+## table(dipep$xray.pe2, useNA = 'ifany')
+## print('Original v Combined X-Ray')
+## table(dipep$xray, dipep$xray.pe2, useNA = 'ifany')
+## print('Original ECG')
+## table(dipep$ecg, useNA = 'ifany')
+## print('Original ECG v ECG PE')
+## table(dipep$ecg, dipep$ecg.pe, useNA = 'ifany')
+## print('Combined ECG')
+## table(dipep$ecg.pe2, useNA = 'ifany')
+## print('Original v Combined ECG')
+## table(dipep$ecg, dipep$ecg.pe2, useNA = 'ifany')
 
 #######################################################################
 ## UKOSS Exclusions                                                  ##
@@ -2397,7 +2466,7 @@ names(dipep_) <- gsub('\\.', '_', names(dipep_))
 names(dipep_) <- gsub('presenting_features', 'presenting', names(dipep_))
 names(dipep_) <- gsub('simplified_', 'simp_', names(dipep_))
 names(dipep_) <- gsub('thrombin_generation_', 'tg_', names(dipep_))
-names(dipep_) <- gsub('delphi_primary_', 'dp_pri_', names(dipep_))
+names(dipep_) <- gsub('delphig_primary_', 'dp_pri_', names(dipep_))
 names(dipep_) <- gsub('delphi_sensitivity_', 'dp_sen_', names(dipep_))
 names(dipep_) <- gsub('delphi_specificity_', 'dp_spe_', names(dipep_))
 write_dta(dipep_, version = 14, path = 'stata/dipep.dta')
