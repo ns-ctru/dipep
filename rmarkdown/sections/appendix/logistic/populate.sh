@@ -53,3 +53,5 @@ sed 's/template/surgery/g' template.Rmd > surgery.Rmd
 sed 's/template/thrombo/g' template.Rmd > thrombo.Rmd
 sed 's/template/medical.complication/g' template.Rmd > medical.complication.Rmd
 sed 's/template/obstetric.complication/g' template.Rmd > obstetric.complication.Rmd
+sed 's/template/xray.pe/g' template.Rmd > xray.pe.Rmd
+sed 's/template/ecg.pe/g' template.Rmd > ecg.pe.Rmd
