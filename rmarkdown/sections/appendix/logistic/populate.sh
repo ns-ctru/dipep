@@ -26,6 +26,15 @@ sed 's/template/o2.saturation/g' template.Rmd > o2.saturation.Rmd
 sed 's/template/o2.saturation.cat/g' template.Rmd > o2.saturation.cat.Rmd
 sed 's/template/respiratory.rate/g' template.Rmd > respiratory.rate.Rmd
 sed 's/template/respiratory.rate.cat/g' template.Rmd > respiratory.rate.cat.Rmd
+sed 's/template/presenting.features.pleuritic/g' template.Rmd > presenting.features.pleuritic.Rmd
+sed 's/template/presenting.features.non.pleuritic/g' template.Rmd > presenting.features.non.pleuritic.Rmd
+sed 's/template/presenting.features.sob.exertion/g' template.Rmd > presenting.features.sob.exertion.Rmd
+sed 's/template/presenting.features.sob.rest/g' template.Rmd > presenting.features.sob.rest.Rmd
+sed 's/template/presenting.features.haemoptysis/g' template.Rmd > presenting.features.haemoptysis.Rmd
+sed 's/template/presenting.features.cough/g' template.Rmd > presenting.features.cough.Rmd
+sed 's/template/presenting.features.syncope/g' template.Rmd > presenting.features.syncope.Rmd
+sed 's/template/presenting.features.palpitations/g' template.Rmd > presenting.features.palpitations.Rmd
+sed 's/template/presenting.features.other/g' template.Rmd > presenting.features.other.Rmd
 sed 's/template/pregnancies.under/g' template.Rmd > pregnancies.under.Rmd
 sed 's/template/pregnancies.over/g' template.Rmd > pregnancies.over.Rmd
 sed 's/template/prev.preg.problem/g' template.Rmd > prev.preg.problem.Rmd
