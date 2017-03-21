@@ -386,7 +386,29 @@ logistic$injury <- dipep_glm(df = dipep,
                              classification = 'first.st',
                              predictor = 'injury',
                              model = 'Significant Injury')
+## Medical problems
+logistic$medical.probs <- dipep_glm(df = dipep,
+                                    classification = 'first.st',
+                                    predictor = 'medical.probs',
+                                    model = 'Other Previous Medical Problems')
+## Thrombotic Event this pregnancy
+logistic$thromb.event <- dipep_glm(df = dipep,
+                                    classification = 'first.st',
+                                    predictor = 'thromb.event',
+                                    model = 'Other Thrombotic events during this pregnancy')
+## Delphi - Medical Complication
+logistic$medical.complication <- dipep_glm(df = dipep,
+                                           classification = 'first.st',
+                                           predictor = 'medical.complication',
+                                           model = 'Medical Complications (Delphi reviewed)')
+## Delphi - Obstetric Complication
+logistic$obstetric.complication <- dipep_glm(df = dipep,
+                                           classification = 'first.st',
+                                           predictor = 'obstetric.complication',
+                                           model = 'Obstetric Complications (Delphi reviewed)')
 
+logistic$medical.complication$tidied
+logistic$obstetric.complication$tidied
 
 ## Combine all three sets of tidied output from each model
 logistic$tidied <- rbind(logistic$age$tidied,
@@ -435,7 +457,12 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$ecg.cat$tidied,
                          ## logistic$xray$tidied,
                          logistic$xray.cat$tidied,
-                         logistic$thromboprophylaxis$tidied)
+                         logistic$injury$tidied,
+                         logistic$medical.probs$tidied,
+                         logistic$thromb.event$tidied,
+                         logistic$thromboprophylaxis$tidied,
+                         logistic$medical.complication$tidied,
+                         logistic$obstetric.complication$tidied)
 logistic$glance <- rbind(logistic$age$glance,
                          logistic$smoking$glance,
                          logistic$temperature.cat$glance,
@@ -481,7 +508,12 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$ecg.cat$glance,
                          ## logistic$xray$glance,
                          logistic$xray.cat$glance,
-                         logistic$thromboprophylaxis$glance)
+                         logistic$injury$glance,
+                         logistic$medical.probs$glance,
+                         logistic$thromb.event$glance,
+                         logistic$thromboprophylaxis$glance,
+                         logistic$medical.complication$glance,
+                         logistic$obstetric.complication$glance)
 ## Combine all predicted
 logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$age.cat$predicted,
@@ -529,7 +561,12 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$ecg.cat$predicted,
                             ## logistic$xray.cat$predicted,
                             logistic$xray$predicted,
-                            logistic$thromboprophylaxis$predicted)
+                            logistic$injury$predicted,
+                            logistic$medical.probs$predicted,
+                            logistic$thromb.event$predicted,
+                            logistic$thromboprophylaxis$predicted,
+                            logistic$medical.complication$predicted,
+                            logistic$obstetric.complication$predicted)
 ## Remove 'presenting.features.' from name
 logistic$predicted <- mutate(logistic$predicted,
                              name = gsub('presenting.features.', '', name))
@@ -568,7 +605,12 @@ logistic$cross.tab <- rbind(logistic$age.cat$table,
                             logistic$travel$table,
                             logistic$immobil$table,
                             logistic$ecg$table,
-                            logistic$xray$table)
+                            logistic$xray$table,
+                            logistic$injury$table,
+                            logistic$thromb.event$table,
+                            logistic$medical.probs$table,
+                            logistic$medical.complication$table,
+                            logistic$obstetric.complication$table)
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
                                 classification = 'first.st',
@@ -580,6 +622,7 @@ logistic$saturated <- dipep_glm(df = dipep,
                                               'presenting.features.cough', 'presenting.features.haemoptysis',
                                               'presenting.features.syncope', 'presenting.features.palpitations',
                                               'presenting.features.other', 'surgery',
+                                              ## 'injury', 'medical.probs', 'medical.complication', 'obstetric.complication',
                                               'history.thrombosis', 'history.veins', ## 'history.iv.drug',
                                               'thrombosis', 'trimester', 'this.pregnancy.problems',
                                               'thrombo', 'multiple.preg', 'immobil', ## 'travel',
@@ -593,7 +636,7 @@ logistic$saturated <- dipep_glm(df = dipep,
 
 Its is not advisable to use the results of univariable regression to shape your choice of variables to include in multi-variable models for the simple reason that the coefficients obtained for a variable in isolation will not be the same as those from a multi-variable model.  Thus something that appears to be significant under univariable analysis may well not be under multi-variable analysis.  A better strategy is to use expert clinical knowledge as to what factors are important to determine which variables are included in a multi-variable model.
 
-Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.  For the full output of each univariable logistic regression model please refer to the [Appendix](dipep.html#appendix).
+Regardless each of the individual variables has been analysed under a univariable logistic regression model.  The coefficients, their confidence intervals, the sensitivity, specificity and area under the receiver operating characeristics curve are tabulated below.  **For detailed output of each univariable logistic regression model please refer to the [Appendix](dipep.html#section-appendix)**.
 
 
 ##### Point Estimates
