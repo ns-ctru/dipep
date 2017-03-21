@@ -121,3 +121,39 @@ The full results of the univariable logistic regression are presented below.  Fo
 #### Obstetric Copmlications (Delphi)
 ```{r child = 'logistic/obstetric.complication.Rmd', eval = TRUE}
 ```
+
+#### Presenting Features - Pleuritic
+```{r child = 'logistic/presenting.features.pleuritic.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Non-Pleuritic
+```{r child = 'logistic/presenting.features.non.pleuritic.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Shortness of Breath (Exertion)
+```{r child = 'logistic/presenting.features.sob.exertion.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Shortness of Breath (Rest)
+```{r child = 'logistic/presenting.features.sob.rest.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Haemoptysis
+```{r child = 'logistic/presenting.features.haemoptysis.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Cough
+```{r child = 'logistic/presenting.features.cough.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Syncope
+```{r child = 'logistic/presenting.features.syncope.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Palpitations
+```{r child = 'logistic/presenting.features.palpitations.Rmd', eval = TRUE}
+```
+
+#### Presenting Features - Other
+```{r child = 'logistic/presenting.features.other.Rmd', eval = TRUE}
+```
