@@ -37,4 +37,10 @@ sed 's/template/history.thrombosis/g' template.Rmd > history.thrombosis.Rmd
 sed 's/template/history.iv.drug/g' template.Rmd > history.iv.drug.Rmd
 sed 's/template/thrombosis/g' template.Rmd > thrombosis.Rmd
 sed 's/template/thrombo/g' template.Rmd > thrombo.Rmd
+sed 's/template/thromboprophylaxis/g' template.Rmd > thromboprophylaxis.Rmd
 sed 's/template/trimester/g' template.Rmd > trimester.Rmd
+sed 's/template/injury/g' template.Rmd > injury.Rmd
+sed 's/template/surgery/g' template.Rmd > surgery.Rmd
+sed 's/template/thrombo/g' template.Rmd > thrombo.Rmd
+sed 's/template/medical.complication/g' template.Rmd > medical.complication.Rmd
+sed 's/template/obstetric.complication/g' template.Rmd > obstetric.complication.Rmd
