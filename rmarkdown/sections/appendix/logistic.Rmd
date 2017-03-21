@@ -110,15 +110,11 @@ The full results of the univariable logistic regression are presented below.  Fo
 ```{r child = 'logistic/surgery.Rmd', eval = TRUE}
 ```
 
-#### Known Thrombophilia
-```{r child = 'logistic/thrombo.Rmd', eval = TRUE}
-```
-
-#### Medical Copmlications (Delphi)
+#### Medical Complications (Delphi)
 ```{r child = 'logistic/medical.complication.Rmd', eval = TRUE}
 ```
 
-#### Obstetric Copmlications (Delphi)
+#### Obstetric Complications (Delphi)
 ```{r child = 'logistic/obstetric.complication.Rmd', eval = TRUE}
 ```
 
@@ -156,4 +152,12 @@ The full results of the univariable logistic regression are presented below.  Fo
 
 #### Presenting Features - Other
 ```{r child = 'logistic/presenting.features.other.Rmd', eval = TRUE}
+```
+
+#### X-Ray : PE Related
+```{r child = 'logistic/xray.pe.Rmd', eval = TRUE}
+```
+
+#### ECG : PE Related
+```{r child = 'logistic/ecg.pe.Rmd', eval = TRUE}
 ```
