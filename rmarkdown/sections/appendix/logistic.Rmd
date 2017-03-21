@@ -1,4 +1,4 @@
-### Univariable Logistic Regression
+### Univariable Logistic Regression  {.tabset .tabset-fade .tabset-pills}
 
 The full results of the univariable logistic regression are presented below.  For each variable a summry of the logistic regression model is shown followed by four diagnostic plots and then the individual ROC curve for the variable.
 
@@ -31,8 +31,7 @@ The full results of the univariable logistic regression are presented below.  Fo
 ```
 
 #### Systolic Blood Pressure (Categorical)
-**NB** No one had abnormal systolic blood pressure and as the outcome was invariant it is impossible to perform any form of regression.
-```{r child = 'logistic/bp.systolic.cat.Rmd', eval = FALSE}
+```{r child = 'logistic/bp.systolic.cat.Rmd', eval = TRUE}
 ```
 
 #### Heart Rate (Continuous)
@@ -97,4 +96,28 @@ The full results of the univariable logistic regression are presented below.  Fo
 
 #### History of Thrombosis
 ```{r child = 'logistic/thrombosis.Rmd', eval = TRUE}
+```
+
+#### History of Thromboprophylaxis
+```{r child = 'logistic/thromboprophylaxis.Rmd', eval = TRUE}
+```
+
+#### Injury
+```{r child = 'logistic/injury.Rmd', eval = TRUE}
+```
+
+#### Surgery
+```{r child = 'logistic/surgery.Rmd', eval = TRUE}
+```
+
+#### Known Thrombophilia
+```{r child = 'logistic/thrombo.Rmd', eval = TRUE}
+```
+
+#### Medical Copmlications (Delphi)
+```{r child = 'logistic/medical.complication.Rmd', eval = TRUE}
+```
+
+#### Obstetric Copmlications (Delphi)
+```{r child = 'logistic/obstetric.complication.Rmd', eval = TRUE}
 ```
