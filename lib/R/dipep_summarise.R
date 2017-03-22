@@ -16,6 +16,7 @@
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).#'
+#' @param exclude.missing Exclude individuals flagged as having excessive missing data.
 #'
 #' @export
 dipep_summarise <- function(df                    = dipep,
@@ -25,14 +26,18 @@ dipep_summarise <- function(df                    = dipep,
                             exclude.non.recruited = TRUE,
                             exclude.dvt           = TRUE,
                             exclude.anti.coag     = FALSE,
+                            exclude.missing       = FALSE,
                             ...){
     results <- list()
-    ## Remove non-recruited and DVT
+    ## Remove non-recruited, DVT and/or missing
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    if(exclude.missing == TRUE){
+        df <- dplyr::filter(df, missing.exclude == FALSE)
     }
     ## Remove biomarker data for those on anticoagulents
     if(exclude.anti.coag == TRUE){
@@ -133,7 +138,7 @@ dipep_summarise <- function(df                    = dipep,
                           Measurement = gsub('aptt', 'APTT', Measurement),
                           Measurement = gsub('prothombin.time', 'Prothombin (Time)', Measurement),
                           Measurement = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', Measurement),
-                          Measurement = gsub('ddimer.innovance', 'D-Dimer (Innovanance)', Measurement),
+                          Measurement = gsub('ddimer.innovance', 'D-Dimer (Innovance)', Measurement),
                           Measurement = gsub('ddimer.elisa', 'D-Dimer (ELISA)', Measurement),
                           Measurement = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', Measurement),
                           Measurement = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', Measurement),
