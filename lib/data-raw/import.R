@@ -1575,7 +1575,7 @@ dipep <- dipep %>%
                                              no  = d.dimer),
                 ddimer.innovance.pooled = ifelse(!is.na(ddimer.innovance),
                                                  yes = ddimer.innovance,
-                                                 no  = d.dimer)))
+                                                 no  = d.dimer))
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
