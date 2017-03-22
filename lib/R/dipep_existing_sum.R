@@ -11,6 +11,7 @@
 #' @param exclude List of individuals to explicitly exclude.
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
+#' @param exclude.missing Exclude individuals flagged as having excessive missing data.
 #'
 #' @export
 dipep_existing_sum <- function(df      = dipep,
@@ -18,6 +19,7 @@ dipep_existing_sum <- function(df      = dipep,
                                exclude = NULL,
                                exclude.non.recruited = TRUE,
                                exclude.dvt       = TRUE,
+                               exclude.missing   = FALSE,
                                ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
@@ -25,12 +27,15 @@ dipep_existing_sum <- function(df      = dipep,
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
-    ## Remove non-recruited and DVT
+    ## Remove non-recruited, DVT and/or missing
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    if(exclude.missing == TRUE){
+        df <- dplyr::filter(df, missing.exclude == FALSE)
     }
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
@@ -181,7 +186,7 @@ dipep_existing_sum <- function(df      = dipep,
     ## Make predictions and bind to observed classification
     predicted <- predict(results$score.cat,
                          type = 'response')
-    results$predicted.cat <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score.cat)),
+    results$predicted.cat <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score)),
                                    predicted) %>%
                              dplyr::select(class, predicted)
     names(results$predicted.cat) <- c('D', 'M')
@@ -230,13 +235,15 @@ dipep_existing_sum <- function(df      = dipep,
                                      label = paste0('AUC = ', round(results$score.cat.roc$auc$AUC, 3)))
     ## Repeat but treating the score as a continuous variable (WRONG but its what
     ## I've been told to do)
+    df <- mutate(df,
+                 score = as.numeric(score))
     results$score.con <- glm(class ~ score,
                              data = df,
                              family = binomial)
     ## Make predictions and bind to observed classification
     predicted <- predict(results$score.con,
                          type = 'response')
-    results$predicted.con <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score.con)),
+    results$predicted.con <- cbind(dplyr::filter(df, !is.na(class) & !is.na(score)),
                                    predicted) %>%
                              dplyr::select(class, predicted)
     names(results$predicted.con) <- c('D', 'M')
