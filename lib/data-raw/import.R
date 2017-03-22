@@ -1569,7 +1569,13 @@ dipep <- dipep %>%
                                               no  = medical.other.dvt.pe),
                 admitted.hospital = ifelse(is.na(admitted.hospital),
                                            yes = 'No',
-                                           no  = as.character(admitted.hospital)))
+                                           no  = as.character(admitted.hospital)),
+                ddimer.elisa.pooled = ifelse(!is.na(ddimer.elisa),
+                                             yes = ddimer.elisa,
+                                             no  = d.dimer),
+                ddimer.innovance.pooled = ifelse(!is.na(ddimer.innovance),
+                                                 yes = ddimer.innovance,
+                                                 no  = d.dimer)))
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
