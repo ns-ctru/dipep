@@ -12,6 +12,7 @@
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
+#' @param exclude.missing Exclude individuals flagged as having excessive missing data.
 #' @param title.to.plot Title for Biomarker axes.
 #' @param title.class Title for Classification axes.
 #' @param ... Specify the classification (one of \code{first.st} | \code{second.st} | \code{third.st} | \code{fourth.st}) and the biomarker to be plotted.
@@ -22,6 +23,7 @@ dipep_plot <- function(df        = dipep,
                        exclude.non.recruited = TRUE,
                        exclude.dvt       = TRUE,
                        exclude.anti.coag = FALSE,
+                       exclude.missing   = FALSE,
                        title.to.plot     = '',
                        title.class       = '',
                        ...){
@@ -31,13 +33,17 @@ dipep_plot <- function(df        = dipep,
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
-    ## Remove non-recruited and DVT
+    ## Remove non-recruited, DVT and/or missing
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
     }
+    if(exclude.missing == TRUE){
+        df <- dplyr::filter(df, missing.exclude == FALSE)
+    }
+    ## Set number of columns for facetting
     if(title.class == 'Recruitment'){
         ncols <- 4
     }
@@ -50,15 +56,15 @@ dipep_plot <- function(df        = dipep,
                      prothombin.time                          = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = prothombin.time),
-                     aprothombin                              = ifelse(exclude.anti.coag == 'Yes',
+                     aptt                                     = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = aprothombin),
+                                                                       no  = aptt),
                      clauss.fibrinogen                        = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = clauss.fibrinogen),
-                     ddimer.innovan                           = ifelse(exclude.anti.coag == 'Yes',
+                     ddimer.innovance                         = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = ddimer.innovan),
+                                                                       no  = ddimer.innovance),
                      ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = ddimer.elisa),
@@ -83,15 +89,15 @@ dipep_plot <- function(df        = dipep,
                      prothrombin.fragments                    = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = prothrombin.fragments),
-                     soluble.tissue.factor                    = ifelse(exclude.anti.coag == 'Yes',
+                     tissue.factor                            = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = soluble.tissue.factor),
+                                                                       no  = tissue.factor),
                      troponin                                 = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = troponin),
-                     natriuertic.peptide                      = ifelse(exclude.anti.coag == 'Yes',
+                     nppb                                     = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = natriuertic.peptide),
+                                                                       no  = nppb),
                      mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = mrproanp))
