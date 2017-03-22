@@ -6,38 +6,43 @@ biomarker.all$prothombin.time <- dipep_glm(df = dipep,
                                        exclude.dvt           = TRUE,
                                        exclude.non.recruited = TRUE,
                                        exclude.anti.coag     = FALSE,
+                                       exclude.missing       = FALSE,
                                        classification = 'first.st',
                                        predictor      = 'prothombin.time',
                                        model          = 'Prothombin (Time)')
 ## APTT
 biomarker.all$aprothombin <- dipep_glm(df = dipep,
-                                   exclude.dvt           = TRUE,
-                                   exclude.non.recruited = TRUE,
-                                   exclude.anti.coag     = FALSE,
-                                   classification = 'first.st',
-                                   predictor      = 'aptt',
-                                   model          = 'Aprothombin')
+                                       exclude.dvt           = TRUE,
+                                       exclude.non.recruited = TRUE,
+                                       exclude.anti.coag     = FALSE,
+                                       exclude.missing       = FALSE,
+                                       classification = 'first.st',
+                                       predictor      = 'aptt',
+                                       model          = 'Aprothombin')
 ## Claus Fibrinogen
 biomarker.all$clauss.fibrinogen <- dipep_glm(df = dipep,
                                          exclude.dvt           = TRUE,
                                          exclude.non.recruited = TRUE,
                                          exclude.anti.coag     = FALSE,
+                                         exclude.missing       = FALSE,
                                          classification = 'first.st',
                                          predictor      = 'clauss.fibrinogen',
                                          model          = 'Clauss Fibrinogen')
 ## D-Dimer - Innovan
 biomarker.all$ddimer.innovan <- dipep_glm(df = dipep,
-                                      exclude.dvt           = TRUE,
-                                      exclude.non.recruited = TRUE,
-                                      exclude.anti.coag     = FALSE,
-                                      classification = 'first.st',
-                                      predictor      = 'ddimer.innovance',
-                                      model          = 'D-Dimer (Innovance)')
+                                exclude.dvt           = TRUE,
+                                exclude.non.recruited = TRUE,
+                                exclude.anti.coag     = FALSE,
+                                exclude.missing       = FALSE,
+                                classification = 'first.st',
+                                predictor      = 'ddimer.innovance',
+                                model          = 'D-Dimer (Innovance)')
 ## D-Dimer - ELISA
 biomarker.all$ddimer.elisa <- dipep_glm(df = dipep,
                                     exclude.dvt           = TRUE,
                                     exclude.non.recruited = TRUE,
                                     exclude.anti.coag     = FALSE,
+                                    exclude.missing       = FALSE,
                                     classification = 'first.st',
                                     predictor      = 'ddimer.elisa',
                                     model          = 'D-Dimer (ELISA)')
@@ -46,6 +51,7 @@ biomarker.all$thrombin.generation.lag.time <- dipep_glm(df = dipep,
                                                     exclude.dvt           = TRUE,
                                                     exclude.non.recruited = TRUE,
                                                     exclude.anti.coag     = FALSE,
+                                                    exclude.missing       = FALSE,
                                                     classification = 'first.st',
                                                     predictor      = 'thrombin.generation.lag.time',
                                                     model          = 'Thrombin Generation (Lag Time)')
@@ -54,6 +60,7 @@ biomarker.all$thrombin.generation.endogenous.potential <- dipep_glm(df = dipep,
                                                                 exclude.dvt           = TRUE,
                                                                 exclude.non.recruited = TRUE,
                                                                 exclude.anti.coag     = FALSE,
+                                                                exclude.missing       = FALSE,
                                                                 classification = 'first.st',
                                                                 predictor      = 'thrombin.generation.endogenous.potential',
                                                                 model          = 'Thrombin Generation (Endogenous Potential)')
@@ -62,6 +69,7 @@ biomarker.all$thrombin.generation.peak <- dipep_glm(df = dipep,
                                                 exclude.dvt           = TRUE,
                                                 exclude.non.recruited = TRUE,
                                                 exclude.anti.coag     = FALSE,
+                                                exclude.missing       = FALSE,
                                                 classification = 'first.st',
                                                 predictor      = 'thrombin.generation.peak',
                                                 model          = 'Thrombin Generation (Peak)')
@@ -70,6 +78,7 @@ biomarker.all$thrombin.generation.time.to.peak <- dipep_glm(df = dipep,
                                                         exclude.dvt           = TRUE,
                                                         exclude.non.recruited = TRUE,
                                                         exclude.anti.coag     = FALSE,
+                                                        exclude.missing       = FALSE,
                                                         classification = 'first.st',
                                                         predictor      = 'thrombin.generation.time.to.peak',
                                                         model          = 'Thrombin Generation (Time to Peak)')
@@ -78,6 +87,7 @@ biomarker.all$plasmin.antiplasmin <- dipep_glm(df = dipep,
                                            exclude.dvt           = TRUE,
                                            exclude.non.recruited = TRUE,
                                            exclude.anti.coag     = FALSE,
+                                           exclude.missing       = FALSE,
                                            classification = 'first.st',
                                            predictor      = 'plasmin.antiplasmin',
                                            model          = 'Plasmin (Antiplasmin)')
@@ -86,6 +96,7 @@ biomarker.all$prothrombin.fragments <- dipep_glm(df = dipep,
                                              exclude.dvt           = TRUE,
                                              exclude.non.recruited = TRUE,
                                              exclude.anti.coag     = FALSE,
+                                             exclude.missing       = FALSE,
                                              classification = 'first.st',
                                              predictor      = 'prothrombin.fragments',
                                              model          = 'PF 1 + 2')
@@ -94,33 +105,55 @@ biomarker.all$soluble.tissue.factor <- dipep_glm(df = dipep,
                                              exclude.dvt           = TRUE,
                                              exclude.non.recruited = TRUE,
                                              exclude.anti.coag     = FALSE,
+                                             exclude.missing       = FALSE,
                                              classification = 'first.st',
                                              predictor      = 'tissue.factor',
                                              model          = 'Tissue Factor')
 # Troponin
 biomarker.all$troponin <- dipep_glm(df = dipep,
-                                exclude.dvt           = TRUE,
-                                exclude.non.recruited = TRUE,
-                                exclude.anti.coag     = FALSE,
-                                classification = 'first.st',
-                                predictor      = 'troponin',
-                                model          = 'Troponin')
+                                    exclude.dvt           = TRUE,
+                                    exclude.non.recruited = TRUE,
+                                    exclude.anti.coag     = FALSE,
+                                    exclude.missing       = FALSE,
+                                    classification = 'first.st',
+                                    predictor      = 'troponin',
+                                    model          = 'Troponin')
 # NPPB
 biomarker.all$nppb <- dipep_glm(df = dipep,
-                                           exclude.dvt           = TRUE,
-                                           exclude.non.recruited = TRUE,
-                                           exclude.anti.coag     = FALSE,
-                                           classification = 'first.st',
-                                           predictor      = 'nppb',
-                                           model          = 'NPPB')
-# Mrproanp
-biomarker.all$mrproanp <- dipep_glm(df = dipep,
                                 exclude.dvt           = TRUE,
                                 exclude.non.recruited = TRUE,
                                 exclude.anti.coag     = FALSE,
+                                exclude.missing       = FALSE,
                                 classification = 'first.st',
-                                predictor      = 'mrproanp',
-                                model          = 'MRProANP')
+                                predictor      = 'nppb',
+                                model          = 'NPPB')
+# Mrproanp
+biomarker.all$mrproanp <- dipep_glm(df = dipep,
+                                    exclude.dvt           = TRUE,
+                                    exclude.non.recruited = TRUE,
+                                    exclude.anti.coag     = FALSE,
+                                    exclude.missing       = FALSE,
+                                    classification = 'first.st',
+                                    predictor      = 'mrproanp',
+                                    model          = 'MRProANP')
+## D-Dimer (ELISA) Pooled
+biomarker.all$ddimer.elisa.pooled <- dipep_glm(df = dipep,
+                                               exclude.dvt           = TRUE,
+                                               exclude.non.recruited = TRUE,
+                                               exclude.anti.coag     = FALSE,
+                                               exclude.missing       = FALSE,
+                                               classification = 'first.st',
+                                               predictor      = 'ddimer.elisa.pooled',
+                                               model          = 'D-Dimer (ELISA) - Pooled')
+## D-Dimer (Innovance) Pooled
+biomarker.all$ddimer.elisa.pooled <- dipep_glm(df = dipep,
+                                               exclude.dvt           = TRUE,
+                                               exclude.non.recruited = TRUE,
+                                               exclude.anti.coag     = FALSE,
+                                               exclude.missing       = FALSE,
+                                               classification = 'first.st',
+                                               predictor      = 'ddimer.innovance.pooled',
+                                               model          = 'D-Dimer (Innovance) - Pooled')
 
 ## Combine all three sets of tidied output from each model
 biomarker.all$tidied <- rbind(biomarker.all$prothombin.time$tidied,
@@ -176,7 +209,7 @@ biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
 
 The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
 
-```{r results_biomarker_logistic_all_summary, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
@@ -200,7 +233,7 @@ rm(to.sum)
 
 [Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
 
-```{r results_biomarker_logistic_all_roc, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
 ## ROC for continuous variables
 threshold <- 0.15
@@ -231,7 +264,7 @@ biomarker.all$roc.thrombin$plot
 
 The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable.
 
-```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 rbind(biomarker.all$roc.other$summary.stats,
       biomarker.all$roc.thrombin$summary.stats) %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using p > ', threshold, ' to classify predicted probabilities as PE.'))
