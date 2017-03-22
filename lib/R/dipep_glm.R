@@ -19,6 +19,7 @@
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
+#' @param exclude.missing Exclude individuals flagged as having excessive missing data.
 #'
 #' @export
 dipep_glm <- function(df              = .data,
@@ -30,6 +31,7 @@ dipep_glm <- function(df              = .data,
                       exclude.non.recruited = TRUE,
                       exclude.dvt       = TRUE,
                       exclude.anti.coag = FALSE,
+                      exclude.missing   = FALSE,
                       ...){
     results <- list()
     ## Remove individuals who are explicitly to be removed
@@ -43,6 +45,9 @@ dipep_glm <- function(df              = .data,
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    if(exclude.missing == TRUE){
+        df <- dplyr::filter(df, missing.exclude == FALSE)
     }
     ## Exclude those who are not classified as PE/No PE by
     ## the specified classification
