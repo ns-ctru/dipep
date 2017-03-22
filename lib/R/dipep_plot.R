@@ -108,9 +108,7 @@ dipep_plot <- function(df        = dipep,
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
     ## print('Debug 1')
-    dim(df) %>% print()
     df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
-    dim(df) %>% print()
     ## Evaulate the passed arguemnts to set the axis labels
     ## print('Debug 2')
     ## lazyeval::lazy_dots(...) %>% print()
