@@ -2197,9 +2197,17 @@ dipep <- left_join(dipep,
          mutate(xray.pe = case_when((is.na(.$xray) | .$xray== 'Not performed' | .$xray == 'Normal') & .$xray.pe == 'No' ~ 'Normal / Not Performed / Missing',
                                     .$xray == 'Abnormal' & .$xray.pe == 'No'  ~ 'Abnormal - Other',
                                     .$xray == 'Abnormal' & .$xray.pe == 'Yes' ~ 'Abnormal - PE'),
+                xray.pe = factor(xray.pe,
+                                 levels = c('Normal / Not Performed / Missing', 'Abnormal - Other', 'Abnormal - PE')),
+                xray.pe = relevel(xray.pe,
+                                  ref = 'Normal / Not Performed / Missing'),
                 ecg.pe = case_when((is.na(.$ecg) | .$ecg== 'Not performed' | .$ecg == 'Normal') & .$ecg.pe == 'No' ~ 'Normal / Not Performed / Missing',
-                                    .$ecg == 'Abnormal' & .$ecg.pe == 'No'  ~ 'Normal / Not Performed / Missing',
-                                    .$ecg == 'Abnormal' & .$ecg.pe == 'Yes' ~ 'Abnormal - PE'))
+                                   .$ecg == 'Abnormal' & .$ecg.pe == 'No'  ~ 'Normal / Not Performed / Missing',
+                                   .$ecg == 'Abnormal' & .$ecg.pe == 'Yes' ~ 'Abnormal - PE'),
+                ecg.pe = factor(ecg.pe,
+                                levels = c('Normal / Not Performed / Missing', 'Abnormal - PE')),
+                ecg.pe = relevel(ecg.pe,
+                                 ref = 'Normal / Not Performed / Missing'))
 ## Tabulate to check (commented out)
 ## print('Original X-Ray (Row) v X-Ray PE')
 ## table(dipep$xray, dipep$xray.pe, useNA = 'ifany')
@@ -2258,6 +2266,76 @@ dipep <- dipep %>%
                 xray.cat = ifelse(screening %in% xray,
                                   yes = NA,
                                   no  = xray))
+
+#######################################################################
+## Missing data exclusions                                           ##
+#######################################################################
+## Restricting analyses to those who have > X% of data for each of   ##
+## the chosen groupings (thresholds below)                           ##
+##                                                                   ##
+## Group          | Variables                    | Threshold         ##
+## ---------------|------------------------------|-----------------  ##
+## Physiology     | heart rate                   | 1 or more         ##
+##                | respiratory rate             |                   ##
+##                | O2 Saturation                |                   ##
+## ---------------|------------------------------|-----------------  ##
+## This Pregnancy | Multiple Pregnancy           | > 50%             ##
+##                | Travel                       |                   ##
+##                | Immobility                   |
+## ---------------|------------------------------|-----------------  ##
+## Medical History| Family history of thrombosis | > 50%             ##
+##                | History of Varicose Veins    |                   ##
+##                | History of IV Drug use       |                   ##
+##                | Known thrombophilia          |                   ##
+##                | Surgery                      |                   ##
+##                | Injury                       |                   ##
+##                | Medical problems             |                   ##
+#######################################################################
+physiology.miss.n <- dipep %>%
+                     dplyr::select(heart.rate, respiratory.rate, o2.saturation) %>%
+                     is.na() %>%
+                     rowSums()
+pregnancy.miss.n <- dipep %>%
+                    dplyr::select(multiple.preg, travel, immobil) %>%
+                    is.na() %>%
+                    rowSums()
+med.hist.miss.n  <- dipep %>%
+                   dplyr::select(history.thrombosis,
+                                 history.veins,
+                                 history.iv.drug,
+                                 thrombo,
+                                 surgery,
+                                 injury,
+                                 medical.probs) %>%
+                    is.na() %>%
+                    rowSums()
+missing <- cbind(dipep$screening,
+                 physiology.miss.n,
+                 pregnancy.miss.n,
+                 med.hist.miss.n) %>%
+           as.data.frame()
+names(missing) <- gsub('V1', 'screening', names(missing))
+missing <- mutate(missing,
+                  physiology.miss.n = as.numeric(physiology.miss.n),
+                  pregnancy.miss.n  = as.numeric(pregnancy.miss.n),
+                  med.hist.miss.n   = as.numeric(med.hist.miss.n))
+rm(physiology.miss.n, pregnancy.miss.n, med.hist.miss.n)
+dipep <- left_join(dipep,
+                   missing) %>%
+         mutate(physiology.exclude = ifelse(physiology.miss.n > 1,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                pregnancy.exclude  = ifelse(pregnancy.miss.n / 3 > 0.5,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                med.hist.exclude   = ifelse(med.hist.miss.n / 7 > 0.5,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                missing.exclude    = ifelse(physiology.exclude == TRUE |
+                                            pregnancy.exclude  == TRUE |
+                                            med.hist.exclude   == TRUE,
+                                            yes = TRUE,
+                                            no  = FALSE))
 
 #######################################################################
 ## Database Specification                                            ##
