@@ -2,7 +2,7 @@
 
 ```{r results_rpart_continuous, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
 ## Repeat using continuous variables
-continuous <- dipep_rpart(df             = dipep,
+rpart.continuous <- dipep_rpart(df             = dipep,
                           classification = 'first.st',
                           predictor      = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
                                              'o2.saturation', 'respiratory.rate', 'bmi',
@@ -34,7 +34,7 @@ The [dendrogram](https://en.wikipedia.org/wiki/Dendrogram) below shows the full,
 
 
 ```{r results_rpart_continuous_plot, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, eval = TRUE}
-prp(continuous$rpart.full,
+prp(rpart.continuous$rpart.full,
     type        = prp.opts$type,
     extra       = prp.opts$extra,
     box.palette = prp.opts$box.palette,
@@ -48,17 +48,17 @@ prp(continuous$rpart.full,
 This model, because it was forced to fit a full model that categorised everyone, is over-fitted, meaning its generalisability and application in individuals not in the cohort will be poor.  To improve the generalisability of the model we now prune the tree by selecting a more permisive value for the complexity parameter (`cp`).  It is recommended that a decision tree is pruned using the Complexity Parameter that corresponds to the minimum cross-validated error (`xerror` in the table below) (@hastie2003 Section 7.10 pg244).  The Complexity Parameter (`cp`) along with associated cross-validated error (`xerror`) is tabulated below and a plot of the two parameters is shown.
 
 ```{r results_rpart_continuous_output, echo = FALSE, cache = FALSE, results = 'rmarkdown', eval = TRUE}
-continuous$rpart.full.cp %>%
+rpart.continuous$rpart.full.cp %>%
     kable(caption = 'Summary table for over-fitted full model.',
           col.names = c('Complexity Parameter', 'Splits', 'Relative Error', 'Cross-Validated Error', 'Cross-Validated SD'))
-plotcp(continuous$rpart.full)
+plotcp(rpart.continuous$rpart.full)
 
 ```
 
-The Complexity Parameter (CP) at the step/number of splits (`r continuous$rpart.full.splits.min`) that corresponds to the minimum cross-validated error is `r continuous$rpart.full.cp.min`.
+The Complexity Parameter (CP) at the step/number of splits (`r rpart.continuous$rpart.full.splits.min`) that corresponds to the minimum cross-validated error is `r rpart.continuous$rpart.full.cp.min`.
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
-prp(continuous$pruned.min,
+prp(rpart.continuous$pruned.min,
     type        = prp.opts$type,
     extra       = prp.opts$extra,
     box.palette = prp.opts$box.palette,
@@ -71,20 +71,42 @@ prp(continuous$pruned.min,
 
 We now need to calculate the sensitivity and specificity.  There is no single value for either of these metrics since individuals have a predicted probability of classification in the range of $0 < p < 1$ rather than a binary classification.  One approach to viewing the trade-off of the two is to plot the Specificity v's the Sensitivity in what is known as a [Receiver Operating Characteristics (ROC) Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) and calculating the [Area Under the Curve (AUC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) which captures the probability of correctly classifying true positives compared to true negatives.
 
-**IMPORTANT** - Dichotomising individuals predicted probability of disease is required in order to calculate the Sensitivity, Specificity point estimates nor the Positive or Negative Predictive Value.  For now a cut-point of `p = 0.5` has been used, but this is unlikely to be optimal for any of the trees.
 
 ```{r results_rpart_continuous_roc_min, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
-continuous$roc.min$plot
+rpart.continuous$roc.min$plot
 
 ```
 
 The question arises though whether it is possible to utilise a simpler, more parsimonious tree with less splits, yet still retain the ability to make useful and accurate predictions.  To this end the ROC curve for each step/split in the recursive partitioning process are plotted below and a table of the performance statistics is provided for each step.
 
+**IMPORTANT** - Dichotomising individuals predicted probability of disease is required in order to calculate the Sensitivity, Specificity point estimates nor the Positive or Negative Predictive Value.  For now a cut-point of `p = 0.5` has been used, but this is unlikely to be optimal for any of the trees.
+
 ```{r results_rpart_continuous_roc_all, echo = FALSE, cache = FALSE, fig_width = 10, fig_height = 10, warnings = FALSE, eval = TRUE}
-continuous$roc.all$plot
-continuous$roc.all$summary.stats %>%
+rpart.continuous$roc.all$plot
+rpart.continuous$roc.all$summary.stats %>%
     kable(caption = paste0('Predictive statistics fo sequential splits of Recursive Partitioning using a cut point of p = ',
-                           continuous$threshold,
+                           rpart.continuous$threshold,
                            ','))
+
+```
+
+```{r results_rpart_continuous_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = TRUE}
+## Animation of ROC curve
+ani.record(reset = TRUE)
+par(bg = 'white')
+splits <- dplyr::select(rpart.continuous$predicted, term) %>%
+         unique() %>% nrow()
+for(i in seq(1:splits)){
+    t <- dplyr::filter(rpart.continuous$predicted, term == i) %>%
+         ggplot(aes(d = D, m = M)) +
+         geom_roc() +
+         ggtitle(paste0('ROC Curves for Recursive Partitioning split ', i)) +
+        style_roc() + theme_bw()
+    print(t)
+    ani.record()
+}
+oopts = ani.options(interval = 0.5)
+ani.replay()
+rm(t)
 
 ```
