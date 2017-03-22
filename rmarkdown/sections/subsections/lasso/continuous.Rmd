@@ -16,16 +16,17 @@ predictor <- c('age', 'bmi', 'smoking', 'pregnancies.over', 'pregnancies.under',
                'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
                'o2.saturation', 'bp.systolic', 'bp.diastolic', 'ecg.cat', 'xray.cat')
 lasso.continuous <- dipep_glmnet_orig(df          = dipep,
-                                       classification = classification,
-                                       predictor      = predictor,
-                                       alpha          = 1,
-                                       model          = 'LASSO : Pre-Categorised Variables',
-                                       exclude        = NULL,
-                                       exclude.non.recruited = TRUE,
-                                       exclude.dvt           = TRUE,
-                                       exclude.anti.coag     = FALSE,
-                                       legend                = TRUE,
-                                       threshold             = 0.3)
+                                      classification = classification,
+                                      predictor      = predictor,
+                                      alpha          = 1,
+                                      model          = 'LASSO : Pre-Categorised Variables',
+                                      exclude        = NULL,
+                                      exclude.non.recruited = TRUE,
+                                      exclude.dvt           = TRUE,
+                                      exclude.anti.coag     = FALSE,
+                                      exclude.missing       = TRUE,
+                                      legend                = TRUE,
+                                      threshold             = 0.3)
 
 
 ```
