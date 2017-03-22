@@ -39,7 +39,7 @@ dipep_glm <- function(df              = .data,
         df <- df[!(df$screening %in% exclude),]
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
-    ## Remove non-recruited and DVT
+    ## Remove non-recruited, DVT or missing
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
     }
