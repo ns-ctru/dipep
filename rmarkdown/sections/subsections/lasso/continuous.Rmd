@@ -73,3 +73,22 @@ lasso.continuous$lasso.cv.summary.stats.all %>%
                            '.'))
 
 ```
+
+```{r results_lasso_continuous_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = TRUE}
+## Animation of ROC curve
+ani.record(reset = TRUE)
+par(bg = 'white')
+for(i in seq(1:length(lasso.continuous$lasso.cv$lambda))){
+    t <- dplyr::filter(lasso.continuous$lasso.cv.predicted, term == i) %>%
+         ggplot(aes(d = D, m = M)) +
+         geom_roc() +
+         ggtitle(paste0('ROC Curves for LASSO step ', i)) +
+        style_roc() + theme_bw()
+    print(t)
+    ani.record()
+}
+oopts = ani.options(interval = 0.5)
+ani.replay()
+rm(t)
+
+```
