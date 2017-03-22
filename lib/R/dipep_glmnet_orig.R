@@ -19,6 +19,7 @@
 #' @param exclude.non.recuirted Logical indicator of whether to exclude \code{group == 'Non recruited'}.
 #' @param exclude.dvt Logical indicator of whether to exclude \code{group == 'Diagnosed DVT'}.
 #' @param exclude.anti.coag Logical indicator of whether to exclude individuals who had received anti-coagulents prior to blood samples being taken (default is \code{FALSE} and it is only relevant to set to \code{TRUE} when analysing certain biomarkers).
+#' @param exclude.missing Exclude individuals flagged as having excessive missing data.
 #' @param legend Logical indicator of whether to include a legend in the LASSO normalisation plot.
 #' @param threshold Threshold for dichotomisation of predicted probabilities (by default \code{0.5} is used for classification so responses match class, this permits alternative thresholds to be passed to \code{dipep_roc()}).
 #'
@@ -34,6 +35,7 @@ dipep_glmnet_orig <- function(df              = dipep,
                               exclude.non.recruited = TRUE,
                               exclude.dvt       = TRUE,
                               exclude.anti.coag = FALSE,
+                              exclude.missing   = FALSE,
                               legend            = FALSE,
                               threshold         = 0.5,
                               ...){
@@ -42,12 +44,15 @@ dipep_glmnet_orig <- function(df              = dipep,
     if(!is.null(exclude)){
         df <- df[!(df$screening %in% exclude),]
     }
-    ## Remove non-recruited and DVT
+    ## Remove non-recruited, DVT or missing
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    if(exclude.missing == TRUE){
+        df <- dplyr::filter(df, missing.exclude == FALSE)
     }
     ## Remove biomarker data for those on anticoagulents
     if(exclude.anti.coag == TRUE){
