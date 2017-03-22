@@ -65,9 +65,15 @@ dipep_plot <- function(df        = dipep,
                      ddimer.innovance                         = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = ddimer.innovance),
+                     ddimer.innovance.pooled                  = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.innovance.pooled),
                      ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = ddimer.elisa),
+                     ddimer.elisa.pooled                      = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = ddimer.elisa.pooled),
                      thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = thrombin.generation.lag.time),
@@ -80,9 +86,6 @@ dipep_plot <- function(df        = dipep,
                      thrombin.generation.time.to.peak         = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = thrombin.generation.time.to.peak),
-                     ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
-                                                                       yes = NA,
-                                                                       no  = ddimer.elisa),
                      plasmin.antiplasmin                      = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = plasmin.antiplasmin),
@@ -105,7 +108,9 @@ dipep_plot <- function(df        = dipep,
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
     ## print('Debug 1')
+    dim(df) %>% print()
     df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
+    dim(df) %>% print()
     ## Evaulate the passed arguemnts to set the axis labels
     ## print('Debug 2')
     ## lazyeval::lazy_dots(...) %>% print()
@@ -188,7 +193,9 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('prothombin.time',                          'to.plot', names(df))
     names(df) <- gsub('clauss.fibrinogen',                        'to.plot', names(df))
     names(df) <- gsub('ddimer.innovance',                         'to.plot', names(df))
+    names(df) <- gsub('ddimer.innovance.pooled',                  'to.plot', names(df))
     names(df) <- gsub('ddimer.elisa',                             'to.plot', names(df))
+    names(df) <- gsub('ddimer.elisa.pooled',                      'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.lag.time',             'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.endogenous.potential', 'to.plot', names(df))
     names(df) <- gsub('thrombin.generation.time.to.peak',         'to.plot', names(df))
