@@ -1,0 +1,41 @@
+#### PERC Score
+
+The PERC Score for study participants (@kline2004) is summarised below.  It should be noted that the PERC score is designed to be used when a diagnosis of PE is being considered but the risk is low (as described in the [online calculator](http://www.mdcalc.com/perc-rule-pulmonary-embolism/)).  A PERC Score $>= 1$ is taken as indicative of PE.
+```{r results_existing_perc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+## Summarise
+perc <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'PERC Score',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 first.st, perc.pe, perc)
+## Plots
+perc$bar.chart
+perc$likert.plot
+## Tables
+kable(perc$summary.table,
+      caption = 'Summary of PERC Score',
+      digits = 3)
+kable(perc$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on PERC Score.')
+kable(perc$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the PERC Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+The PERC Score has also been analysed using the calculated percs rather than dichotomisation, the ROC curve below shows its performance treating the PERC Score as a categorical variable.
+
+```{r results_existing_perc_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+perc$roc.cat.plot
+
+```
+
+Whilst the ROC curve below shows its performance treating the PERC Score as a continuous variable.
+
+```{r results_existing_perc_extra2, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+perc$roc.con.plot
+
+```
