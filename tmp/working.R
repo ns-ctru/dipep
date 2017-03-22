@@ -1,7 +1,27 @@
+## 2017-03-22 - Developing animated plots
+for(i in seq(1:length(lasso.categorical$lasso.cv$lambda))){
+    print(i)
+    t <- dplyr::filter(lasso.categorical$lasso.cv.predicted, term == i) %>%
+        ggplot(aes(d = D, m = M)) +
+        geom_roc() +
+        ggtitle(paste0('ROC Curves for LASSO step ', i)) +
+        style_roc() + theme_bw()
+    print(t)
+}
+
 ## 2017-03-15 - Developing dipep_rpart() function to
 check <- dipep_rpart(df       = dipep,
                      classification = 'first.st',
-                     predictor      = c('age', 'bmi'),
+                     predictor      = c('age.cat', 'smoking', 'temperature.cat', 'bp.diastolic.cat', 'bp.systolic.cat',
+                                        'o2.saturation.cat', 'respiratory.rate.cat', 'bmi.cat',
+                                        'pregnancies.under.cat', 'pregnancies.over.cat', 'prev.preg.problem',
+                                        'presenting.features.pleuritic',
+                                        'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
+                                        'presenting.features.sob.rest', 'presenting.features.haemoptysis',
+                                        'presenting.features.cough', 'presenting.features.syncope',
+                                        'presenting.features.palpitations', 'presenting.features.other',
+                                        'surgery', 'cesarean', 'thromb.event',
+                                        'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'),
                      exclude.non.recruited = TRUE,
                      exclude.dvt           = TRUE,
                      legend                = FALSE,
