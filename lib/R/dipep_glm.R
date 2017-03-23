@@ -46,6 +46,31 @@ dipep_glm <- function(df              = .data,
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
     }
+    ## If DVT are NOT being excluded then this will be biomarker data that is
+    ## being analysed and we therefore need to INCLUDE DVT WITH PE
+    else{
+        df <- df %>%
+              mutate(first.st  = as.character(first.st),
+                     second.st = as.character(second.st),
+                     third.st  = as.character(third.st),
+                     fourth.st = as.character(fourth.st)) %>%
+              mutate(first.st = case_when(substr(.$screening, 1, 1) == 'D'  ~ 'PE',
+                                          substr(.$screening, 1, 1) != 'D'  ~ .$first.st),
+                     second.st = case_when(substr(.$screening, 1, 1) == 'D' ~ 'PE',
+                                           substr(.$screening, 1, 1) != 'D' ~ .$second.st),
+                     third.st = case_when(substr(.$screening, 1, 1) == 'D'  ~ 'PE',
+                                          substr(.$screening, 1, 1) != 'D'  ~ .$third.st),
+                     fourth.st = case_when(substr(.$screening, 1, 1) == 'D' ~ 'PE',
+                                           substr(.$screening, 1, 1) != 'D' ~ .$fourth.st)) %>%
+              mutate(first.st = factor(first.st,
+                                       levels = c('No PE', 'PE')),
+                     second.st = factor(second.st,
+                                        levels = c('No PE', 'PE')),
+                     third.st = factor(third.st,
+                                       levels = c('No PE', 'PE')),
+                     fourth.st = factor(fourth.st,
+                                        levels = c('No PE', 'PE')))
+    }
     if(exclude.missing == TRUE){
         df <- dplyr::filter(df, missing.exclude == FALSE)
     }
@@ -214,7 +239,7 @@ dipep_glm <- function(df              = .data,
                   dplyr::filter(use == TRUE) %>%
                   dplyr::select(-use)
     results$df$obs <- rownames(results$df)
-    ## Test the model
+    ## Test the model (converting the grouping factor back to numeric)
     results$fitted <- glm(.formula,
                           data   = results$df,
                           family = 'binomial')
