@@ -3,7 +3,7 @@
 biomarker.excl.anti.coag <- list()
 ## Prothombin (Time)
 biomarker.excl.anti.coag$prothombin.time <- dipep_glm(df = dipep,
-                                                      exclude.dvt           = TRUE,
+                                                      exclude.dvt           = FALSE,
                                                       exclude.non.recruited = TRUE,
                                                       exclude.anti.coag     = TRUE,
                                                       exclude.missing       = FALSE,
@@ -12,7 +12,7 @@ biomarker.excl.anti.coag$prothombin.time <- dipep_glm(df = dipep,
                                                       model          = 'Prothombin (Time)')
 ## APTT
 biomarker.excl.anti.coag$aptt <- dipep_glm(df = dipep,
-                                           exclude.dvt           = TRUE,
+                                           exclude.dvt           = FALSE,
                                            exclude.non.recruited = TRUE,
                                            exclude.anti.coag     = TRUE,
                                            exclude.missing       = FALSE,
@@ -21,7 +21,7 @@ biomarker.excl.anti.coag$aptt <- dipep_glm(df = dipep,
                                            model          = 'APTT')
 ## Claus Fibrinogen
 biomarker.excl.anti.coag$clauss.fibrinogen <- dipep_glm(df = dipep,
-                                                        exclude.dvt           = TRUE,
+                                                        exclude.dvt           = FALSE,
                                                         exclude.non.recruited = TRUE,
                                                         exclude.anti.coag     = TRUE,
                                                         exclude.missing       = FALSE,
@@ -30,7 +30,7 @@ biomarker.excl.anti.coag$clauss.fibrinogen <- dipep_glm(df = dipep,
                                                         model          = 'Clauss Fibrinogen')
 ## D-Dimer - Innovance
 biomarker.excl.anti.coag$ddimer.innovance <- dipep_glm(df = dipep,
-                                                       exclude.dvt           = TRUE,
+                                                       exclude.dvt           = FALSE,
                                                        exclude.non.recruited = TRUE,
                                                        exclude.anti.coag     = TRUE,
                                                        exclude.missing       = FALSE,
@@ -39,7 +39,7 @@ biomarker.excl.anti.coag$ddimer.innovance <- dipep_glm(df = dipep,
                                                        model          = 'D-Dimer (Innovance)')
 ## D-Dimer - ELISA
 biomarker.excl.anti.coag$ddimer.elisa <- dipep_glm(df = dipep,
-                                                   exclude.dvt           = TRUE,
+                                                   exclude.dvt           = FALSE,
                                                    exclude.non.recruited = TRUE,
                                                    exclude.anti.coag     = TRUE,
                                                    exclude.missing       = FALSE,
@@ -48,7 +48,7 @@ biomarker.excl.anti.coag$ddimer.elisa <- dipep_glm(df = dipep,
                                                    model          = 'D-Dimer (ELISA)')
 # Thombin Generation - Lag Time
 biomarker.excl.anti.coag$thrombin.generation.lag.time <- dipep_glm(df = dipep,
-                                                                   exclude.dvt           = TRUE,
+                                                                   exclude.dvt           = FALSE,
                                                                    exclude.non.recruited = TRUE,
                                                                    exclude.anti.coag     = TRUE,
                                                                    exclude.missing       = FALSE,
@@ -57,7 +57,7 @@ biomarker.excl.anti.coag$thrombin.generation.lag.time <- dipep_glm(df = dipep,
                                                                    model          = 'Thrombin Generation (Lag Time)')
 # Thombin Generation - Endogenous Potential
 biomarker.excl.anti.coag$thrombin.generation.endogenous.potential <- dipep_glm(df = dipep,
-                                                                               exclude.dvt           = TRUE,
+                                                                               exclude.dvt           = FALSE,
                                                                                exclude.non.recruited = TRUE,
                                                                                exclude.anti.coag     = TRUE,
                                                                                exclude.missing       = FALSE,
@@ -66,7 +66,7 @@ biomarker.excl.anti.coag$thrombin.generation.endogenous.potential <- dipep_glm(d
                                                                                model          = 'Thrombin Generation (Endogenous Potential)')
 # Thombin Generation - Peak
 biomarker.excl.anti.coag$thrombin.generation.peak <- dipep_glm(df = dipep,
-                                                               exclude.dvt           = TRUE,
+                                                               exclude.dvt           = FALSE,
                                                                exclude.non.recruited = TRUE,
                                                                exclude.anti.coag     = TRUE,
                                                                exclude.missing       = FALSE,
@@ -75,7 +75,7 @@ biomarker.excl.anti.coag$thrombin.generation.peak <- dipep_glm(df = dipep,
                                                                model          = 'Thrombin Generation (Peak)')
 # Thombin Generation - Time to Peak
 biomarker.excl.anti.coag$thrombin.generation.time.to.peak <- dipep_glm(df = dipep,
-                                                                       exclude.dvt           = TRUE,
+                                                                       exclude.dvt           = FALSE,
                                                                        exclude.non.recruited = TRUE,
                                                                        exclude.anti.coag     = TRUE,
                                                                        exclude.missing       = FALSE,
@@ -84,7 +84,7 @@ biomarker.excl.anti.coag$thrombin.generation.time.to.peak <- dipep_glm(df = dipe
                                                                        model          = 'Thrombin Generation (Time to Peak)')
 # Plasmin - Antiplasmin
 biomarker.excl.anti.coag$plasmin.antiplasmin <- dipep_glm(df = dipep,
-                                                          exclude.dvt           = TRUE,
+                                                          exclude.dvt           = FALSE,
                                                           exclude.non.recruited = TRUE,
                                                           exclude.anti.coag     = TRUE,
                                                           exclude.missing       = FALSE,
@@ -93,7 +93,7 @@ biomarker.excl.anti.coag$plasmin.antiplasmin <- dipep_glm(df = dipep,
                                                           model          = 'Plasmin (Antiplasmin)')
 # Prothombin Fragments
 biomarker.excl.anti.coag$prothrombin.fragments <- dipep_glm(df = dipep,
-                                                            exclude.dvt           = TRUE,
+                                                            exclude.dvt           = FALSE,
                                                             exclude.non.recruited = TRUE,
                                                             exclude.anti.coag     = TRUE,
                                                             exclude.missing       = FALSE,
@@ -102,7 +102,7 @@ biomarker.excl.anti.coag$prothrombin.fragments <- dipep_glm(df = dipep,
                                                             model          = 'PF 1 + 2')
 # Soluble Tissue Factor
 biomarker.excl.anti.coag$tissue.factor <- dipep_glm(df = dipep,
-                                                    exclude.dvt           = TRUE,
+                                                    exclude.dvt           = FALSE,
                                                     exclude.non.recruited = TRUE,
                                                     exclude.anti.coag     = TRUE,
                                                     exclude.missing       = FALSE,
@@ -111,7 +111,7 @@ biomarker.excl.anti.coag$tissue.factor <- dipep_glm(df = dipep,
                                                     model          = 'Soluble Tissue Factor')
 # Troponin
 biomarker.excl.anti.coag$troponin <- dipep_glm(df = dipep,
-                                               exclude.dvt           = TRUE,
+                                               exclude.dvt           = FALSE,
                                                exclude.non.recruited = TRUE,
                                                exclude.anti.coag     = TRUE,
                                                exclude.missing       = FALSE,
@@ -120,7 +120,7 @@ biomarker.excl.anti.coag$troponin <- dipep_glm(df = dipep,
                                                model          = 'Troponin')
 # NPPB
 biomarker.excl.anti.coag$nppb <- dipep_glm(df = dipep,
-                                           exclude.dvt           = TRUE,
+                                           exclude.dvt           = FALSE,
                                            exclude.non.recruited = TRUE,
                                            exclude.anti.coag     = TRUE,
                                            exclude.missing       = FALSE,
@@ -129,7 +129,7 @@ biomarker.excl.anti.coag$nppb <- dipep_glm(df = dipep,
                                            model          = 'Natriuertic Peptide')
 # Mrproanp
 biomarker.excl.anti.coag$mrproanp <- dipep_glm(df = dipep,
-                                               exclude.dvt           = TRUE,
+                                               exclude.dvt           = FALSE,
                                                exclude.non.recruited = TRUE,
                                                exclude.anti.coag     = TRUE,
                                                exclude.missing       = FALSE,
@@ -138,7 +138,7 @@ biomarker.excl.anti.coag$mrproanp <- dipep_glm(df = dipep,
                                                model          = 'MRProANP')
 ## D-Dimer (ELISA) Pooled
 biomarker.excl.anti.coag$ddimer.elisa.pooled <- dipep_glm(df = dipep,
-                                               exclude.dvt           = TRUE,
+                                               exclude.dvt           = FALSE,
                                                exclude.non.recruited = TRUE,
                                                exclude.anti.coag     = TRUE,
                                                exclude.missing       = FALSE,
@@ -147,7 +147,7 @@ biomarker.excl.anti.coag$ddimer.elisa.pooled <- dipep_glm(df = dipep,
                                                model          = 'D-Dimer (ELISA) - Pooled')
 ## D-Dimer (Innovance) Pooled
 biomarker.excl.anti.coag$ddimer.innovance.pooled <- dipep_glm(df = dipep,
-                                               exclude.dvt           = TRUE,
+                                               exclude.dvt           = FALSE,
                                                exclude.non.recruited = TRUE,
                                                exclude.anti.coag     = TRUE,
                                                exclude.missing       = FALSE,
