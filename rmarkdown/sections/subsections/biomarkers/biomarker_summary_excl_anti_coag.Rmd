@@ -177,6 +177,35 @@ ggplot(aes(x = gestation, y = ddimer.innovance, colour = first.st)) +
 
 ```
 
+###### D-Dimer (Innovance) - Pooled
+
+```{r  demographics_biomarker_excl_anti_coag_ddimer_innovan_pooled_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = TRUE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'D-Dimer (INNOVANCE) - Pooled',
+                      title.class           = 'Primary Classification',
+                      first.st, ddimer.innovance.pooled)
+to.plot$histogram
+to.plot$scatter
+rm(to.plot)
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of D-Dimer (Innovance) and UKOSS assays by Primary Classification')
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = gestation, y = ddimer.innovance.pooled, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer - Innovance (mg/l) (Pooled)') +
+    theme_bw() +
+    ggtitle('D-Dimer - Innovance (Pooled) v Gestation') +
+    labs(colour = 'Primary Classification')
+
+```
+
 ###### D-Dimer (ELISA)
 
 ```{r  demographics_biomarker_excl_anti_coag_ddimer_elisa_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
@@ -201,6 +230,35 @@ ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
     xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l)') +
     theme_bw() +
     ggtitle('D-Dimer - ELISA v Gestation') +
+    labs(colour = 'Primary Classification')
+
+```
+
+###### D-Dimer (ELISA) - Pooled
+
+```{r  demographics_biomarker_excl_anti_coag_ddimer_elisa_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = TRUE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'D-Dimer (ELISA) - Pooled',
+                      title.class           = 'Primary Classification',
+                      first.st, ddimer.elisa.pooled)
+to.plot$histogram
+to.plot$scatter
+rm(to.plot)
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of D-Dimer (ELISA) and UKOSS assays by Primary Classification')
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE') & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l) (Pooled)') +
+    theme_bw() +
+    ggtitle('D-Dimer - ELISA (Pooled) v Gestation') +
     labs(colour = 'Primary Classification')
 
 ```
