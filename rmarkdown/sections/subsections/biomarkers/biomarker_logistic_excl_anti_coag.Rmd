@@ -28,7 +28,7 @@ biomarker.excl.anti.coag$clauss.fibrinogen <- dipep_glm(df = dipep,
                                                         classification = 'first.st',
                                                         predictor      = 'clauss.fibrinogen',
                                                         model          = 'Clauss Fibrinogen')
-## D-Dimer - Innovan
+## D-Dimer - Innovance
 biomarker.excl.anti.coag$ddimer.innovance <- dipep_glm(df = dipep,
                                                        exclude.dvt           = TRUE,
                                                        exclude.non.recruited = TRUE,
@@ -137,7 +137,7 @@ biomarker.excl.anti.coag$mrproanp <- dipep_glm(df = dipep,
                                                predictor      = 'mrproanp',
                                                model          = 'MRProANP')
 ## D-Dimer (ELISA) Pooled
-biomarker.all$ddimer.elisa.pooled <- dipep_glm(df = dipep,
+biomarker.excl.anti.coag$ddimer.elisa.pooled <- dipep_glm(df = dipep,
                                                exclude.dvt           = TRUE,
                                                exclude.non.recruited = TRUE,
                                                exclude.anti.coag     = TRUE,
@@ -146,7 +146,7 @@ biomarker.all$ddimer.elisa.pooled <- dipep_glm(df = dipep,
                                                predictor      = 'ddimer.elisa.pooled',
                                                model          = 'D-Dimer (ELISA) - Pooled')
 ## D-Dimer (Innovance) Pooled
-biomarker.all$ddimer.elisa.pooled <- dipep_glm(df = dipep,
+biomarker.excl.anti.coag$ddimer.innovance.pooled <- dipep_glm(df = dipep,
                                                exclude.dvt           = TRUE,
                                                exclude.non.recruited = TRUE,
                                                exclude.anti.coag     = TRUE,
@@ -160,7 +160,9 @@ biomarker.excl.anti.coag$tidied <- rbind(biomarker.excl.anti.coag$prothombin.tim
                           biomarker.excl.anti.coag$aptt$tidied,
                           biomarker.excl.anti.coag$clauss.fibrinogen$tidied,
                           biomarker.excl.anti.coag$ddimer.innovance$tidied,
+                          biomarker.excl.anti.coag$ddimer.innovance.pooled$tidied,
                           biomarker.excl.anti.coag$ddimer.elisa$tidied,
+                          biomarker.excl.anti.coag$ddimer.elisa.pooled$tidied,
                           biomarker.excl.anti.coag$thrombin.generation.lag.time$tidied,
                           biomarker.excl.anti.coag$thrombin.generation.endogenous.potential$tidied,
                           biomarker.excl.anti.coag$thrombin.generation.peak$tidied,
@@ -175,7 +177,9 @@ biomarker.excl.anti.coag$glance <- rbind(biomarker.excl.anti.coag$prothombin.tim
                           biomarker.excl.anti.coag$aptt$glance,
                           biomarker.excl.anti.coag$clauss.fibrinogen$glance,
                           biomarker.excl.anti.coag$ddimer.innovance$glance,
+                          biomarker.excl.anti.coag$ddimer.innovance.pooled$glance,
                           biomarker.excl.anti.coag$ddimer.elisa$glance,
+                          biomarker.excl.anti.coag$ddimer.elisa.pooled$glance,
                           biomarker.excl.anti.coag$thrombin.generation.lag.time$glance,
                           biomarker.excl.anti.coag$thrombin.generation.endogenous.potential$glance,
                           biomarker.excl.anti.coag$thrombin.generation.peak$glance,
@@ -191,7 +195,9 @@ biomarker.excl.anti.coag$predicted <- rbind(biomarker.excl.anti.coag$prothombin.
                              biomarker.excl.anti.coag$aptt$predicted,
                              biomarker.excl.anti.coag$clauss.fibrinogen$predicted,
                              biomarker.excl.anti.coag$ddimer.innovance$predicted,
+                             biomarker.excl.anti.coag$ddimer.innovance.pooled$predicted,
                              biomarker.excl.anti.coag$ddimer.elisa$predicted,
+                             biomarker.excl.anti.coag$ddimer.elisa.pooled$predicted,
                              biomarker.excl.anti.coag$thrombin.generation.lag.time$predicted,
                              biomarker.excl.anti.coag$thrombin.generation.endogenous.potential$predicted,
                              biomarker.excl.anti.coag$thrombin.generation.peak$predicted,
@@ -240,8 +246,6 @@ rm(to.sum)
 threshold <- 0.15
 biomarker.excl.anti.coag$roc.other <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
                                                 to.plot = c('clauss.fibrinogen',
-                                                            'ddimer.innovance',
-                                                            'ddimer.elisa',
                                                             'plasmin.antiplasmin',
                                                             'tissue.factor',
                                                             'troponin',
@@ -249,6 +253,14 @@ biomarker.excl.anti.coag$roc.other <- dipep_roc(df      = biomarker.excl.anti.co
                                                 title    = 'Other Biomarkers',
                                                 threshold = threshold)
 biomarker.excl.anti.coag$roc.other$plot
+biomarker.excl.anti.coag$roc.ddimer <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
+                                                to.plot = c('ddimer.innovance',
+                                                            'ddimer.innovance.pooled',
+                                                            'ddimer.elisa',
+                                                            'ddimer.elisa.pooled'),
+                                                title    = 'D-Dimer Biomarkers',
+                                                threshold = threshold)
+biomarker.excl.anti.coag$roc.ddimer$plot
 biomarker.excl.anti.coag$roc.thrombin <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
                                                    to.plot = c('aptt',
                                                                'prothombin.time',
