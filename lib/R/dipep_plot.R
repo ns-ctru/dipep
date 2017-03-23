@@ -43,9 +43,6 @@ dipep_plot <- function(df        = dipep,
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
     }
-    else if(exclude.dvt == FALSE){
-        group <- dplyr::select(df, group)
-    }
     if(exclude.missing == TRUE){
         df <- dplyr::filter(df, missing.exclude == FALSE)
     }
