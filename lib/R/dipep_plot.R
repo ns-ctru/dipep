@@ -34,11 +34,17 @@ dipep_plot <- function(df        = dipep,
         ## df <- dplyr::filter_(df, ('screening' %in% !exclude))
     }
     ## Remove non-recruited, DVT and/or missing
+    ##
+    ## If DVT is FALSE then need to assign the classification variable to be
+    ## DVT for plotting.
     if(exclude.non.recruited == TRUE){
         df <- dplyr::filter(df, group != 'Non recruited')
     }
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
+    }
+    else if(exclude.dvt == FALSE){
+        group <- dplyr::select(df, group)
     }
     if(exclude.missing == TRUE){
         df <- dplyr::filter(df, missing.exclude == FALSE)
@@ -108,76 +114,10 @@ dipep_plot <- function(df        = dipep,
     ## Subset the data for the two variables of interest, the user specified
     ## classification and the user specified score (as '...' arguments)
     ## print('Debug 1')
+    ## Extract screening for merging with the rest of the data
+    screening <- dplyr::select(df, screening)
+    ## Subset variables
     df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
-    ## Evaulate the passed arguemnts to set the axis labels
-    ## print('Debug 2')
-    ## lazyeval::lazy_dots(...) %>% print()
-    ## ## dots <- match.call(expand.dots = TRUE)
-    ## ## for(i in seq_along(dots)){
-    ## ##       cat(i, ": name=", names(dots)[i], "\n", sep="")
-    ## ##       print(dots[[i]])
-    ## ## }
-    ## ## dots <- paste0('c(', ..., ')')
-    ## ## dots <- parse(text = dots)[[1]]
-    ## print('Debug 3')
-    ## ## dim(dots) %>% print()
-    ## ## typeof(dots) %>% print()
-    ## print('Debug 4')
-    ## if(do.call(grepl('aprothombin'), ...))){
-    ##     print('We are Here')
-    ##     title.biomarker <- 'Aprothombin (sec)'
-    ## }
-    ## else if(grepl('prothombin.time', dots)){
-    ##     title.biomarker <- 'Prothombin Time (sec)'
-    ## }
-    ## else if(grepl('clauss.fibrinogen', dots)){
-    ##     title.biomarker <- 'Clauss Fibrinogen (g/l)'
-    ## }
-    ## else if(grepl('ddimer.innovan', dots)){
-    ##     title.biomarker <- 'D-Dimer (mg/l)'
-    ## }
-    ## else if(grepl('ddimer.elisa', dots)){
-    ##     title.biomarker <- 'D-Dimer (ng/l)'
-    ## }
-    ## else if(grepl('thrombin.generation.lag.time', dots)){
-    ##     title.biomarker <- 'Thrombin Generation - Lag Time (min)'
-    ## }
-    ## else if(grepl('thrombin.generation.endogenous.potential', dots)){
-    ##     title.biomarker <- 'Thrombin Generation Endogenous Potential (nM x min)'
-    ## }
-    ## else if(grepl('thrombin.generation.time.to.peak', dots)){
-    ##     title.biomarker <- 'Thrombin Generation - Time to Peak (min)'
-    ## }
-    ## else if(grepl('thrombin.generation.peak', dots)){
-    ##     title.biomarker <- 'Thrombin Generation - Peak (nM)'
-    ## }
-    ## else if(grepl('plasmin.antiplasmin', dots)){
-    ##     title.biomarker <- 'Plasmin Antiplasmin (sec)'
-    ## }
-    ## else if(grepl('natriuertic.peptide', dots)){
-    ##     title.biomarker <- 'Natriuertic Peptide (pg/ml)'
-    ## }
-    ## else if(grepl('mrproanp', dots)){
-    ##     title.biomarker <- 'MRproANP (pmol/l)'
-    ## }
-    ## if(grepl('first.st', dots)){
-    ##     xtitle.class <- 'Primary Classification'
-    ## }
-    ## else if(grepl('second.st', dots)){
-    ##     xtitle.class <- 'Secondary Classification'
-    ## }
-    ## else if(grepl('third.st', dots)){
-    ##     xtitle.class <- 'Tertiary Classification'
-    ## }
-    ## else if(grepl('fourth.st', dots)){
-    ##     xtitle.class <- 'Fourth Classification'
-    ## }
-    ## else if(grepl('primary.dm', dots)){
-    ##     xtitle.class <- 'Primary Classification (Data Management)'
-    ## }
-    ## else if(grepl('secondary.dm', dots)){
-    ##     xtitle.class <- 'Secondary Classification (Data Management)'
-    ## }
     ## Rename variables so that they are standardised and I don't have to mess
     ## around with Standard Evaluation v's Non Standard Evaluation any more!
     names(df) <- gsub('group',                                    'class',   names(df))
@@ -216,11 +156,25 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('gestation',                                'to.plot', names(df))
     ## Convert classification to character and replace NA with 'Exclude' so it aligns
     ## with others expectation of what to see.
-    df <- mutate(df,
-                 class = as.character(class),
-                 class = ifelse(is.na(class),
-                                yes = 'Exclude',
-                                no  = class))
+    if(exclude.dvt == TRUE){
+        df <- mutate(df,
+                     class = as.character(class),
+                     class = ifelse(is.na(class),
+                                    yes = 'Exclude',
+                                    no  = class))
+    }
+    else if(exclude.dvt == FALSE){
+        df <- cbind(screening,
+                    df)
+        head(df) %>% print()
+        df <- mutate(df,
+                     class = as.character(class))
+        df <- df %>%
+              mutate(class = case_when(is.na(.$class) & substr(.$screening, 1, 1) == 'D' ~ 'DVT',
+                                       is.na(.$class) & substr(.$screening, 1, 1) != 'D' ~ 'Exclude',
+                                       !is.na(.$class)                                   ~ .$class))
+        head(df) %>% print()
+    }
     ## Generate histogram
     results$histogram <- ggplot(df, aes(x    = to.plot,
                                         fill = class)) +
