@@ -36,6 +36,25 @@ dipep_summarise <- function(df                    = dipep,
     if(exclude.dvt == TRUE){
         df <- dplyr::filter(df, group != 'Diagnosed DVT')
     }
+    else{
+        df <- df %>%
+            mutate(first.st  = as.character(first.st),
+                   second.st = as.character(second.st),
+                   third.st  = as.character(third.st),
+                   fourth.st = as.character(fourth.st)) %>%
+            mutate(first.st = case_when(is.na(.$first.st) & substr(.$screening, 1, 1) == 'D' ~ 'DVT',
+                                        is.na(.$first.st) & substr(.$screening, 1, 1) != 'D' ~ 'Exclude',
+                                        !is.na(.$first.st)                                   ~ .$first.st),
+                   second.st = case_when(is.na(.$second.st) & substr(.$screening, 1, 1) == 'D' ~ 'DVT',
+                                         is.na(.$second.st) & substr(.$screening, 1, 1) != 'D' ~ 'Exclude',
+                                         !is.na(.$second.st)                                   ~ .$second.st),
+                   third.st = case_when(is.na(.$third.st) & substr(.$screening, 1, 1) == 'D' ~ 'DVT',
+                                        is.na(.$third.st) & substr(.$screening, 1, 1) != 'D' ~ 'Exclude',
+                                        !is.na(.$third.st)                                   ~ .$third.st),
+                   fourth.st = case_when(is.na(.$fourth.st) & substr(.$screening, 1, 1) == 'D' ~ 'DVT',
+                                         is.na(.$fourth.st) & substr(.$screening, 1, 1) != 'D' ~ 'Exclude',
+                                         !is.na(.$fourth.st)                                   ~ .$fourth.st))
+    }
     if(exclude.missing == TRUE){
         df <- dplyr::filter(df, missing.exclude == FALSE)
     }
@@ -138,10 +157,10 @@ dipep_summarise <- function(df                    = dipep,
                           Measurement = gsub('aptt', 'APTT', Measurement),
                           Measurement = gsub('prothombin.time', 'Prothombin (Time)', Measurement),
                           Measurement = gsub('clauss.fibrinogen', 'Clauss Fibrinogen', Measurement),
-                          Measurement = gsub('ddimer.innovance', 'D-Dimer (Innovance)', Measurement),
                           Measurement = gsub('ddimer.innovance.pooled', 'D-Dimer (Innovance) - Pooled', Measurement),
-                          Measurement = gsub('ddimer.elisa', 'D-Dimer (ELISA)', Measurement),
+                          Measurement = gsub('ddimer.innovance', 'D-Dimer (Innovance)', Measurement),
                           Measurement = gsub('ddimer.elisa.pooled', 'D-Dimer (ELISA) - Pooled', Measurement),
+                          Measurement = gsub('ddimer.elisa', 'D-Dimer (ELISA)', Measurement),
                           Measurement = gsub('thrombin.generation.lag.time', 'Thrombin Generation (Lag Time)', Measurement),
                           Measurement = gsub('thrombin.generation.endogenous.potential', 'Thrombin Generation (Endogenous Potential)', Measurement),
                           Measurement = gsub('thrombin.generation.peak', 'Thrombin Generation (Peak)', Measurement),
