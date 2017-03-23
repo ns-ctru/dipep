@@ -62,6 +62,12 @@ summary.biomarkers.all$fourth.st <- dipep_summarise(df           = dipep,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
                                                 tissue.factor, troponin, nppb, mrproanp,
                                                 ddimer.elisa.pooled, ddimer.innovance.pooled)
+## Numbers for D-dimer pooled sections
+ukoss.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Diagnosed PE' & !is.na(d.dimer)) %>% nrow()
+ukoss.ddimer.missing    <- dplyr::filter(dipep, group == 'Diagnosed PE' & is.na(d.dimer))  %>% nrow()
+ukoss.n <- dplyr::filter(dipep, group == 'Diagnosed PE') %>% nrow()
+
+```
 
 ```
 
