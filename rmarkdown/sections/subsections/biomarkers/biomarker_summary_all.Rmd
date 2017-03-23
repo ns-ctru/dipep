@@ -18,8 +18,8 @@ summary.biomarkers.all$first.st <- dipep_summarise(df           = dipep,
                                           thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                           thrombin.generation.peak, thrombin.generation.time.to.peak,
                                           ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                          tissue.factor, troponin,
-                                          nppb, mrproanp)
+                                          tissue.factor, troponin, nppb, mrproanp,
+                                          ddimer.elisa.pooled, ddimer.innovance.pooled)
 summary.biomarkers.all$second.st <- dipep_summarise(df           = dipep,
                                                 grouping     = 'second.st',
                                                 group.as.col = TRUE,
@@ -32,8 +32,8 @@ summary.biomarkers.all$second.st <- dipep_summarise(df           = dipep,
                                                 thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                 thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                tissue.factor, troponin,
-                                                nppb, mrproanp)
+                                                tissue.factor, troponin, nppb, mrproanp,
+                                                ddimer.elisa.pooled, ddimer.innovance.pooled)
 summary.biomarkers.all$third.st <- dipep_summarise(df           = dipep,
                                                grouping     = 'third.st',
                                                group.as.col = TRUE,
@@ -46,8 +46,8 @@ summary.biomarkers.all$third.st <- dipep_summarise(df           = dipep,
                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                               tissue.factor, troponin,
-                                               nppb, mrproanp)
+                                               tissue.factor, troponin, nppb, mrproanp,
+                                               ddimer.elisa.pooled, ddimer.innovance.pooled)
 summary.biomarkers.all$fourth.st <- dipep_summarise(df           = dipep,
                                                 grouping     = 'fourth.st',
                                                 group.as.col = TRUE,
@@ -60,8 +60,8 @@ summary.biomarkers.all$fourth.st <- dipep_summarise(df           = dipep,
                                                 thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                 thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                tissue.factor, troponin,
-                                                nppb, mrproanp)
+                                                tissue.factor, troponin, nppb, mrproanp,
+                                                ddimer.elisa.pooled, ddimer.innovance.pooled)
 
 ```
 
