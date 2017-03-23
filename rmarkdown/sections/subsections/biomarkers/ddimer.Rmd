@@ -12,21 +12,29 @@ D-Dimer assays from the multitude of independant hospitals/laboratories from whi
 There are two sets of results as Kiran performed D-Dimer assays using two different methods/kits, ELISA and Innovance.  The various UKOSS assays have therefore been combined with both and the analyses repeated.
 
 
-```{r ddimer_summary, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-summary.biomarkers$ddimer.pooled <- dipep_summarise(df           = dipep,
-                                                    grouping     = 'first.st',
-                                                    group.as.col = TRUE,
-                                                    exclude               = NULL,
-                                                    exclude.non.recruited = TRUE,
-                                                    exclude.dvt           = TRUE,
-                                                    exclude.anti.coag     = FALSE,
-                                                    exclude.missing       = FALSE,
-                                                    ddimer.elisa.pooled, ddimer.innovance.pooled)
-
+```{r ddimer_summary, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = FALSE}
+ddimer.pooled.all <- dipep_summarise(df           = dipep,
+                                     grouping     = 'first.st',
+                                     group.as.col = TRUE,
+                                     exclude               = NULL,
+                                     exclude.non.recruited = TRUE,
+                                     exclude.dvt           = TRUE,
+                                     exclude.anti.coag     = FALSE,
+                                     exclude.missing       = FALSE,
+                                     ddimer.elisa.pooled, ddimer.innovance.pooled)
+ddimer.pooled.excl.anti.coag <- dipep_summarise(df           = dipep,
+                                                grouping     = 'first.st',
+                                                group.as.col = TRUE,
+                                                exclude               = NULL,
+                                                exclude.non.recruited = TRUE,
+                                                exclude.dvt           = TRUE,
+                                                exclude.anti.coag     = TRUE,
+                                                exclude.missing       = FALSE,
+                                                ddimer.elisa.pooled, ddimer.innovance.pooled)
 ```
 
 
-###### ELISA  {.tabset .tabset-fade .tabset-pills}
+###### ELISA {.tabset .tabset-fade .tabset-pills}
 
 *NB* No standardisation has been performed because reference ranges for UKOSS D-Dimer measurements are not available.
 ####### All
@@ -44,7 +52,7 @@ to.plot <- dipep_plot(df      = dipep,
 to.plot$histogram
 to.plot$scatter
 rm(to.plot)
-dplyr::filter(summary.biomarkers.all$ddimer.pooled, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
+dplyr::filter(summary.biomarkers.all$first.st, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
     dplyr::select(-Measurement) %>%
         kable(caption = 'Summary of D-Dimer (ELISA) and UKOSS assays by Primary Classification')
 
@@ -55,7 +63,7 @@ dplyr::filter(summary.biomarkers.all$ddimer.pooled, Measurement == 'D-Dimer (ELI
 biomarker.all$ddimer.elisa.pooled$tidied %>%
     kable(caption   = 'Logistic Regression for D-Dimer (ELISA) pooled with UKOSS D-Dimer (Mixed)',
           col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.all$ddimer.elisa.pooled$auc
+biomarker.all$ddimer.elisa.pooled$roc
 
 ```
 
@@ -74,7 +82,7 @@ to.plot <- dipep_plot(df      = dipep,
 to.plot$histogram
 to.plot$scatter
 rm(to.plot)
-dplyr::filter(summary.biomarkers.excl.anti.coag$ddimer.pooled, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
     dplyr::select(-Measurement) %>%
         kable(caption = 'Summary of D-Dimer (ELISA) and UKOSS assays by Primary Classification')
 
@@ -85,12 +93,12 @@ dplyr::filter(summary.biomarkers.excl.anti.coag$ddimer.pooled, Measurement == 'D
 biomarker.excl.anti.coag$ddimer.elisa.pooled$tidied %>%
     kable(caption   = 'Logistic Regression for D-Dimer (ELISA) pooled with UKOSS D-Dimer (Mixed)',
           col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.excl.anti.coag$ddimer.elisa.pooled$auc
+biomarker.excl.anti.coag$ddimer.elisa.pooled$roc
 
 ```
 
 
-###### Innovance
+###### Innovance {.tabset .tabset-fade .tabset-pills}
 
 *NB* No standardisation has been performed because reference ranges for UKOSS D-Dimer measurements are not available.
 
@@ -109,7 +117,7 @@ to.plot <- dipep_plot(df      = dipep,
 to.plot$histogram
 to.plot$scatter
 rm(to.plot)
-dplyr::filter(summary.biomarkers.all$ddimer.pooled, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
+dplyr::filter(summary.biomarkers.all$first.st, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
     dplyr::select(-Measurement) %>%
         kable(caption = 'Summary of D-Dimer (Innovance) and UKOSS assays by Primary Classification')
 
@@ -120,7 +128,7 @@ dplyr::filter(summary.biomarkers.all$ddimer.pooled, Measurement == 'D-Dimer (Inn
 biomarker.all$ddimer.innovance.pooled$tidied %>%
     kable(caption   = 'Logistic Regression for D-Dimer (Innovance) pooled with UKOSS D-Dimer (Mixed)',
           col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.all$ddimer.innovance.pooled$auc
+biomarker.all$ddimer.innovance.pooled$roc
 
 ```
 
@@ -139,7 +147,7 @@ to.plot <- dipep_plot(df      = dipep,
 to.plot$histogram
 to.plot$scatter
 rm(to.plot)
-dplyr::filter(summary.biomarkers.excl.anti.coag$ddimer.pooled, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
     dplyr::select(-Measurement) %>%
         kable(caption = 'Summary of D-Dimer (Innovance) and UKOSS assays by Primary Classification')
 
@@ -150,6 +158,6 @@ dplyr::filter(summary.biomarkers.excl.anti.coag$ddimer.pooled, Measurement == 'D
 biomarker.excl.anti.coag$ddimer.innovance.pooled$tidied %>%
     kable(caption   = 'Logistic Regression for D-Dimer (Innovance) pooled with UKOSS D-Dimer (Mixed)',
           col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.excl.anti.coag$ddimer.innovance.pooled$auc
+biomarker.excl.anti.coag$ddimer.innovance.pooled$roc
 
 ```
