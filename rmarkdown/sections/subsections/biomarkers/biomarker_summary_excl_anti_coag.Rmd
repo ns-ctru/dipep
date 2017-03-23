@@ -179,6 +179,10 @@ ggplot(aes(x = gestation, y = ddimer.innovance, colour = first.st)) +
 
 ###### D-Dimer (Innovance) - Pooled
 
+D-Dimer assays from the multitude of independant hospitals/laboratories from which the UKOSS cohort (N = `r ukoss.ddimer.nonmissing`) are combined with the assays performed on samples from the Suspected Pulmonary Emoblism cohort at Kings College London by [Kiran Parmar](mailto:kiran.parmar@kcl.ac.uk).  It is important to bear in mind that of the total `r ukoss.n` individuals included in the study `r ukoss.ddimer.missing` are missing data for any form of D-Dimer assay in the data provided by UKOSS.
+
+**NB** This is far from ideal, assays on the samples from Suspected Pulmonary Embolism were standardised because as mentioned in @murphy2015 *D-dimer concentrations are instrument-dependent; assays vary because the D-dimer analyte is not a simple structure with a uniform composition*.  It has been suggested that the laboratory specific reference ranges are used to standardise measurements across all sites, but to date such reference ranges are not available so the data is analysed "as is" and this caveat serves as a warning against over-interpretting the results.
+
 ```{r  demographics_biomarker_excl_anti_coag_ddimer_innovan_pooled_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
@@ -202,6 +206,20 @@ ggplot(aes(x = gestation, y = ddimer.innovance.pooled, colour = first.st)) +
     xlab('Gestation (days)') + ylab('D-Dimer - Innovance (mg/l) (Pooled)') +
     theme_bw() +
     ggtitle('D-Dimer - Innovance (Pooled) v Gestation') +
+    labs(colour = 'Primary Classification')
+
+```
+
+A subset of Suspected PE individuals have both their reported D-Dimer assayed at the time and the Innovance assay performed by Kiran.  The correlation between the two is plotted below.
+
+```{r  demographics_biomarker_excl_anti_coag_ddimer_innovan_pooled_primary_class_corr, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
+dplyr::filter(dipep, !is.na(d.dimer) & !is.na(ddimer.innovance) & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = ddimer.innovance, y = d.dimer / 1000, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('D-Dimer - Innovance (mg/l)') + ylab('D-Dimer - Misc Laboratory (mg/l)') +
+    theme_bw() +
+    ggtitle('D-Dimer - Innovance v D-Dimer Misc Laboratory') +
     labs(colour = 'Primary Classification')
 
 ```
@@ -236,7 +254,11 @@ ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
 
 ###### D-Dimer (ELISA) - Pooled
 
-```{r  demographics_biomarker_excl_anti_coag_ddimer_elisa_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
+D-Dimer assays from the multitude of independant hospitals/laboratories from which the UKOSS cohort (N = `r ukoss.ddimer.nonmissing`) are combined with the assays performed on samples from the Suspected Pulmonary Emoblism cohort at Kings College London by [Kiran Parmar](mailto:kiran.parmar@kcl.ac.uk).  It is important to bear in mind that of the total `r ukoss.n` individuals included in the study `r ukoss.ddimer.missing` are missing data for any form of D-Dimer assay in the data provided by UKOSS.
+
+**NB** This is far from ideal, assays on the samples from Suspected Pulmonary Embolism were standardised because as mentioned in @murphy2015 *D-dimer concentrations are instrument-dependent; assays vary because the D-dimer analyte is not a simple structure with a uniform composition*.  It has been suggested that the laboratory specific reference ranges are used to standardise measurements across all sites, but to date such reference ranges are not available so the data is analysed "as is" and this caveat serves as a warning against over-interpretting the results.
+
+```{r  demographics_biomarker_excl_anti_coag_ddimer_elisa_pooled_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
@@ -259,6 +281,20 @@ ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
     xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l) (Pooled)') +
     theme_bw() +
     ggtitle('D-Dimer - ELISA (Pooled) v Gestation') +
+    labs(colour = 'Primary Classification')
+
+```
+
+A subset of Suspected PE individuals have both their reported D-Dimer assayed at the time and the Innovance assay performed by Kiran.  The correlation between the two is plotted below
+
+```{r  demographics_biomarker_excl_anti_coag_ddimer_innovan_pooled_primary_class_corr, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
+dplyr::filter(dipep, !is.na(d.dimer) & !is.na(ddimer.elisa) & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = ddimer.elisa, y = d.dimer, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('D-Dimer - ELISA (ng/l)') + ylab('D-Dimer - Misc Laboratory (ng/l)') +
+    theme_bw() +
+    ggtitle('D-Dimer - ELISA v D-Dimer Misc Laboratory') +
     labs(colour = 'Primary Classification')
 
 ```
