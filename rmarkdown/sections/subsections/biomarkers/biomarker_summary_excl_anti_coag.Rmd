@@ -11,57 +11,57 @@ summary.biomarkers.excl.anti.coag$first.st <- dipep_summarise(df           = dip
                       	                  group.as.col = TRUE,
                                           exclude               = NULL,
                                           exclude.non.recruited = TRUE,
-                                          exclude.dvt           = TRUE,
+                                          exclude.dvt           = FALSE,
                                           exclude.anti.coag     = TRUE,
                                           exclude.missing       = FALSE,
                       	                  prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
                                           thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                           thrombin.generation.peak, thrombin.generation.time.to.peak,
                                           ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                          tissue.factor, troponin,
-                                          nppb, mrproanp)
+                                          tissue.factor, troponin, nppb, mrproanp,
+                                          ddimer.elisa.pooled, ddimer.innovance.pooled)
 summary.biomarkers.excl.anti.coag$second.st <- dipep_summarise(df           = dipep,
                                                 grouping     = 'second.st',
                                                 group.as.col = TRUE,
                                                 exclude               = NULL,
                                                 exclude.non.recruited = TRUE,
-                                                exclude.dvt           = TRUE,
+                                                exclude.dvt           = FALSE,
                                                 exclude.anti.coag     = TRUE,
                                                 exclude.missing       = FALSE,
                                                 prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
                                                 thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                 thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                tissue.factor, troponin,
-                                                nppb, mrproanp)
+                                                tissue.factor, troponin, nppb, mrproanp,
+                                                ddimer.elisa.pooled, ddimer.innovance.pooled)
 summary.biomarkers.excl.anti.coag$third.st <- dipep_summarise(df           = dipep,
                                                grouping     = 'third.st',
                                                group.as.col = TRUE,
                                                exclude               = NULL,
                                                exclude.non.recruited = TRUE,
-                                               exclude.dvt           = TRUE,
+                                               exclude.dvt           = FALSE,
                                                exclude.anti.coag     = TRUE,
                                                exclude.missing       = FALSE,
                                                prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                               tissue.factor, troponin,
-                                               nppb, mrproanp)
+                                               tissue.factor, troponin, nppb, mrproanp,
+                                               ddimer.elisa.pooled, ddimer.innovance.pooled)
 summary.biomarkers.excl.anti.coag$fourth.st <- dipep_summarise(df           = dipep,
                                                 grouping     = 'fourth.st',
                                                 group.as.col = TRUE,
                                                 exclude               = NULL,
                                                 exclude.non.recruited = TRUE,
-                                                exclude.dvt           = TRUE,
+                                                exclude.dvt           = FALSE,
                                                 exclude.anti.coag     = TRUE,
                                                 exclude.missing       = FALSE,
                                                 prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
                                                 thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
                                                 thrombin.generation.peak, thrombin.generation.time.to.peak,
                                                 ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
-                                                tissue.factor, troponin,
-                                                nppb, mrproanp)
+                                                tissue.factor, troponin, nppb, mrproanp,
+                                                ddimer.elisa.pooled, ddimer.innovance.pooled)
 
 ## Numbers for D-dimer pooled sections
 ukoss.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Diagnosed PE' & !is.na(d.dimer) & exclude.anti.coag == 'No') %>% nrow()
@@ -76,7 +76,7 @@ ukoss.n <- dplyr::filter(dipep, group == 'Diagnosed PE') %>% nrow()
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot         = 'aptt (min)',
@@ -104,7 +104,7 @@ ggplot(aes(x = gestation, y = aptt, colour = first.st)) +
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Prothombin (min)',
@@ -132,7 +132,7 @@ ggplot(aes(x = gestation, y = prothombin.time, colour = first.st)) +
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Clauss Fibrinogen (g/l)',
@@ -160,7 +160,7 @@ ggplot(aes(x = gestation, y = clauss.fibrinogen, colour = first.st)) +
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'D-Dimer - Innovance (mg/l)',
@@ -192,7 +192,7 @@ D-Dimer assays from the multitude of independant hospitals/laboratories from whi
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot         = 'D-Dimer (INNOVANCE) - Pooled',
@@ -221,7 +221,7 @@ A subset of Suspected PE individuals have both their reported D-Dimer assayed at
 dplyr::filter(dipep, !is.na(d.dimer) & !is.na(ddimer.innovance) & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = ddimer.innovance, y = d.dimer / 1000, colour = first.st)) +
     geom_point() +
-    geom_smooth(method = 'loess') +
+    ## geom_smooth(method = 'loess') +
     xlab('D-Dimer - Innovance (mg/l)') + ylab('D-Dimer - Misc Laboratory (mg/l)') +
     theme_bw() +
     ggtitle('D-Dimer - Innovance v D-Dimer Misc Laboratory') +
@@ -235,7 +235,7 @@ ggplot(aes(x = ddimer.innovance, y = d.dimer / 1000, colour = first.st)) +
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'D-Dimer - ELISA (ng/l)',
@@ -267,7 +267,7 @@ D-Dimer assays from the multitude of independant hospitals/laboratories from whi
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot         = 'D-Dimer (ELISA) - Pooled',
@@ -292,11 +292,11 @@ ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
 
 A subset of Suspected PE individuals have both their reported D-Dimer assayed at the time and the Innovance assay performed by Kiran.  The correlation between the two is plotted below
 
-```{r  demographics_biomarker_excl_anti_coag_ddimer_innovan_pooled_primary_class_corr, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
+```{r  demographics_biomarker_excl_anti_coag_ddimer_elisa_pooled_primary_class_corr, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
 dplyr::filter(dipep, !is.na(d.dimer) & !is.na(ddimer.elisa) & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = ddimer.elisa, y = d.dimer, colour = first.st)) +
     geom_point() +
-    geom_smooth(method = 'loess') +
+    ## geom_smooth(method = 'loess') +
     xlab('D-Dimer - ELISA (ng/l)') + ylab('D-Dimer - Misc Laboratory (ng/l)') +
     theme_bw() +
     ggtitle('D-Dimer - ELISA v D-Dimer Misc Laboratory') +
@@ -310,7 +310,7 @@ ggplot(aes(x = ddimer.elisa, y = d.dimer, colour = first.st)) +
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Thrombin Generation - Lag Time (min)',
@@ -338,7 +338,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.lag.time, colour = first.st)) 
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Thrombin Generation - Endogenous Potential (min)',
@@ -366,7 +366,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.endogenous.potential, colour =
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Thrombin Generation - Time to Peak (min)',
@@ -394,7 +394,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.time.to.peak, colour = first.s
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Thrombin Generation - Peak (nM)',
@@ -422,7 +422,7 @@ ggplot(aes(x = gestation, y = thrombin.generation.peak, colour = first.st)) +
 to.plot <- dipep_plot(df      = dipep,
                       exclude = NULL,
                       exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
+                      exclude.dvt           = FALSE,
                       exclude.anti.coag     = TRUE,
                       exclude.missing       = FALSE,
                       title.to.plot       = 'Plasmin Antiplasmin (sec)',
