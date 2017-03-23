@@ -201,7 +201,7 @@ ggplot(aes(x = gestation, y = ddimer.innovance.pooled, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('D-Dimer - Innovance (mg/l) (Pooled)') +
     theme_bw() +
-    ggtitle('D-Dimer - Innovance v Gestation') +
+    ggtitle('D-Dimer - Innovance (Pooled) v Gestation') +
     labs(colour = 'Primary Classification')
 
 ```
@@ -260,7 +260,7 @@ ggplot(aes(x = gestation, y = ddimer.elisa.pooled, colour = first.st)) +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l) (Pooled)') +
     theme_bw() +
-    ggtitle('D-Dimer - ELISA v Gestation') +
+    ggtitle('D-Dimer - ELISA (Pooled) v Gestation') +
     labs(colour = 'Primary Classification')
 
 
