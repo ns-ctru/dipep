@@ -1574,7 +1574,7 @@ dipep <- dipep %>%
                                              yes = ddimer.elisa,
                                              no  = d.dimer),
                 ddimer.innovance.pooled = ifelse(!is.na(ddimer.innovance),
-                                                 yes = ddimer.innovance,
+                                                 yes = ddimer.innovance / 10000,
                                                  no  = d.dimer))
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
