@@ -63,6 +63,11 @@ summary.biomarkers.excl.anti.coag$fourth.st <- dipep_summarise(df           = di
                                                 tissue.factor, troponin,
                                                 nppb, mrproanp)
 
+## Numbers for D-dimer pooled sections
+ukoss.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Diagnosed PE' & !is.na(d.dimer) & exclude.anti.coag == 'No') %>% nrow()
+ukoss.ddimer.missing    <- dplyr::filter(dipep, group == 'Diagnosed PE' & is.na(d.dimer) & exclude.anti.coag == 'No')  %>% nrow()
+ukoss.n <- dplyr::filter(dipep, group == 'Diagnosed PE') %>% nrow()
+
 ```
 
 ###### APTT
