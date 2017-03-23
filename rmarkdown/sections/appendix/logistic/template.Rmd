@@ -1,10 +1,10 @@
-```{r appendix_table_template, echo = FALSE, cache = FALSE, results = 'asis', fig_height = 6, fig_width = 6, eval = TRUE}
+```{r appendix_table_template, echo = FALSE, cache = FALSE, results = 'markup', fig_height = 6, fig_width = 6, eval = TRUE}
 kable(logistic$template$table,
       col.names = c('Predictor', 'Levels', 'No PE', 'PE'))
 
 ```
 
-```{r appendix_logisitc_template, echo = FALSE, cache = FALSE, results = 'asis', fig_height = 6, fig_width = 6, eval = TRUE}
+```{r appendix_logisitc_template, echo = FALSE, cache = FALSE, results = 'markup', fig_height = 6, fig_width = 6, eval = TRUE}
 summary(logistic$template$fitted)
 
 ```
