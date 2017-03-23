@@ -5,7 +5,12 @@ kable(logistic$template$table,
 ```
 
 ```{r appendix_logisitc_template, echo = FALSE, cache = FALSE, results = 'markup', fig_height = 6, fig_width = 6, eval = TRUE}
-summary(logistic$template$fitted)
+## summary(logistic$template$fitted)
+dplyr::select(logistic$template$tidied, -model) %>%
+    kable(col.names = c('Term', 'Estimate', 'Standard Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI'))
+
+dplyr::select(logistic$template$glance, -model) %>%
+    kable(col.names = c('Null Deviance', 'DF (Null)', 'Log-Likelihood', 'Statistic', 'AIC', 'BIC', 'DF (Residual)'))
 
 ```
 
