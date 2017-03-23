@@ -1,3 +1,4 @@
+Added plot of KCL D-dimer v' recorded d-dimer
 ```{r ddimer_prep, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 ukoss.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Diagnosed PE' & !is.na(d.dimer)) %>% nrow()
 ukoss.ddimer.missing    <- dplyr::filter(dipep, group == 'Diagnosed PE' & is.na(d.dimer))  %>% nrow()
