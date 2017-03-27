@@ -1798,8 +1798,8 @@ dipep <- dipep %>%
                                                 yes = 0,
                                                 no  = 2),
                 simplified.heart.rate = case_when(.$heart.rate < 75                       ~ 0,
-                                                  .$heart.rate >= 75 & .$heart.rate < 94  ~ 3,
-                                                  .$heart.rate >= 94                      ~ 5),
+                                                  .$heart.rate >= 75 & .$heart.rate <= 94 ~ 3,
+                                                  .$heart.rate > 94                       ~ 5),
                 simplified.heart.rate = ifelse(is.na(simplified.heart.rate),
                                                yes = 0,
                                                no  = simplified.heart.rate),
@@ -2356,7 +2356,9 @@ dipep <- left_join(dipep,
 dipep <- dipep %>%
          mutate(vte = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'PE'    ~ 'VTE',
                            .$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'No PE' ~ 'No VTE',
-                           .$group %in% c('Diagnosed DVT')                                        ~ 'VTE'))
+                           .$group %in% c('Diagnosed DVT')                                        ~ 'VTE'),
+                vte = factor(vte,
+                             levels = c('No VTE', 'VTE')))
 
 #######################################################################
 ## Database Specification                                            ##
