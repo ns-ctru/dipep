@@ -1,3 +1,5 @@
+### Data Completeness {.tabset .tabset-fade .tabset-pills}
+
 #### Raw Data
 
 The raw data is summarised below.  This is *before* applying any rules such as "*if a Yes/No response is not present assume No*", the pattern of missing data after applying these rules is presented in the [next tab](#section-tidied-data).  The first set of tables summarise for each 'set' of variables (physiology, medical history, this pregnany and previous pregnancy) how many individuals in each group the number of these which are missing.
@@ -44,6 +46,11 @@ dipep_incomplete(df = dipep.raw,
 
 ```
 
+```{r missing_data_raw_exclude, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+table(dipep$group, dipep$missing.exclude) %>%
+    kable(col.names = c('Include', 'Exclude'))
+
+```
 
 ```{r missing_data_raw_summary, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
 ## Count the number of observations of each
@@ -142,13 +149,28 @@ missing.physiology <- dplyr::select(dipep,
                                     o2.saturation) %>%
                       is.na() %>%
                       rowSums()
-
-dipep_incomplete(df = dipep,
-                 id = screening,
-                 history.thrombosis, history.veins, history.iv.drug, thrombo, surgery, injury, thrombosis, medical.probs) %>%
-    dipep_table_prop(df = ., rows = 'group', columns = 'n_missing', prop.by = 'rows', percent = TRUE)
-
-  kable(caption = paste0('Number of missing variables for previous pregnancies (if any) (Previous Pregnancies >= 24 weeks, Previous Pregnancies <= 24 weeks, Previous Pregnancy Problems) by group. ', 'Table Generated : ', Sys.time()))
+missing.previous.pregnancy <- dplyr::select(dipep,
+                                            pregnancies.over,
+                                            pregnancies.under,
+                                            prev.preg.problem) %>%
+                      is.na() %>%
+                      rowSums()
+summary <- cbind(dipep$group,
+                 dipep$first.st,
+                 missing.previous,
+                 missing.this.pregnancy,
+                 missing.physiology,
+                 missing.previous.pregnancy) %>%
+    as.data.frame()
+names(summary) <- c('group', 'first.st', 'history', 'this.pregnancy', 'physiology', 'previous.pregnancy')
+summary <- mutate(summary,
+                   first.st = factor(first.st,
+                                    levels = c(1, 2),
+                                    labels = c('No PE', 'PE')))
+by.group <- group_by(summary, group, history, this.pregnancy, physiology, previous.pregnancy) %>%
+            summarise(n = n()) %>%
+            ungroup() %>%
+            melt()
 
 ```
 
