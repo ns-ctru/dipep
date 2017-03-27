@@ -2059,7 +2059,7 @@ dipep <- dipep %>%
                 ##                              .$trimester != 2 & .$heart.rate <= 100 ~ FALSE,
                 ##                              .$trimester != 2 & .$heart.rate > 100  ~ TRUE,
                 ##                              .$trimester == 2 & .$heart.rate <= 110 ~ FALSE,
-             ##                              .$trimester == 2 & .$heart.rate > 110  ~ TRUE),
+                ##                              .$trimester == 2 & .$heart.rate > 110  ~ TRUE),
                 delphi.heart.rate = ifelse(heart.rate.cat == 'Low',
                                            yes = FALSE,
                                            no  = TRUE),
@@ -2348,6 +2348,15 @@ dipep <- left_join(dipep,
                                             med.hist.exclude   == TRUE,
                                             yes = TRUE,
                                             no  = FALSE))
+#######################################################################
+## VTE                                                               ##
+#######################################################################
+## Derive a VTE indicator to analyse biomarkers                      ##
+#######################################################################
+dipep <- dipep %>%
+         mutate(vte = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'PE'    ~ 'VTE',
+                           .$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'No PE' ~ 'No VTE',
+                           .$group %in% c('Diagnosed DVT')                                        ~ 'VTE'))
 
 #######################################################################
 ## Database Specification                                            ##
