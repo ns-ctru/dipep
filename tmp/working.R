@@ -1,3 +1,13 @@
+## 2017-03-27 - Incorporating DVT with PE for 'vte' analyses of biomarkers
+dipep_glm(df = dipep,
+                                           exclude.dvt           = FALSE,
+                                           exclude.non.recruited = TRUE,
+                                           exclude.anti.coag     = FALSE,
+                                           exclude.missing       = FALSE,
+                                           classification = 'vte',
+                                           predictor      = 'prothombin.time',
+                                           model          = 'Prothombin (Time)')
+
 ## 2017-03-22 - Developing animated plots
 for(i in seq(1:length(lasso.categorical$lasso.cv$lambda))){
     print(i)
