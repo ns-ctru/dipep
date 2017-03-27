@@ -155,7 +155,11 @@ dipep_roc <- function(df        = logistic$predicted,
                       mutate(classification  = case_when(.$D == 'PE'    & .$m == 1 ~ 'true_positive',
                                                          .$D == 'No PE' & .$m == 0 ~ 'true_negative',
                                                          .$D == 'No PE' & .$m == 1 ~ 'false_positive',
-                                                         .$D == 'PE'    & .$m == 0 ~ 'false_negative'))
+                                                         .$D == 'PE'    & .$m == 0 ~ 'false_negative',
+                                                         .$D == 'VTE'    & .$m == 1 ~ 'true_positive',
+                                                         .$D == 'No VTE' & .$m == 0 ~ 'true_negative',
+                                                         .$D == 'No VTE' & .$m == 1 ~ 'false_positive',
+                                                         .$D == 'VTE'    & .$m == 0 ~ 'false_negative'))
     ## By term summarise counts of
     results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
                              dcast(term ~ classification) %>%
