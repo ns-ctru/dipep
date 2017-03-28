@@ -95,6 +95,9 @@ dipep_glm <- function(df              = .data,
     else if(classification == 'secondary.dm'){
         df <- dplyr::filter(df, !is.na(secondary.dm))
     }
+    else if(classification == 'vte'){
+        df <- dplyr::filter(df, !is.na(vte))
+    }
     ## Remove biomarker data for those on anticoagulents
     if(exclude.anti.coag == TRUE){
         df <- mutate(df,
@@ -228,7 +231,12 @@ dipep_glm <- function(df              = .data,
                             predictor = gsub('medical.complication', 'Medical Complication (Delphi reviewed)', predictor),
                             predictor = gsub('obstetric.complication', 'Obstetric Complication (Delphi reviewed)', predictor),
                             predictor = gsub('mrproanp', 'MRproANP', predictor))
-    results$table <- results$table[c('predictor', 'levels', 'No PE', 'PE')]
+    if(classification != 'vte'){
+        results$table <- results$table[c('predictor', 'levels', 'No PE', 'PE')]
+    }
+    else{
+        results$table <- results$table[c('predictor', 'levels', 'No VTE', 'VTE')]
+    }
     ## Meaningful label for predictor
     ## Filter the data frame, need to remove all Non-recruited and
     ## those who can not be classified as PE/No PE
@@ -333,6 +341,10 @@ dipep_glm <- function(df              = .data,
                              term = gsub('surgeryNo', 'No Surgery in previous 4 weeks', term),
                              term = gsub('thromboYes', 'Known Thrombophilia', term),
                              term = gsub('thromboNo', 'No Known Thrombophilia', term),
+                             term = gsub('thrombo.eventYes', 'Previous Thrombotic Event', term),
+                             term = gsub('thrombo.eventNo', 'No Previous Thrombotic Event', term),
+                             term = gsub('thromboprophylaxisYes', 'Thromboprophylaxis', term),
+                             term = gsub('thromboprophylaxisNo', 'No Thromboprophylaxis', term),
                              term = gsub('multiple.pregYes', 'Multiple Pregnancy', term),
                              term = gsub('multiple.pregNo', 'No Multiple Pregnancy', term),
                              term = gsub('travelYes', 'Long-haul travel during pregnancy', term),
