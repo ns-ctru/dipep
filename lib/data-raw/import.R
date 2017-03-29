@@ -1962,8 +1962,8 @@ dipep <- dipep %>%
                 perc.pe = factor(perc.pe,
                                  levels = c('No PERC PE', 'PERC PE')))
 ## Wells
-dipep <- mutate(dipep,
-                wells.dvt = ifelse(dvt == 'Yes',
+dipep <- dipep %>%
+         mutate(wells.dvt = ifelse(dvt == 'Yes',
                                    yes = 3,
                                    no  = 0),
                 wells.dvt = ifelse(is.na(dvt),
@@ -1989,7 +1989,7 @@ dipep <- mutate(dipep,
                 ##                           yes = 0,
                 ##                           no  = 1.5),
                 wells.heart.rate = case_when(.$heart.rate.cat == 'Low'  ~ 0,
-                                            .$heart.rate.cat == 'High' ~ 1.5),
+                                             .$heart.rate.cat == 'High' ~ 1.5),
                 wells.immobil = ifelse(immobil == 'No' | is.na(immobil),
                                        yes = 0,
                                        no  = 1.5),
