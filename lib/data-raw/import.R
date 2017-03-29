@@ -1289,6 +1289,10 @@ t <- merge(t1,
     merge(.,
           master$cdr.supplementary,
           by    = c('screening', 'group'),
+          all.x = TRUE) %>%
+    merge(.,
+          dplyr::select(master$delivery, screening, group, c.section, c.section.urgency, cs.indication.other),
+          by    = c('screening', 'group'),
           all.x = TRUE)
 ## Replace the cdr.supplementary from missing to 0 for medical.comorbidity and obstetric.complications
 t <- mutate(t,
@@ -2109,6 +2113,8 @@ dipep <- dipep %>%
                                                 delphi.medical.history.surgery == TRUE,
                                                 yes = TRUE,
                                                 no  = FALSE),
+                ## 2017-03-29 - Supplementing obstetric complications with multiple pregnancy,
+                ##              caesarean section in labour, elective caesarean or stillbirth
                 delphi.obstetric.complication = case_when(is.na(.$obstetric.complication) ~ FALSE,
                                                          .$obstetric.complication == 0   ~ FALSE,
                                                          .$obstetric.complication == 1   ~ TRUE),
