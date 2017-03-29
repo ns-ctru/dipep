@@ -136,33 +136,33 @@ biomarker.all$mrproanp <- dipep_glm(df = dipep,
                                     classification = 'first.st',
                                     predictor      = 'mrproanp',
                                     model          = 'MRProANP')
-## D-Dimer (ELISA) Pooled
-biomarker.all$ddimer.elisa.pooled <- dipep_glm(df = dipep,
-                                               exclude.dvt           = FALSE,
-                                               exclude.non.recruited = TRUE,
-                                               exclude.anti.coag     = FALSE,
-                                               exclude.missing       = FALSE,
-                                               classification = 'first.st',
-                                               predictor      = 'ddimer.elisa.pooled',
-                                               model          = 'D-Dimer (ELISA) - Pooled')
-## D-Dimer (Innovance) Pooled
-biomarker.all$ddimer.innovance.pooled <- dipep_glm(df = dipep,
-                                               exclude.dvt           = FALSE,
-                                               exclude.non.recruited = TRUE,
-                                               exclude.anti.coag     = FALSE,
-                                               exclude.missing       = FALSE,
-                                               classification = 'first.st',
-                                               predictor      = 'ddimer.innovance.pooled',
-                                               model          = 'D-Dimer (Innovance) - Pooled')
+## D-Dimer (Hospital) - Binary
+biomarker.all$d.dimer.cat <- dipep_glm(df = dipep,
+                                    exclude.dvt           = FALSE,
+                                    exclude.non.recruited = TRUE,
+                                    exclude.anti.coag     = TRUE,
+                                    exclude.missing       = FALSE,
+                                    classification = 'first.st',
+                                    predictor      = 'd.dimer',
+                                    model          = 'D-Dimer (Hospital) - Dichotomised')
+## D-Dimer (Hospital) - Continuous
+biomarker.all$d.dimer <- dipep_glm(df = dipep,
+                                   exclude.dvt           = FALSE,
+                                   exclude.non.recruited = TRUE,
+                                   exclude.anti.coag     = TRUE,
+                                   exclude.missing       = FALSE,
+                                   classification = 'first.st',
+                                   predictor      = 'd.dimer',
+                                   model          = 'D-Dimer (Hospital) - Continuous')
 
 ## Combine all three sets of tidied output from each model
 biomarker.all$tidied <- rbind(biomarker.all$prothombin.time$tidied,
                           biomarker.all$aprothombin$tidied,
                           biomarker.all$clauss.fibrinogen$tidied,
                           biomarker.all$ddimer.innovance$tidied,
-                          biomarker.all$ddimer.innovance.pooled$tidied,
+                          ## biomarker.all$ddimer.innovance.pooled$tidied,
                           biomarker.all$ddimer.elisa$tidied,
-                          biomarker.all$ddimer.elisa.pooled$tidied,
+                          ## biomarker.all$ddimer.elisa.pooled$tidied,
                           biomarker.all$thrombin.generation.lag.time$tidied,
                           biomarker.all$thrombin.generation.endogenous.potential$tidied,
                           biomarker.all$thrombin.generation.peak$tidied,
@@ -172,14 +172,16 @@ biomarker.all$tidied <- rbind(biomarker.all$prothombin.time$tidied,
                           biomarker.all$soluble.tissue.factor$tidied,
                           biomarker.all$troponin$tidied,
                           biomarker.all$nppb$tidied,
-                          biomarker.all$mrproanp$tidied)
+                          biomarker.all$mrproanp$tidied,
+                          ## biomarker.all$d.dimer$tidied,
+                          biomarker.all$d.dimer.cat$tidied)
 biomarker.all$glance <- rbind(biomarker.all$prothombin.time$glance,
                           biomarker.all$aprothombin$glance,
                           biomarker.all$clauss.fibrinogen$glance,
                           biomarker.all$ddimer.innovance$glance,
-                          biomarker.all$ddimer.innovance.pooled$glance,
+                          ## biomarker.all$ddimer.innovance.pooled$glance,
                           biomarker.all$ddimer.elisa$glance,
-                          biomarker.all$ddimer.elisa.pooled$glance,
+                          ## biomarker.all$ddimer.elisa.pooled$glance,
                           biomarker.all$thrombin.generation.lag.time$glance,
                           biomarker.all$thrombin.generation.endogenous.potential$glance,
                           biomarker.all$thrombin.generation.peak$glance,
@@ -189,15 +191,17 @@ biomarker.all$glance <- rbind(biomarker.all$prothombin.time$glance,
                           biomarker.all$soluble.tissue.factor$glance,
                           biomarker.all$troponin$glance,
                           biomarker.all$nppb$glance,
-                          biomarker.all$mrproanp$glance)
+                          biomarker.all$mrproanp$glance,
+                          ## biomarker.all$d.dimer$glance,
+                          biomarker.all$d.dimer.cat$glance)
 ## Combine all predicted
 biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
                              biomarker.all$aprothombin$predicted,
                              biomarker.all$clauss.fibrinogen$predicted,
                              biomarker.all$ddimer.innovance$predicted,
-                             biomarker.all$ddimer.innovance.pooled$predicted,
+                             ## biomarker.all$ddimer.innovance.pooled$predicted,
                              biomarker.all$ddimer.elisa$predicted,
-                             biomarker.all$ddimer.elisa.pooled$predicted,
+                             ## biomarker.all$ddimer.elisa.pooled$predicted,
                              biomarker.all$thrombin.generation.lag.time$predicted,
                              biomarker.all$thrombin.generation.endogenous.potential$predicted,
                              biomarker.all$thrombin.generation.peak$predicted,
@@ -207,7 +211,9 @@ biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
                              biomarker.all$soluble.tissue.factor$predicted,
                              biomarker.all$troponin$predicted,
                              biomarker.all$nppb$predicted,
-                             biomarker.all$mrproanp$predicted)
+                             biomarker.all$mrproanp$predicted,
+                             ## biomarker.all$d.dimer$predicted,
+                             biomarker.all$d.dimer.cat$predicted)
 
 
 ```
