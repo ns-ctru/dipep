@@ -34,7 +34,8 @@ biomarker.excl.anti.coag$roc.other <- dipep_roc(df      = biomarker.excl.anti.co
                                                  'plasmin.antiplasmin',
                                                  'tissue.factor',
                                                  'troponin',
-                                                 'nppb'),
+                                                 'nppb',
+                                                 'mrproanp'),
                                      title    = 'Other Biomarkers',
                                      threshold = threshold)
 biomarker.excl.anti.coag$roc.other$plot
@@ -100,6 +101,9 @@ rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
 ```{r child = 'excl_anti_coag_plasmin_antiplasmin.Rmd', eval = TRUE}
 ```
 
+```{r child = 'excl_anti_coag_mrproanp.Rmd', eval = TRUE}
+```
+
 ```{r child = 'excl_anti_coag_nppb.Rmd', eval = TRUE}
 ```
 
@@ -109,5 +113,5 @@ rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
 ```{r child = 'excl_anti_coag_prothrombin_fragments.Rmd', eval = TRUE}
 ```
 
-```{r child = 'troponin.Rmd', eval = TRUE}
+```{r child = 'excl_anti_coag_troponin.Rmd', eval = TRUE}
 ```
