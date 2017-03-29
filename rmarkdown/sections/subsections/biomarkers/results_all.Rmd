@@ -13,9 +13,6 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression of Biomarkers') +
     theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
-to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
-          dplyr::filter(term != 'D-Dimer (Hospital) : Abnormal') %>%
-          dplyr::select(term, estimate, lci, uci, p.value)
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
