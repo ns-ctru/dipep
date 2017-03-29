@@ -108,3 +108,6 @@ rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
 
 ```{r child = 'excl_anti_coag_prothrombin_fragments.Rmd', eval = TRUE}
 ```
+
+```{r child = 'troponin.Rmd', eval = TRUE}
+```
