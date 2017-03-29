@@ -34,7 +34,8 @@ biomarker.all$roc.other <- dipep_roc(df      = biomarker.all$predicted,
                                                  'plasmin.antiplasmin',
                                                  'tissue.factor',
                                                  'troponin',
-                                                 'nppb'),
+                                                 'nppb',
+                                                 'mrproanp'),
                                      title    = 'Other Biomarkers',
                                      threshold = threshold)
 biomarker.all$roc.other$plot
@@ -98,6 +99,9 @@ rbind(biomarker.all$roc.other$summary.stats,
 ```
 
 ```{r child = 'all_plasmin_antiplasmin.Rmd', eval = TRUE}
+```
+
+```{r child = 'all_mrproanp.Rmd', eval = TRUE}
 ```
 
 ```{r child = 'all_nppb.Rmd', eval = TRUE}
