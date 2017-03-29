@@ -1776,7 +1776,7 @@ dipep <- dipep %>%
 #######################################################################
 ## Simplified Geneva
 dipep <- dipep %>%
-         mutate(## 2017-03-28 - Use dichotomised threshold for categorising heart rate rather
+         mutate(## 2017-03-28 - Use dichotomised threshold for categorising age rather
                 ##              than the scores own.  All individuals who have been categorised
                 ##              as 'High' are to be scored 5.  See emails...
                 ##
@@ -1867,18 +1867,53 @@ dipep <- dipep %>%
                 simplified    = factor(simplified, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)))
 ## PERC
 dipep <- dipep %>%
-         mutate(perc.age = ifelse(age < 50 | is.na(age),
+         mutate(## 2017-03-28 - Use dichotomised threshold for categorising age rather
+                ##              than the scores own.  All individuals who have been categorised
+                ##              as 'High' are to be scored 5.  See emails...
+                ##
+                ##              From       :  s.goodacre@sheffield.ac.uk
+                ##              Subject    : DiPEP analysis
+                ##              Date/Times : 2017-03-28 @ 14:55
+                ##                           2017-03-29 @ 15:28
+                ##
+                ## perc.age = ifelse(age < 50 | is.na(age),
+                ##                   yes = 0,
+                ##                   no  = 1),
+                perc.age = ifelse(age.cat == 'Young',
                                   yes = 0,
                                   no  = 1),
-                perc.heart.rate = ifelse(heart.rate < 100 | is.na(heart.rate),
-                                         yes = 0,
-                                         no  = 1),
-                perc.o2 = ifelse(o2.saturation >= 95,
+                ## 2017-03-28 - Use dichotomised threshold for categorising heart rate rather
+                ##              than the scores own.  All individuals who have been categorised
+                ##              as 'High' are to be scored 5.  See emails...
+                ##
+                ##              From       :  s.goodacre@sheffield.ac.uk
+                ##              Subject    : DiPEP analysis
+                ##              Date/Times : 2017-03-28 @ 14:55
+                ##                           2017-03-29 @ 15:28
+                ##
+                ## perc.heart.rate = ifelse(heart.rate < 100 | is.na(heart.rate),
+                ##                          yes = 0,
+                ##                          no  = 1),
+                perc.heart.rate = case_when(.$heart.rate.cat == 'Low'  ~ 0,
+                                            .$heart.rate.cat == 'High' ~ 1),
+                ## 2017-03-28 - Use dichotomised threshold for categorising o2 saturation rather
+                ##              than the scores own.  All individuals who have been categorised
+                ##              as 'High' are to be scored 5.  See emails...
+                ##
+                ##              From       :  s.goodacre@sheffield.ac.uk
+                ##              Subject    : DiPEP analysis
+                ##              Date/Times : 2017-03-28 @ 14:55
+                ##                           2017-03-29 @ 15:28
+                ##
+                ## perc.o2 = ifelse(o2.saturation >= 95,
+                ##                  yes = 0,
+                ##                  no  = 1),
+                ## perc.o2 = ifelse(is.na(o2.saturation),
+                ##                  yes = 0,
+                ##                 no  = perc.o2),
+                perc.o2 = ifelse(o2.saturation.cat == 'High',
                                  yes = 0,
                                  no  = 1),
-                perc.o2 = ifelse(is.na(o2.saturation),
-                                 yes = 0,
-                                 no  = perc.o2),
                 perc.prev.dvt.pe = ifelse(thrombosis == 'No' | is.na(thrombosis),
                                           yes = 0,
                                           no  = 1),
@@ -1941,9 +1976,20 @@ dipep <- mutate(dipep,
                 wells.alternative.strict = ifelse(likely.diagnosis == 'PE',
                                                   yes = 3,
                                                   no  = 0),
-                wells.heart.rate = ifelse(heart.rate <= 100 | is.na(heart.rate),
-                                          yes = 0,
-                                          no  = 1.5),
+                ## 2017-03-28 - Use dichotomised threshold for categorising heart rate rather
+                ##              than the scores own.  All individuals who have been categorised
+                ##              as 'High' are to be scored 5.  See emails...
+                ##
+                ##              From       :  s.goodacre@sheffield.ac.uk
+                ##              Subject    : DiPEP analysis
+                ##              Date/Times : 2017-03-28 @ 14:55
+                ##                           2017-03-29 @ 15:28
+                ##
+                ## wells.heart.rate = ifelse(heart.rate <= 100 | is.na(heart.rate),
+                ##                           yes = 0,
+                ##                           no  = 1.5),
+                wells.heart.rate = case_when(.$heart.rate.cat == 'Low'  ~ 0,
+                                            .$heart.rate.cat == 'High' ~ 1.5),
                 wells.immobil = ifelse(immobil == 'No' | is.na(immobil),
                                        yes = 0,
                                        no  = 1.5),
@@ -2070,8 +2116,8 @@ dipep <- dipep %>%
                                                        yes = TRUE,
                                                        no  = delphi.obstetric.complication),
                 delphi.medical.complication = case_when(is.na(.$medical.comorbidity)   ~ FALSE,
-                                                       .$medical.comorbidity == 0  ~ FALSE,
-                                                       .$medical.comorbidity == 1 ~ TRUE),
+                                                        .$medical.comorbidity == 0  ~ FALSE,
+                                                        .$medical.comorbidity == 1 ~ TRUE),
                 delphi.gestation = case_when(is.na(.$trimester)             ~ FALSE,
                                             .$trimester == '1st Trimester' ~ FALSE,
                                             .$trimester == '2nd Trimester' ~ FALSE,
