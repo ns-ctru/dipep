@@ -1776,7 +1776,19 @@ dipep <- dipep %>%
 #######################################################################
 ## Simplified Geneva
 dipep <- dipep %>%
-         mutate(simplified.age = ifelse(age <= 65 | is.na(age),
+         mutate(## 2017-03-28 - Use dichotomised threshold for categorising heart rate rather
+                ##              than the scores own.  All individuals who have been categorised
+                ##              as 'High' are to be scored 5.  See emails...
+                ##
+                ##              From       :  s.goodacre@sheffield.ac.uk
+                ##              Subject    : DiPEP analysis
+                ##              Date/Times : 2017-03-28 @ 14:55
+                ##                           2017-03-29 @ 15:28
+                ##
+                ## simplified.age = ifelse(age <= 65 | is.na(age),
+                ##                         yes = 0,
+                ##                         no  = 1),
+                simplified.age = ifelse(age.cat == 'Young',
                                         yes = 0,
                                         no  = 1),
                 simplified.prev.dvt.pe = ifelse(thrombosis == 'No' | is.na(thrombosis),
@@ -1809,12 +1821,23 @@ dipep <- dipep %>%
                 simplified.haemoptysis = ifelse(presenting.features.haemoptysis == 'Not Ticked' | is.na(presenting.features.haemoptysis),
                                                 yes = 0,
                                                 no  = 2),
-                simplified.heart.rate = case_when(.$heart.rate < 75                       ~ 0,
-                                                  .$heart.rate >= 75 & .$heart.rate <= 94 ~ 3,
-                                                  .$heart.rate > 94                       ~ 5),
-                simplified.heart.rate = ifelse(is.na(simplified.heart.rate),
-                                               yes = 0,
-                                               no  = simplified.heart.rate),
+                ## 2017-03-28 - Use dichotomised threshold for categorising heart rate rather
+                ##              than the scores own.  All individuals who have been categorised
+                ##              as 'High' are to be scored 5.  See emails...
+                ##
+                ##              From       :  s.goodacre@sheffield.ac.uk
+                ##              Subject    : DiPEP analysis
+                ##              Date/Times : 2017-03-28 @ 14:55
+                ##                           2017-03-29 @ 15:28
+                ##
+                ## simplified.heart.rate = case_when(.$heart.rate < 75                       ~ 0,
+                ##                                   .$heart.rate >= 75 & .$heart.rate <= 94 ~ 3,
+                ##                                   .$heart.rate > 94                       ~ 5),
+                ## simplified.heart.rate = ifelse(is.na(simplified.heart.rate),
+                ##                                yes = 0,
+                ##                                no  = simplified.heart.rate),
+                simplified.heart.rate = case_when(.$heart.rate.cat == 'Low'  ~ 0,
+                                                  .$heart.rate.cat == 'High' ~ 5),
                 ## 2017-03-07 - Use Clinical signs of DVT to assess pain on palpitations
                 ##              See emails from s.goodacre@sheffield.ac.uk 2017-03-07 @ 09:04
                 ##                              s.goodacre@sheffield.ac.uk 2017-03-07 @ 09:07
