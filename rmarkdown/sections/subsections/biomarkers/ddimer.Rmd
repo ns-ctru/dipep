@@ -1,164 +1,49 @@
-Added plot of KCL D-dimer v' recorded d-dimer
 ```{r ddimer_prep, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 ukoss.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Diagnosed PE' & !is.na(d.dimer)) %>% nrow()
 ukoss.ddimer.missing    <- dplyr::filter(dipep, group == 'Diagnosed PE' & is.na(d.dimer))  %>% nrow()
 ukoss.n <- dplyr::filter(dipep, group == 'Diagnosed PE') %>% nrow()
+suspected.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Suspected PE' & !is.na(d.dimer)) %>% nrow()
+suspected.ddimer.missing    <- dplyr::filter(dipep, group == 'Suspected PE' & is.na(d.dimer))  %>% nrow()
+suspected.n <- dplyr::filter(dipep, group == 'Suspected PE') %>% nrow()
+dvt.ddimer.nonmissing <- dplyr::filter(dipep, group == 'Diagnosed DVT' & !is.na(d.dimer)) %>% nrow()
+dvt.ddimer.missing    <- dplyr::filter(dipep, group == 'Diagnosed DVT' & is.na(d.dimer))  %>% nrow()
+dvt.n <- dplyr::filter(dipep, group == 'Diagnosed DVT') %>% nrow()
+
+## Number with d.dimer recorded but no d.dimer.high
+missing.d.dimer.high <- dplyr::filter(dipep, !is.na(d.dimer), & is.na(d.dimer.high)) %>% nrow()
 
 ```
 
-D-Dimer assays from the multitude of independant hospitals/laboratories from which the UKOSS cohort (N = `r ukoss.ddimer.nonmissing`) are combined with the assays performed on samples from the Suspected Pulmonary Emoblism cohort at Kings College London by [Kiran Parmar](mailto:kiran.parmar@kcl.ac.uk).  It is important to bear in mind that of the total `r ukoss.n` individuals included in the study `r ukoss.ddimer.missing` are missing data for any form of D-Dimer assay in the data provided by UKOSS.
+D-Dimer assays from the multitude of independant hospitals/laboratories are analysed below.
 
-**NB** This is far from ideal, assays on the samples from Suspected Pulmonary Embolism were standardised because as mentioned in @murphy2015 *D-dimer concentrations are instrument-dependent; assays vary because the D-dimer analyte is not a simple structure with a uniform composition*.  It has been suggested that the laboratory specific reference ranges are used to standardise measurements across all sites, but to date such reference ranges are not available so the data is analysed "as is" and this caveat serves as a warning against over-interpretting the results.
-
-There are two sets of results as Kiran performed D-Dimer assays using two different methods/kits, ELISA and Innovance.  The various UKOSS assays have therefore been combined with both and the analyses repeated.
+The number of available samples from each of the cohorts and the observed assays are summarised in the tables below by recruitment group and primary classification based on case review.
 
 
 ```{r ddimer_summary, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = FALSE}
-ddimer.pooled.all <- dipep_summarise(df           = dipep,
-                                     grouping     = 'first.st',
-                                     group.as.col = TRUE,
-                                     exclude               = NULL,
-                                     exclude.non.recruited = TRUE,
-                                     exclude.dvt           = TRUE,
-                                     exclude.anti.coag     = FALSE,
-                                     exclude.missing       = FALSE,
-                                     ddimer.elisa.pooled, ddimer.innovance.pooled)
-ddimer.pooled.excl.anti.coag <- dipep_summarise(df           = dipep,
-                                                grouping     = 'first.st',
-                                                group.as.col = TRUE,
-                                                exclude               = NULL,
-                                                exclude.non.recruited = TRUE,
-                                                exclude.dvt           = TRUE,
-                                                exclude.anti.coag     = TRUE,
-                                                exclude.missing       = FALSE,
-                                                ddimer.elisa.pooled, ddimer.innovance.pooled)
-```
-
-
-###### ELISA {.tabset .tabset-fade .tabset-pills}
-
-*NB* No standardisation has been performed because reference ranges for UKOSS D-Dimer measurements are not available.
-####### All
-
-```{r ddimer_summary_elisa_all, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-to.plot <- dipep_plot(df      = dipep,
-                      exclude = NULL,
-                      exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
-                      exclude.anti.coag     = FALSE,
-                      exclude.missing       = FALSE,
-                      title.to.plot         = 'D-Dimer (ELISA) - Pooled',
-                      title.class           = 'Primary Classification',
-                      first.st, ddimer.elisa.pooled)
-to.plot$histogram
-to.plot$scatter
-rm(to.plot)
-dplyr::filter(summary.biomarkers.all$first.st, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
+dipep_summarise(df           = dipep,
+                grouping     = 'group',
+                group.as.col = TRUE,
+                exclude               = NULL,
+                exclude.non.recruited = FALSE,
+                exclude.dvt           = FALSE,
+                exclude.anti.coag     = FALSE,
+                exclude.missing       = FALSE,
+                d.dimer) %>%
     dplyr::select(-Measurement) %>%
-        kable(caption = 'Summary of D-Dimer (ELISA) and UKOSS assays by Primary Classification')
+    kable(caption = 'D-Dimer assays recorded at hospital by recruitment group.')
 
-
-```
-
-```{r ddimer_logistic_elisa_all, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-biomarker.all$ddimer.elisa.pooled$tidied %>%
-    kable(caption   = 'Logistic Regression for D-Dimer (ELISA) pooled with UKOSS D-Dimer (Mixed)',
-          col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.all$ddimer.elisa.pooled$roc
-
-```
-
-####### Excluding those on Anti-Coagulants
-
-```{r ddimer_summary_elisa_excl_anti_coag, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-to.plot <- dipep_plot(df      = dipep,
-                      exclude = NULL,
-                      exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
-                      exclude.anti.coag     = TRUE,
-                      exclude.missing       = FALSE,
-                      title.to.plot         = 'D-Dimer (ELISA) - Pooled',
-                      title.class           = 'Primary Classification',
-                      first.st, ddimer.elisa.pooled)
-to.plot$histogram
-to.plot$scatter
-rm(to.plot)
-dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (ELISA) - Pooled') %>%
+dipep_summarise(df           = dipep,
+                grouping     = 'first.st',
+                group.as.col = TRUE,
+                exclude               = NULL,
+                exclude.non.recruited = TRUE,
+                exclude.dvt           = TRUE,
+                exclude.anti.coag     = FALSE,
+                exclude.missing       = FALSE,
+                d.dimer) %>%
     dplyr::select(-Measurement) %>%
-        kable(caption = 'Summary of D-Dimer (ELISA) and UKOSS assays by Primary Classification')
-
-
-```
-
-```{r ddimer_logistic_elisa_excl_anti_coag, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-biomarker.excl.anti.coag$ddimer.elisa.pooled$tidied %>%
-    kable(caption   = 'Logistic Regression for D-Dimer (ELISA) pooled with UKOSS D-Dimer (Mixed)',
-          col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.excl.anti.coag$ddimer.elisa.pooled$roc
+    kable(caption = 'D-Dimer assays recorded at hospital by recruitment Primary case review allocation. Excludes Non-recruited cohort.')
 
 ```
 
-
-###### Innovance {.tabset .tabset-fade .tabset-pills}
-
-*NB* No standardisation has been performed because reference ranges for UKOSS D-Dimer measurements are not available.
-
-####### All
-
-```{r ddimer_summary_innovance_all, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-to.plot <- dipep_plot(df      = dipep,
-                      exclude = NULL,
-                      exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
-                      exclude.anti.coag     = FALSE,
-                      exclude.missing       = FALSE,
-                      title.to.plot         = 'D-Dimer (INNOVANCE) - Pooled',
-                      title.class           = 'Primary Classification',
-                      first.st, ddimer.innovance.pooled)
-to.plot$histogram
-to.plot$scatter
-rm(to.plot)
-dplyr::filter(summary.biomarkers.all$first.st, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
-    dplyr::select(-Measurement) %>%
-        kable(caption = 'Summary of D-Dimer (Innovance) and UKOSS assays by Primary Classification')
-
-
-```
-
-```{r ddimer_logistic_innovance_all, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'as.is', eval = TRUE}
-biomarker.all$ddimer.innovance.pooled$tidied %>%
-    kable(caption   = 'Logistic Regression for D-Dimer (Innovance) pooled with UKOSS D-Dimer (Mixed)',
-          col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.all$ddimer.innovance.pooled$roc
-
-```
-
-####### Excluding those on Anti-Coagulants
-
-```{r ddimer_summary_innovance_excl_anti_coag, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
-to.plot <- dipep_plot(df      = dipep,
-                      exclude = NULL,
-                      exclude.non.recruited = TRUE,
-                      exclude.dvt           = TRUE,
-                      exclude.anti.coag     = FALSE,
-                      exclude.missing       = FALSE,
-                      title.to.plot         = 'D-Dimer (INNOVANCE) - Pooled',
-                      title.class           = 'Primary Classification',
-                      first.st, ddimer.innovance.pooled)
-to.plot$histogram
-to.plot$scatter
-rm(to.plot)
-dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (Innovance) - Pooled') %>%
-    dplyr::select(-Measurement) %>%
-        kable(caption = 'Summary of D-Dimer (Innovance) and UKOSS assays by Primary Classification')
-
-
-```
-
-```{r ddimer_logistic_innovance_excl_anti_coag, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'as.is', eval = TRUE}
-biomarker.excl.anti.coag$ddimer.innovance.pooled$tidied %>%
-    kable(caption   = 'Logistic Regression for D-Dimer (Innovance) pooled with UKOSS D-Dimer (Mixed)',
-          col.names = c('Term', 'Estimate', 'Std Error', 'Statistic', 'P-value', 'Lower 95% CI', 'Upper 95% CI', 'Model'))
-biomarker.excl.anti.coag$ddimer.innovance.pooled$roc
-
-```
+The site specific 'reference ranges' (i.e. the nth percentile) were used to classify each measurement into 'Normal'  if it was within the recorded range or 'Abnormal' if it is outside the recorded range and this dichotomised variable is used to assess the predictive value of the D-Dimer assays.  There were `r missing.d.dimer.high` individuals from the UKOSS cohort who had a recorded D-Dimer assay but for whom the reference range was not recorded.  These individuals are therefore excluded from subsequent analyses as they can not be classified.
