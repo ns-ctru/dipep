@@ -1,4 +1,4 @@
-##### TEMPLATE
+##### MEASUREMENT
 
 ```{r results_biomarker_excl_anti_coag_template, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 ## Box and Whisker Plot
@@ -15,7 +15,7 @@ to.plot$scatter
 ## Summary Table
 dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'MEASUREMENT') %>%
     dplyr::select(-Measurement) %>%
-        kable(caption = 'Summary of TEMPLATE by Primary Classification')
+        kable(caption = "Summary of TEMPLATE by Primary Classification")
 ## Group DVT with PE and plot as VTE v's gestation
 dplyr::filter(dipep, !is.na(vte) & exclude.anti.coag == 'No') %>%
 ggplot(aes(x = gestation, y = template, colour = vte)) +
