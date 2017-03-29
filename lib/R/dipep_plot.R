@@ -67,16 +67,16 @@ dipep_plot <- function(df        = dipep,
                                                                        no  = clauss.fibrinogen),
                      ddimer.innovance                         = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = ddimer.innovance),
-                     ddimer.innovance.pooled                  = ifelse(exclude.anti.coag == 'Yes',
-                                                                       yes = NA,
-                                                                       no  = ddimer.innovance.pooled),
+                                                                       no  = ddimer.innovance)
                      ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = ddimer.elisa),
-                     ddimer.elisa.pooled                      = ifelse(exclude.anti.coag == 'Yes',
+                     d.dimer.cat                              = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = ddimer.elisa.pooled),
+                                                                       no  = d.dimer.cat),
+                     d.dimer                              = ifelse(exclude.anti.coag == 'Yes',
+                                                                       yes = NA,
+                                                                       no  = d.dimer),
                      thrombin.generation.lag.time             = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = thrombin.generation.lag.time),
@@ -163,14 +163,12 @@ dipep_plot <- function(df        = dipep,
     else if(exclude.dvt == FALSE){
         df <- cbind(screening,
                     df)
-        head(df) %>% print()
         df <- mutate(df,
                      class = as.character(class))
         df <- df %>%
               mutate(class = case_when(is.na(.$class) & substr(.$screening, 1, 1) == 'D' ~ 'DVT',
                                        is.na(.$class) & substr(.$screening, 1, 1) != 'D' ~ 'Exclude',
                                        !is.na(.$class)                                   ~ .$class))
-        head(df) %>% print()
     }
     ## Generate histogram
     results$histogram <- ggplot(df, aes(x    = to.plot,
