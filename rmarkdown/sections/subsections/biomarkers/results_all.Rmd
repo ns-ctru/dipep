@@ -108,3 +108,6 @@ rbind(biomarker.all$roc.other$summary.stats,
 
 ```{r child = 'all_prothrombin_fragments.Rmd', eval = TRUE}
 ```
+
+```{r child = 'all_troponin.Rmd', eval = TRUE}
+```
