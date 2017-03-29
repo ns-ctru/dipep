@@ -43,9 +43,7 @@ biomarker.all$roc.other <- dipep_roc(df      = biomarker.all$predicted,
 biomarker.all$roc.other$plot
 biomarker.all$roc.ddimer <- dipep_roc(df      = biomarker.all$predicted,
                                       to.plot = c('ddimer.innovance',
-                                                  'ddimer.innovance.pooled',
-                                                  'ddimer.elisa',
-                                                  'ddimer.elisa.pooled'),
+                                                  'ddimer.elisa'),
                                       title    = 'D-Dimer Biomarkers',
                                       threshold = threshold)
 biomarker.all$roc.ddimer$plot
