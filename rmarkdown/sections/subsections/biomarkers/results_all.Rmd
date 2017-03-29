@@ -4,6 +4,7 @@ The point-estimate and 95% Confidence Intervals from univariable logistic regres
 
 ```{r results_biomarker_logistic_all_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
+          dplyr::filter(term != 'D-Dimer (Hospital) : Abnormal') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
@@ -13,6 +14,7 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
 to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
+          dplyr::filter(term != 'D-Dimer (Hospital) : Abnormal') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
