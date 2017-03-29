@@ -92,6 +92,14 @@ sed -e 's/template/plasmin.antiplasmin/g' excl_anti_coag_template.Rmd \
     -e 's/MEASUREMENT/Plasmin (Antiplasmin)/g' > excl_anti_coag_plasmin_antiplasmin.Rmd
 
 ## NPPB
+sed -e 's/template/mrproanp/g' all_template.Rmd \
+    -e 's/TEMPLATE/MRProANP (pg\/ml)/g' \
+    -e 's/MEASUREMENT/MRProANP/g' > all_mrproanp.Rmd
+sed -e 's/template/mrproanp/g' excl_anti_coag_template.Rmd \
+    -e 's/TEMPLATE/MRProANP (pg\/ml)/g' \
+    -e 's/MEASUREMENT/MRProANP/g'  > excl_anti_coag_mrproanp.Rmd
+
+## NPPB
 sed -e 's/template/nppb/g' all_template.Rmd \
     -e 's/TEMPLATE/NPPB (pg\/ml)/g' \
     -e 's/MEASUREMENT/NPPB/g' > all_nppb.Rmd
