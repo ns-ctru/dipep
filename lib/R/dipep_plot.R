@@ -67,7 +67,7 @@ dipep_plot <- function(df        = dipep,
                                                                        no  = clauss.fibrinogen),
                      ddimer.innovance                         = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = ddimer.innovance)
+                                                                       no  = ddimer.innovance),
                      ddimer.elisa                             = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = ddimer.elisa),
@@ -138,7 +138,7 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('plasmin.antiplasmin',                      'to.plot', names(df))
     names(df) <- gsub('prothrombin.fragments',                    'to.plot', names(df))
     names(df) <- gsub('tissue.factor',                            'to.plot', names(df))
-    names(df) <- gsub('troponon',                                 'to.plot', names(df))
+    names(df) <- gsub('troponin',                                 'to.plot', names(df))
     names(df) <- gsub('nppb',                                     'to.plot', names(df))
     names(df) <- gsub('mrproanp',                                 'to.plot', names(df))
     names(df) <- gsub('age',                                      'to.plot', names(df))
