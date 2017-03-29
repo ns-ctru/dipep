@@ -85,6 +85,18 @@ sed -e 's/template/tissue.factor/g' excl_anti_coag_template.Rmd \
 
 ## PF 1+2
 sed -e 's/template/prothrombin.fragments/g' all_template.Rmd \
-    -e 's/TEMPLATE/PF 1 + 2 ()/g' > all_tissue_prothrombin_fragments.Rmd
+    -e 's/TEMPLATE/PF 1 + 2 ()/g' > all_prothrombin_fragments.Rmd
 sed -e 's/template/prothrombin.fragments/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/PF 1 + 2 ()/g' > excl_anti_coag_prothrombin_fragments.Rmd
+
+## D-Dimer (Hospital) - Binary
+sed -e 's/template/d.dimer.cat/g' all_template.Rmd \
+    -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' > all_ddimer_cat.Rmd
+sed -e 's/template/d.dimer.cat/g' excl_anti_coag_template.Rmd \
+    -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' > excl_ddimer_cat.Rmd
+
+## D-Dimer (Hospital) - Continuous
+sed -e 's/template/d.dimer/g' all_template.Rmd \
+    -e 's/TEMPLATE/D-Dimer (Hospital) : Continuous/g' > all_ddimer.Rmd
+sed -e 's/template/d.dimer/g' excl_anti_coag_template.Rmd \
+    -e 's/TEMPLATE/D-Dimer (Hospital) : Continuous/g' > excl_ddimer.Rmd
