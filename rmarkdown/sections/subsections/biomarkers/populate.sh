@@ -30,10 +30,10 @@ sed -e 's/template/clauss\.fibrinogen/g' excl_anti_coag_template.Rmd \
 ## Prothrombin (Time)
 sed -e 's/template/prothombin.time/g' all_template.Rmd \
     -e 's/TEMPLATE/Prothombin Time (min)/g' \
-    -e 's/MEASUREMENT/Prothombin (Time)/g' > all_prothombin_time.Rmd
+    -e 's/MEASUREMENT/Prothombin Time/g' > all_prothombin_time.Rmd
 sed -e 's/template/prothombin.time/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/Prothombin Time (min)/g' \
-    -e 's/MEASUREMENT/Prothombin (Time)/g' > excl_anti_coag_prothombin_time.Rmd
+    -e 's/MEASUREMENT/Prothombin Time/g' > excl_anti_coag_prothombin_time.Rmd
 
 ## D-Dimer Innovance
 sed -e 's/template/ddimer.innovance/g' all_template.Rmd \
