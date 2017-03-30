@@ -31,6 +31,11 @@ dipep_roc <- function(df        = logistic$predicted,
     else{
         df <- dplyr::filter(df, name %in% to.plot)
     }
+    ## Refactor the 'D' variable (as we sometimes have VTE as outcome and sometimes have PE and
+    ## geom_roc() only allows two levels).
+    df <- mutate(df,
+                 D = as.character(D),
+                 D = factor(D))
     ## Generate plot
     results$plot <- ggplot(df,
                     aes(d = D, m = M, colour = as.factor(term))) +
@@ -118,7 +123,7 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('prothrombin.fragments', 'PF 1 + 2', Predictor),
                                Predictor = gsub('tissue.factor', 'Tissue Factor', Predictor),
                                Predictor = gsub('troponin', 'Troponin', Predictor),
-                               Predictor = gsub('nppb', 'NPPB', Predictor),
+                               Predictor = gsub('bnp', 'BNP', Predictor),
                                Predictor = gsub('mrproanp', 'MRproANP', Predictor),
                                Predictor = gsub('Step min.response', 'Lambda Min', Predictor),
                                Predictor = gsub('Step 1se.response', 'Lambda 1SE', Predictor))
