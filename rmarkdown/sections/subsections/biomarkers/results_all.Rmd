@@ -4,26 +4,26 @@ The point-estimate and 95% Confidence Intervals from univariable logistic regres
 
 ```{r results_biomarker_logistic_all_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
-          dplyr::filter(term != 'D-Dimer (Hospital) : Abnormal') %>%
+          dplyr::filter(!grepl('Abnormal', term)) %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
     coord_flip() + geom_hline(yintercept = 0) +
     xlab('Predictor') + ylab('Estimate') +
-    ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression of Biomarkers') +
+    ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression of Continuous Biomarkers') +
     theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
-      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
+      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
 rm(to.sum)
 
 ```
 
 ###### ROC Curves
 
-[Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
+[Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models of the continuous biomarker assays.
 
 ```{r results_biomarker_logistic_all_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 ## This uses the geom_roc() ggplot2 extension from the ploROC package
@@ -59,7 +59,9 @@ biomarker.all$roc.thrombin$plot
 
 ```
 
-The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable.
+<!-- The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable. -->
+
+The performance of dichotomising the biomarkers based on the supplied reference ranges is summarised below.
 
 ```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
 rbind(biomarker.all$roc.other$summary.stats,
@@ -106,6 +108,8 @@ auc <- cbind(c('aptt.cat',
                biomarker.all$troponin.cat$auc$AUC)) %>%
     as.data.frame()
 names(auc) <- c('biomarker', 'auc')
+auc <- mutate(auc,
+              auc = as.numeric(auc))
 
 t <- dipep %>%
      dplyr::filter(exclude.anti.coag == 'No') %>%
