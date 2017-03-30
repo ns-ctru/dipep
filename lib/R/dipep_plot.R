@@ -151,6 +151,7 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('bp.diastolic',                             'to.plot', names(df))
     names(df) <- gsub('o2.saturation',                            'to.plot', names(df))
     names(df) <- gsub('gestation',                                'to.plot', names(df))
+    names(df) <- gsub('temperature',                              'to.plot', names(df))
     ## Convert classification to character and replace NA with 'Exclude' so it aligns
     ## with others expectation of what to see.
     if(exclude.dvt == TRUE){
