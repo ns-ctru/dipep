@@ -29,11 +29,11 @@ sed -e 's/template/clauss\.fibrinogen/g' excl_anti_coag_template.Rmd \
 
 ## Prothrombin (Time)
 sed -e 's/template/prothombin.time/g' all_template.Rmd \
-    -e 's/TEMPLATE/Prothombin Time (min)/g' \
-    -e 's/MEASUREMENT/Prothombin Time/g' > all_prothombin_time.Rmd
+    -e 's/TEMPLATE/Prothrombin Time (min)/g' \
+    -e 's/MEASUREMENT/Prothrombin Time/g' > all_prothombin_time.Rmd
 sed -e 's/template/prothombin.time/g' excl_anti_coag_template.Rmd \
-    -e 's/TEMPLATE/Prothombin Time (min)/g' \
-    -e 's/MEASUREMENT/Prothombin Time/g' > excl_anti_coag_prothombin_time.Rmd
+    -e 's/TEMPLATE/Prothrombin Time (min)/g' \
+    -e 's/MEASUREMENT/Prothrombin Time/g' > excl_anti_coag_prothombin_time.Rmd
 
 ## D-Dimer Innovance
 sed -e 's/template/ddimer.innovance/g' all_template.Rmd \
@@ -135,6 +135,7 @@ sed -e 's/template/prothrombin.fragments/g' excl_anti_coag_template.Rmd \
 sed -e 's/template/d.dimer.cat/g' all_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
+    -e 's/\$vte/\$first.st/g' \
     -e 's/first\.st, d\.dimer\.cat/first\.st, d\.dimer/g' \
     -e 's/y = d\.dimer\.cat/y = d.dimer/g' \
     -e 's/colour = vte/color = first.st/g' \
@@ -145,6 +146,7 @@ sed -e 's/template/d.dimer.cat/g' all_template.Rmd \
 sed -e 's/template/d.dimer.cat/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
+    -e 's/\$vte/\$first.st/g' \
     -e 's/first\.st, d\.dimer\.cat/first\.st, d\.dimer/g' \
     -e 's/y = d\.dimer\.cat/y = d\.dimer/g' \
     -e 's/colour = vte/color = first.st/g' \
@@ -157,10 +159,12 @@ sed -e 's/template/d.dimer.cat/g' excl_anti_coag_template.Rmd \
 sed -e 's/template/d.dimer/g' all_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Continuous/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
+    -e 's/\$vte/\$first.st/g' \
     -e 's/kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")/kable(caption = "Summary of D-Dimer (Hospital) by Primary Classification", col.names = c("Statistic", "All", "No PE", "PE", "Exclude"))/g' \
     -e 's/##### D-Dimer (Hospital) : Continuous/##### All/g' > all_ddimer.Rmd
 sed -e 's/template/d.dimer/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Continuous/g'  \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
+    -e 's/\$vte/\$first.st/g' \
     -e 's/kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")/kable(caption = "Summary of D-Dimer (Hospital) by Primary Classification", col.names = c("Statistic", "All", "No PE", "PE", "Exclude"))/g' \
     -e 's/##### D-Dimer (Hospital) : Continuous/##### Excluding those on Anticoagulants/g' > excl_anti_coag_ddimer.Rmd
