@@ -1103,6 +1103,19 @@ t10 <- dplyr::select(master$pregnancy.problems,
                                                               this.preg.problem.specify_5 == 'Severe infection e.g. pyelonephritis',
                                                               yes = 1,
                                                               no  = 0),
+           ## 2017-03-30 - Adding code to capture ALL hyperemesis
+           hyperemesis = ifelse(this.preg.problem.specify_1 == 'Hyperemesis requiring admission' |
+                                this.preg.problem.specify_2 == 'Hyperemesis requiring admission' |
+                                this.preg.problem.specify_3 == 'Hyperemesis requiring admission' |
+                                this.preg.problem.specify_4 == 'Hyperemesis requiring admission' |
+                                this.preg.problem.specify_5 == 'Hyperemesis requiring admission' |
+                                grepl('hyperemesis', this.preg.problem.other_1, ignore.case = TRUE) |
+                                grepl('hyperemesis', this.preg.problem.other_2, ignore.case = TRUE) |
+                                grepl('hyperemesis', this.preg.problem.other_3, ignore.case = TRUE) |
+                                grepl('hyperemesis', this.preg.problem.other_4, ignore.case = TRUE) |
+                                grepl('hyperemesis', this.preg.problem.other_5, ignore.case = TRUE),
+                                                         yes = 1,
+                                                         no  = 0),
            this.pregnancy.problems.stillbirth =  ifelse(this.preg.problem.specify_1 == 'Stillbirth' |
                                                         this.preg.problem.specify_2 == 'Stillbirth' |
                                                         this.preg.problem.specify_3 == 'Stillbirth' |
@@ -1293,6 +1306,10 @@ t <- merge(t1,
     merge(.,
           dplyr::select(master$delivery, screening, group, c.section, c.section.urgency, cs.indication.other),
           by    = c('screening', 'group'),
+          all.x = TRUE) %>%
+    merge(.,
+          dplyr::select(master$outcome.infant, screening, group, stillborn) %>% unique(),
+          by    = c('screening', 'group'),
           all.x = TRUE)
 ## Replace the cdr.supplementary from missing to 0 for medical.comorbidity and obstetric.complications
 t <- mutate(t,
@@ -1453,11 +1470,14 @@ dipep <- dipep %>%
            ## cesarean = ifelse(is.na(cesarean),
            ##                   yes = 0,
            ##                   no  = cesarean),
-           cesarean = case_when(grepl('c*esarian|c*section|caesarean|emcs|lscs|c/s', surgery.other, ignore.case = TRUE) ~ 1,
-                                .$c.section == 'Yes' ~ 1)
+           cesarean = case_when(grepl('c*esarian|c*section|caesarean|emcs|lscs|c/s', .$surgery.other, ignore.case = TRUE) ~ 1,
+                                .$c.section == 'Yes' ~ 1),
            cesarean = ifelse(is.na(cesarean),
                              yes = 0,
                              no  = cesarean),
+           hyperemesis = ifelse(is.na(hyperemesis),
+                                yes = 0,
+                                no  = hyperemesis),
            smoking = ifelse(is.na(smoking),
                             yes = 'never',
                             no  = as.character(smoking)),
@@ -1615,6 +1635,9 @@ dipep <- mutate(dipep,
                 cesarean = factor(cesarean,
                                   levels = c(0, 1),
                                   labels = c('No Cesarean', 'Cesarean')),
+                hyperemesis = factor(hyperemesis,
+                                     levels = c(0, 1),
+                                     labels = c('No Hyperemesis', 'Hyperemesis')),
                 smoking.cat = factor(smoking.cat,
                                  levels = c(0, 1),
                                  labels = c('Non-smoker', 'Smoker')),
@@ -1701,6 +1724,8 @@ dipep <- mutate(dipep,
                                                             ref = 'Low'),
                 cesarean                          = relevel(cesarean,
                                                             ref = 'No Cesarean'),
+                hyperemesis                          = relevel(hyperemesis,
+                                                            ref = 'No Hyperemesis'),
                 surgery                           = relevel(surgery,
                                                             ref = 'No'),
                 admitted.hospital                 = relevel(admitted.hospital,
