@@ -4,7 +4,7 @@ The point-estimate and 95% Confidence Intervals from univariable logistic regres
 
 ```{r results_biomarker_logistic_excl_anti_coag_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
-          dplyr::filter(term != 'D-Dimer (Hospital) : Abnormal') %>%
+          dplyr::filter(!grepl('Abnormal', term)) %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
@@ -16,7 +16,7 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
-      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
+      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
 rm(to.sum)
 
 ```
@@ -59,7 +59,9 @@ biomarker.excl.anti.coag$roc.thrombin$plot
 
 ```
 
-The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.1` but marker specific cut points based on the ROC curves displayed above are preferable.
+<!-- The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.1` but marker specific cut points based on the ROC curves displayed above are preferable. -->
+
+The performance of dichotomising the biomarkers based on the supplied reference ranges is summarised below.
 
 ```{r results_biomarker_logistic_excl_anti_coag_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
 rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
@@ -106,6 +108,8 @@ auc <- cbind(c('aptt.cat',
                biomarker.excl.anti.coag$troponin.cat$auc$AUC)) %>%
     as.data.frame()
 names(auc) <- c('biomarker', 'auc')
+auc <- mutate(auc,
+              auc = as.numeric(auc))
 
 t <- dipep %>%
      dplyr::filter(exclude.anti.coag == 'No') %>%
