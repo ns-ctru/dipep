@@ -85,11 +85,11 @@ sed -e 's/template/thrombin.generation.time.to.peak/g' excl_anti_coag_template.R
 
 ## Plasmin Antiplasmin
 sed -e 's/template/plasmin.antiplasmin/g' all_template.Rmd \
-    -e 's/TEMPLATE/Plasmin Antiplasmin (sec)/g' \
-    -e 's/MEASUREMENT/Plasmin (Antiplasmin)/g' > all_plasmin_antiplasmin.Rmd
+    -e 's/TEMPLATE/Plasmin-antiplasmin (sec)/g' \
+    -e 's/MEASUREMENT/Plasmin-antiplasmin)/g' > all_plasmin_antiplasmin.Rmd
 sed -e 's/template/plasmin.antiplasmin/g' excl_anti_coag_template.Rmd \
-    -e 's/TEMPLATE/Plasmin Antiplasmin (sec)/g' \
-    -e 's/MEASUREMENT/Plasmin (Antiplasmin)/g' > excl_anti_coag_plasmin_antiplasmin.Rmd
+    -e 's/TEMPLATE/Plasmin-antiplasmin (sec)/g' \
+    -e 's/MEASUREMENT/Plasmin-antiplasmin)/g' > excl_anti_coag_plasmin_antiplasmin.Rmd
 
 ## MRProANP
 sed -e 's/template/mrproanp/g' all_template.Rmd \
