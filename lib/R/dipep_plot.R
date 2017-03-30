@@ -101,9 +101,9 @@ dipep_plot <- function(df        = dipep,
                      troponin                                 = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = troponin),
-                     nppb                                     = ifelse(exclude.anti.coag == 'Yes',
+                     bnp                                      = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = nppb),
+                                                                       no  = bnp),
                      mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = mrproanp))
@@ -139,7 +139,7 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('prothrombin.fragments',                    'to.plot', names(df))
     names(df) <- gsub('tissue.factor',                            'to.plot', names(df))
     names(df) <- gsub('troponin',                                 'to.plot', names(df))
-    names(df) <- gsub('nppb',                                     'to.plot', names(df))
+    names(df) <- gsub('bnp',                                      'to.plot', names(df))
     names(df) <- gsub('mrproanp',                                 'to.plot', names(df))
     names(df) <- gsub('age',                                      'to.plot', names(df))
     names(df) <- gsub('bmi',                                      'to.plot', names(df))
