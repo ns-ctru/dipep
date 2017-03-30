@@ -1,8 +1,21 @@
 ```{r results_biomarker_prep_all, , echo = FALSE, cache = FALSE, results = 'hide', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
 ## Derive all summaries
 summary.biomarkers.all <- list()
-summary.biomarkers.all$first.st <- dipep_summarise(df           = dipep,
+summary.biomarkers.all$vte <- dipep_summarise(df           = dipep,
                       	                  grouping     = 'vte',
+                      	                  group.as.col = TRUE,
+                                          exclude               = NULL,
+                                          exclude.non.recruited = TRUE,
+                                          exclude.dvt           = FALSE,
+                                          exclude.anti.coag     = FALSE,
+                                          exclude.missing       = FALSE,
+                      	                  prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
+                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                          tissue.factor, troponin, nppb, mrproanp, d.dimer)
+summary.biomarkers.all$first.st <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
                       	                  group.as.col = TRUE,
                                           exclude               = NULL,
                                           exclude.non.recruited = TRUE,
@@ -268,8 +281,21 @@ biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
 
 ```{r results_biomarker_prep_excl_anti_coag, , echo = FALSE, cache = FALSE, results = 'hide', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
 summary.biomarkers.excl.anti.coag <- list()
-summary.biomarkers.excl.anti.coag$first.st <- dipep_summarise(df           = dipep,
+summary.biomarkers.excl.anti.coag$vte <- dipep_summarise(df           = dipep,
                       	                  grouping     = 'vte',
+                      	                  group.as.col = TRUE,
+                                          exclude               = NULL,
+                                          exclude.non.recruited = TRUE,
+                                          exclude.dvt           = FALSE,
+                                          exclude.anti.coag     = TRUE,
+                                          exclude.missing       = FALSE,
+                      	                  prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
+                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                          tissue.factor, troponin, nppb, mrproanp, d.dimer)
+summary.biomarkers.excl.anti.coag$first.st <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
                       	                  group.as.col = TRUE,
                                           exclude               = NULL,
                                           exclude.non.recruited = TRUE,
