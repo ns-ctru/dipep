@@ -102,9 +102,9 @@ dipep_glmnet_orig <- function(df              = dipep,
                      troponin                                 = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = troponin),
-                     nppb                                     = ifelse(exclude.anti.coag == 'Yes',
+                     bnp                                      = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
-                                                                       no  = nppb),
+                                                                       no  = bnp),
                      mrproanp                                 = ifelse(exclude.anti.coag == 'Yes',
                                                                        yes = NA,
                                                                        no  = mrproanp))
@@ -267,7 +267,7 @@ dipep_glmnet_orig <- function(df              = dipep,
                     term = gsub('prothrombin.fragments', 'PF 1 + 2', term),
                     term = gsub('tissue.factor', 'Tissue Factor', term),
                     term = gsub('troponin', 'Troponin', term),
-                    term = gsub('nppb', 'NPPB', term),
+                    term = gsub('bnp', 'BNP', term),
                     term = gsub('mrproanp', 'MRProANP', term))
         x <- x[,c('term', '1')]
         names(x) <- c('Term', 'Coefficient')
