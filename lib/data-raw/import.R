@@ -653,7 +653,7 @@ master$biomarker_tidy <- master$biomarker_tidy %>%
                              levels = c('Normal', 'Abnormal')),
            aptt.cat = relevel(aptt.cat,
                               ref = 'Normal'),
-           clauss.fibrinogen.cat = ifelse(clauss.fibrinogen < 2.03 | caluss.fibrinogen > 4.11,
+           clauss.fibrinogen.cat = ifelse(clauss.fibrinogen < 2.03 | clauss.fibrinogen > 4.11,
                                           yes = 'Abnormal',
                                           no  = 'Normal'),
            clauss.fibrinogen.cat = factor(clauss.fibrinogen.cat,
