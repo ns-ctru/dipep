@@ -16,6 +16,8 @@ to.plot$scatter
 dplyr::filter(summary.biomarkers.all$vte, Measurement == 'MEASUREMENT') %>%
     dplyr::select(-Measurement) %>%
         kable(caption = "Summary of TEMPLATE by Primary Classification")
+t <- table(dipep$first.st, dipep$template) %>%
+     kable(caption = 'PE Status v TEMPLATE dichotomisation')
 ## Group DVT with PE and plot as VTE v's gestation
 dplyr::filter(dipep, !is.na(vte)) %>%
 ggplot(aes(x = gestation, y = template, colour = vte)) +
