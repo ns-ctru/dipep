@@ -86,10 +86,10 @@ sed -e 's/template/thrombin.generation.time.to.peak/g' excl_anti_coag_template.R
 ## Plasmin Antiplasmin
 sed -e 's/template/plasmin.antiplasmin/g' all_template.Rmd \
     -e 's/TEMPLATE/Plasmin-antiplasmin (sec)/g' \
-    -e 's/MEASUREMENT/Plasmin-antiplasmin)/g' > all_plasmin_antiplasmin.Rmd
+    -e 's/MEASUREMENT/Plasmin-antiplasmin/g' > all_plasmin_antiplasmin.Rmd
 sed -e 's/template/plasmin.antiplasmin/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/Plasmin-antiplasmin (sec)/g' \
-    -e 's/MEASUREMENT/Plasmin-antiplasmin)/g' > excl_anti_coag_plasmin_antiplasmin.Rmd
+    -e 's/MEASUREMENT/Plasmin-antiplasmin/g' > excl_anti_coag_plasmin_antiplasmin.Rmd
 
 ## MRProANP
 sed -e 's/template/mrproanp/g' all_template.Rmd \
@@ -135,40 +135,38 @@ sed -e 's/template/prothrombin.fragments/g' excl_anti_coag_template.Rmd \
 sed -e 's/template/d.dimer.cat/g' all_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/\$vte/\$first.st/g' \
+    -e 's/vte/first.st/g' \
     -e 's/first\.st, d\.dimer\.cat/first\.st, d\.dimer/g' \
     -e 's/y = d\.dimer\.cat/y = d.dimer/g' \
     -e 's/colour = vte/color = first.st/g' \
     -e 's/VTE Status/PE Status/g' \
     -e 's/-Measurement/-Measurement, -DVT/g' \
     -e 's/kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")/kable(caption = "Summary of D-Dimer (Hospital) by Primary Classification", col.names = c("Statistic", "All", "Exclude", "No PE", "PE"))/g' \
-    -e $'s/## Regression results/table(dipep$first.st, dipep$d.dimer.cat) %>% kable(caption = "PE Status v D-Dimer (Hospital) dichotomisation")/g' \
     -e 's/##### D-Dimer (Hospital) : Binary/##### All/g' > all_ddimer_cat.Rmd
 sed -e 's/template/d.dimer.cat/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/\$vte/\$first.st/g' \
+    -e 's/vte/first.st/g' \
     -e 's/first\.st, d\.dimer\.cat/first\.st, d\.dimer/g' \
     -e 's/y = d\.dimer\.cat/y = d\.dimer/g' \
     -e 's/colour = vte/color = first.st/g' \
     -e 's/VTE Status/PE Status/g' \
     -e 's/-Measurement/-Measurement, -DVT/g' \
     -e 's/kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")/kable(caption = "Summary of D-Dimer (Hospital) by Primary Classification", col.names = c("Statistic", "All", "Exclude", "No PE", "PE"))/g' \
-    -e $'s/## Regression results/t <- dplyr::filter(dipep, exclude.anti.coag == "No")\\ntable(t$first.st, t$d.dimer.cat) %>% kable(caption = "PE Status v D-Dimer (Hospital) dichotomisation")/g' \
     -e 's/##### D-Dimer (Hospital) : Binary/##### Excluding those on Anticoagulants/g'> excl_anti_coag_ddimer_cat.Rmd
 
 ## D-Dimer (Hospital) - Continuous
 sed -e 's/template/d.dimer/g' all_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Continuous/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/\$vte/\$first.st/g' \
+    -e 's/vte/first.st/g' \
     -e 's/-Measurement/-Measurement, -DVT/g' \
     -e 's/kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")/kable(caption = "Summary of D-Dimer (Hospital) by Primary Classification", col.names = c("Statistic", "All", "Exclude", "No PE", "PE"))/g' \
     -e 's/##### D-Dimer (Hospital) : Continuous/##### All/g' > all_ddimer.Rmd
 sed -e 's/template/d.dimer/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Continuous/g'  \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/\$vte/\$first.st/g' \
+    -e 's/vte/first.st/g' \
     -e 's/-Measurement/-Measurement, -DVT/g' \
     -e 's/kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")/kable(caption = "Summary of D-Dimer (Hospital) by Primary Classification", col.names = c("Statistic", "All", "Exclude", "No PE", "PE"))/g' \
     -e 's/##### D-Dimer (Hospital) : Continuous/##### Excluding those on Anticoagulants/g' > excl_anti_coag_ddimer.Rmd
