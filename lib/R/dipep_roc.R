@@ -11,6 +11,8 @@
 #' @param to.plot Vector of variables to plot.
 #' @param title Title for ROC plot.
 #' @param threshold Threshold (\code{0 < x < 1}) for classification if not already part of the data frame.
+#' @param alpha Confidence Interval width.
+#' @param ci.method Method for calculating Confidence Interval (default is \code{wilson}, i.e. score-test-based).
 #' @param labels Whether to apply labels to the ROC curve (option passed to \code{geom_roc()}).
 #' @param lasso Logical if predicted values are from steps of a LASSO, forces numbering to be numeric
 #'
@@ -19,6 +21,8 @@ dipep_roc <- function(df        = logistic$predicted,
                       to.plot   = c('history.thrombosis', 'history.iv.drug', 'history.veins', 'thrombo', 'surgery', 'thrombosis'),
                       title     = 'Medical History',
                       threshold = 0.5,
+                      alpha     = 0.05,
+                      ci.method = 'exact',
                       labels    = FALSE,
                       lasso     = FALSE,
                       ...){
@@ -196,6 +200,24 @@ dipep_roc <- function(df        = logistic$predicted,
                                     fnr         = false_negative / (true_positive + false_negative),
                                     fdr         = false_positive / (true_positive + false_positive),
                                     accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative))
+    ## CIs for sensitivty and specificity
+    results$test <- results$summary.stats
+    ## head(results$summary.stats) %>% print()
+    ci.sensitivity <- binconf(x = results$summary.stats$true_positive,
+                              n = results$summary.stats$true_positive + results$summary.stats$false_negative,
+                              alpha = alpha,
+                              method = ci.method,
+                              return.df = TRUE) %>%
+                       dplyr::select(-PointEst)
+    names(ci.sensitivity) <- c('sensitivity_lci', 'sensitivity_uci')
+    ci.specificity <- binconf(x = results$summary.stats$true_negative,
+                              n = results$summary.stats$true_negative + results$summary.stats$false_positive,
+                              alpha = alpha,
+                              method = ci.method,
+                              return.df = TRUE) %>%
+                      dplyr::select(-PointEst)
+    names(ci.specificity) <- c('specificity_lci', 'specificity_uci')
+    ci <- cbind(ci.sensitivity, ci.specificity) ## %>%
     ## Bind AUC in with summary statistics
     t <- results$plot.auc
     names(t) <- gsub('Predictor', 'term', names(t))
@@ -205,10 +227,18 @@ dipep_roc <- function(df        = logistic$predicted,
                     AUC  = as.numeric(AUC))
     }
     results$summary.stats <- left_join(results$summary.stats,
-                                       t) %>%
+                                       t)
+    results$summary.stats <- cbind(results$summary.stats, ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
-                                           AUC, sensitivity, specificity, ppv, npv, fpr, fnr, fdr, accuracy)
+                                           AUC,
+                                           sensitivity, sensitivity_lci, sensitivity_uci,
+                                           specificity, specificity_lci, specificity_uci,
+                                           ## ppv, npv,
+                                           fpr, fnr, fdr, accuracy)
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC',
-                                      'Sensitivity', 'Specificity', 'PPV', 'NPV', 'FPR', 'FNR', 'FDR', 'Accuracy')
+                                      'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
+                                      'Specificity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
+                                      ## 'PPV', 'NPV',
+                                      'FPR', 'FNR', 'FDR', 'Accuracy')
     return(results)
 }
