@@ -13,6 +13,8 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression of Continuous Biomarkers') +
     theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
+to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
+          dplyr::select(term, estimate, lci, uci, p.value)
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
@@ -67,7 +69,7 @@ The performance of dichotomising the biomarkers based on the supplied reference 
 rbind(biomarker.all$roc.other$summary.stats,
       biomarker.all$roc.ddimer$summary.stats,
       biomarker.all$roc.thrombin$summary.stats) %>%
-    dplyr::select(-PPV, -NPV) %>%
+    ## dplyr::select(-PPV, -NPV) %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using p > ', threshold, ' to classify predicted probabilities as PE.'))
 
 
@@ -168,9 +170,14 @@ t <- dipep %>%
                              .$biomarker == 'tissue.factor.cat' ~ 'Tissue Factor : Dichotomised',
                              .$biomarker == 'troponin.cat' ~ 'Troponin : Dichotomised')) %>%
      left_join(., auc) %>%
-     dplyr::select(Term, true_positive, true_negative, false_positive, false_negative, auc, sensitivity, specificity, ppv, npv, fpr, fnr, fdr, accuracy)
-names(t) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC', 'Sensitivity', 'Specificity', 'PPV', 'NPV', 'FPR', 'FNR', 'FDR', 'Accuracy')
-dplyr::select(t, -PPV, -NPV) %>%
+     dplyr::select(Term, true_positive, true_negative, false_positive, false_negative, auc,
+                   sensitivity, specificity,
+                   ## ppv, npv,
+                   fpr, fnr, fdr, accuracy)
+names(t) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC', 'Sensitivity', 'Specificity',
+              ##'PPV', 'NPV',
+              'FPR', 'FNR', 'FDR', 'Accuracy')
+## dplyr::select(t, -PPV, -NPV) %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 
 
