@@ -114,7 +114,6 @@ auc <- mutate(auc,
               auc = as.numeric(auc))
 
 t <- dipep %>%
-     dplyr::filter(exclude.anti.coag == 'No') %>%
      dplyr::select(screening,
                    first.st,
                    aptt.cat,
@@ -178,7 +177,8 @@ names(t) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC', '
               ##'PPV', 'NPV',
               'FPR', 'FNR', 'FDR', 'Accuracy')
 ## dplyr::select(t, -PPV, -NPV) %>%
-    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
+kable(t,
+      caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 
 
 ```
