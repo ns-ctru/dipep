@@ -2597,8 +2597,8 @@ dipep <- left_join(dipep,
 #######################################################################
 dipep <- dipep %>%
          mutate(vte = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'PE'    ~ 'VTE',
-                           .$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'No PE' ~ 'No VTE',
-                           .$group %in% c('Diagnosed DVT')                                        ~ 'VTE'),
+                                .$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'No PE' ~ 'No VTE',
+                                .$group %in% c('Diagnosed DVT')                                         ~ 'VTE'),
                 vte = factor(vte,
                              levels = c('No VTE', 'VTE')))
 
