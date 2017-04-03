@@ -5,6 +5,7 @@ The point-estimate and 95% Confidence Intervals from univariable logistic regres
 ```{r results_biomarker_logistic_excl_anti_coag_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 to.sum <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
           dplyr::filter(!grepl('Abnormal', term)) %>%
+          dplyr::filter(!grepl('Hospital Continuous', term)) %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
@@ -177,8 +178,9 @@ t <- dipep %>%
 names(t) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC', 'Sensitivity', 'Specificity',
               ## 'PPV', 'NPV',
               'FPR', 'FNR', 'FDR', 'Accuracy')
-dplyr::select(t, -PPV, -NPV) %>%
-    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
+## dplyr::select(t, -PPV, -NPV) %>%
+kable(t,
+      caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 
 
 ```
