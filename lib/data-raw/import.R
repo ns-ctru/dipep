@@ -1708,9 +1708,18 @@ dipep <- dipep %>%
            admitted.hospital = ifelse(is.na(admitted.hospital),
                                       yes = 'No',
                                       no  = as.character(admitted.hospital)),
-           d.dimer.cat = ifelse(d.dimer < d.dimer.low | d.dimer > d.dimer.high,
-                                yes = 'Abnormal',
-                                no  = 'Normal'))
+           ## d.dimer.cat = ifelse(d.dimer < d.dimer.low | d.dimer > d.dimer.high,
+           ##                      yes = 'Abnormal',
+           ##                      no  = 'Normal')
+           d.dimer.cat = case_when(is.na(.$d.dimer)                                ~ '',
+                                   is.na(.$d.dimer.low)                            ~ '',
+                                   is.na(.$d.dimer.high)                           ~ '',
+                                   .$d.dimer <  .$d.dimer.low | .$d.dimer >  .$d.dimer.high ~ 'Abnormal',
+                                   .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
+           d.dimer.cat = ifelse(d.dimer.cat == '' | is.na(trimester),
+                                yes = NA,
+                                no  = d.dimer.cat)
+           )
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -1810,6 +1819,22 @@ dipep <- mutate(dipep,
                 injury                             = factor(injury),
                 travel                             = factor(travel),
                 immobil                            = factor(immobil))
+## Gestation specific categorisation (bloody confusing and seem to be derived
+## somewhat arbitrarily without reference to DOI: 10.1111/1471-0528.12855)
+dipep <- dipep %>%
+    mutate(d.dimer.gestation.cat = case_when(.$trimester == '1st Trimester' & (.$d.dimer < .$d.dimer.low | .$d.dimer > .$d.dimer.high) ~ 'Abnormal',
+                                             .$trimester == '2nd Trimester' & (.$d.dimer < (1.5 * .$d.dimer.low) | .$d.dimer > (1.5 * .$d.dimer.high)) ~ 'Abnormal',
+                                             .$trimester == '3rd Trimester' & (.$d.dimer < (2 * .$d.dimer.low) | .$d.dimer > (2 * .$d.dimer.high)) ~ 'Abnormal',
+                                             .$trimester == 'Post-Partum' & (.$d.dimer < (2 * .$d.dimer.low) | .$d.dimer > (2 * .$d.dimer.high)) ~ 'Abnormal'),
+           ## Having now defined Abnormal, we have to define Normal
+           d.dimer.gestation.cat = ifelse(is.na(d.dimer.gestation.cat) & !is.na(d.dimer),
+                                          yes = 'Normal',
+                                          no  = d.dimer.gestation.cat),
+           d.dimer.gestation.cat = ifelse(is.na(d.dimer.low) | is.na(d.dimer.high),
+                                          yes = NA,
+                                          no  = d.dimer.gestation.cat),
+           d.dimer.gestation.cat = factor(d.dimer.gestation.cat,
+                                          levels = c('Normal', 'Abnormal')))
 ## Explicitly set the reference level for all factor variables
 dipep <- mutate(dipep,
                 bmi.cat                           = relevel(bmi.cat,
@@ -1909,6 +1934,8 @@ dipep <- mutate(dipep,
                 thromboprophylaxis                = relevel(thromboprophylaxis,
                                                             ref = 'No'),
                 d.dimer.cat                       = relevel(d.dimer.cat,
+                                                            ref = 'Normal'),
+                d.dimer.gestation.cat             = relevel(d.dimer.gestation.cat,
                                                             ref = 'Normal'))
 ## Derive binary indicator for Suspected v's Diagnosed PE
 dipep <- dipep %>%
