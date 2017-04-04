@@ -158,6 +158,7 @@ t <- dipep %>%
                              .$biomarker == 'bnp.cat' ~ 'BNP : Dichotomised',
                              .$biomarker == 'clauss.fibrinogen.cat' ~ 'Clauss Fibrinogen : Dichotomised',
                              .$biomarker == 'd.dimer.cat' ~ 'D-Dimer (Hospital) : Dichotomised',
+                             .$biomarker == 'd.dimer.gestation.cat' ~ 'D-Dimer (Hospital) : Dichotomised (Gestation Specific)',
                              .$biomarker == 'ddimer.elisa.cat' ~ 'D-Dimer (ELISA) : Dichotomised',
                              .$biomarker == 'ddimer.innovance.cat' ~ 'D-Dimer (Innovance) : Dichotomised',
                              .$biomarker == 'mrproanp.cat' ~ 'MRProANP : Dichotomised',
