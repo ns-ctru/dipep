@@ -68,7 +68,11 @@ existing$simplified.age <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.prev.dvt.pe <- dipep_glm(df                    = dipep,
+existing$simplified.prev.dvt.pe <- mutate(dipep,
+                                          simplified.prev.dt.pe = ifelse(simplified.prev.dvt.pe == 3,
+                                                                         yes = 1,
+                                                                         no  = simplified.prev.dvt.pe)) %>%
+                                   dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.prev.dvt.pe',
                                      model                 = 'Geneva - Previous DVT/PE',
@@ -76,7 +80,11 @@ existing$simplified.prev.dvt.pe <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.surgery <- dipep_glm(df                    = dipep,
+existing$simplified.surgery <- mutate(dipep,
+                                          simplified.surgery = ifelse(simplified.surgery == 3,
+                                                                         yes = 1,
+                                                                         no  = simplified.surgery)) %>%
+                                   dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.surgery',
                                      model                 = 'Geneva - Surgery',
@@ -84,7 +92,11 @@ existing$simplified.surgery <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.neoplasm <- dipep_glm(df                    = dipep,
+existing$simplified.neoplasm <- mutate(dipep,
+                                       simplified.neoplasm = ifelse(simplified.neoplasm == 2,
+                                                           yes = 1,
+                                                           no  = simplified.neoplasm)) %>%
+                                dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.neoplasm',
                                      model                 = 'Geneva - Neoplasm',
@@ -92,7 +104,11 @@ existing$simplified.neoplasm <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.lower.limb.unilateral.pain <- dipep_glm(df                    = dipep,
+existing$simplified.lower.limb.unilateral.pain <- mutate(dipep,
+                                                         simplified.lower.limb.unilateral.pain = ifelse(simplified.lower.limb.unilateral.pain == 3,
+                                                                         yes = 1,
+                                                                         no  = simplified.lower.limb.unilateral.pain)) %>%
+                                                  dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.lower.limb.unilateral.pain',
                                      model                 = 'Geneva - Unilateral Lower Limb Pain',
@@ -100,7 +116,11 @@ existing$simplified.lower.limb.unilateral.pain <- dipep_glm(df                  
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.haemoptysis <- dipep_glm(df                    = dipep,
+existing$simplified.haemoptysis <- mutate(dipep,
+                                          simplified.haemoptysis = ifelse(simplified.haemoptysis == 2,
+                                                                          yes = 1,
+                                                                          no  = simplified.haemoptysis)) %>%
+                                   dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.haemoptysis',
                                      model                 = 'Geneva - Haemoptysis',
@@ -108,7 +128,11 @@ existing$simplified.haemoptysis <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.heart.rate <- dipep_glm(df                    = dipep,
+existing$simplified.heart.rate <- mutate(dipep,
+                                       simplified.heart.rate = ifelse(simplified.heart.rate == 5,
+                                                                      yes = 1,
+                                                                      no  = simplified.heart.rate)) %>%
+                                  dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.heart.rate',
                                      model                 = 'Geneva - Heart Rate',
@@ -116,7 +140,11 @@ existing$simplified.heart.rate <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$simplified.pain.palpitations <- dipep_glm(df                    = dipep,
+existing$simplified.pain.palpitations <- mutate(dipep,
+                                                simplified.pain.palpitations = ifelse(simplified.pain.palpitations == 5,
+                                                                                      yes = 1,
+                                                                                      no  = simplified.pain.palpitations)) %>%
+                                         dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'simplified.pain.palpitations',
                                      model                 = 'Geneva - Pain on limb palpitation',
@@ -188,7 +216,11 @@ existing$perc.leg.swelling <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.dvt <- dipep_glm(df                    = dipep,
+existing$wells.dvt <- mutate(dipep,
+                             wells.dvt = ifelse(wells.dvt == 3,
+                                                yes = 1,
+                                                no  = wells.dvt)) %>%
+                      dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'wells.dvt',
                                      model                 = 'Wells - DVT',
@@ -196,7 +228,11 @@ existing$wells.dvt <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.alternative.permissive <- dipep_glm(df                    = dipep,
+existing$wells.alternative.permissive <- mutate(dipep,
+                                                wells.alternative.permissive = ifelse(wells.alternative.permissive == 3,
+                                                                   yes = 1,
+                                                                   no  = wells.alternative.permissive)) %>%
+                                         dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'wells.alternative.permissive',
                                      model                 = 'Wells - PE mostly likely diagnosis (Permissive)',
@@ -204,7 +240,11 @@ existing$wells.alternative.permissive <- dipep_glm(df                    = dipep
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.alternative.strict <- dipep_glm(df                    = dipep,
+existing$wells.alternative.strict <- mutate(dipep,
+                                                wells.alternative.strict = ifelse(wells.alternative.strict == 3,
+                                                                   yes = 1,
+                                                                   no  = wells.alternative.strict)) %>%
+                                     dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'wells.alternative.strict',
                                      model                 = 'Wells - PE mostly likely diagnosis (Strict)',
@@ -212,7 +252,11 @@ existing$wells.alternative.strict <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.heart.rate <- dipep_glm(df                    = dipep,
+existing$wells.heart.rate <- mutate(dipep,
+                                    wells.heart.rate = ifelse(wells.heart.rate == 1.5,
+                                                              yes = 1,
+                                                              no  = wells.heart.rate)) %>%
+                             dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'wells.heart.rate',
                                      model                 = 'Wells - Heart Rate',
@@ -220,7 +264,11 @@ existing$wells.heart.rate <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.surgery.immobil <- dipep_glm(df                    = dipep,
+existing$wells.surgery.immobil <- mutate(dipep,
+                                         wells.surgery.immobil = ifelse(wells.surgery.immobil == 1.5,
+                                                                        yes = 1,
+                                                                        no  = wells.surgery.immobil)) %>%
+                             dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'wells.surgery.immobil',
                                      model                 = 'Wells - Surgery/Immobility',
@@ -228,7 +276,11 @@ existing$wells.surgery.immobil <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.dvt.pe <- dipep_glm(df                    = dipep,
+existing$wells.dvt.pe <- mutate(dipep,
+                                wells.dvt.pe = ifelse(wells.dvt.pe == 1.5,
+                                                      yes = 1,
+                                                      no  = wells.dvt.pe)) %>%
+                         dipep_glm(
                                      classification        = 'first.st',
                                      predictor             = 'wells.dvt.pe',
                                      model                 = 'Wells - DVT/PE',
