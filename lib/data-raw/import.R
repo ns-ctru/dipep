@@ -1796,7 +1796,7 @@ dipep <- mutate(dipep,
                                            labels = c('No PE', 'PE')),
                 medical.other.dvt.pe = factor(medical.other.dvt.pe,
                                               labels = c('No', 'Yes')),
-                thromboprophylaxis   = factor(thromboprophylaxis,
+                thromboprophylaxis   = factor(as.character(thromboprophylaxis),
                                               labels = c('No', 'Yes')),
                 admitted.hospital    = factor(admitted.hospital,
                                               levels = c('No', 'Yes')),
@@ -1819,6 +1819,12 @@ dipep <- mutate(dipep,
                 injury                             = factor(injury),
                 travel                             = factor(travel),
                 immobil                            = factor(immobil))
+
+
+
+
+### STOP
+
 ## Gestation specific categorisation (bloody confusing and seem to be derived
 ## somewhat arbitrarily without reference to DOI: 10.1111/1471-0528.12855)
 dipep <- dipep %>%
