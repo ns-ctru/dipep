@@ -1,20 +1,7 @@
 ##### Pre-Categorised Continuous Variables
 
 ```{r results_lasso_categorical, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'hide', eval = TRUE}
-classification <- 'first.st'
-predictor <- c('age.cat', 'bmi.cat', 'smoking.cat', 'pregnancies.over.cat', 'pregnancies.under.cat',
-               'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-               'injury', 'thrombosis', 'existing.medical',
-               ## 'preg.post',
-               'trimester', 'multiple.preg',
-               'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-               'presenting.features.haemoptysis', 'presenting.features.cough',
-               'presenting.features.syncope',
-               ## 'presenting.features.palpitations',
-               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate.cat',
-               'o2.saturation.cat', 'bp.systolic.cat', 'bp.diastolic.cat', 'ecg.cat', 'xray.cat')
+predictor <- c(categorical, common)
 lasso.categorical <- dipep_glmnet_orig(df          = dipep,
                                        classification = classification,
                                        predictor      = predictor,
@@ -74,7 +61,7 @@ lasso.categorical$lasso.cv.summary.stats.all %>%
 
 ```
 
-```{r results_lasso_categorical_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = TRUE}
+```{r results_lasso_categorical_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = FALSE}
 ## Animation of ROC curve
 ani.record(reset = TRUE)
 par(bg = 'white')
