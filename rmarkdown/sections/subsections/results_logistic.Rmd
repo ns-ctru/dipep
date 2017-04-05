@@ -460,27 +460,6 @@ logistic$thromb.event <- dipep_glm(df = dipep,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE,
                     exclude.missing       = FALSE)
-## Delphi - Medical Complication
-logistic$medical.complication <- dipep_glm(df = dipep,
-                                           classification = 'first.st',
-                                           predictor = 'medical.complication',
-                                           model = 'Medical Complications (Delphi reviewed)',
-                    exclude = NULL,
-                    exclude.dvt = TRUE,
-                    exclude.non.recruited = TRUE,
-                    exclude.missing       = FALSE)
-## Delphi - Obstetric Complication
-logistic$obstetric.complication <- dipep_glm(df = dipep,
-                                           classification = 'first.st',
-                                           predictor = 'obstetric.complication',
-                                           model = 'Obstetric Complications (Delphi reviewed)',
-                    exclude = NULL,
-                    exclude.dvt = TRUE,
-                    exclude.non.recruited = TRUE,
-                    exclude.missing       = FALSE)
-
-logistic$medical.complication$tidied
-logistic$obstetric.complication$tidied
 
 ## Combine all three sets of tidied output from each model
 logistic$tidied <- rbind(logistic$age$tidied,
@@ -535,9 +514,7 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$injury$tidied,
                          logistic$medical.probs$tidied,
                          logistic$thromb.event$tidied,
-                         logistic$thromboprophylaxis$tidied,
-                         logistic$medical.complication$tidied,
-                         logistic$obstetric.complication$tidied)
+                         logistic$thromboprophylaxis$tidied)
 logistic$glance <- rbind(logistic$age$glance,
                          logistic$smoking$glance,
                          logistic$temperature.cat$glance,
@@ -589,9 +566,7 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$injury$glance,
                          logistic$medical.probs$glance,
                          logistic$thromb.event$glance,
-                         logistic$thromboprophylaxis$glance,
-                         logistic$medical.complication$glance,
-                         logistic$obstetric.complication$glance)
+                         logistic$thromboprophylaxis$glance)
 ## Combine all predicted
 logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$age.cat$predicted,
@@ -645,9 +620,7 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$injury$predicted,
                             logistic$medical.probs$predicted,
                             logistic$thromb.event$predicted,
-                            logistic$thromboprophylaxis$predicted,
-                            logistic$medical.complication$predicted,
-                            logistic$obstetric.complication$predicted)
+                            logistic$thromboprophylaxis$predicted)
 ## Remove 'presenting.features.' from name
 logistic$predicted <- mutate(logistic$predicted,
                              name = gsub('presenting.features.', '', name))
@@ -692,9 +665,7 @@ logistic$cross.tab <- rbind(logistic$age.cat$table,
                             logistic$dvt.cat$table,
                             logistic$injury$table,
                             logistic$thromb.event$table,
-                            logistic$medical.probs$table,
-                            logistic$medical.complication$table,
-                            logistic$obstetric.complication$table)
+                            logistic$medical.probs$table)
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
                                 classification = 'first.st',
