@@ -55,3 +55,15 @@ sed 's/template/medical.complication/g' template.Rmd > medical.complication.Rmd
 sed 's/template/obstetric.complication/g' template.Rmd > obstetric.complication.Rmd
 sed 's/template/xray.pe/g' template.Rmd > xray.pe.Rmd
 sed 's/template/ecg.pe/g' template.Rmd > ecg.pe.Rmd
+sed 's/template/dvt.cat/g' template.Rmd > ecg.pe.Rmd
+sed 's/template/simplified.lower.limb.unilateral.pain/g' template.Rmd > simplified.lower.limb.unilateral.pain.Rmd
+sed 's/template/simplified.pain.palpitations/g' template.Rmd > simplified.pain.palpitations.Rmd
+sed 's/template/wells.alternative.permissive/g' template.Rmd > wells.alternative.permissive.Rmd
+sed 's/template/wells.alternative.strict/g' template.Rmd > wells.alternative.strict.Rmd
+sed 's/template/perc.hormone/g' template.Rmd > perc.hormone.Rmd
+sed 's/template/perc.leg.swelling/g' template.Rmd > perc.leg.swelling.Rmd
+sed 's/template/delphi.medical.history.surgery/g' template.Rmd > delphi.medical.history.surgery.Rmd
+sed 's/template/delphi.medical.history/g' template.Rmd > delphi.medical.history.Rmd
+sed 's/template/delphi.medical.complication/g' template.Rmd > delphi.medical.complication.Rmd
+sed 's/template/delphi.obstetric.complication/g' template.Rmd > delphi.obstetric.complication.Rmd
+sed 's/template/delphi.gestation/g' template.Rmd > delphi.medical.gestation.Rmd
