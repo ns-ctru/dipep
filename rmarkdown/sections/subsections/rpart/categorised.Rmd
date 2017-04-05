@@ -1,52 +1,20 @@
 ##### Pre-Categorised Continuous Variables
 
 ```{r results_rpart_categorical, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
-## Useful reading...
-##
 ## http://gormanalysis.com/decision-trees-in-r-using-rpart/
+predictor <- c(categorical, common)
 rpart.categorical <- dipep_rpart(df             = dipep,
-                           classification = 'first.st',
-                           predictor      = c('age.cat',
-                                              ## 'smoking',
-                                              'temperature.cat',
-                                              'bp.diastolic.cat',
-                                              'bp.systolic.cat',
-                                              'o2.saturation.cat',
-                                              'respiratory.rate.cat',
-                                              'bmi.cat',
-                                              ## 'history.thrombosis',
-                                              ## 'history.iv.drug',
-                                              'history.veins',
-                                              ## 'travel',
-                                              ## 'multiple.preg',
-                                              'pregnancies.under.cat',
-                                              'pregnancies.over.cat',
-                                              'prev.preg.problem',
-                                              'presenting.features.pleuritic',
-                                              'presenting.features.non.pleuritic',
-                                              ## 'presenting.features.sob.exertion',
-                                              'presenting.features.sob.rest',
-                                              'presenting.features.haemoptysis',
-                                              'presenting.features.cough',
-                                              'presenting.features.syncope',
-                                              'presenting.features.palpitations',
-                                              'presenting.features.other',
-                                              'surgery',
-                                              'cesarean',
-                                              'thromb.event',
-                                              ## 'thromboprophylaxis',
-                                              'thrombosis',
-                                              'preg.post',
-                                              'num.fetus'),
-                           exclude.non.recruited = TRUE,
-                           exclude.dvt           = TRUE,
-                           exclude.missing       = TRUE,
-                           legend                = FALSE,
-                           threshold             = 0.5,
-                           rpart.opts.method     = 'class',
-                           rpart.opts.minsplit   = 4,
-                           rpart.opts.minbucket  = 2,
-                           rpart.opts.cp         = -1)
+                                 classification = classification,
+                                 predictor      = predictor,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 legend                = FALSE,
+                                 threshold             = 0.5,
+                                 rpart.opts.method     = 'class',
+                                 rpart.opts.minsplit   = 4,
+                                 rpart.opts.minbucket  = 2,
+                                 rpart.opts.cp         = -1)
 
 ```
 
