@@ -864,6 +864,7 @@ logistic$roc.med.hist$plot
 ## Plot Unique Delphi components
 existing$roc.delphi <- dipep_roc(df      = existing$predicted,
                           to.plot = c('delphi.medical.history',
+                                      'delphi.medical.history.surgery',
                                       'delphi.medical.complication',
                                       'delphi.obstetric.complication',
                                       'delphi.gestation'),
@@ -877,11 +878,11 @@ existing$roc.simplified <- dipep_roc(df      = existing$predicted,
                           title   = 'Unique GENEVA Score Components')
 existing$roc.simplified$plot
 ## Plot Unique PERC components
-existing$roc.perc <- dipep_roc(df      = existing$predicted,
+existing$roc.wells <- dipep_roc(df      = existing$predicted,
                           to.plot = c('wells.alternative.permissive',
                                       'wells.alternative.strict'),
                           title   = 'Unique PERC Score Components')
-existing$roc.perc$plot
+existing$roc.wells$plot
 ## Plot Unique Wells components
 existing$roc.perc <- dipep_roc(df      = existing$predicted,
                           to.plot = c('perc.hormone',
@@ -903,7 +904,10 @@ rbind(logistic$roc.physiology$summary.stats,
       logistic$roc.presenting$summary.stats,
       logistic$roc.other$summary.stats,
       logistic$roc.med.hist$summary.stats,
-      existing$roc.delphi$summary.stats) %>%
+      existing$roc.delphi$summary.stats,
+      existing$roc.simplified$summary.stats,
+      existing$roc.wells$summary.stats,
+      existing$roc.perc$summary.stats) %>%
     ## dplyr::select(`-PPV`, `-NPV`) %>%
     kable(digits  = 3,
           caption = 'Summary Statistics for Univariable logistic regression, threshold for dichotomisation is p > 0.5')
