@@ -111,11 +111,11 @@ The full results of the univariable logistic regression are presented below.  Fo
 ```
 
 #### Medical Complications (Delphi)
-```{r child = 'logistic/medical.complication.Rmd', eval = TRUE}
+```{r child = 'logistic/medical.complication.Rmd', eval = FALSE}
 ```
 
 #### Obstetric Complications (Delphi)
-```{r child = 'logistic/obstetric.complication.Rmd', eval = TRUE}
+```{r child = 'logistic/obstetric.complication.Rmd', eval = FALSE}
 ```
 
 #### Presenting Features - Pleuritic
@@ -160,4 +160,48 @@ The full results of the univariable logistic regression are presented below.  Fo
 
 #### ECG : PE Related
 ```{r child = 'logistic/ecg.pe.Rmd', eval = TRUE}
+```
+
+#### Geneva : Unilateral lower limb pain
+```{r child = 'logistic/simplified.lower.limb.unilateral.pain.Rmd', eval = TRUE}
+```
+
+#### Geneva : Pain on Limb Palpitation
+```{r child = 'logistic/simplified.lower.limb.unilateral.pain.Rmd', eval = TRUE}
+```
+
+#### Wells : PE most likely (Permissive)
+```{r child = 'logistic/wells.alternative.permissive.Rmd', eval = TRUE}
+```
+
+#### Wells : PE most likely (Strict)
+```{r child = 'logistic/wells.alternative.strict.Rmd', eval = TRUE}
+```
+
+#### PERC : Exogenous Estrogen
+```{r child = 'logistic/perc.hormone.Rmd', eval = TRUE}
+```
+
+#### PERC : Unilateral Leg Swelling
+```{r child = 'logistic/perc.leg.swelling.Rmd', eval = TRUE}
+```
+
+#### Delphi : Surgery (excl. Cesarean)
+```{r child = 'logistic/delphi.medical.history.surgery.Rmd', eval = TRUE}
+```
+
+#### Delphi : Hospital Admission, Surgery (excl. Cesarean) or Injury
+```{r child = 'logistic/delphi.medical.history.Rmd', eval = TRUE}
+```
+
+#### Delphi : Medical Complications
+```{r child = 'logistic/delphi.medical.complication.Rmd', eval = TRUE}
+```
+
+#### Delphi : Obstetric Complications
+```{r child = 'logistic/delphi.obstetric.complication.Rmd', eval = TRUE}
+```
+
+#### Delphi - Trimester
+```{r child = 'logistic/delphi.gestation.Rmd', eval = TRUE}
 ```
