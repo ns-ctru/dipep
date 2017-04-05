@@ -170,7 +170,8 @@ dipep_glm <- function(df              = .data,
         model <- predictor
     }
     ## Cross tabulation of counts for combining
-    results$table <- dplyr::group_by_(df, classification, predictor) %>%
+    results$table <- dplyr::filter_(df, !is.na(predictor)) %>%
+                     dplyr::group_by_(classification, predictor) %>%
                      dplyr::summarise(n = n()) %>%
                      dplyr::group_by_(classification) %>%
                      ## dplyr::group_by_(predictor) %>%
@@ -224,6 +225,7 @@ dipep_glm <- function(df              = .data,
                             predictor = gsub('delphi.respiratory.rate', 'Delphi : Respiratory Rate', predictor),
                             predictor = gsub('age.cat', 'Age (Categorised)', predictor),
                             predictor = gsub('smoking', 'Smoking Status', predictor),
+                            predictor = gsub('injury', 'Injury', predictor),
                             predictor = gsub('temperature.cat', 'Temperature (Categorised)', predictor),
                             predictor = gsub('bp.diastolic.cat', 'Diastolic (Categorised)', predictor),
                             predictor = gsub('bp.systolic.cat', 'Systolic (Categorised)', predictor),
@@ -296,22 +298,24 @@ dipep_glm <- function(df              = .data,
                             predictor = gsub('mrproanp.cat', 'MRproANP : Dichotomised', predictor),
                             predictor = gsub('medical.complication', 'Medical Complication (Delphi reviewed)', predictor),
                             predictor = gsub('obstetric.complication', 'Obstetric Complication (Delphi reviewed)', predictor),
-                            levels    = ifelse(as.character(levels) == 'TRUE',
+                            levels    = as.character(levels),
+                            levels    = ifelse(levels == 'TRUE',
                                                yes = 'Yes',
                                                no  = levels),
-                            levels    = ifelse(as.character(levels) == 'FALSE',
+                            levels    = ifelse(levels == 'FALSE',
                                                yes = 'No',
                                                no  = levels),
-                            levels    = ifelse(as.character(levels) == '1',
+                            levels    = ifelse(levels == '1' | levels == '4',
                                                yes = 'Yes',
                                                no  = levels),
-                            levels    = ifelse(as.character(levels) == '0',
+                            levels    = ifelse(levels == '0',
                                                yes = 'No',
                                                no  = levels),
                             levels    = ifelse(is.na(levels),
                                                yes = 'Missing',
                                                no  = levels)
-                            )
+                            ) %>%
+        dplyr::filter(levels != 'Missing')
     if(classification != 'vte'){
         results$table <- results$table[c('predictor', 'levels', 'No PE', 'PE')]
     }
