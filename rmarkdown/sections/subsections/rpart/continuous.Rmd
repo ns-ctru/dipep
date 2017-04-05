@@ -4,16 +4,38 @@
 ## Repeat using continuous variables
 rpart.continuous <- dipep_rpart(df             = dipep,
                           classification = 'first.st',
-                          predictor      = c('age', 'smoking', 'temperature', 'bp.diastolic', 'bp.systolic',
-                                             'o2.saturation', 'respiratory.rate', 'bmi',
-                                             'pregnancies.under', 'pregnancies.over', 'prev.preg.problem',
+                          predictor      = c('age',
+                                             ## 'smoking',
+                                             'temperature',
+                                             'bp.diastolic',
+                                             'bp.systolic',
+                                             'o2.saturation',
+                                             'respiratory.rate',
+                                             'bmi',
+                                              ## 'history.thrombosis',
+                                              ## 'history.iv.drug',
+                                              'history.veins',
+                                              ## 'travel',
+                                              ## 'multiple.preg',
+                                             'pregnancies.under',
+                                             'pregnancies.over',
+                                             'prev.preg.problem',
                                              'presenting.features.pleuritic',
-                                             'presenting.features.non.pleuritic', 'presenting.features.sob.exertion',
-                                             'presenting.features.sob.rest', 'presenting.features.haemoptysis',
-                                             'presenting.features.cough', 'presenting.features.syncope',
-                                             'presenting.features.palpitations', 'presenting.features.other',
-                                             'surgery', 'cesarean', 'thromb.event',
-                                             'thromboprophylaxis', 'thrombosis', 'preg.post', 'num.fetus'),
+                                             'presenting.features.non.pleuritic',
+                                             ## 'presenting.features.sob.exertion',
+                                             'presenting.features.sob.rest',
+                                             'presenting.features.haemoptysis',
+                                             'presenting.features.cough',
+                                             'presenting.features.syncope',
+                                             'presenting.features.palpitations',
+                                             'presenting.features.other',
+                                             'surgery',
+                                             'cesarean',
+                                             'thromb.event',
+                                             ## 'thromboprophylaxis',
+                                             'thrombosis',
+                                             'preg.post',
+                                             'num.fetus'),
                           exclude.non.recruited = TRUE,
                           exclude.dvt           = TRUE,
                           exclude.missing       = TRUE,
@@ -90,7 +112,7 @@ rpart.continuous$roc.all$summary.stats %>%
 
 ```
 
-```{r results_rpart_continuous_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = TRUE}
+```{r results_rpart_continuous_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = FALSE}
 ## Animation of ROC curve
 ani.record(reset = TRUE)
 par(bg = 'white')
