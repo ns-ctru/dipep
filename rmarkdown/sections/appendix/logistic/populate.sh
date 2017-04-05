@@ -77,4 +77,4 @@ sed -e 's/template/delphi.medical.complication/g' template.Rmd \
 sed -e 's/template/delphi.obstetric.complication/g' template.Rmd \
     -e 's/logistic/existing/g' > delphi.obstetric.complication.Rmd
 sed -e 's/template/delphi.gestation/g' template.Rmd \
-    -e 's/logistic/existing/g' > delphi.medical.gestation.Rmd
+    -e 's/logistic/existing/g' > delphi.gestation.Rmd
