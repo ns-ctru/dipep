@@ -741,12 +741,13 @@ to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
 ## Select the results from logistic regression of Existing scores for combininig
 to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                  dplyr::filter(term %in% c('Delphi : Surgery/Injury',
+                                           'Delphi : Surgery (excl. Cesarean)',
                                            'Delphi : Medical Complications',
                                            'Delphi : Obstetric Complications',
                                            'Delphi : 3rd Trimester/Post-Partum')) %>%
                  dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('Geneva : Neoplasm',
+                     dplyr::filter(term %in% c(## 'Geneva : Neoplasm',
                                                'Geneva : Unilateral lower limb pain',
                                                'Geneva : Pain on limb palpitation')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
@@ -774,23 +775,23 @@ to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ## Select the results from logistic regression of Existing scores for combininig
 to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                 dplyr::filter(term %in% c('delphi.medical.historyTRUE',
-                                           'delphi.medical.complicationTRUE',
-                                           'delphi.obstetric.complicationTRUE',
-                                           'delphi.gestationTRUE')) %>%
+                 dplyr::filter(term %in% c('Delphi : Surgery/Injury',
+                                           'Delphi : Medical Complications',
+                                           'Delphi : Obstetric Complications',
+                                           'Delphi : 3rd Trimester/Post-Partum')) %>%
                  dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('simplified.neoplasm',
-                                               'simplified.lower.limb.unilateral.pain',
-                                               'simplified.pain.palpitations')) %>%
+                     dplyr::filter(term %in% c('Geneva : Neoplasm',
+                                               'Geneva : Unilateral lower limb pain',
+                                               'Geneva : Pain on limb palpitation')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('wells.alternative.permissive',
-                                               'wells.alternative.strict')) %>%
+                     dplyr::filter(term %in% c('Wells : PE most likely (Permissive)',
+                                               'Wells : PE most likely (Strict)')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('perc.hormone',
-                                               'perc.leg.swelling')) %>%
+                     dplyr::filter(term %in% c('PERC : Exogenous Estrogen',
+                                               'PERC : Unilateral Leg Swelling')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
@@ -808,7 +809,21 @@ rm(to.sum)
 <!-- Cross-tabulation of all categorical variables by the Primary Classification is provided in the table below. -->
 
 ```{r results_logistic_regression_cross_tab, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
-kable(logistic$cross.tab,
+to.sum <- logistic$cross.tab
+to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : Surgery/Injury',
+                                                                      'Delphi : Medical Complication',
+                                                                      'Delphi : Obstetric Complication',
+                                                                      'Delphi : 3rd Trimester/Post-Partum',
+                                                                      'Geneva : Neoplasm',
+                                                                      'Geneva : Unilateral lower limb pain',
+                                                                      'Geneva : Pain on limb palpitation',
+                                                                      'Wells : PE most likely (Permissive)',
+                                                                      'Wells : PE most likely (Strict)',
+                                                                      'PERC : Exogenous Estrogen',
+                                                                      'PERC : Unilateral Leg Swelling'))
+to.tab <- rbind(to.sum,
+                to.sum.existing)
+kable(to.tab,
       col.names = c('Predictor', 'Levels', 'No PE', 'PE'),
       caption   = 'Cross-tabulation of categorical predictors by Primary Classification of Pulmonary Embolism status. ')
 
