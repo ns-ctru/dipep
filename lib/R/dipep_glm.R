@@ -294,7 +294,13 @@ dipep_glm <- function(df              = .data,
                             predictor = gsub('mrproanp', 'MRproANP', predictor),
                             predictor = gsub('mrproanp.cat', 'MRproANP : Dichotomised', predictor),
                             predictor = gsub('medical.complication', 'Medical Complication (Delphi reviewed)', predictor),
-                            predictor = gsub('obstetric.complication', 'Obstetric Complication (Delphi reviewed)', predictor)
+                            predictor = gsub('obstetric.complication', 'Obstetric Complication (Delphi reviewed)', predictor),
+                            levels    = ifelse(as.character(levels) == 'TRUE',
+                                               yes = 'Yes',
+                                               no  = levels),
+                            levels    = ifelse(as.character(levels) == 'FALSE',
+                                               yes = 'No',
+                                               no  = levels)
                             )
     if(classification != 'vte'){
         results$table <- results$table[c('predictor', 'levels', 'No PE', 'PE')]
