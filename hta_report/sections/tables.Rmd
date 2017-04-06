@@ -67,24 +67,24 @@ head.no.pe         <- paste0('No PE (N = ',
 * In the absence of explicit details, and because I have not derived overall EQ5D scores in the existing work, I have opted to summarise only the components.
 * Statistics have not performed any analysis of EQ5D, it is something that has been used in the Health Economics analysis so more detailed summaries, including the overall score, may have been produced by Dan Pollard.
 
-```{r child = 'tables/recruitment_eq5d', eval = TRUE}
+```{r child = 'tables/recruitment_eq5d.Rmd', eval = TRUE}
 ```
 
 
 > ADD TABLE(S) HERE WITH COLUMNS FOR WOMEN WITH PE AND WOMEN WITHOUT, AND ROWS FOR AGE>35, BMI≥30, SMOKING STATUS, PREVIOUS PREGNANCIES, ANY PREVIOUS PREGNANCY PROBLEMS (YES/NO), THE 7 ITEMS UNDER PREVIOUS MEDICAL HISTORY, ANY OTHER PREVIOUS MEDICAL PROBLEM, EACH TRIMSTER AND POST PARTUM, MULTIPLE PREGNANCY, LONG HAUL TRAVEL, IMMOBILITY, THROMBOTIC EVENTS, OTHER PREGNANCY PROBLEMS (YES/NO), OTHER PREGNANCY PROBLEMS LIMITED TO THOSE IDENTIFIED AS BEING RISK FACTORS FOR PE, AND RECEIVED THROMBOPROPHYLAXIS
 
-```{r child = tables/status_demographics1', eval = TRUE}
+```{r child = 'tables/status_demographics1.Rmd', eval = TRUE}
 ```
 
 > ADD TABLE(S) HERE WITH COLUMNS FOR WOMEN WITH PE AND WOMEN WITHOUT, AND ROWS FOR EACH OF THE PRESENTING FEATURES, PROPORTION WITH EACH PHYSIOLOGICAL VARIABLE ABNORMAL, CLINICAL SIGNS OF DVT, ECG RESULT, CXR RESULT AND MOST LIKELY DIAGNOSIS (USING THE 3 CATEGORIES I USED FOR THE WELLS SCORE)
 
 
-```{r child = 'tables/status_presenting', eval = TRUE}
+```{r child = 'tables/status_presenting.Rmd', eval = TRUE}
 ```
 
 > ADD TABLE COMPARING MEAN (SD) OF AGE, BMI AND EACH PHYSIOLOGICAL MEASURE BETWEEN WOMEN WITH AND WITHOUT PE
 
-```{r child = 'tables/status_demographics2', eval = TRUE}
+```{r child = 'tables/status_demographics2.Rmd', eval = TRUE}
 ```
 
 
@@ -93,6 +93,7 @@ head.no.pe         <- paste0('No PE (N = ',
 **Comments**
 
 * In the absence of detailed information this table contains *all* results from logistic regressions that have been performed, this includes both the continuous and the categorical versions of physiological variables.
+* Only table is shown here, the equivalent figure can be found under the "Figures" section.
 
-```{r table_logistic_table, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
+```{r child = 'tables/logistic_table.Rmd', eval = TRUE}
 ```
