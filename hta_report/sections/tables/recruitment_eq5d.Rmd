@@ -18,8 +18,6 @@ eq5d <- filter(dipep,
                !is.na(pain.discomfort) &
                !is.na(health.scale.number)) %>%
         dplyr::select(screening,
-                      ## group,
-                      ## pe,
                       mobility,
                       self.care,
                       anxiety.depression,
