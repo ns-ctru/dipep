@@ -1,3 +1,12 @@
+> ADD TABLE HERE WITH COLUMNS FOR EACH COHORT AND ROWS FOR THE FOLLOWING CHARACTERISTICS: MEAN AGE, ETHNIC GROUP, MARITAL STATUS, EMPLOYMENT STATUS, GRAVIDITY (NUMBER OF PREVIOUS PREGNANCIES), PROPORTION IN EACH TRIMESTER AND POST-PARTUM
+
+**Comments**
+
+* Not explicitly stated but I have opted to include the percentage of observations within each group.
+* Not explicitly stated but I have opted to include a 'Missing' category so that percentages total 100.
+* Previous pregnancies are recorded as the number < 24 weeks and the number > 24 weeks.  Since the table description above only asks about the number of previous pregnancies they have been summed and are presented in conjunction with the constituents.
+
+
 ```{r table_recruitment_demographics1, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
 to.table <- dplyr::select(dipep,
                           screening,
