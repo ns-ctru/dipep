@@ -14,6 +14,7 @@ opts_chunk$set(cache.path = 'cache/',
                message = FALSE)
 options(digits = 3)
 digits <- 3
+digits.percent <- 2
 ## Ensure anchors are assessed first
 ## opts_knit$set(eval.after = 'echo')
 ## Hooks
@@ -27,6 +28,8 @@ ggplot2.opts$binwidth <- 30
 ##
 ## The following 'non-recruited' need excluding from all analyses
 exclusions <- c('N04/04', 'N04/05', 'N04/06')
+## Knitr options
+options(knitr.kable.NA = '')
 
 ```
 
