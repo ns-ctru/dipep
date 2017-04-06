@@ -42,6 +42,54 @@ system(cmd)
 
 ```
 
+```{r covariate_specification, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+classification <- 'first.st'
+common <- c('pregnancies.over',
+            'pregnancies.under',
+            ## 'history.thrombosis',
+            ## 'history.iv.drug',
+            'history.veins',
+            ## 'travel',
+            ## 'multiple.preg',
+            'prev.preg.problem',
+            'presenting.features.pleuritic',
+            'presenting.features.non.pleuritic',
+            ## 'presenting.features.sob.exertion',
+            'presenting.features.sob.rest',
+            'presenting.features.haemoptysis',
+            'presenting.features.cough',
+            'presenting.features.syncope',
+            'presenting.features.palpitations',
+            'presenting.features.other',
+            'surgery',
+            'cesarean',
+            'thromb.event',
+            ## 'thromboprophylaxis',
+            ## 'smoking',
+            'thrombosis',
+            ## 'preg.post',
+            'multiple.preg',
+            'ecg.pe',
+            'xray.pe')
+categorical <- c('age.cat',
+                 'bmi.cat',
+                 'temperature.cat',
+                 'bp.diastolic.cat',
+                 'bp.systolic.cat',
+                 'o2.saturation.cat',
+                 'respiratory.rate.cat',
+                 'heart.rate.cat')
+continuous  <- c('age',
+                 'bmi',
+                 'temperature',
+                 'bp.diastolic',
+                 'bp.systolic',
+                 'o2.saturation',
+                 'respiratory.rate',
+                 'heart.rate')
+
+```
+
 ```{r notifications, echo = FALSE, eval = TRUE}
 
 ```
@@ -54,7 +102,7 @@ system(cmd)
 
 ## Methods {.tabset .tabset-fade .tabset-pills}
 
-```{r child = 'sections/methods.Rmd', eval = FALSE}
+```{r child = 'sections/methods.Rmd', eval = TRUE}
 ```
 
 <!--- Run all analyses --->
