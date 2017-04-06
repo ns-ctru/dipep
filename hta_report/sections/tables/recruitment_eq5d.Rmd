@@ -1,0 +1,76 @@
+> ADD TABLE SHOWING EQ5D RESULTS
+
+**Comments**
+
+* EQ5D surveys are only available for `Suspected PE` individuals.
+* In the absence of explicit details of how the EQ5D scores are to be summarised I have opted to provide them for both of these groups.
+* Only individuals with responses for all five domains are summarised (i.e. there are some )
+* In the absence of explicit details, and because I have not derived overall EQ5D scores in the existing work, I have opted to summarise only the components.
+* Statistics have not performed any analysis of EQ5D, it is something that has been used in the Health Economics analysis so more detailed summaries, including the overall score, may have been produced by Dan Pollard.
+
+```{r table_recruitment_eq5d, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
+## Data frame to summarise
+eq5d <- filter(dipep,
+               !is.na(mobility) &
+               !is.na(anxiety.depression) &
+               !is.na(self.care) &
+               !is.na(usual.activity) &
+               !is.na(pain.discomfort) &
+               !is.na(health.scale.number)) %>%
+        dplyr::select(screening,
+                      ## group,
+                      ## pe,
+                      mobility,
+                      self.care,
+                      anxiety.depression,
+                      usual.activity,
+                      pain.discomfort,
+                      health.scale.number)
+n_eq5d5l_complete <- nrow(eq5d)
+to.table <- to.plot %>%
+            summary() %>%
+            data.frame() %>%
+            dplyr::select(-Var1)
+names(to.table) <- c('Dimension', 'freq')
+mutate(to.table,
+       n        = substr(freq,
+                         start = regexpr(freq, pattern = ':') + 1,
+                         stop  = nchar(freq)) %>% as.numeric(),
+       response = substr(freq,
+                         start = 1,
+                         stop  = regexpr(freq, pattern = ':') - 1)) %>%
+    mutate(response = gsub("^\\s+|\\s+$", "", response)) %>% ## Remove trailing white space
+    dplyr::select(-freq) %>%
+    dcast(Dimension ~ response, value.var = 'n') %>%
+    dplyr::select(Dimension, None, Slight, Moderate, Severe, Extreme) %>%
+    mutate(none_percent      = (100 * None) / n_eq5d5l_complete,
+           slight_percent    = (100 * Slight) / n_eq5d5l_complete,
+           moderate_percent  = (100 * Moderate) / n_eq5d5l_complete,
+           severe_percent    = (100 * Severe) / n_eq5d5l_complete,
+           extreme_percent   = (100 * Extreme) / n_eq5d5l_complete,
+           None = paste0(formatC(None, format = 'f', digits = 0),
+                         ' (',
+                         formatC(none_percent, format = 'f', digits = digits.percent),
+                         '%)'),
+           Slight = paste0(formatC(Slight, format = 'f', digits = 0),
+                         ' (',
+                         formatC(slight_percent, format = 'f', digits = digits.percent),
+                         '%)'),
+           Moderate = paste0(formatC(Moderate, format = 'f', digits = 0),
+                         ' (',
+                         formatC(moderate_percent, format = 'f', digits = digits.percent),
+                         '%)'),
+           Severe = paste0(formatC(Severe, format = 'f', digits = 0),
+                         ' (',
+                         formatC(severe_percent, format = 'f', digits = digits.percent),
+                         '%)'),
+           Extreme = paste0(formatC(Extreme, format = 'f', digits = 0),
+                         ' (',
+                         formatC(extreme_percent, format = 'f', digits = digits.percent),
+                         '%)')) %>%
+    dplyr::select(-none_percent, -slight_percent, -moderate_percent, -severe_percent, -extreme_percent) %>%
+    kable(caption = paste0('Counts of observed EQ-5D-5L responses for ',
+                           n_eq5d5l_complete,
+                           ' individuals with Suspected PE'))
+
+```
