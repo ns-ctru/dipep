@@ -27,3 +27,6 @@
 
 ```{r child = 'subsections/results_logistic.Rmd', eval = TRUE}
 ```
+
+```{r child = 'subsections/results_eq5d5l.Rmd', eval = TRUE}
+```
