@@ -11,10 +11,17 @@ header.cohort   <- c('',
                      paste0('Diagnosed PE (',  n.diagnosed.pe, ')'),
                      paste0('Non recruited (', n.non.recruited, ')'),
                      paste0('Suspected PE (',  n.suspected.pe, ')'))
+digits         <- 3
+digits.percent <- digits
 
 ```
 
 > ADD TABLE HERE WITH COLUMNS FOR EACH COHORT AND ROWS FOR THE FOLLOWING CHARACTERISTICS: MEAN AGE, ETHNIC GROUP, MARITAL STATUS, EMPLOYMENT STATUS, GRAVIDITY (NUMBER OF PREVIOUS PREGNANCIES), PROPORTION IN EACH TRIMESTER AND POST-PARTUM
+
+**Comments**
+
+* Not explicitly stated but I have opted to include the percentage of observations within each group.
+* Not explicitly stated but I have opted to include a 'Missing' category so that percentages total 100.
 
 ```{r table_recruitment_demographics1, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
 to.table <- dplyr::select(dipep,
@@ -34,7 +41,7 @@ to.table <- dplyr::select(dipep,
 ## then need combining.
 ##
 ## N and Age
-table.recruitment.demographics1.age <- to.table %>%
+table_recruitment_demographics1.age <- to.table %>%
                                        dplyr::filter(response == 'age') %>%
                                        group_by(group) %>%
                                        summarise(n = sum(!is.na(value)),
@@ -52,7 +59,7 @@ table.recruitment.demographics1.age <- to.table %>%
                                               n_percent = paste0(formatC(n, format = 'f', digits = 0),
                                                                  ' (',
                                                                  formatC(percent, format = 'f', digits = digits.percent),
-                                                                 '%)'))%>%
+                                                                 '%)')) %>%
                                        dplyr::select(-mean, -sd, -percent, -n) %>%
                                        gather(key = statistic, value = value, mean_sd:n_percent) %>%
                                        spread(key = group, value = value) %>%
@@ -60,7 +67,7 @@ table.recruitment.demographics1.age <- to.table %>%
                                                                     .$statistic == 'n_percent' ~ 'N (%)'),
                                               component = 'Age')
 ## Ethnicity
-table.recruitment.demographics1.ethnicity <- to.table %>%
+table_recruitment_demographics1.ethnicity <- to.table %>%
                                              dplyr::filter(response == 'ethnicity') %>%
                                              group_by(group, value) %>%
                                              summarise(n = n()) %>%
@@ -79,9 +86,9 @@ table.recruitment.demographics1.ethnicity <- to.table %>%
                                                     value     = ifelse(is.na(value),
                                                                        yes = 'Missing',
                                                                        no  = value))
-names(table.recruitment.demographics1.ethnicity) <- gsub('value', 'statistic', names(table.recruitment.demographics1.ethnicity))
+names(table_recruitment_demographics1.ethnicity) <- gsub('value', 'statistic', names(table_recruitment_demographics1.ethnicity))
 ## Marital Status
-table.recruitment.demographics1.marital <- to.table %>%
+table_recruitment_demographics1.marital <- to.table %>%
                                            dplyr::filter(response == 'marital.status') %>%
                                            group_by(group, value) %>%
                                            summarise(n = n()) %>%
@@ -101,9 +108,9 @@ table.recruitment.demographics1.marital <- to.table %>%
                                                                         .$value == 'cohabiting' ~ 'Cohabiting',
                                                                         .$value == 'married' ~ 'Married',
                                                                         .$value == 'single' ~ 'Single'))
-names(table.recruitment.demographics1.marital) <- gsub('value', 'statistic', names(table.recruitment.demographics1.marital))
+names(table_recruitment_demographics1.marital) <- gsub('value', 'statistic', names(table_recruitment_demographics1.marital))
 ## Employment Status
-table.recruitment.demographics1.employment <- to.table %>%
+table_recruitment_demographics1.employment <- to.table %>%
                                               dplyr::filter(response == 'employment') %>%
                                               group_by(group, value) %>%
                                               summarise(n = n()) %>%
@@ -122,9 +129,9 @@ table.recruitment.demographics1.employment <- to.table %>%
                                                      value     = case_when(is.na(.$value)   ~ 'Missing',
                                                                            .$value == 'Yes' ~ 'Employed',
                                                                            .$value == 'No'  ~ 'Unemployed'))
-names(table.recruitment.demographics1.employment) <- gsub('value', 'statistic', names(table.recruitment.demographics1.employment))
+names(table_recruitment_demographics1.employment) <- gsub('value', 'statistic', names(table_recruitment_demographics1.employment))
 ## Previous Pregnancies
-table.recruitment.demographics1.previous <- to.table %>%
+table_recruitment_demographics1.previous <- to.table %>%
                                             dplyr::filter(response %in% c('pregnancies.under', 'pregnancies.over')) %>%
                                             group_by(group, response, value) %>%
                                             summarise(n = n()) %>%
@@ -143,10 +150,10 @@ table.recruitment.demographics1.previous <- to.table %>%
                                                                         .$response == 'pregnancies.under' ~ 'Pregnancies < 24 weeks'),
                                                    value     = case_when(is.na(.$value)   ~ 'Missing',
                                                                          !is.na(.$value)  ~ .$value))
-names(table.recruitment.demographics1.previous) <- gsub('value', 'statistic', names(table.recruitment.demographics1.previous))
-names(table.recruitment.demographics1.previous) <- gsub('response', 'component', names(table.recruitment.demographics1.previous))
+names(table_recruitment_demographics1.previous) <- gsub('value', 'statistic', names(table_recruitment_demographics1.previous))
+names(table_recruitment_demographics1.previous) <- gsub('response', 'component', names(table_recruitment_demographics1.previous))
 ## Trimester
-table.recruitment.demographics1.trimester <- to.table %>%
+table_recruitment_demographics1.trimester <- to.table %>%
                                              dplyr::filter(response == 'trimester') %>%
                                              group_by(group, value) %>%
                                              summarise(n = n()) %>%
@@ -164,21 +171,149 @@ table.recruitment.demographics1.trimester <- to.table %>%
                                              mutate(component = 'Gestational Age',
                                                    value     = case_when(is.na(.$value)   ~ 'Missing',
                                                                          !is.na(.$value)  ~ .$value))
-names(table.recruitment.demographics1.trimester) <- gsub('value', 'statistic', names(table.recruitment.demographics1.trimester))
+names(table_recruitment_demographics1.trimester) <- gsub('value', 'statistic', names(table_recruitment_demographics1.trimester))
 ## Bind into one table
-table.recruitment.demographics1 <- rbind(table.recruitment.demographics1.age,
-                                         table.recruitment.demographics1.ethnicity,
-                                         table.recruitment.demographics1.marital,
-                                         table.recruitment.demographics1.employment,
-                                         table.recruitment.demographics1.previous,
-                                         table.recruitment.demographics1.trimester)
-
+table_recruitment_demographics1 <- rbind(table_recruitment_demographics1.age,
+                                         table_recruitment_demographics1.ethnicity,
+                                         table_recruitment_demographics1.marital,
+                                         table_recruitment_demographics1.employment,
+                                         table_recruitment_demographics1.previous,
+                                         table_recruitment_demographics1.trimester) %>%
+                                   group_by(component) %>%
+                                   mutate(id       = 1:n(),
+                                          Variable = ifelse(id == 1,
+                                                            yes = component,
+                                                            no  = '')) %>%
+                                   ungroup() %>%
+                                   dplyr::select(Variable,
+                                                 statistic,
+                                                 `Diagnosed DVT`,
+                                                 `Non recruited`,
+                                                 `Diagnosed PE`,
+                                                 `Suspected PE`)
+kable(table_recruitment_demographics1,
+      caption = 'Demographics by recruitment Group')
 
 ```
 
 > ADD TABLE HERE WITH COLUMNS FOR RECRUITED AND NON RECRUITED WITH SUSPECTED PE, AND ROWS FOR MEAN BMI, PAST HISTORY OF THROMBOSIS, PROPOTION WITH MULTIPLE PREGNANCY, PROPORTION WITH THROMBOPROPHYLAXIS, MEAN HEART RATE, MEAN RESP RATE, MEAN OXYGEN SAT, MEAN BLOOD PRESSURE, MEAN TEMPERATURE AND PROPORTION WITH PE IN PRIMARY ANALYSIS
 
+**Comments**
+
+* This table *only* summarises the `Suspected PE` and `Non recruited` individuals as per above text.
+* Not a 'natural table' that arises from cross-tabulating two variables.
+* 'MEAN BLOOD PRESSURE' has been interpreted as both Systolic and Diastolic in the absence of any preference.
+* Not explicitly stated but I have opted to include the percentage of observations within each group.
+* Not explicitly stated but I have opted to include a 'Missing' category so that percentages total 100.
+
+
 ```{r table_recruitment_demographics2, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
+to.table <- dplyr::filter(dipep,
+                          group %in% c('Suspected PE', 'Non recruited')) %>%
+            dplyr::select(screening, group, first.st, bmi, heart.rate, respiratory.rate, o2.saturation, bp.systolic, bp.diastolic, temperature, thromboprophylaxis, multiple.preg, thrombosis)%>%
+            gather(key = response, value = value, first.st:thrombosis)
+## Again, this is not a 'natural' table generated by cross-tabulating two variables it is a mixture
+## of this and summary statistics, this necessitates building the table as components which
+## then need combining.
+##
+## BMI, Heart Rate, Respiratory Rate, o2 Saturation, bp.systolic, bp.diastolic, temperature
+table_recruitment_demographics2.physiology <- to.table %>%
+                                              dplyr::filter(response %in% c('bmi',
+                                                                            'heart.rate',
+                                                                            'respiratory.rate',
+                                                                            'o2.saturation',
+                                                                            'bp.systolic',
+                                                                            'bp.diastolic',
+                                                                            'temperature')) %>%
+                                              group_by(group, response) %>%
+                                              summarise(n = sum(!is.na(value)),
+                                                        mean = mean(as.numeric(value), na.rm = TRUE),
+                                                        sd   = sd(as.numeric(value), na.rm = TRUE)) %>%
+                                              ungroup() %>%
+                                              mutate(mean_sd = paste0(formatC(mean, format = 'f', digits = digits),
+                                                                      ' (',
+                                                                      formatC(sd, format = 'f', digits = digits),
+                                                                      ')'),
+                                                     percent = case_when(.$group == 'Diagnosed DVT' ~ (100 * .$n) / n.diagnosed.dvt,
+                                                                         .$group == 'Diagnosed PE' ~ (100 * .$n) / n.diagnosed.pe,
+                                                                         .$group == 'Non recruited' ~ (100 * .$n) / n.non.recruited,
+                                                                         .$group == 'Suspected PE' ~ (100 * .$n) / n.suspected.pe),
+                                                     n_percent = paste0(formatC(n, format = 'f', digits = 0),
+                                                                        ' (',
+                                                                        formatC(percent, format = 'f', digits = digits.percent),
+                                                                        '%)')) %>%
+                                              dplyr::select(-mean, -sd, -percent, -n) %>%
+                                              gather(key = statistic, value = value, mean_sd:n_percent) %>%
+                                              spread(key = group, value = value) %>%
+                                              mutate(statistic = case_when(.$statistic == 'mean_sd'   ~ 'Mean (SD)',
+                                                                           .$statistic == 'n_percent' ~ 'N (%)'),
+                                              response  = case_when(.$response == 'bmi' ~ 'BMI (kg/m^2)',
+                                                                    .$response == 'bp.diastolic' ~ 'Systolic Blood Pressure (mmHg)',
+                                                                    .$response == 'bp.systolic' ~ 'Diastolic Blood Pressure (mmHg)',
+                                                                    .$response == 'respiratory.rate' ~ 'Respiratory Rate (breaths/minute)',
+                                                                    .$response == 'o2.saturation' ~ 'Oxygen Saturation (%)',
+                                                                    .$response == 'heart.rate' ~ 'Heart Rate (bpm)',
+                                                                    .$response == 'temperature' ~ 'Temperature (C)'))
+## Now the other four components required
+table_recruitment_demographics2.other <- to.table %>%
+                                         dplyr::filter(response %in% c('first.st',
+                                                                       'thromboprophylaxis',
+                                                                       'multiple.preg',
+                                                                       'thrombosis')) %>%
+                                         group_by(group, response, value) %>%
+                                         summarise(n = n()) %>%
+                                         ungroup() %>%
+                                         mutate(value = ifelse(is.na(value),
+                                                               yes = 'Missing',
+                                                               no  = value),
+                                                percent = case_when(.$group == 'Non recruited' ~ (100 * .$n) / n.non.recruited,
+                                                                    .$group == 'Suspected PE' ~ (100 * .$n) / n.suspected.pe,
+                                                                    .$group == 'Diagnosed PE' ~ (100 * .$n) / n.diagnosed.pe,
+                                                                    .$group == 'Diagnosed DVT' ~ (100 * .$n) / n.diagnosed.dvt),
+                                                n_percent = paste0(formatC(n, format = 'f', digits = 0),
+                                                                   ' (',
+                                                                   formatC(percent, format = 'f', digits = digits.percent),
+                                                                   '%)'),
+                                                component = case_when(.$response == 'first.st' ~ 'Primary Classification',
+                                                                      .$response == 'thromboprophylaxis' ~ 'Thromboprophylaxis',
+                                                                      .$response == 'multiple.preg' ~ 'Multiple Pregnancy',
+                                                                      .$response == 'thrombosis' ~ 'Primary Classification'),
+                                                answer    = value) %>%
+                                         dplyr::select(-n, -percent, -response, -value) %>%
+                                         gather(key = statistic, value = value, n_percent) %>%
+                                         spread(key = group, value = value) %>%
+                                         dplyr::select(-statistic) %>%
+                                         mutate(`Non recruited` = ifelse(is.na(`Non recruited`),
+                                                                         yes = '0 (0%)',
+                                                                         no  = `Non recruited`),
+                                                `Suspected PE` = ifelse(is.na(`Suspected PE`),
+                                                                        yes = '0 (0%)',
+                                                                        no  = `Suspected PE`))
+                                                ## `Diagnosed PE` = ifelse(is.na(`Diagnosed PE`),
+                                                ##                                yes = '0 (0%)',
+                                                ##                          no  = `Diagnosed PE`),
+                                                ## `Diagnosed DVT` = ifelse(is.na(`Diagnosed DVT`),
+                                                ##                                yes = '0 (0%)',
+                                                ##                          no  = `Diagnosed DVT`)
+names(table_recruitment_demographics2.other) <- c('response', 'statistic', 'Non recruited', 'Susp')
+## Bind into one table and sort formatting
+table_recruitment_demographics2 <- rbind(table_recruitment_demographics2.other) %>%
+                                   group_by(response) %>%
+                                   mutate(id       = 1:n(),
+                                          Variable = ifelse(id == 1,
+                                                            yes = response,
+                                                            no  = '')) %>%
+                                   ungroup() %>%
+                                   dplyr::select(Variable,
+                                                 statistic,
+                                                 ## `Diagnosed DVT`,
+                                                 `Non recruited`,
+                                                 ## `Diagnosed PE`,
+                                                 `Suspected PE`)
+kable(table_recruitment_demographics1,
+      caption = 'Demographics by recruitment Group')
+
+
 ```
 
 > ADD TABLE SHOWING EQ5D RESULTS
