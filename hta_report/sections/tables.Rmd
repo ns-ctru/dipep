@@ -5,8 +5,8 @@ n.diagnosed.dvt <- dplyr::filter(dipep, group == 'Diagnosed DVT') %>% nrow()
 n.diagnosed.pe  <- dplyr::filter(dipep, group == 'Diagnosed PE') %>% nrow()
 n.non.recruited <- dplyr::filter(dipep, group == 'Non recruited') %>% nrow()
 n.suspected.pe  <- dplyr::filter(dipep, group == 'Suspected PE') %>% nrow()
-n.pe            <- dplyr::filter(dipep, first.st == 'PE') %>% nrow()
-n.no.pe         <- dplyr::filter(dipep, first.st == 'No PE') %>% nrow()
+n.pe            <- dplyr::filter(dipep, first.st == 'PE'    & group %in% c('Suspected PE', 'Diagnosed PE')) %>% nrow()
+n.no.pe         <- dplyr::filter(dipep, first.st == 'No PE' & group %in% c('Suspected PE', 'Diagnosed PE')) %>% nrow()
 digits         <- 3
 digits.percent <- digits
 head.diagnosed.dvt <- paste0('Diagnosed DVT (N = ',
@@ -29,71 +29,28 @@ head.no.pe         <- paste0('No PE (N = ',
                              formatC(n.no.pe, format = 'f', digits = 0),
                              ')')
 
-
+## Load the results
+load('../../knitr/data/dipep_results.RData')
 
 ```
-
-> ADD TABLE HERE WITH COLUMNS FOR EACH COHORT AND ROWS FOR THE FOLLOWING CHARACTERISTICS: MEAN AGE, ETHNIC GROUP, MARITAL STATUS, EMPLOYMENT STATUS, GRAVIDITY (NUMBER OF PREVIOUS PREGNANCIES), PROPORTION IN EACH TRIMESTER AND POST-PARTUM
-
-**Comments**
-
-* Not explicitly stated but I have opted to include the percentage of observations within each group.
-* Not explicitly stated but I have opted to include a 'Missing' category so that percentages total 100.
 
 ```{r child = 'tables/recruitment_demographics1.Rmd', eval = TRUE}
 ```
 
-> ADD TABLE HERE WITH COLUMNS FOR RECRUITED AND NON RECRUITED WITH SUSPECTED PE, AND ROWS FOR MEAN BMI, PAST HISTORY OF THROMBOSIS, PROPOTION WITH MULTIPLE PREGNANCY, PROPORTION WITH THROMBOPROPHYLAXIS, MEAN HEART RATE, MEAN RESP RATE, MEAN OXYGEN SAT, MEAN BLOOD PRESSURE, MEAN TEMPERATURE AND PROPORTION WITH PE IN PRIMARY ANALYSIS
-
-**Comments**
-
-* This table *only* summarises the `Suspected PE` and `Non recruited` individuals as per above text.
-* Not a 'natural table' that arises from cross-tabulating two variables.
-* 'MEAN BLOOD PRESSURE' has been interpreted as both Systolic and Diastolic in the absence of any preference.
-* Not explicitly stated but I have opted to include the percentage of observations within each group.
-* Not explicitly stated but I have opted to include a 'Missing' category so that percentages total 100.
-
-
 ```{r child = 'tables/recruitment_demographics2.Rmd', eval = TRUE}
 ```
-
-
-> ADD TABLE SHOWING EQ5D RESULTS
-
-**Comments**
-
-* EQ5D surveys are only available for `Suspected PE` and `Diagnosed DVT` individuals.
-* In the absence of explicit details of how the EQ5D scores are to be summarised I have opted to provide them for both of these groups.
-* In the absence of explicit details, and because I have not derived overall EQ5D scores in the existing work, I have opted to summarise only the components.
-* Statistics have not performed any analysis of EQ5D, it is something that has been used in the Health Economics analysis so more detailed summaries, including the overall score, may have been produced by Dan Pollard.
 
 ```{r child = 'tables/recruitment_eq5d.Rmd', eval = TRUE}
 ```
 
-
-> ADD TABLE(S) HERE WITH COLUMNS FOR WOMEN WITH PE AND WOMEN WITHOUT, AND ROWS FOR AGE>35, BMI≥30, SMOKING STATUS, PREVIOUS PREGNANCIES, ANY PREVIOUS PREGNANCY PROBLEMS (YES/NO), THE 7 ITEMS UNDER PREVIOUS MEDICAL HISTORY, ANY OTHER PREVIOUS MEDICAL PROBLEM, EACH TRIMSTER AND POST PARTUM, MULTIPLE PREGNANCY, LONG HAUL TRAVEL, IMMOBILITY, THROMBOTIC EVENTS, OTHER PREGNANCY PROBLEMS (YES/NO), OTHER PREGNANCY PROBLEMS LIMITED TO THOSE IDENTIFIED AS BEING RISK FACTORS FOR PE, AND RECEIVED THROMBOPROPHYLAXIS
-
 ```{r child = 'tables/status_demographics1.Rmd', eval = TRUE}
 ```
-
-> ADD TABLE(S) HERE WITH COLUMNS FOR WOMEN WITH PE AND WOMEN WITHOUT, AND ROWS FOR EACH OF THE PRESENTING FEATURES, PROPORTION WITH EACH PHYSIOLOGICAL VARIABLE ABNORMAL, CLINICAL SIGNS OF DVT, ECG RESULT, CXR RESULT AND MOST LIKELY DIAGNOSIS (USING THE 3 CATEGORIES I USED FOR THE WELLS SCORE)
-
 
 ```{r child = 'tables/status_presenting.Rmd', eval = TRUE}
 ```
 
-> ADD TABLE COMPARING MEAN (SD) OF AGE, BMI AND EACH PHYSIOLOGICAL MEASURE BETWEEN WOMEN WITH AND WITHOUT PE
-
 ```{r child = 'tables/status_demographics2.Rmd', eval = TRUE}
 ```
-
-
-> ADD TABLE AND FIGURE OF UNIVARIATE LOGISTIC REGRESSION
-
-**Comments**
-
-* In the absence of detailed information this table contains *all* results from logistic regressions that have been performed, this includes both the continuous and the categorical versions of physiological variables.
-* Only table is shown here, the equivalent figure can be found under the "Figures" section.
 
 ```{r child = 'tables/logistic_table.Rmd', eval = TRUE}
 ```
