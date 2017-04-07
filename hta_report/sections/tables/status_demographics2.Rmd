@@ -1,0 +1,49 @@
+> ADD TABLE COMPARING MEAN (SD) OF AGE, BMI AND EACH PHYSIOLOGICAL MEASURE BETWEEN WOMEN WITH AND WITHOUT PE
+
+**Comments**
+
+```{r table_status_demographics2, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
+to.table <- dplyr::filter(dipep,
+                          !is.na(first.st) & group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+            dplyr::select(screening, first.st, bmi, heart.rate, respiratory.rate, o2.saturation, bp.systolic, bp.diastolic, temperature)%>%
+            gather(key = response, value = value, bmi:temperature)
+table_status_demographics2.physiology <- to.table %>%
+                                         group_by(first.st, response) %>%
+                                         summarise(n = sum(!is.na(value)),
+                                                   mean = mean(as.numeric(value), na.rm = TRUE),
+                                                   sd   = sd(as.numeric(value), na.rm = TRUE)) %>%
+                                         ungroup() %>%
+                                         mutate(mean_sd = paste0(formatC(mean, format = 'f', digits = digits),
+                                                                 ' (',
+                                                                 formatC(sd, format = 'f', digits = digits),
+                                                                 ')'),
+                                                percent = case_when(.$first.st == 'PE' ~ (100 * .$n) / n.pe,
+                                                                    .$first.st == 'No PE' ~ (100 * .$n) / n.no.pe),
+                                                n_percent = paste0(formatC(n, format = 'f', digits = 0),
+                                                                   ' (',
+                                                                   formatC(percent, format = 'f', digits = digits.percent),
+                                                                   '%)')) %>%
+                                         dplyr::select(-mean, -sd, -percent, -n) %>%
+                                         gather(key = statistic, value = value, mean_sd:n_percent) %>%
+                                         spread(key = first.st, value = value) %>%
+                                         mutate(statistic = case_when(.$statistic == 'mean_sd'   ~ 'Mean (SD)',
+                                                                      .$statistic == 'n_percent' ~ 'N (%)'),
+                                                response  = case_when(.$response == 'bmi' ~ 'BMI (kg/m^2)',
+                                                                      .$response == 'bp.diastolic' ~ 'Systolic Blood Pressure (mmHg)',
+                                                                      .$response == 'bp.systolic' ~ 'Diastolic Blood Pressure (mmHg)',
+                                                                      .$response == 'respiratory.rate' ~ 'Respiratory Rate (breaths/minute)',
+                                                                      .$response == 'o2.saturation' ~ 'Oxygen Saturation (%)',
+                                                                      .$response == 'heart.rate' ~ 'Heart Rate (bpm)',
+                                                                      .$response == 'temperature' ~ 'Temperature (C)')) %>%
+                                         group_by(response) %>%
+                                         mutate(id        = 1:n(),
+                                                Variable  = ifelse(id == 1,
+                                                                   yes = response,
+                                                                   no  = '')) %>%
+                                         ungroup() %>%
+                                         dplyr::select(Variable, statistic, `No PE`, `PE`)
+kable(table_status_demographics2.physiology,
+      caption   = 'Physiological Variables by PE Status',
+      col.names = c('Variable', 'Statistic', head.pe, head.no.pe))
+
+```
