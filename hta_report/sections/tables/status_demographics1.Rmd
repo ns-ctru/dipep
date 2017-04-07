@@ -11,7 +11,7 @@
 
 ```{r table_status_demographics1, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
 to.table <- dplyr::filter(dipep,
-                          !is.na(first.st)) %>%
+                          !is.na(first.st) & group %in% c('Suspected PE', 'Diagnosed PE')) %>%
             dplyr::select(screening, first.st,
                           age.cat,
                           bmi.cat,
