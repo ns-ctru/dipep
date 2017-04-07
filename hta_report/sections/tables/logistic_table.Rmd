@@ -1,0 +1,43 @@
+> ADD TABLE AND FIGURE OF UNIVARIATE LOGISTIC REGRESSION
+
+**Comments**
+
+* In the absence of detailed information this table contains *all* results from logistic regressions that have been performed, this includes both the continuous and the categorical versions of physiological variables.  If only a subset are required then please let me know which variables, although in the interests of transparency I believe everything tested should be reported (although acknowledge the duplication of continuous and their categorised counterparts may well be too much, in which case I expect the categorised version to take precedence, but please confirm).  Alternatively you can delete the unwanted rows and retain only those you wish to present.
+* No order for variables has been specified, to which end the current ordering is alphabetical, but with Delphi, Geneva, Wells and PERC components appended to the bottom of the table (by virtue of the way in which work was requested and subsequently completed).
+* Only table is shown here, the equivalent figure can be found under the "Figures" section.
+
+```{r table_logistic_table, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
+to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
+          dplyr::select(term, estimate, lci, uci, p.value)
+## Select the results from logistic regression of Existing scores for combininig
+to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
+                 dplyr::filter(term %in% c('Delphi : Surgery/Injury',
+                                           'Delphi : Medical Complications',
+                                           'Delphi : Obstetric Complications',
+                                           'Delphi : 3rd Trimester/Post-Partum')) %>%
+                 dplyr::select(term, estimate, lci, uci, p.value)
+to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
+                     dplyr::filter(term %in% c('Geneva : Neoplasm',
+                                               'Geneva : Unilateral lower limb pain',
+                                               'Geneva : Pain on limb palpitation')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
+to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
+                     dplyr::filter(term %in% c('Wells : PE most likely (Permissive)',
+                                               'Wells : PE most likely (Strict)')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
+to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
+                     dplyr::filter(term %in% c('PERC : Exogenous Estrogen',
+                                               'PERC : Unilateral Leg Swelling')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
+to.sum <- rbind(to.sum,
+                to.sum.delphi,
+                to.sum.simplified,
+                to.sum.wells,
+                to.sum.perc)
+names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+kable(to.sum,
+      digits  = 3,
+      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression')
+rm(to.sum)
+
+```
