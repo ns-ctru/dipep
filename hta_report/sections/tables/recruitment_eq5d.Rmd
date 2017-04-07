@@ -9,7 +9,6 @@
 * Statistics have not performed any analysis of EQ5D, it is something that has been used in the Health Economics analysis so more detailed summaries, including the overall score, may have been produced by Dan Pollard.
 
 ```{r table_recruitment_eq5d, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
-## Data frame to summarise
 eq5d <- filter(dipep,
                !is.na(mobility) &
                !is.na(anxiety.depression) &
@@ -25,6 +24,14 @@ eq5d <- filter(dipep,
                       pain.discomfort,
                       health.scale.number)
 n_eq5d5l_complete <- nrow(eq5d)
+## Data frame to summarise
+to.plot <- dplyr::select(eq5d,
+                         mobility,
+                         self.care,
+                         anxiety.depression,
+                         usual.activity,
+                         pain.discomfort)
+names(to.plot) <- c("Mobility", "Self Care", "Anxiety/Depression", "Usual Activity", "Pain/Discomfort")
 to.table <- to.plot %>%
             summary() %>%
             data.frame() %>%
