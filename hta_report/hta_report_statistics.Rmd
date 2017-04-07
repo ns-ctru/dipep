@@ -12,9 +12,9 @@ opts_chunk$set(cache.path = 'cache/',
                fig.width  = 8,
                warning = FALSE,
                message = FALSE)
-options(digits = 3)
-digits <- 3
-digits.percent <- 2
+options(digits = 1)
+digits <- 1
+digits.percent <- digits
 ## Ensure anchors are assessed first
 ## opts_knit$set(eval.after = 'echo')
 ## Hooks
@@ -29,7 +29,7 @@ ggplot2.opts$binwidth <- 30
 ## The following 'non-recruited' need excluding from all analyses
 exclusions <- c('N04/04', 'N04/05', 'N04/06')
 ## Knitr options
-options(knitr.kable.NA = '')
+options(knitr.kable.NA = '-')
 
 ```
 
@@ -47,7 +47,6 @@ system(cmd)
 
 
 # {.tabset .tabset-fade .tabset-pills}
-## Overview
 
 ```{r child = 'sections/overview.Rmd', eval = TRUE}
 ```
