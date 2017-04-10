@@ -5,10 +5,10 @@ n.diagnosed.dvt <- dplyr::filter(dipep, group == 'Diagnosed DVT') %>% nrow()
 n.diagnosed.pe  <- dplyr::filter(dipep, group == 'Diagnosed PE') %>% nrow()
 n.non.recruited <- dplyr::filter(dipep, group == 'Non recruited') %>% nrow()
 n.suspected.pe  <- dplyr::filter(dipep, group == 'Suspected PE') %>% nrow()
-n.pe            <- dplyr::filter(dipep, first.st == 'PE'    & group %in% c('Suspected PE', 'Diagnosed PE')) %>% nrow()
-n.no.pe         <- dplyr::filter(dipep, first.st == 'No PE' & group %in% c('Suspected PE', 'Diagnosed PE')) %>% nrow()
-digits         <- 3
-digits.percent <- digits
+n.pe            <- dplyr::filter(dipep, first.st == 'PE') %>% nrow()
+n.no.pe         <- dplyr::filter(dipep, first.st == 'No PE') %>% nrow()
+digits          <- 1
+digits.percent  <- digits
 head.diagnosed.dvt <- paste0('Diagnosed DVT (N = ',
                              formatC(n.diagnosed.dvt, format = 'f', digits = 0),
                              ')')
@@ -29,8 +29,7 @@ head.no.pe         <- paste0('No PE (N = ',
                              formatC(n.no.pe, format = 'f', digits = 0),
                              ')')
 
-## Load the results
-load('../../knitr/data/dipep_results.RData')
+
 
 ```
 
@@ -40,17 +39,21 @@ load('../../knitr/data/dipep_results.RData')
 ```{r child = 'tables/recruitment_demographics2.Rmd', eval = TRUE}
 ```
 
+
 ```{r child = 'tables/recruitment_eq5d.Rmd', eval = TRUE}
 ```
 
+
 ```{r child = 'tables/status_demographics1.Rmd', eval = TRUE}
 ```
+
 
 ```{r child = 'tables/status_presenting.Rmd', eval = TRUE}
 ```
 
 ```{r child = 'tables/status_demographics2.Rmd', eval = TRUE}
 ```
+
 
 ```{r child = 'tables/logistic_table.Rmd', eval = TRUE}
 ```
