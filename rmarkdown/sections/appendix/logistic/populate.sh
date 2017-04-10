@@ -39,6 +39,7 @@ sed 's/template/pregnancies.under/g' template.Rmd > pregnancies.under.Rmd
 sed 's/template/pregnancies.over/g' template.Rmd > pregnancies.over.Rmd
 sed 's/template/prev.preg.problem/g' template.Rmd > prev.preg.problem.Rmd
 sed 's/template/this.pregnancy.problems/g' template.Rmd > this.pregnancy.problems.Rmd
+sed 's/template/this.pregnancy.problems.incl.other/g' template.Rmd > this.pregnancy.problems.incl.other.Rmd
 sed 's/template/multiple.preg/g' template.Rmd > multiple.preg.Rmd
 sed 's/template/history.thrombosis/g' template.Rmd > history.thrombosis.Rmd
 sed 's/template/history.veins/g' template.Rmd > history.veins.Rmd
