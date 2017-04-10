@@ -274,12 +274,12 @@ dipep_roc <- function(df        = logistic$predicted,
     ## Calculate CI for AUC
     ## Repeat for all predictors passed to the function
     results$auc.ci <- list()
-    for(x in unique(results$df$term)){
+    for(x in unique(results$df$name)){
         if(lasso == TRUE) y <- paste0('step_', x)
         else              y <-  x
         results$auc.ci[[y]] <- roc(D ~ M,
                                    data = results$df,
-                                   subset = (term == x)) %>%
+                                   subset = (name == x)) %>%
                                ci()
     }
     ## Extract to data frame
