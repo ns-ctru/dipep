@@ -2,8 +2,8 @@
 
 **Comments**
 
-* I count eight items under "Previous Medical History" (based on the [database specification](https://docs.google.com/spreadsheets/d/15QgKTJL-9xdPgdkwNkimOnz0jeqIfnHpq7GCe9j84UE/edit#gid=0)), `history_thrombosis` (Family History of Thrombosis), `history_veins` (History of varicose veins) `history_iv_drug` (History of IV drug abuse), `thrombo` (Known Thrombophilia), `Surgery` (Surgery in the previous 4 weeks), `thrombosis` (Past history of thrombosis), `medical_probs` (Other previous or pre-existing medical problems).  All eight are summarised.
-* I have interpreted `THROMBOTIC EVENTS` in the above text to equate to ???
+* I count eight items under "Previous Medical History" (based on the [database specification](https://docs.google.com/spreadsheets/d/15QgKTJL-9xdPgdkwNkimOnz0jeqIfnHpq7GCe9j84UE/edit#gid=0)), `history_thrombosis` (Family History of Thrombosis), `history_veins` (History of varicose veins) `history_iv_drug` (History of IV drug abuse), `thrombo` (Known Thrombophilia), `surgery` (Surgery in the previous 4 weeks), `injury` (Significant injury in the previous 4 weeks), `thrombosis` (Past history of thrombosis), `medical_probs` (Other previous or pre-existing medical problems).  All eight are summarised.
+* I have interpreted `THROMBOTIC EVENTS` in the above text to equate to the variable `thromb_event` (Did this woman have a thrombotic event in this pregnancy prior to this event?).
 * I do not know what constitutes `OTHER PREGNANCY PROBLEMS LIMITED TO THOSE IDENTIFIED AS BEING RISK FACTORS FOR PE` and have therefore opted to use the specific categories for which details are recorded under `this_pregnancy_problems`.
 * Previous pregnancies are recorded as the number < 24 weeks and the number > 24 weeks.  Since the table description above only asks about the number of previous pregnancies they have been summed and are presented in conjunction with the constituents.
 * I have taken the liberty of including the dichotomisation of all other continuous variables in this table as they are not noted to be tabulated anywhere else.
@@ -48,6 +48,8 @@ to.table <- dplyr::filter(dipep,
                           this.pregnancy.problems.preterm,
                           this.pregnancy.problems.severe.infection,
                           this.pregnancy.problems.stillbirth,
+                          this.pregnancy.problems.other,
+                          this.pregnancy.problems.incl.other,
                           thromboprophylaxis)%>%
             mutate(previous.pregnancies = pregnancies.under + pregnancies.over) %>%
             gather(key = response, value = value, age.cat:previous.pregnancies)
@@ -90,15 +92,17 @@ table_status_demographics1 <- to.table %>%
                                                           .$response == 'this.pregnancy.problems' ~ 'Problems with this pregnancy',
                                                           .$response == 'this.pregnancy.problems.dehydration' ~ 'Dehydration',
                                                           .$response == 'this.pregnancy.problems.eclampsia' ~ 'Eclampsia',
-                                                          .$response == 'this.pregnancy.problems.gestational.diabetes' ~ 'Gestational Diabetes',
+                                                          .$response == 'this.pregnancy.problems.gestational.diabetes' ~ 'Gestational diabetes',
                                                           .$response == 'this.pregnancy.problems.haemorrhage' ~ 'Haemorrhage',
                                                           .$response == 'this.pregnancy.problems.hyperemesis' ~ 'Hyperemesis',
-                                                          .$response == 'this.pregnancy.problems.ovarian.hyperstimulation' ~ '',
-                                                          .$response == 'this.pregnancy.problems.postpartum.haemorrhage' ~ '',
+                                                          .$response == 'this.pregnancy.problems.ovarian.hyperstimulation' ~ 'Ovarian hyperstimulation',
+                                                          .$response == 'this.pregnancy.problems.postpartum.haemorrhage' ~ 'Haemorrhage',
                                                           .$response == 'this.pregnancy.problems.preeclampsia' ~ 'Preeclampsia',
-                                                          .$response == 'this.pregnancy.problems.preterm' ~ 'Pre-Term Birth',
-                                                          .$response == 'this.pregnancy.problems.severe.infection' ~ 'Severe Infection',
+                                                          .$response == 'this.pregnancy.problems.preterm' ~ 'Pre-term birth',
+                                                          .$response == 'this.pregnancy.problems.severe.infection' ~ 'Severe infection',
                                                           .$response == 'this.pregnancy.problems.stillbirth' ~ 'Stillbirth',
+                                                          .$response == 'this.pregnancy.problems.other' ~ 'Other problems with this pregnancy',
+                                                          .$response == 'this.pregnancy.problems.incl.other' ~ 'Problems with this pregnancy including other',
                                                           .$response == 'thromboprophylaxis' ~ 'Thromboprophylaxis')) %>%
                               group_by(variable) %>%
                               mutate(id = 1:n(),
