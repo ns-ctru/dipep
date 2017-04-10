@@ -28,7 +28,8 @@ head.pe            <- paste0('PE (N = ',
 head.no.pe         <- paste0('No PE (N = ',
                              formatC(n.no.pe, format = 'f', digits = 0),
                              ')')
-
+## Load results
+load('../../rmarkdown/data/dipep_results.RData')
 
 
 ```
