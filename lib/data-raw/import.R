@@ -1245,23 +1245,23 @@ t10 <- dplyr::select(master$pregnancy.problems,
                                             no  = 0),
                 this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
                                                  yes = 0,
-                                                 no  = this.pregnancy.problems)) %>%
-    dplyr::select(-this.pregnancy.problems.dehydration,
-                  -this.pregnancy.problems.eclampsia,
-                  -this.pregnancy.problems.gestational.diabetes,
-                  -this.pregnancy.problems.haemorrhage,
-                  -this.pregnancy.problems.hyperemesis,
-                  -this.pregnancy.problems.ovarian.hyperstimulation,
-                  -this.pregnancy.problems.postpartum.haemorrhage,
-                  -this.pregnancy.problems.preeclampsia,
-                  -this.pregnancy.problems.preterm,
-                  -this.pregnancy.problems.severe.infection,
-                  -this.pregnancy.problems.stillbirth,
-                  -this.preg.problem.specify_1, -this.preg.problem.other_1,
-                  -this.preg.problem.specify_2, -this.preg.problem.other_2,
-                  -this.preg.problem.specify_3, -this.preg.problem.other_3,
-                  -this.preg.problem.specify_4, -this.preg.problem.other_4,
-                  -this.preg.problem.specify_5, -this.preg.problem.other_5)
+                                                 no  = this.pregnancy.problems))##  %>%
+    ## dplyr::select(-this.pregnancy.problems.dehydration,
+    ##               -this.pregnancy.problems.eclampsia,
+    ##               -this.pregnancy.problems.gestational.diabetes,
+    ##               -this.pregnancy.problems.haemorrhage,
+    ##               -this.pregnancy.problems.hyperemesis,
+    ##               -this.pregnancy.problems.ovarian.hyperstimulation,
+    ##               -this.pregnancy.problems.postpartum.haemorrhage,
+    ##               -this.pregnancy.problems.preeclampsia,
+    ##               -this.pregnancy.problems.preterm,
+    ##               -this.pregnancy.problems.severe.infection,
+    ##               -this.pregnancy.problems.stillbirth,
+    ##               -this.preg.problem.specify_1, -this.preg.problem.other_1,
+    ##               -this.preg.problem.specify_2, -this.preg.problem.other_2,
+    ##               -this.preg.problem.specify_3, -this.preg.problem.other_3,
+    ##               -this.preg.problem.specify_4, -this.preg.problem.other_4,
+    ##               -this.preg.problem.specify_5, -this.preg.problem.other_5)
 ## Details of medication (required for derivation of PERC score)
 t11 <- dplyr::select(master$therapy,
                      screening,
@@ -1718,7 +1718,14 @@ dipep <- dipep %>%
                                    .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
            d.dimer.cat = ifelse(d.dimer.cat == '' | is.na(trimester),
                                 yes = NA,
-                                no  = d.dimer.cat)
+                                no  = d.dimer.cat),
+           ## 2017-04-10 - Missed out recoding two variables (picked up by Mike)
+           thromboprophylaxis = ifelse(is.na(thromboprophylaxis),
+                                       yes = 'No',
+                                       no  = thromboprophylaxis),
+           medical.probs = ifelse(is.na(medical.probs),
+                                  yes = 'No',
+                                  no  = medical.probs)
            )
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
@@ -1819,12 +1826,6 @@ dipep <- mutate(dipep,
                 injury                             = factor(injury),
                 travel                             = factor(travel),
                 immobil                            = factor(immobil))
-
-
-
-
-### STOP
-
 ## Gestation specific categorisation (bloody confusing and seem to be derived
 ## somewhat arbitrarily without reference to DOI: 10.1111/1471-0528.12855)
 dipep <- dipep %>%
@@ -2409,8 +2410,8 @@ dipep <- dipep %>%
                 delphi.specificity    = factor(delphi.specificity,
                                                levels = c('0',   '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9',
                                                           '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
-                                                          '20', '21'))) %>%
-        dplyr::select(-delphi.thromb.event, -delphi.thrombosis, -delphi.medical.history.injury, -delphi.medical.history.surgery)
+                                                          '20', '21'))) ## %>%
+        ## dplyr::select(-delphi.thromb.event, -delphi.thrombosis, -delphi.medical.history.injury, -delphi.medical.history.surgery)
 
 
 #######################################################################
@@ -2847,6 +2848,7 @@ names(dipep_) <- gsub('thrombin_generation_', 'tg_', names(dipep_))
 names(dipep_) <- gsub('delphig_primary_', 'dp_pri_', names(dipep_))
 names(dipep_) <- gsub('delphi_sensitivity_', 'dp_sen_', names(dipep_))
 names(dipep_) <- gsub('delphi_specificity_', 'dp_spe_', names(dipep_))
+names(dipep_) <- gsub('this_pregnancy_problems_', 'tpp_', names(dipep_))
 write_dta(dipep_, version = 14, path = 'stata/dipep.dta')
 write_dta(dipep.README.variables$dipep, version = 14, path = 'stata/dipep_description.dta')
 rm(dipep_)
