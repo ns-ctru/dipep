@@ -39,7 +39,8 @@ dipep_roc <- function(df        = logistic$predicted,
     ## geom_roc() only allows two levels).
     df <- mutate(df,
                  D = as.character(D),
-                 D = factor(D))
+                 D = factor(D),
+                 name = factor(name))
     ## Generate plot
     results$plot <- ggplot(df,
                     aes(d = D, m = M, colour = as.factor(term))) +
@@ -270,6 +271,15 @@ dipep_roc <- function(df        = logistic$predicted,
     }
     results$summary.stats <- left_join(results$summary.stats,
                                        t)
+    ## Calculate CI for AUC
+    ## Repeat for all predictors passed to the function
+    results$auc.ci <- with(results$df,
+                           by(results$df, name, function(x) roc(D ~ M) %>% ci()))
+    ## Extract to data frame
+    for(x in 1:length(results$auc.ci)){
+
+    }
+    ## Bind with all other statistics and CIs
     results$summary.stats <- cbind(results$summary.stats, ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
                                            AUC,
