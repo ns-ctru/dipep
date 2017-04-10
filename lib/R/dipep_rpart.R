@@ -207,6 +207,9 @@ dipep_rpart <- function(df              = dipep,
     names(results$predicted) <- c('D', 'remove', 'M', 'term', 'name')
     results$predicted <- dplyr::select(results$predicted, -remove)
     ## Plot all terms
+    table(results$predicted$term) %>% print()
+    table(results$predicted$name) %>% print()
+    seq(1:nrow(results$rpart.full.cp)) %>% print()
     results$roc.all <- dipep_roc(df        = results$predicted,
                                  to.plot   = seq(1:nrow(results$rpart.full.cp)),
                                  title     = 'each Pruned Tree',
