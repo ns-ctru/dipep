@@ -276,9 +276,12 @@ dipep_roc <- function(df        = logistic$predicted,
     results$auc.ci <- with(results$df,
                            by(results$df, name, function(x) roc(D ~ M) %>% ci()))
     ## Extract to data frame
-    for(x in 1:length(results$auc.ci)){
-
-    }
+    ## t <- unlist(results$auc.ci) %>%
+    ##      as.data.frame()
+    ##      mutate(t         = rownames(),
+    ##             component = case_when(grepl('1', .$t) ~ 'auc_lci',
+    ##                                   grepl('2', .$t) ~ 'auc',
+    ##                                   grepl('3', .$t) ~ 'auc_uci')
     ## Bind with all other statistics and CIs
     results$summary.stats <- cbind(results$summary.stats, ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
