@@ -273,28 +273,43 @@ dipep_roc <- function(df        = logistic$predicted,
                                        t)
     ## Calculate CI for AUC
     ## Repeat for all predictors passed to the function
-    results$auc.ci <- with(results$df,
-                           by(results$df, name, function(x) roc(D ~ M) %>% ci()))
+    results$auc.ci <- list()
+    for(x in unique(results$df$name)){
+        results$auc.ci[[x]] <- roc(D ~ M,
+                                   data = results$df,
+                                   subset = (name == x)) %>%
+                               ci()
+    }
     ## Extract to data frame
     results$auc.ci   <- unlist(results$auc.ci) %>%
            as.data.frame()
-    results$auc.ci   <- names(stat)
+    names(results$auc.ci)   <- c('stat')
     results$auc.ci$t <- rownames(results$auc.ci)
     results$auc.ci <- results$auc.ci %>%
                       mutate(component = case_when(grepl('1', .$t) ~ 'auc_lci',
                                                    grepl('2', .$t) ~ 'auc',
                                                    grepl('3', .$t) ~ 'auc_uci'),
                              name      = substr(.$t, 1, nchar(.$t) - 1)) %>%
-                      dplyr::select(-t)
+                      dplyr::select(-t) %>%
+                      spread(key = component, value = stat)
     ## Bind with all other statistics and CIs
-    results$summary.stats <- cbind(results$summary.stats, ci) %>%
+    results$summary.stats <- cbind(results$summary.stats, ci, results$auc.ci) %>%
+    ## results$summary.stats <- cbind(results$summary.stats, ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
-                                           AUC,
+                                           ## AUC, ##auc_lci, auc_uci,
+                                           auc, auc_lci, auc_uci,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
                                            ## ppv, npv,
-                                           fpr, fnr, fdr, accuracy)
-    names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC',
+                                           fpr, fnr, fdr, accuracy) %>%
+    ## Fudge but somehow extra variables are now included, remove them, no time to work out why
+                             dplyr::filter(true_positive != 0 &
+                                           true_negative != 0 &
+                                           false_positive != 0 &
+                                           false_negative != 0)
+    names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
+                                      ## 'AUC',
+                                      'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
                                       'Specificity', 'Specificity Lower CI', 'Specificity Upper CI',
                                       ## 'PPV', 'NPV',
