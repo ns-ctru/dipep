@@ -355,7 +355,7 @@ logistic$this.pregnancy.problems <- dipep_glm(df = dipep,
                     exclude.non.recruited = TRUE,
                     exclude.missing       = FALSE)
 ## Problems with this pregnancy including other
-logistic$this.pregnancy.problems <- dipep_glm(df = dipep,
+logistic$this.pregnancy.problems.incl.other <- dipep_glm(df = dipep,
                                               classification = 'first.st',
                                               predictor = 'this.pregnancy.problems.incl.other',
                                               model = 'Problems During This Pregnancy (including Other)',
