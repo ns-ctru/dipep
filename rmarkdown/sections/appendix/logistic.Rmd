@@ -78,6 +78,10 @@ The full results of the univariable logistic regression are presented below.  Fo
 ```{r child = 'logistic/this.pregnancy.problems.Rmd', eval = TRUE}
 ```
 
+#### Problems with Current Pregnancy Including Other
+```{r child = 'logistic/this.pregnancy.problems.incl.other.Rmd', eval = TRUE}
+```
+
 #### Multiple Pregnancy
 ```{r child = 'logistic/multiple.preg.Rmd', eval = TRUE}
 ```
@@ -167,7 +171,7 @@ The full results of the univariable logistic regression are presented below.  Fo
 ```
 
 #### Geneva : Pain on Limb Palpitation
-```{r child = 'logistic/simplified.lower.limb.unilateral.pain.Rmd', eval = TRUE}
+```{r child = 'logistic/simplified.pain.palpitations.Rmd', eval = TRUE}
 ```
 
 #### Wells : PE most likely (Permissive)
