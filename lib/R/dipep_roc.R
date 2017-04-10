@@ -274,21 +274,23 @@ dipep_roc <- function(df        = logistic$predicted,
     ## Calculate CI for AUC
     ## Repeat for all predictors passed to the function
     results$auc.ci <- list()
-    for(x in unique(results$df$name)){
-        results$auc.ci[[x]] <- roc(D ~ M,
+    for(x in unique(results$df$term)){
+        if(lasso == TRUE) y <- paste0('step_', x)
+        else              y <-  x
+        results$auc.ci[[y]] <- roc(D ~ M,
                                    data = results$df,
-                                   subset = (name == x)) %>%
+                                   subset = (term == x)) %>%
                                ci()
     }
     ## Extract to data frame
     results$auc.ci   <- unlist(results$auc.ci) %>%
-           as.data.frame()
+                        as.data.frame()
     names(results$auc.ci)   <- c('stat')
     results$auc.ci$t <- rownames(results$auc.ci)
     results$auc.ci <- results$auc.ci %>%
-                      mutate(component = case_when(grepl('1', .$t) ~ 'auc_lci',
-                                                   grepl('2', .$t) ~ 'auc',
-                                                   grepl('3', .$t) ~ 'auc_uci'),
+                      mutate(component = case_when(grepl('1$', .$t) ~ 'auc_lci',
+                                                   grepl('2$', .$t) ~ 'auc',
+                                                   grepl('3$', .$t) ~ 'auc_uci'),
                              name      = substr(.$t, 1, nchar(.$t) - 1)) %>%
                       dplyr::select(-t) %>%
                       spread(key = component, value = stat)
