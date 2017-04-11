@@ -772,7 +772,7 @@ to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Wells : PE most likely (Permissive)',
-                                               'Wells : PE most likely (Strict)'
+                                               'Wells : PE most likely (Strict)',
                                                'Wells : Neoplasm')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
@@ -780,11 +780,24 @@ to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                                'PERC : Unilateral Leg Swelling',
                                                'PERC : Previous DVT/PE')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
+to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
+                     dplyr::filter(term %in% c('D-Dimer (Hospital) : Continuous',
+                                               'D-Dimer (Hospital) : Dichotomised',
+                                               'D-Dimer (Hospital) : Dichotomised (Gestation Specific)')) %>%
+                     mutate(term = paste0(term, ' - All'))
+to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
+                     dplyr::filter(term %in% c('D-Dimer (Hospital) : Continuous',
+                                               'D-Dimer (Hospital) : Dichotomised',
+                                               'D-Dimer (Hospital) : Dichotomised (Gestation Specific)')) %>%
+                     mutate(term = paste0(term, ' - Excluding those on Anti-Coagulants'))
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
                 to.sum.simplified,
                 to.sum.wells,
-                to.sum.perc)
+                to.sum.perc,
+                to.sum.ddimer.all,
+                to.sum.ddimer.excl.anti.coag) %>%
+          arrange(term)
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
@@ -812,8 +825,18 @@ to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : 
                                                                       'PERC : Exogenous Estrogen',
                                                                       'PERC : Unilateral Leg Swelling',
                                                                       'PERC : Previous DVT/PE'))
+to.sum.ddimer.all <- rbind(biomarker.all$d.dimer.cat$table,
+                           biomarker.all$d.dimer.gestation.cat$table) %>%
+                     mutate(predictor = paste0(predictor, ' - All'))
+to.sum.ddimer.excl.anti.coag <- rbind(biomarker.excl.anti.coag$d.dimer.cat$table,
+                                      biomarker.excl.anti.coag$d.dimer.gestation.cat$table) %>%
+                     mutate(predictor = paste0(predictor, ' - Excluding those on Anti-Coagualnts'))
 to.tab <- rbind(to.sum,
-                to.sum.existing)
+                to.sum.existing,
+                to.sum.all,
+                to.sum.excl.anti.coag) %>%
+          mutate(predictor = gsub(' (Categorised)', '', predictor)) %>%
+          arrange(predictor)
 kable(to.tab,
       col.names = c('Predictor', 'Levels', 'No PE', 'PE'),
       caption   = 'Cross-tabulation of categorical predictors by Primary Classification of Pulmonary Embolism status. ')
