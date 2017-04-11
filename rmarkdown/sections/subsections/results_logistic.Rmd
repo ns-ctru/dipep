@@ -759,10 +759,11 @@ to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
 ## Select the results from logistic regression of Existing scores for combininig
 to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                 dplyr::filter(term %in% c('Delphi : Surgery/Injury',
+                 dplyr::filter(term %in% c('Delphi : Medical History (Hospital Admission, Surgery or Injury)',
+                                           'Delphi : Surgery (excl. Cesarean)',
                                            'Delphi : Medical Complications',
                                            'Delphi : Obstetric Complications',
-                                           'Delphi : 3rd Trimester/Post-Partum')) %>%
+                                           'Delphi : Gestation')) %>%
                  dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Geneva : Neoplasm',
@@ -771,11 +772,13 @@ to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Wells : PE most likely (Permissive)',
-                                               'Wells : PE most likely (Strict)')) %>%
+                                               'Wells : PE most likely (Strict)'
+                                               'Wells : Neoplasm')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('PERC : Exogenous Estrogen',
-                                               'PERC : Unilateral Leg Swelling')) %>%
+                                               'PERC : Unilateral Leg Swelling',
+                                               'PERC : Previous DVT/PE')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
@@ -794,17 +797,21 @@ rm(to.sum)
 
 ```{r results_logistic_regression_cross_tab, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 to.sum <- logistic$cross.tab
-to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : Surgery/Injury',
+to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : Medical History (Hospital Admission, Surgery or Injury)',
+                                                                      'Delphi : Surgery (excl. Cesarean)',
                                                                       'Delphi : Medical Complication',
                                                                       'Delphi : Obstetric Complication',
-                                                                      'Delphi : 3rd Trimester/Post-Partum',
+                                                                      'Delphi : Gestation',
                                                                       'Geneva : Neoplasm',
                                                                       'Geneva : Unilateral lower limb pain',
                                                                       'Geneva : Pain on limb palpitation',
+                                                                      'Geneva : Neoplasm',
                                                                       'Wells : PE most likely (Permissive)',
                                                                       'Wells : PE most likely (Strict)',
+                                                                      'Wells : Neoplasm',
                                                                       'PERC : Exogenous Estrogen',
-                                                                      'PERC : Unilateral Leg Swelling'))
+                                                                      'PERC : Unilateral Leg Swelling',
+                                                                      'PERC : Previous DVT/PE'))
 to.tab <- rbind(to.sum,
                 to.sum.existing)
 kable(to.tab,
