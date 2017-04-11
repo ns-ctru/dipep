@@ -214,8 +214,8 @@ dipep_roc <- function(df        = logistic$predicted,
                             thresholds,
                             by = c('name'))
         results$df <- results$df %>%
-            mutate(threshold = case_when(.$n_probs == 2 & .$M == .$min ~ 0,
-                                         .$n_probs == 2 & .$M == .$max ~ 1,
+            mutate(threshold = case_when(.$n_probs == 2 & .$M == .$min ~ 1,
+                                         .$n_probs == 2 & .$M == .$max ~ 0,
                                          .$n_probs != 2                ~ threshold))
     }
     ## Classify people based on the threshold
