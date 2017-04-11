@@ -746,7 +746,7 @@ to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                                'PERC : Previous DVT/PE')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('D-Dimer (Hospital Gestation Specific) : Abnomral',
+                     dplyr::filter(term %in% c('D-Dimer (Hospital Gestation Specific) : Abnormal',
                                                'D-Dimer (Hospital) : Abnormal')) %>%
                      mutate(term = paste0(term, ' - All')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
@@ -796,7 +796,7 @@ to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
-                                               'D-Dimer (Hospital Gestation Specific) : Abnomral')) %>%
+                                               'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
                      mutate(term = paste0(term, ' - All')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
