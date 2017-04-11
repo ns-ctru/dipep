@@ -861,7 +861,8 @@ logistic$roc.other <- dipep_roc(df      = logistic$predicted,
                                    'ecg.pe',
                                    'thromboprophylaxis',
                                    'this.pregnancy.problems',
-                                   'this.pregnancy.problems.incl.other'),
+                                   'this.pregnancy.problems.incl.other',
+                                   'trimester'),
                        title   = 'Other Features')
 logistic$roc.other$plot
 ## Plot Medical History
@@ -922,6 +923,7 @@ rbind(logistic$roc.physiology$summary.stats,
       existing$roc.simplified$summary.stats,
       existing$roc.wells$summary.stats,
       existing$roc.perc$summary.stats) %>%
+    arrange(Term) %>%
     ## dplyr::select(`-PPV`, `-NPV`) %>%
     kable(digits  = 3,
           caption = 'Summary Statistics for Univariable logistic regression, threshold for dichotomisation is p > 0.5')
