@@ -260,7 +260,7 @@ dipep_roc <- function(df        = logistic$predicted,
                               return.df = TRUE) %>%
                       dplyr::select(-PointEst)
     names(ci.specificity) <- c('specificity_lci', 'specificity_uci')
-    ci <- cbind(ci.sensitivity, ci.specificity) ## %>%
+    results$ci <- cbind(ci.sensitivity, ci.specificity) ## %>%
     ## Bind AUC in with summary statistics
     t <- results$plot.auc
     names(t) <- gsub('Predictor', 'term', names(t))
@@ -295,26 +295,16 @@ dipep_roc <- function(df        = logistic$predicted,
                       dplyr::select(-t) %>%
                       spread(key = component, value = stat)
     ## Bind with all other statistics and CIs
-    results$summary.stats <- cbind(results$summary.stats, ci, results$auc.ci) %>%
-    ## results$summary.stats <- cbind(results$summary.stats, ci) %>%
+    results$summary.stats <- cbind(results$summary.stats, results$ci, results$auc.ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
-                                           ## AUC, ##auc_lci, auc_uci,
                                            auc, auc_lci, auc_uci,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
-                                           ## ppv, npv,
-                                           fpr, fnr, fdr, accuracy) %>%
-    ## Fudge but somehow extra variables are now included, remove them, no time to work out why
-                             dplyr::filter(true_positive != 0 &
-                                           true_negative != 0 &
-                                           false_positive != 0 &
-                                           false_negative != 0)
+                                           fpr, fnr, fdr, accuracy)
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
-                                      ## 'AUC',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
                                       'Specificity', 'Specificity Lower CI', 'Specificity Upper CI',
-                                      ## 'PPV', 'NPV',
                                       'FPR', 'FNR', 'FDR', 'Accuracy')
     return(results)
 }
