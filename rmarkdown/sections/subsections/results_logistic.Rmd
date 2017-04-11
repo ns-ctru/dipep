@@ -771,8 +771,8 @@ to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                                'Geneva : Pain on limb palpitation')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('Wells : PE most likely (Permissive)',
-                                               'Wells : PE most likely (Strict)',
+                     dplyr::filter(term %in% c('Wells : PE most likely diagnosis (Permissive)',
+                                               'Wells : PE most likely diagnosis (Strict)',
                                                'Wells : Neoplasm')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
@@ -819,8 +819,8 @@ to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : 
                                                                       'Geneva : Unilateral lower limb pain',
                                                                       'Geneva : Pain on limb palpitation',
                                                                       'Geneva : Neoplasm',
-                                                                      'Wells : PE most likely (Permissive)',
-                                                                      'Wells : PE most likely (Strict)',
+                                                                      'Wells : PE most likely diagnosis (Permissive)',
+                                                                      'Wells : PE most likely diagnosis (Strict)',
                                                                       'Wells : Neoplasm',
                                                                       'PERC : Exogenous Estrogen',
                                                                       'PERC : Unilateral Leg Swelling',
@@ -833,8 +833,8 @@ to.sum.ddimer.excl.anti.coag <- rbind(biomarker.excl.anti.coag$d.dimer.cat$table
                      mutate(predictor = paste0(predictor, ' - Excluding those on Anti-Coagualnts'))
 to.tab <- rbind(to.sum,
                 to.sum.existing,
-                to.sum.all,
-                to.sum.excl.anti.coag) %>%
+                to.sum.ddimer.all,
+                to.sum.ddimer.excl.anti.coag) %>%
           mutate(predictor = gsub(' (Categorised)', '', predictor)) %>%
           arrange(predictor)
 kable(to.tab,
