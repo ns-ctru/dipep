@@ -724,11 +724,11 @@ to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
     dplyr::select(term, estimate, lci, uci, p.value)
 ## Select the results from logistic regression of Existing scores for combininig
 to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                 dplyr::filter(term %in% c('Delphi : Surgery/Injury',
+                 dplyr::filter(term %in% c('Delphi : Medical History (Hospital Admission, Surgery or Injury)',
                                            'Delphi : Surgery (excl. Cesarean)',
                                            'Delphi : Medical Complications',
                                            'Delphi : Obstetric Complications',
-                                           'Delphi : 3rd Trimester/Post-Partum')) %>%
+                                           'Delphi : Gestation')) %>%
                  dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c(## 'Geneva : Neoplasm',
@@ -736,18 +736,32 @@ to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                                'Geneva : Pain on limb palpitation')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('Wells : PE most likely (Permissive)',
-                                               'Wells : PE most likely (Strict)')) %>%
+                dplyr::filter(term %in% c(## 'Wells : Neoplasm',
+                                            'Wells : PE most likely diagnosis (Permissive)',
+                                            'Wells : PE most likely diagnosis (Strict)')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('PERC : Exogenous Estrogen',
-                                               'PERC : Unilateral Leg Swelling')) %>%
+                                               'PERC : Unilateral Leg Swelling',
+                                               'PERC : Previous DVT/PE')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
+to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
+                     dplyr::filter(term %in% c('D-Dimer (Hospital Gestation Specific) : Abnomral',
+                                               'D-Dimer (Hospital) : Abnormal')) %>%
+                     mutate(term = paste0(term, ' - All')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
+to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
+                                dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
+                                                          'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
+                     mutate(term = paste0(term, ' - Excluding those on Anti-Coagulants')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
                 to.sum.simplified,
                 to.sum.wells,
-                to.sum.perc)
+                to.sum.perc,
+                to.sum.ddimer.all)
+                ## to.sum.ddimer.excl.anti.coag)
 ggplot(to.sum, aes(term, estimate, colour = term)) +
     geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
     coord_flip() + geom_hline(yintercept = 0) +
@@ -781,15 +795,15 @@ to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                                'PERC : Previous DVT/PE')) %>%
                      dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('D-Dimer (Hospital) : Continuous',
-                                               'D-Dimer (Hospital) : Dichotomised',
-                                               'D-Dimer (Hospital) : Dichotomised (Gestation Specific)')) %>%
-                     mutate(term = paste0(term, ' - All'))
+                     dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
+                                               'D-Dimer (Hospital Gestation Specific) : Abnomral')) %>%
+                     mutate(term = paste0(term, ' - All')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
 to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
-                     dplyr::filter(term %in% c('D-Dimer (Hospital) : Continuous',
-                                               'D-Dimer (Hospital) : Dichotomised',
-                                               'D-Dimer (Hospital) : Dichotomised (Gestation Specific)')) %>%
-                     mutate(term = paste0(term, ' - Excluding those on Anti-Coagulants'))
+                     dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
+                                               'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
+                     mutate(term = paste0(term, ' - Excluding those on Anti-Coagulants')) %>%
+                     dplyr::select(term, estimate, lci, uci, p.value)
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
                 to.sum.simplified,
