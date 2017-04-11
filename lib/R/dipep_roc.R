@@ -205,8 +205,18 @@ dipep_roc <- function(df        = logistic$predicted,
     ## classification) exists in the data, if not then set it
     results$df <- df
     if(!c('threshold') %in% names(results$df)){
-        results$df <- mutate(results$df,
-                             threshold = threshold)
+        ## ToDo 2017-04-11 - Intelligent threshold for binary variables
+        thresholds <- group_by(results$df, name) %>%
+                      summarise(n_probs = M %>% as.factor() %>% levels() %>% length(),
+                                min     = min(M, na.rm = TRUE),
+                                max     = max(M, na.rm = TRUE))
+        results$df <- merge(results$df,
+                            thresholds,
+                            by = c('name'))
+        results$df <- results$df %>%
+            mutate(threshold = case_when(.$n_probs == 2 & .$M == .$min ~ 0,
+                                         .$n_probs == 2 & .$M == .$max ~ 1,
+                                         .$n_probs != 2                ~ threshold))
     }
     ## Classify people based on the threshold
     results$df <- mutate(results$df,
