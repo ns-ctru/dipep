@@ -79,7 +79,7 @@ rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, n.diagnoised.pe, missing)
 
 #### Tidied Data
 
-The tidied data is summarised below.  This is *after* applying any rules such as "*if a Yes/No response is not present assume No*", the pattern of missing data before applying these rules is presented in the [previous tab](#section-raw-data).  The first set of tables summarise for each 'set' of variables (physiology, medical history, this pregnany and previous pregnancy) how many individuals in each group the number of these which are missing.
+The tidied data is summarised below.  This is *after* applying any rules such as "*if a Yes/No (Ticked/Not Ticked )response is missing assume No*" or "*if a physiological variable is not recorded assume normal (i.e.low risk after dichotomising)*", the pattern of missing data before applying these rules is presented in the [previous tab](#section-raw-data).  The first set of tables summarises for each 'set' of variables (physiology, medical history, this pregnany and previous pregnancy) how many individuals in each group the number of these which are missing.
 
 **NB** If there is a level of missing observations that is not present in the data it is NOT present in the table.
 
