@@ -190,20 +190,23 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('delphi.o2.saturation', 'Delphi : O2 Saturation', Predictor),
                                Predictor = gsub('delphi.heart.rate', 'Delphi : Heart Rate', Predictor),
                                Predictor = gsub('delphi.respiratory.rate', 'Delphi : Respiratory Rate', Predictor))
-    ## results$plot.auc$x <- 0.75
-    ## results$plot.auc$y <- 0.25
-    ## ToDo - How to annotate plot with the Predictor and AUC components???
-    ## Add AUC to plot
-    ## results$plot <- results$plot +
-    ##                 geom_text(data = plot.auc, aes(x = 0.75, y = 0.25))
-    ## ToDo 2017-02-22 - Calculate...
-    ##                   Sensitivity
-    ##                   Specificty
-    ##                   Positive Predictive Value
-    ##                   Negative Predictive Value
     ## Check if threshold (a value which should determine the cut point for
     ## classification) exists in the data, if not then set it
     results$df <- df
+    ## outcome.levels <- table(results$df$predictor) %>% length()
+    ## if(outcome.levels != 2){
+    ##     results$df <- results$df %>%
+    ##                   mutate(threshold = threshold,
+    ##                          m         = ifelse(M  < threshold,
+    ##                                             yes = 1,
+    ##                                             no  = 0),
+    ##                          .n        = 1)
+    ## }
+    ## else{
+    ##     results$df <- results$df %>%
+    ##                   mutate(m  = predictor,
+    ##                          .n = 1)
+    ## }
     if(!c('threshold') %in% names(results$df)){
         ## ToDo 2017-04-11 - Intelligent threshold for binary variables
         thresholds <- group_by(results$df, name) %>%
@@ -219,25 +222,22 @@ dipep_roc <- function(df        = logistic$predicted,
                                          .$n_probs != 2                ~ threshold))
     }
     ## Classify people based on the threshold
-    results$df <- mutate(results$df,
-                         m = ifelse(M > threshold,
+    results$df <- results$df %>%
+                  mutate(m = ifelse(.$M > .$threshold,
                                     yes = 1,
-                                    no  = 0))
-    ## Count the number of individuals in each category (done in dipep_existing_sum() by
-    ## tabulation, but thats potentially problematic)
-    results$counts <- mutate(results$df,
-                             .n = 1) %>%
+                                    no  = 0),
+                         .n = 1)
+    results$counts <- results$df %>%
         ## This puts in missing for combinations NOT seen, trick is that
         ## missing then sum to zero because they are removed
                       complete(term, D, m, fill = list(.n = NA)) %>%
                       group_by(term, D, m) %>%
                       summarise(n = sum(.n, na.rm = TRUE))
-    ## Count true/false positive/negative
     results$counts <- ungroup(results$counts) %>%
-                      mutate(classification  = case_when(.$D == 'PE'    & .$m == 1 ~ 'true_positive',
-                                                         .$D == 'No PE' & .$m == 0 ~ 'true_negative',
-                                                         .$D == 'No PE' & .$m == 1 ~ 'false_positive',
-                                                         .$D == 'PE'    & .$m == 0 ~ 'false_negative',
+                      mutate(classification  = case_when(.$D == 'PE'    & .$m == 1  ~ 'true_positive',
+                                                         .$D == 'No PE' & .$m == 0  ~ 'true_negative',
+                                                         .$D == 'No PE' & .$m == 1  ~ 'false_positive',
+                                                         .$D == 'PE'    & .$m == 0  ~ 'false_negative',
                                                          .$D == 'VTE'    & .$m == 1 ~ 'true_positive',
                                                          .$D == 'No VTE' & .$m == 0 ~ 'true_negative',
                                                          .$D == 'No VTE' & .$m == 1 ~ 'false_positive',
@@ -292,6 +292,7 @@ dipep_roc <- function(df        = logistic$predicted,
                                    subset = (name == x)) %>%
                                ci()
     }
+    if(lasso == TRUE) results$auc.ci <- arrange(results$auc.ci, desc(name))
     ## Extract to data frame
     results$auc.ci   <- unlist(results$auc.ci) %>%
                         as.data.frame()
