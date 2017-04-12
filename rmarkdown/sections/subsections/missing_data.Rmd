@@ -100,7 +100,7 @@ table(dipep$group, dipep$raw.missing.exclude) %>%
           caption   = paste0('Overall Exclusions across the above three components. Table Generated : ', Sys.time()))
 
 to.exclude <- dplyr::filter(dipep,
-                            raw.missing.exclude == TRUE) &
+                            raw.missing.exclude == TRUE &
                             group %in% c('Suspected PE', 'Diagnosed PE')) %>%
               nrow()
 
