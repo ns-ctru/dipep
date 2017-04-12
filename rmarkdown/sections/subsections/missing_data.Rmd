@@ -75,6 +75,7 @@ missing[!rownames(missing) %in% 'group',] %>%
 rm(n.diagnosed.dvt, n.non.recruited, n.suspected.pe, n.diagnoised.pe, missing)
 
 ```
+
 #### Missing Data Rules
 
 A series of rules have been posited to exclude individuals with large amounts of missing data.  This does not actually help with the handling of missing data since it still leaves individuals who have missing data in the cohort and their values need tidying up and in doing so the simple rule of "*if not recorded assume 'normal' / 'low risk'*" is applied(see adjacent tab).
@@ -98,14 +99,14 @@ table(dipep$group, dipep$raw.missing.exclude) %>%
     kable(col.names = c('Include', 'Exclude'),
           caption   = paste0('Overall Exclusions across the above three components. Table Generated : ', Sys.time()))
 
-to.exclude <- dplyr::filter(dipep, 
-                            raw.pregnancy.exclude == TRUE & 
+to.exclude <- dplyr::filter(dipep,
+                            raw.pregnancy.exclude == TRUE &
                             group %in% c('Suspected PE', 'Diagnosed PE')) %>%
               nrow()
 
 ```
 
-**Some thoughts/comments**
+**Some thoughts/comments...**
 
 * The rules are pretty arbitrary, not all medical history variables are assessed.  For Medical History its only `Family History of Thrombosis`, `History of Varicose Veins`, `History of IV Drug Use`, `Known Thrombophilia`, `Surgery`, `Injury`, or `Medical Problems` for Physiology only three are assessed `Heart Rate`, `Respiratory Rate` and `Oxygen Rate` and for this Pregnancy only three are assessed `Multiple Pregnancy`, `Travel`, `Immobility`.  This excludes a host of other variables which are being tested, e.g. the various presenting features.  Why aren't these assessed too and used to exclude people?
 * The rules for excluding people do not help deal with missing data, those with missing data who do not fall foul of these exclusion rules still have to have data "imputed" which for is very simply "*assume normal/low risk*" if physiology or box on CRF is not completed.  This rule is/was considered to be clinically reasonable, but I don't see any logic in saying this is only valid if there is less than a certain number of variables missing, especially when the variables used to asses this do not include all of those that are analysed/included in the analyses.
