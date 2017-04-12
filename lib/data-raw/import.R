@@ -2636,19 +2636,49 @@ med.hist.miss.n  <- dipep %>%
                                  medical.probs) %>%
                     is.na() %>%
                     rowSums()
+raw.physiology.miss.n <- dipep.raw %>%
+                     dplyr::select(heart.rate, respiratory.rate, o2.saturation) %>%
+                     is.na() %>%
+                     rowSums()
+raw.pregnancy.miss.n <- dipep.raw %>%
+                    dplyr::select(multiple.preg, travel, immobil) %>%
+                    is.na() %>%
+                    rowSums()
+raw.med.hist.miss.n  <- dipep.raw %>%
+                   dplyr::select(history.thrombosis,
+                                 history.veins,
+                                 history.iv.drug,
+                                 thrombo,
+                                 surgery,
+                                 injury,
+                                 medical.probs) %>%
+                    is.na() %>%
+                    rowSums()
 missing <- cbind(dipep$screening,
                  physiology.miss.n,
                  pregnancy.miss.n,
                  med.hist.miss.n) %>%
            as.data.frame()
+raw.missing <- cbind(raw.dipep$screening,
+                     raw.physiology.miss.n,
+                     raw.pregnancy.miss.n,
+                     raw.med.hist.miss.n) %>%
+                as.data.frame()
 names(missing) <- gsub('V1', 'screening', names(missing))
+names(raw.missing) <- gsub('V1', 'screening', names(raw.missing))
 missing <- mutate(missing,
                   physiology.miss.n = as.numeric(physiology.miss.n),
                   pregnancy.miss.n  = as.numeric(pregnancy.miss.n),
                   med.hist.miss.n   = as.numeric(med.hist.miss.n))
+raw.missing <- mutate(missing,
+                      raw.physiology.miss.n = as.numeric(raw.physiology.miss.n),
+                      raw.pregnancy.miss.n  = as.numeric(raw.pregnancy.miss.n),
+                      raw.med.hist.miss.n   = as.numeric(raw.med.hist.miss.n))
 rm(physiology.miss.n, pregnancy.miss.n, med.hist.miss.n)
 dipep <- left_join(dipep,
                    missing) %>%
+         left_join(.,
+                   raw.missing)
          mutate(physiology.exclude = ifelse(physiology.miss.n > 1,
                                             yes = TRUE,
                                             no  = FALSE),
@@ -2661,6 +2691,20 @@ dipep <- left_join(dipep,
                 missing.exclude    = ifelse(physiology.exclude == TRUE |
                                             pregnancy.exclude  == TRUE |
                                             med.hist.exclude   == TRUE,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                raw.physiology.exclude = ifelse(raw.physiology.miss.n > 1,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                raw.pregnancy.exclude  = ifelse(raw.pregnancy.miss.n / 3 > 0.5,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                raw.med.hist.exclude   = ifelse(raw.med.hist.miss.n / 7 > 0.5,
+                                            yes = TRUE,
+                                            no  = FALSE),
+                raw.missing.exclude    = ifelse(raw.physiology.exclude == TRUE |
+                                            raw.pregnancy.exclude  == TRUE |
+                                            raw.med.hist.exclude   == TRUE,
                                             yes = TRUE,
                                             no  = FALSE))
 #######################################################################
