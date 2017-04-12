@@ -300,6 +300,15 @@ logistic$surgery <- dipep_glm(df = dipep,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE,
                     exclude.missing       = FALSE)
+## Surgery
+logistic$surgery <- dipep_glm(df = dipep,
+                              classification = 'first.st',
+                              predictor = 'cesarean',
+                              model = 'Cesarean',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE,
+                    exclude.missing       = FALSE)
 ## Family history of thrombosis
 logistic$history.thrombosis <- dipep_glm(df = dipep,
                                          classification = 'first.st',
@@ -469,6 +478,15 @@ logistic$thromb.event <- dipep_glm(df = dipep,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE,
                     exclude.missing       = FALSE)
+## Obstetric Complications (VTE-related)
+logistic$obstetric.complication.vte  <- dipep_glm(df = dipep,
+                                    classification = 'first.st',
+                                    predictor = 'obstetric.complications',
+                                    model = 'Other Problem with this pregnancy (VTE-related)',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE,
+                    exclude.missing       = FALSE)
 
 ## Combine all three sets of tidied output from each model
 logistic$tidied <- rbind(logistic$age$tidied,
@@ -524,6 +542,7 @@ logistic$tidied <- rbind(logistic$age$tidied,
                          logistic$injury$tidied,
                          logistic$medical.probs$tidied,
                          logistic$thromb.event$tidied,
+                         logistic$obstetric.complication.vte$tidied,
                          logistic$thromboprophylaxis$tidied)
 logistic$glance <- rbind(logistic$age$glance,
                          logistic$smoking$glance,
@@ -577,6 +596,7 @@ logistic$glance <- rbind(logistic$age$glance,
                          logistic$injury$glance,
                          logistic$medical.probs$glance,
                          logistic$thromb.event$glance,
+                         logistic$obstetric.complication.vte$glance,
                          logistic$thromboprophylaxis$glance)
 ## Combine all predicted
 logistic$predicted <- rbind(logistic$age$predicted,
@@ -632,6 +652,7 @@ logistic$predicted <- rbind(logistic$age$predicted,
                             logistic$injury$predicted,
                             logistic$medical.probs$predicted,
                             logistic$thromb.event$predicted,
+                            logistic$obstetric.complication.vte$predicted,
                             logistic$thromboprophylaxis$predicted)
 ## Remove 'presenting.features.' from name
 logistic$predicted <- mutate(logistic$predicted,
@@ -678,6 +699,7 @@ logistic$cross.tab <- rbind(logistic$age.cat$table,
                             logistic$dvt.cat$table,
                             logistic$injury$table,
                             logistic$thromb.event$table,
+                            logistic$obstetric.complication.vte$table,
                             logistic$medical.probs$table)
 ## Saturated
 logistic$saturated <- dipep_glm(df = dipep,
@@ -778,7 +800,8 @@ to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                            'Delphi : Medical Complications',
                                            'Delphi : Obstetric Complications',
                                            'Delphi : Gestation')) %>%
-                 dplyr::select(term, estimate, lci, uci, p.value)
+                 dplyr::select(term, estimate, lci, uci, p.value) %>%
+                 mutate(term = gsub('Medical History (Hospital Admission, Surgery or Injury)', 'Hospital Admission, Surgery or Injury', term))
 to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Geneva : Neoplasm',
                                                'Geneva : Unilateral lower limb pain',
@@ -830,7 +853,7 @@ to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : 
                                                                       'Delphi : Obstetric Complication',
                                                                       'Delphi : Gestation',
                                                                       'Geneva : Neoplasm',
-                                                                      'Geneva : Unilateral lower limb pain',
+                                                                      'Geneva : Unilateral Lower Limb Pain',
                                                                       'Geneva : Pain on limb palpitation',
                                                                       'Geneva : Neoplasm',
                                                                       'Wells : PE most likely diagnosis (Permissive)',
@@ -906,6 +929,7 @@ logistic$roc.other <- dipep_roc(df      = logistic$predicted,
                                    'thromboprophylaxis',
                                    'this.pregnancy.problems',
                                    'this.pregnancy.problems.incl.other',
+                                   'obstetric.complications'
                                    'trimester'),
                        title   = 'Other Features')
 logistic$roc.other$plot
@@ -916,6 +940,7 @@ logistic$roc.med.hist <- dipep_roc(df      = logistic$predicted,
                                       'history.veins',
                                       'thrombo',
                                       'surgery',
+                                      'cesarean',
                                       'thrombosis',
                                       'dvt.cat'),
                           title   = 'Medical History')
@@ -944,10 +969,27 @@ existing$roc.wells <- dipep_roc(df      = existing$predicted,
 existing$roc.wells$plot
 ## Plot Unique Wells components
 existing$roc.perc <- dipep_roc(df      = existing$predicted,
-                          to.plot = c('perc.hormone',
-                                      'perc.leg.swelling'),
-                          title   = 'Unique Wells Score Components')
+                               to.plot = c('perc.hormone',
+                                           'perc.leg.swelling'),
+                               title   = 'Unique Wells Score Components')
 existing$roc.perc$plot
+## Generate but don't plot D-Dimer Hospital
+biomarker.all$roc.d.dimer <- dipep_roc(df = biomarker.all$predicted,
+                                       to.plot = c('d.dimer.cat',
+                                                   'd.dimer.gestation.cat'),
+                                       threshold = 0.3,
+                                       title = 'D-Dimer (Hospital) - All')
+biomarker.all$roc.d.dimer$summary.stats <- biomarker.all$roc.d.dimer$summary.stats %>%
+        mutate(Term = gsub('D-Dimer (Hospital) : Dichotomised', 'D-Dimer (Hospital) : All', Term),
+           Term = gsub('D-Dimer (Hospital) : Dichotomised (Gestation Specific)', 'D-Dimer (Hospital Gestation Specific) : All', Term))
+biomarker.excl.anti.coag$roc.d.dimer <- dipep_roc(df = biomarker.excl.anti.coag$predicted,
+                                                  to.plot = c('d.dimer.cat',
+                                                              'd.dimer.gestation.cat'),
+                                                  threshold = 0.1,
+                                                  title = 'D-Dimer (Hospital) - Excluding those on anti-coagulants')
+biomarker.excl.anti.coag$roc.d.dimer$summary.stats <- biomarker.excl.anti.coag$roc.d.dimer$summary.stats %>%
+    mutate(Term = gsub('D-Dimer (Hospital) : Dichotomised', 'D-Dimer (Hospital) : Excluding those on Anti-coagulants', Term),
+           Term = gsub('D-Dimer (Hospital) : Dichotomised (Gestation Specific)', 'D-Dimer (Hospital Gestation Specific) : Excluding those on Anti-coagulants', Term))
 ## Combine and tabulate the AUC
 ## rbind(logistic$roc.physiology$plot.auc,
 ##       logistic$roc.physiology.cat$plot.auc,
@@ -966,11 +1008,13 @@ rbind(logistic$roc.physiology$summary.stats,
       existing$roc.delphi$summary.stats,
       existing$roc.simplified$summary.stats,
       existing$roc.wells$summary.stats,
-      existing$roc.perc$summary.stats) %>%
+      existing$roc.perc$summary.stats,
+      biomarker.all$roc.d.dimer$summary.stats,
+      biomarker.excl.anti.coag$roc.d.dimer$summary.stats) %>%
     arrange(Term) %>%
     ## dplyr::select(`-PPV`, `-NPV`) %>%
     kable(digits  = 3,
-          caption = 'Summary Statistics for Univariable logistic regression, threshold for dichotomisation is p > 0.5')
+          caption = 'Summary Statistics for Univariable logistic regression')
 
 ```
 
