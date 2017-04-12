@@ -27,7 +27,7 @@ lasso.categorical$lasso.plot + guides(colour = FALSE)
 
 ###### Cross-Validation
 
-[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised internally at each step of the fitting of the LASSO to shrink the point estimate and inform the next iteration.  The model should not be over-fitted though and this can be achieved by considering the parameter Lambda and either taking the minimum value or the value corresponding 1 x SE of the point-estimate of the Mean Squared Error.
+[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised internally at each step of the fitting of the LASSO to shrink the point estimate and inform the next iteration.  The model should not be over-fitted though and this can be achieved by considering the parameter Lambda and either taking the minimum value or the value corresponding 1 x SE of the point-estimate of the Mean Squared Error, which are the dashed lines on the following graph.
 
 <!--- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
 
