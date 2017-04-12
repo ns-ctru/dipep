@@ -1230,6 +1230,13 @@ t10 <- dplyr::select(master$pregnancy.problems,
                                                         this.preg.problem.specify_5 == 'Stillbirth',
                                                         yes = 1,
                                                         no  = 0),
+           this.pregnancy.problems.other =  ifelse(this.preg.problem.specify_1 == 'Other, specify' |
+                                                        this.preg.problem.specify_2 == 'Other, specify' |
+                                                        this.preg.problem.specify_3 == 'Other, specify' |
+                                                        this.preg.problem.specify_4 == 'Other, specify' |
+                                                        this.preg.problem.specify_5 == 'Other, specify',
+                                                        yes = 1,
+                                                        no  = 0),
            this.pregnancy.problems = ifelse(this.pregnancy.problems.dehydration == 1 |
                                             this.pregnancy.problems.eclampsia == 1 |
                                             this.pregnancy.problems.gestational.diabetes == 1 |
@@ -1243,9 +1250,26 @@ t10 <- dplyr::select(master$pregnancy.problems,
                                             this.pregnancy.problems.stillbirth == 1,
                                             yes = 1,
                                             no  = 0),
-                this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
-                                                 yes = 0,
-                                                 no  = this.pregnancy.problems))##  %>%
+           this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
+                                            yes = 0,
+                                            no  = this.pregnancy.problems),
+           this.pregnancy.problems.incl.other = ifelse(this.pregnancy.problems.dehydration == 1 |
+                                                       this.pregnancy.problems.eclampsia == 1 |
+                                                       this.pregnancy.problems.gestational.diabetes == 1 |
+                                                       this.pregnancy.problems.haemorrhage == 1 |
+                                                       this.pregnancy.problems.hyperemesis == 1 |
+                                                       this.pregnancy.problems.ovarian.hyperstimulation == 1 |
+                                                       this.pregnancy.problems.postpartum.haemorrhage == 1 |
+                                                       this.pregnancy.problems.preeclampsia == 1 |
+                                                       this.pregnancy.problems.preterm == 1 |
+                                                       this.pregnancy.problems.severe.infection == 1 |
+                                                       this.pregnancy.problems.stillbirth == 1 |
+                                                       this.pregnancy.problems.other == 1,
+                                                       yes = 1,
+                                                       no  = 0),
+           this.pregnancy.problems.incl.other = ifelse(is.na(this.pregnancy.problems.incl.other),
+                                                       yes = 0,
+                                                       no  = this.pregnancy.problems.incl.other))##  %>%
     ## dplyr::select(-this.pregnancy.problems.dehydration,
     ##               -this.pregnancy.problems.eclampsia,
     ##               -this.pregnancy.problems.gestational.diabetes,
@@ -1626,6 +1650,9 @@ dipep <- dipep %>%
            this.pregnancy.problems = ifelse(is.na(this.pregnancy.problems),
                                             yes = 0,
                                             no  = this.pregnancy.problems),
+           this.pregnancy.problems.incl.other = ifelse(is.na(this.pregnancy.problems.incl.other),
+                                                       yes = 0,
+                                                       no  = this.pregnancy.problems.incl.other),
            diagnosis.post.pe = ifelse(grepl('pe', diagnosis.post, ignore.case = TRUE) |
                                       grepl('pulmonary embo', diagnosis.post, ignore.case = TRUE) |
                                       grepl('p\\.e\\.', diagnosis.post, ignore.case = TRUE),
@@ -1722,10 +1749,10 @@ dipep <- dipep %>%
            ## 2017-04-10 - Missed out recoding two variables (picked up by Mike)
            thromboprophylaxis = ifelse(is.na(thromboprophylaxis),
                                        yes = 'No',
-                                       no  = thromboprophylaxis),
+                                       no  = as.character(thromboprophylaxis)),
            medical.probs = ifelse(is.na(medical.probs),
                                   yes = 'No',
-                                  no  = medical.probs)
+                                  no  = as.character(medical.probs))
            )
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
@@ -1798,12 +1825,17 @@ dipep <- mutate(dipep,
                 this.pregnancy.problems = factor(this.pregnancy.problems,
                                                  levels = c(0, 1),
                                                  labels = c('No', 'Yes')),
+                this.pregnancy.problems.incl.other = factor(this.pregnancy.problems.incl.other,
+                                                            levels = c(0, 1),
+                                                            labels = c('No', 'Yes')),
                 diagnosis.post.pe = factor(diagnosis.post.pe,
                                            levels = c(0, 1),
                                            labels = c('No PE', 'PE')),
                 medical.other.dvt.pe = factor(medical.other.dvt.pe,
                                               labels = c('No', 'Yes')),
                 thromboprophylaxis   = factor(as.character(thromboprophylaxis),
+                                              labels = c('No', 'Yes')),
+                medical.probs   = factor(as.character(medical.probs),
                                               labels = c('No', 'Yes')),
                 admitted.hospital    = factor(admitted.hospital,
                                               levels = c('No', 'Yes')),
@@ -1816,6 +1848,7 @@ dipep <- mutate(dipep,
                 presenting.features.cough          = factor(presenting.features.cough),
                 presenting.features.syncope        = factor(presenting.features.syncope),
                 presenting.features.haemoptysis    = factor(presenting.features.haemoptysis),
+                presenting.features.palpitations   = factor(presenting.features.palpitations),
                 presenting.features.other          = factor(presenting.features.other),
                 history.thrombosis                 = factor(history.thrombosis),
                 history.veins                      = factor(history.veins),
@@ -1898,6 +1931,8 @@ dipep <- mutate(dipep,
                                                             ref = 'No'),
                 this.pregnancy.problems           = relevel(this.pregnancy.problems,
                                                             ref = 'No'),
+                this.pregnancy.problems.incl.other = relevel(this.pregnancy.problems.incl.other,
+                                                            ref = 'No'),
                 diagnosis.post.pe                 = relevel(diagnosis.post.pe,
                                                             ref = 'No PE'),
                 presenting.features.pleuritic     = relevel(presenting.features.pleuritic,
@@ -1913,6 +1948,8 @@ dipep <- mutate(dipep,
                 presenting.features.syncope       = relevel(presenting.features.syncope,
                                                             ref = 'Not Ticked'),
                 presenting.features.haemoptysis   = relevel(presenting.features.haemoptysis,
+                                                            ref = 'Not Ticked'),
+                presenting.features.palpitations  = relevel(presenting.features.palpitations,
                                                             ref = 'Not Ticked'),
                 presenting.features.other         = relevel(presenting.features.other,
                                                             ref = 'Not Ticked'),
