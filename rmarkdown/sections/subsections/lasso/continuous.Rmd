@@ -1,20 +1,7 @@
 ##### Continuous Variables
 
 ```{r results_lasso_continuous, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'hide', eval = TRUE}
-classification <- 'first.st'
-predictor <- c('age', 'bmi', 'smoking', 'pregnancies.over', 'pregnancies.under',
-               'history.thrombosis', 'history.veins', 'history.iv.drug', 'thrombo', 'cesarean',
-               'injury', 'thrombosis', 'existing.medical',
-               ## 'preg.post',
-               'trimester', 'multiple.preg',
-               'travel', 'immobil', 'this.pregnancy.problems', 'prev.preg.problem',
-               'presenting.features.pleuritic', 'presenting.features.non.pleuritic',
-               'presenting.features.sob.exertion', 'presenting.features.sob.rest',
-               'presenting.features.haemoptysis', 'presenting.features.cough',
-               'presenting.features.syncope',
-               ## 'presenting.features.palpitations',
-               'presenting.features.other', 'respiratory.rate.cat', 'heart.rate',
-               'o2.saturation', 'bp.systolic', 'bp.diastolic', 'ecg.cat', 'xray.cat')
+predictor <- c(continuous, common)
 lasso.continuous <- dipep_glmnet_orig(df          = dipep,
                                       classification = classification,
                                       predictor      = predictor,
@@ -40,7 +27,7 @@ lasso.continuous$lasso.plot + guides(colour = FALSE)
 
 ###### Cross-Validation
 
-[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised internally at each step of the fitting of the LASSO to shrink the point estimate and inform the next iteration.  The model should not be over-fitted though and this can be achieved by considering the parameter Lambda and either taking the minimum value or the value corresponding 1 x SE of the point-estimate of the Mean Squared Error.
+[Leave One Out Cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation) has been utilised internally at each step of the fitting of the LASSO to shrink the point estimate and inform the next iteration.  The model should not be over-fitted though and this can be achieved by considering the parameter Lambda and either taking the minimum value or the value corresponding 1 x SE of the point-estimate of the Mean Squared Error, which are the dashed lines on the following graph.
 
 <!--- Partial explanation at http://stats.stackexchange.com/questions/77546/how-to-interpret-glmnet --->
 
@@ -74,7 +61,7 @@ lasso.continuous$lasso.cv.summary.stats.all %>%
 
 ```
 
-```{r results_lasso_continuous_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = TRUE}
+```{r results_lasso_continuous_roc_animate, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.show = 'animate', eval = FALSE}
 ## Animation of ROC curve
 ani.record(reset = TRUE)
 par(bg = 'white')
