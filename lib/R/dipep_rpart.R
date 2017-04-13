@@ -177,6 +177,16 @@ dipep_rpart <- function(df              = dipep,
                                  title     = 'Pruned Tree minimising cross-validation error.',
                                  threshold = threshold,
                                  lasso     = FALSE)
+    ## Generate pruned trees a few more steps after the minimum CP
+    row.index <- subset(results$rpart.full.cp, CP == results$rpart.full.cp.min) %>%
+                 rownames() %>%
+                 as.numeric()
+    cp.min.plus1 <- results$rpart.full.cp[row.index + 1, 'CP']
+    cp.min.plus2 <- results$rpart.full.cp[row.index + 2, 'CP']
+    cp.min.plus3 <- results$rpart.full.cp[row.index + 3, 'CP']
+    results$pruned.min.plus1 <- prune(results$rpart.full, cp = cp.min.plus1)
+    results$pruned.min.plus2 <- prune(results$rpart.full, cp = cp.min.plus2)
+    results$pruned.min.plus3 <- prune(results$rpart.full, cp = cp.min.plus3)
     ## Add the AUC to the plot
     results$roc.min$plot <- results$roc.min$plot +
                            annotate('text', x = 0.75, y = 0.25,
@@ -207,9 +217,6 @@ dipep_rpart <- function(df              = dipep,
     names(results$predicted) <- c('D', 'remove', 'M', 'term', 'name')
     results$predicted <- dplyr::select(results$predicted, -remove)
     ## Plot all terms
-    table(results$predicted$term) %>% print()
-    table(results$predicted$name) %>% print()
-    seq(1:nrow(results$rpart.full.cp)) %>% print()
     results$roc.all <- dipep_roc(df        = results$predicted,
                                  to.plot   = seq(1:nrow(results$rpart.full.cp)),
                                  title     = 'each Pruned Tree',
