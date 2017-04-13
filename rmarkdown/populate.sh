@@ -17,12 +17,13 @@
 ########################################################################################
 ## Start by copying the master file
 sed -e 's/first\.st/second\.st/g' \
-    -e 's/Primary Analysis/Secondary Analysis/g' dipep.Rmd > secondary/secondary.Rmd
+    -e 's/Primary Analyses/Secondary Analyses/g' dipep.Rmd > secondary/secondary.Rmd
 ## Copy the whole section/ directory so ALL child files are present
 cp -r sections secondary/.
 ## Now replace 'first.st' within secondary/section/subsections/* files
 ## Demographics
-sed 's/\$first\.st/\$second\.st/g' sections/subsections/demographics.Rmd > secondary/sections/subsections/demographics.Rmd
+sed -e 's/\$first\.st/\$second\.st/g' sections/subsections/demographics.Rmd \
+    -e 's/first\.st,/second\.st,/g'> secondary/sections/subsections/demographics.Rmd
 ## Missing Data
 sed 's/first\.st/second\.st/g' sections/subsections/missing_data.Rmd > secondary/sections/subsections/missing_data.Rmd
 ## Existing Scores
@@ -56,12 +57,13 @@ sed 's/first\.st/second\.st/g' sections/subsections/lasso/continuous.Rmd > secon
 ########################################################################################
 ## Start by copying the master file
 sed -e 's/first\.st/third\.st/g' \
-    -e 's/Primary Analysis/Tertiary Analysis/g' dipep.Rmd > tertiary/tertiary.Rmd
+    -e 's/Primary Analyses/Tertiary Analyses/g' dipep.Rmd > tertiary/tertiary.Rmd
 ## Copy the whole section/ directory so ALL child files are present
 cp -r sections tertiary/.
 ## Now replace 'first.st' within tertiary/section/subsections/* files
 ## Demographics
-sed 's/\$first\.st/\$third\.st/g' sections/subsections/demographics.Rmd > tertiary/sections/subsections/demographics.Rmd
+sed -e 's/\$first\.st/\$third\.st/g' sections/subsections/demographics.Rmd \
+    -e 's/first\.st,/third\.st,/g' > tertiary/sections/subsections/demographics.Rmd
 ## Missing Data
 sed 's/first\.st/third\.st/g' sections/subsections/missing_data.Rmd > tertiary/sections/subsections/missing_data.Rmd
 ## Existing Scores
@@ -94,12 +96,13 @@ sed 's/first\.st/third\.st/g' sections/subsections/lasso/continuous.Rmd > tertia
 ########################################################################################
 ## Start by copying the master file
 sed -e 's/first\.st/fourth\.st/g' \
-    -e 's/Primary Analysis/Quaternary Analysis/g' dipep.Rmd > quaternary/quaternary.Rmd
+    -e 's/Primary Analyses/Quaternary Analyses/g' dipep.Rmd > quaternary/quaternary.Rmd
 ## Copy the whole section/ directory so ALL child files are present
 cp -r sections quaternary/.
 ## Now replace 'first.st' within quaternary/section/subsections/* files
 ## Demographics
-sed 's/\$first\.st/\$fourth\.st/g' sections/subsections/demographics.Rmd > quaternary/sections/subsections/demographics.Rmd
+sed -e 's/\$first\.st/\$fourth\.st/g' sections/subsections/demographics.Rmd \
+    -e 's/first\.st,/fourth\.st,/g'> quaternary/sections/subsections/demographics.Rmd
 ## Missing Data
 sed 's/first\.st/fourth\.st/g' sections/subsections/missing_data.Rmd > quaternary/sections/subsections/missing_data.Rmd
 ## Existing Scores
