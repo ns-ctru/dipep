@@ -46,10 +46,34 @@ plotcp(rpart.continuous$rpart.full)
 
 ```
 
-The Complexity Parameter (CP) at the step/number of splits (`r rpart.continuous$rpart.full.splits.min`) that corresponds to the minimum cross-validated error is `r rpart.continuous$rpart.full.cp.min`.
+The Complexity Parameter (CP) at the step/number of splits (`r rpart.continuous$rpart.full.splits.min`) that corresponds to the minimum cross-validated error is `r rpart.continuous$rpart.full.cp.min`.  Dendrograms for three subsequent steps/splits are also shown.
 
 ```{r results_rpart_continuous_prune, echo = FALSE, cache = FALSE, fig_width = 15, fig_height = 10, results = 'rmarkdown', eval = TRUE}
 prp(rpart.continuous$pruned.min,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+prp(rpart.continuous$pruned.min.plus1,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+prp(rpart.continuous$pruned.min.plus2,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+prp(rpart.continuous$pruned.min.plus3,
     type        = prp.opts$type,
     extra       = prp.opts$extra,
     box.palette = prp.opts$box.palette,
