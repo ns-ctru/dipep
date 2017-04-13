@@ -58,6 +58,30 @@ prp(rpart.categorical$pruned.min,
     branch      = prp.opts$branch,
     varlen      = prp.opts$varlen,
     faclen      = prp.opts$faclen)
+prp(rpart.categorical$pruned.min.plus1,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+prp(rpart.categorical$pruned.min.plus2,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
+prp(rpart.categorical$pruned.min.plus3,
+    type        = prp.opts$type,
+    extra       = prp.opts$extra,
+    box.palette = prp.opts$box.palette,
+    yesno       = prp.opts$yesno,
+    branch      = prp.opts$branch,
+    varlen      = prp.opts$varlen,
+    faclen      = prp.opts$faclen)
 
 ```
 
