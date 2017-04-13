@@ -200,7 +200,7 @@ dipep_existing_sum <- function(df      = dipep,
     else if(grepl('third.st', vars)){
         case.review <- 'Tertiary'
     }
-    else if(grepl('second.st', vars)){
+    else if(grepl('fourth.st', vars)){
         case.review <- 'Quaternary'
     }
     if(grepl('perc', vars)){
