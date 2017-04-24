@@ -232,7 +232,8 @@ dipep_glmnet <- function(df           = dipep,
                     term = gsub('tissue.factor', 'Tissue Factor', term),
                     term = gsub('troponin', 'Troponin', term),
                     term = gsub('bnp', 'BNP', term),
-                    term = gsub('mrproanp', 'MRProANP', term))
+                    term = gsub('mrproanp', 'MRProANP', term),
+                    term = gsub('crp', 'C-Reactive Protein', term))
         x <- x[,c('term', '1')]
         names(x) <- c('Term', 'Coefficient')
         return(x)
