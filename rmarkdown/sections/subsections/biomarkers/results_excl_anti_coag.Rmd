@@ -39,6 +39,7 @@ biomarker.excl.anti.coag$roc.other <- dipep_roc(df      = biomarker.excl.anti.co
                                                  'troponin',
                                                  'nppb',
                                                  'mrproanp',
+                                                 'bnp',
                                                  'crp'),
                                      title    = 'Other Biomarkers',
                                      threshold = threshold)
