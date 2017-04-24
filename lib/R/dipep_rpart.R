@@ -66,7 +66,7 @@ dipep_rpart <- function(df              = dipep,
     if(exclude.anti.coag == TRUE){
         df <- dplyr::filter(df, exclude.anti.coag == 'No')
     }
-    ## Obtain the numbre of missing for the current classified
+    ## Obtain the number of missing for the current classified
     results$n.exclude <- dplyr::filter(df, is.na(classification)) %>% nrow()
     ## Remove those who are 'Exclude' for the current classification
     if(classification == 'first.st'){
