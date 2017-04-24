@@ -16,8 +16,9 @@
 ## Secondary                                                                          ##
 ########################################################################################
 ## Start by copying the master file
-sed -e 's/first\.st/second\.st/g' \
-    -e 's/Primary Analyses/Secondary Analyses/g' dipep.Rmd > secondary/secondary.Rmd
+sed -e 's/first\.st/second\.st/g' dipep.Rmd \
+    -e 's/Primary Analyses/Secondary Analyses/g' \
+    -e 's/set\.seed(69027181)/set\.seed(47848971)/g' > secondary/secondary.Rmd
 ## Copy the whole section/ directory so ALL child files are present
 cp -r sections secondary/.
 ## Now replace 'first.st' within secondary/section/subsections/* files
@@ -28,6 +29,7 @@ sed -e 's/\$first\.st/\$second\.st/g' sections/subsections/demographics.Rmd \
 sed 's/first\.st/second\.st/g' sections/subsections/missing_data.Rmd > secondary/sections/subsections/missing_data.Rmd
 ## Existing Scores
 sed 's/first\.st/second\.st/g' sections/subsections/results_existing.Rmd > secondary/sections/subsections/results_existing.Rmd
+sed 's/first\.st/second\.st/g' sections/subsections/existing/logistic.Rmd > secondary/sections/subsections/existing/logistic.Rmd
 sed 's/first\.st/second.st/g' sections/subsections/existing/simplified.Rmd > secondary/sections/subsections/existing/simplified.Rmd
 sed 's/first\.st/second.st/g' sections/subsections/existing/perc.Rmd > secondary/sections/subsections/existing/perc.Rmd
 sed 's/first\.st/second.st/g' sections/subsections/existing/wells_permissive.Rmd > secondary/sections/subsections/existing/wells_permissive.Rmd
@@ -56,8 +58,9 @@ sed 's/first\.st/second\.st/g' sections/subsections/lasso/continuous.Rmd > secon
 ## Tertiary                                                                          ##
 ########################################################################################
 ## Start by copying the master file
-sed -e 's/first\.st/third\.st/g' \
-    -e 's/Primary Analyses/Tertiary Analyses/g' dipep.Rmd > tertiary/tertiary.Rmd
+sed -e 's/first\.st/third\.st/g' dipep.Rmd \
+    -e 's/Primary Analyses/Tertiary Analyses/g' \
+    -e 's/set\.seed(69027181)/set\.seed(1653142)/g'  > tertiary/tertiary.Rmd
 ## Copy the whole section/ directory so ALL child files are present
 cp -r sections tertiary/.
 ## Now replace 'first.st' within tertiary/section/subsections/* files
@@ -68,6 +71,7 @@ sed -e 's/\$first\.st/\$third\.st/g' sections/subsections/demographics.Rmd \
 sed 's/first\.st/third\.st/g' sections/subsections/missing_data.Rmd > tertiary/sections/subsections/missing_data.Rmd
 ## Existing Scores
 sed 's/first\.st/third\.st/g' sections/subsections/results_existing.Rmd > tertiary/sections/subsections/results_existing.Rmd
+sed 's/first\.st/third.st/g' sections/subsections/existing/logistic.Rmd > tertiary/sections/subsections/existing/logistic.Rmd
 sed 's/first\.st/third.st/g' sections/subsections/existing/simplified.Rmd > tertiary/sections/subsections/existing/simplified.Rmd
 sed 's/first\.st/third.st/g' sections/subsections/existing/perc.Rmd > tertiary/sections/subsections/existing/perc.Rmd
 sed 's/first\.st/third.st/g' sections/subsections/existing/wells_permissive.Rmd > tertiary/sections/subsections/existing/wells_permissive.Rmd
@@ -86,7 +90,8 @@ sed 's/first\.st/third\.st/g' sections/subsections/biomarkers/gestation_all.Rmd 
 sed 's/first\.st/third\.st/g' sections/subsections/biomarkers/gestation_excl_anti_coag.Rmd > tertiary/sections/subsections/biomarkers/gestation_excl_anti_coag.Rmd
 ## Recursive Partitioning
 sed 's/first\.st/third\.st/g' sections/subsections/rpart/categorised.Rmd > tertiary/sections/subsections/rpart/categorised.Rmd
-sed 's/first\.st/third\.st/g' sections/subsections/rpart/continuous.Rmd > tertiary/sections/subsections/rpart/continuous.Rmd
+sed -e 's/first\.st/third\.st/g' sections/subsections/rpart/continuous.Rmd \
+    -e 's/threshold             = 0\.5/threshold             = 0.3/g' > tertiary/sections/subsections/rpart/continuous.Rmd
 ## LASSO
 sed 's/first\.st/third\.st/g' sections/subsections/lasso/categorised.Rmd > tertiary/sections/subsections/lasso/categorised.Rmd
 sed 's/first\.st/third\.st/g' sections/subsections/lasso/continuous.Rmd > tertiary/sections/subsections/lasso/continuous.Rmd
@@ -95,8 +100,9 @@ sed 's/first\.st/third\.st/g' sections/subsections/lasso/continuous.Rmd > tertia
 ## Quaternary                                                                          ##
 ########################################################################################
 ## Start by copying the master file
-sed -e 's/first\.st/fourth\.st/g' \
-    -e 's/Primary Analyses/Quaternary Analyses/g' dipep.Rmd > quaternary/quaternary.Rmd
+sed -e 's/first\.st/fourth\.st/g' dipep.Rmd \
+    -e 's/Primary Analyses/Quaternary Analyses/g'  \
+    -e 's/set\.seed(69027181)/set\.seed(241347971)/g'  > quaternary/quaternary.Rmd
 ## Copy the whole section/ directory so ALL child files are present
 cp -r sections quaternary/.
 ## Now replace 'first.st' within quaternary/section/subsections/* files
@@ -107,6 +113,7 @@ sed -e 's/\$first\.st/\$fourth\.st/g' sections/subsections/demographics.Rmd \
 sed 's/first\.st/fourth\.st/g' sections/subsections/missing_data.Rmd > quaternary/sections/subsections/missing_data.Rmd
 ## Existing Scores
 sed 's/first\.st/fourth\.st/g' sections/subsections/results_existing.Rmd > quaternary/sections/subsections/results_existing.Rmd
+sed 's/first\.st/fourth.st/g' sections/subsections/existing/logistic.Rmd > quaternary/sections/subsections/existing/logistic.Rmd
 sed 's/first\.st/fourth.st/g' sections/subsections/existing/simplified.Rmd > quaternary/sections/subsections/existing/simplified.Rmd
 sed 's/first\.st/fourth.st/g' sections/subsections/existing/perc.Rmd > quaternary/sections/subsections/existing/perc.Rmd
 sed 's/first\.st/fourth.st/g' sections/subsections/existing/wells_permissive.Rmd > quaternary/sections/subsections/existing/wells_permissive.Rmd
