@@ -259,3 +259,6 @@ dipep_roc(biomarker.all$predicted,
 
 ```{r child = 'all_troponin.Rmd', eval = TRUE}
 ```
+
+```{r child = 'all_crp.Rmd', eval = TRUE}
+```
