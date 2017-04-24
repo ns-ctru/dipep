@@ -129,6 +129,7 @@ dipep_biomarker <- function(df        = dipep,
     names(df) <- gsub('plasmin.antiplasmin',                      'biomarker', names(df))
     names(df) <- gsub('natriuertic.peptide',                      'biomarker', names(df))
     names(df) <- gsub('mrproanp',                                 'biomarker', names(df))
+    names(df) <- gsub('crp',                                      'biomarker', names(df))
     ## Convert classification to character and replace NA with 'Exclude' so it aligns
     ## with others expectation of what to see.
     df <- mutate(df,
