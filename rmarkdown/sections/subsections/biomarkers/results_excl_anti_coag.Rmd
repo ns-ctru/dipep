@@ -207,7 +207,10 @@ dipep_roc(biomarker.all$predicted,
                       'thrombin.generation.time.to.peak.cat',
                       'tissue.factor.cat',
                       'troponin.cat',
-                      'crp.cat
+                      'crp.cat'),
+          title    = 'Pre-categorised biomarkers (using reference thresholds) excluding those on anti-coagulents',
+          threshold = threshold)$summary.stats %>%
+    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE, excluding those on anti-coagulents'))
 ```
 
 ```{r child = 'excl_anti_coag_aptt.Rmd', eval = TRUE}
