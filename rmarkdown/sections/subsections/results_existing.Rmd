@@ -1,5 +1,8 @@
 ### PE Scores {.tabset .tabset-fade .tabset-pills}
 
+```{r child = 'existing/logistic.Rmd', eval = TRUE}
+```
+
 ```{r results_existing_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'rmarkdown', eval = TRUE}
 to.plot <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>%
     ## ToDp 2017-02-23 - Add in Delphi scores
@@ -24,25 +27,79 @@ to.plot <- to.plot %>%
                                            .$Score == 'delphi.specificity.pe' ~ 'Delphi (Specificity)'))
 to.plot <- ggplot(to.plot, aes(d = D, m = M, colour = Score)) +
            geom_roc(labels = FALSE) +
-           guides(guide = guide_legend(title = 'Predictor Score...')) +
-           ggtitle('ROC curves for Existing Pulmonary Embolism Predictors') +
+           guides(colour = guide_legend(title = 'Predictor Classification...')) +
+           ggtitle('ROC curves for Existing Pulmonary Embolism Classification') +
            style_roc() + theme_bw()
 ## Calculate AUC
 existing.auc <- calc_auc(to.plot)
 ## Plot graph with AUC tabulated underneath
 to.plot
-existing.auc %>%
-    mutate(Score = case_when(.$group == 1 ~ 'Delphi (Primary)',
-                             .$group == 2 ~ 'Delphi (Sensitivity)',
-                             .$group == 3 ~ 'Delphi (Specificity)',
-                             .$group == 4 ~ 'Wells (Strict)',
-                             .$group == 5 ~ 'Simplified Revised Geneva',
-                             .$group == 6 ~ 'Wells (Permissive)',
-                             .$group == 7 ~ 'Wells (Strict)')) %>%
-    dplyr::select(Score, AUC) %>%
-kable(caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
+## existing.auc %>%
+##     mutate(Score = case_when(.$group == 1 ~ 'Delphi (Primary)',
+##                              .$group == 2 ~ 'Delphi (Sensitivity)',
+##                              .$group == 3 ~ 'Delphi (Specificity)',
+##                              .$group == 4 ~ 'Wells (Strict)',
+##                              .$group == 5 ~ 'Simplified Revised Geneva',
+##                              .$group == 6 ~ 'Wells (Permissive)',
+##                              .$group == 7 ~ 'Wells (Strict)')) %>%
+##     dplyr::select(Score, AUC) %>%
+## kable(caption = 'ROC Area Under the Curve for existing and Delphi Consensus Classification')
+## Alternatively use dipep_roc() to generate a table
+dipep_roc(existing$predicted.existing,
+          to.plot = c('simplified.pe',
+                      'perc.pe',
+                      'wells.permissive.pe',
+                      'wells.strict.pe',
+                      'delphi.primary.pe',
+                      'delphi.sensitivity.pe',
+                      'delphi.specificity.pe'),
+          threshold = 0.3,
+          title = 'Existing Pulmonary Embolism')$summary.stats %>%
+    kable(caption = 'Summary Statistics for existing and Delphi scores as binary classifiers.')
+
+## Combine the predicted probabilities for the actual scores (rather then the
+## dichotomisation based on the scores) into one data frame and generate ROC curve
+to.plot.con <- rbind(simplified$predicted.con,
+                     wells.permissive$predicted.con,
+                     wells.strict$predicted.con,
+                     perc$predicted.con,
+                     delphi.primary$predicted.con,
+                     delphi.sensitivity$predicted.con,
+                     delphi.specificity$predicted.con)
+## Plot the results of treating the score as 'continuous' (even thought its not).
+to.plot.con <- ggplot(to.plot.con, aes(d = D, m = M, colour = name)) +
+           geom_roc(labels = FALSE) +
+           guides(colour = guide_legend(title = 'Predictor Score...')) +
+           ggtitle('ROC curves for Existing Pulmonary Embolism Scores') +
+           style_roc() + theme_bw()
+## Calculate AUC
+existing.auc.con <- calc_auc(to.plot.con)
+## Plot graph with AUC tabulated underneath
+to.plot.con
+## existing.auc.con %>%
+##     mutate(Score = case_when(.$group == 1 ~ 'Delphi (Primary)',
+##                              .$group == 2 ~ 'Delphi (Sensitivity)',
+##                              .$group == 3 ~ 'Delphi (Specificity)',
+##                              .$group == 4 ~ 'Wells (Strict)',
+##                              .$group == 5 ~ 'Simplified Revised Geneva',
+##                              .$group == 6 ~ 'Wells (Permissive)',
+##                              .$group == 7 ~ 'Wells (Strict)')) %>%
+##     dplyr::select(Score, AUC) %>%
+## kable(caption = 'ROC Area Under the Curve for existing and Delphi Consensus Scores')
+dipep_roc(to.plot.con,
+          to.plot = c('Simplified Revised Geneva',
+                      'PERC Score',
+                      'Wells Score (Permissive)',
+                      'Wells Score (Strict)',
+                      'Delphi Primary Score',
+                      'Delphi Sensitivity Score',
+                      'Delphi Specificity Score'),
+          threshold = 0.3,
+          title = 'Existing Pulmonary Embolism')$summary.stats %>%
+    kable(caption = 'Summary Statistics for existing and Delphi scores as binary classifiers.')
+
 ## Extract the existing scores for Likert style plotting
-existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>% dplyr::select(group, wells.permissive, wells.strict, simplified, perc)
+## existing <- dplyr::filter(dipep, !is.na(first.st) & group %in% c('Diagnosed PE', 'Suspected PE')) %>% dplyr::select(group, wells.permissive, wells.strict, simplified, perc)
 
 ```
 
