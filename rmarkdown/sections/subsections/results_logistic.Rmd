@@ -295,13 +295,13 @@ logistic$presenting.features.other <- dipep_glm(df = dipep,
 logistic$surgery <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'surgery',
-                              model = 'Surgery',
+                              model = 'Surgery in last 4 weeks',
                     exclude = NULL,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE,
                     exclude.missing       = FALSE)
 ## Surgery
-logistic$surgery <- dipep_glm(df = dipep,
+logistic$cesarean <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'cesarean',
                               model = 'Cesarean',
@@ -929,7 +929,7 @@ logistic$roc.other <- dipep_roc(df      = logistic$predicted,
                                    'thromboprophylaxis',
                                    'this.pregnancy.problems',
                                    'this.pregnancy.problems.incl.other',
-                                   'obstetric.complications'
+                                   'obstetric.complications',
                                    'trimester'),
                        title   = 'Other Features')
 logistic$roc.other$plot
