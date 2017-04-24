@@ -60,7 +60,7 @@ delphi.specificity <- dipep_existing_sum(df                    = dipep,
 
 ```{r results_existing_logistic_components, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'rmarkdown', eval = TRUE}
 existing <- list()
-existing$simplified <- dipep_glm(df                    = dipep,
+existing$simplified.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'simplified.pe',
                                      model                 = 'Geneva',
@@ -160,7 +160,7 @@ existing$simplified.pain.palpitations <- mutate(dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$perc <- dipep_glm(df                    = dipep,
+existing$perc.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.pe',
                                      model                 = 'PERC',
@@ -232,7 +232,7 @@ existing$perc.leg.swelling <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.permissive <-  dipep_glm(df                    = dipep,
+existing$wells.permissive.pe <-  dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'wells.permissive.pe',
                                      model                 = 'Wells : Permissive',
@@ -240,7 +240,7 @@ existing$wells.permissive <-  dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$wells.strict <-  dipep_glm(df                    = dipep,
+existing$wells.strict.pe <-  dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'wells.strict.pe',
                                      model                 = 'Wells : Strict',
@@ -336,7 +336,7 @@ existing$wells.neoplasm <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$delphi.primary <- dipep_glm(df                    = dipep,
+existing$delphi.primary.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.primary.pe',
                                      model                 = 'Delphi : Primary',
@@ -344,7 +344,7 @@ existing$delphi.primary <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$delphi.sensitivity <- dipep_glm(df                    = dipep,
+existing$delphi.sensitivity.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.sensitivity.pe',
                                      model                 = 'Delphi : Sensitivity',
@@ -352,7 +352,7 @@ existing$delphi.sensitivity <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$delphi.specificity <- dipep_glm(df                    = dipep,
+existing$delphi.specificity.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.specificity.pe',
                                      model                 = 'Delphi : Specificity',
@@ -474,7 +474,7 @@ existing$delphi.respiratory.rate <- dipep_glm(df                    = dipep,
                                      exclude.missing       = FALSE)
 
 ## Combine all thre sets of tidied output from each model
-existing$tidied <- rbind(existing$simplified$tidied,
+existing$tidied <- rbind(existing$simplified.pe$tidied,
                          existing$simplified.age$tidied,
                          existing$simplified.prev.dvt.pe$tidied,
                          existing$simplified.surgery$tidied,
@@ -483,7 +483,7 @@ existing$tidied <- rbind(existing$simplified$tidied,
                          existing$simplified.haemoptysis$tidied,
                          existing$simplified.heart.rate$tidied,
                          existing$simplified.pain.palpitations$tidied,
-                         existing$perc$tidied,
+                         existing$perc.pe$tidied,
                          existing$perc.age$tidied,
                          existing$perc.heart.rate$tidied,
                          existing$perc.o2$tidied,
@@ -492,8 +492,8 @@ existing$tidied <- rbind(existing$simplified$tidied,
                          existing$perc.haemoptysis$tidied,
                          existing$perc.hormone$tidied,
                          existing$perc.leg.swelling$tidied,
-                         existing$wells.permissive$tidied,
-                         existing$wells.strict$tidied,
+                         existing$wells.permissive.pe$tidied,
+                         existing$wells.strict.pe$tidied,
                          existing$wells.dvt$tidied,
                          existing$wells.alternative.permissive$tidied,
                          existing$wells.alternative.strict$tidied,
@@ -502,9 +502,9 @@ existing$tidied <- rbind(existing$simplified$tidied,
                          existing$wells.dvt.pe$tidied,
                          existing$wells.haemoptysis$tidied,
                          existing$wells.neoplasm$tidied,
-                         existing$delphi.primary$tidied,
-                         existing$delphi.sensitivity$tidied,
-                         existing$delphi.specificity$tidied,
+                         existing$delphi.primary.pe$tidied,
+                         existing$delphi.sensitivity.pe$tidied,
+                         existing$delphi.specificity.pe$tidied,
                          existing$delphi.haemoptysis$tidied,
                          existing$delphi.pleuritic$tidied,
                          existing$delphi.history.dvt.pe$tidied,
@@ -519,7 +519,7 @@ existing$tidied <- rbind(existing$simplified$tidied,
                          existing$delphi.o2.saturation$tidied,
                          existing$delphi.heart.rate$tidied,
                          existing$delphi.respiratory.rate$tidied)
-existing$glance <- rbind(existing$simplified$glance,
+existing$glance <- rbind(existing$simplified.pe$glance,
                          existing$simplified.age$glance,
                          existing$simplified.prev.dvt.pe$glance,
                          existing$simplified.surgery$glance,
@@ -528,7 +528,7 @@ existing$glance <- rbind(existing$simplified$glance,
                          existing$simplified.haemoptysis$glance,
                          existing$simplified.heart.rate$glance,
                          existing$simplified.pain.palpitations$glance,
-                         existing$perc$glance,
+                         existing$perc.pe$glance,
                          existing$perc.age$glance,
                          existing$perc.heart.rate$glance,
                          existing$perc.o2$glance,
@@ -537,8 +537,8 @@ existing$glance <- rbind(existing$simplified$glance,
                          existing$perc.haemoptysis$glance,
                          existing$perc.hormone$glance,
                          existing$perc.leg.swelling$glance,
-                         existing$wells.permissive$glance,
-                         existing$wells.strict$glance,
+                         existing$wells.permissive.pe$glance,
+                         existing$wells.strict.pe$glance,
                          existing$wells.dvt$glance,
                          existing$wells.alternative.permissive$glance,
                          existing$wells.alternative.strict$glance,
@@ -547,9 +547,9 @@ existing$glance <- rbind(existing$simplified$glance,
                          existing$wells.dvt.pe$glance,
                          existing$wells.haemoptysis$glance,
                          existing$wells.neoplasm$glance,
-                         existing$delphi.primary$glance,
-                         existing$delphi.sensitivity$glance,
-                         existing$delphi.specificity$glance,
+                         existing$delphi.primary.pe$glance,
+                         existing$delphi.sensitivity.pe$glance,
+                         existing$delphi.specificity.pe$glance,
                          existing$delphi.haemoptysis$glance,
                          existing$delphi.pleuritic$glance,
                          existing$delphi.history.dvt.pe$glance,
@@ -564,7 +564,7 @@ existing$glance <- rbind(existing$simplified$glance,
                          existing$delphi.o2.saturation$glance,
                          existing$delphi.heart.rate$glance,
                          existing$delphi.respiratory.rate$glance)
-existing$predicted <- rbind(existing$simplified$predicted,
+existing$predicted <- rbind(existing$simplified.pe$predicted,
                          existing$simplified.age$predicted,
                          existing$simplified.prev.dvt.pe$predicted,
                          existing$simplified.surgery$predicted,
@@ -573,7 +573,7 @@ existing$predicted <- rbind(existing$simplified$predicted,
                          existing$simplified.haemoptysis$predicted,
                          existing$simplified.heart.rate$predicted,
                          existing$simplified.pain.palpitations$predicted,
-                         existing$perc$predicted,
+                         existing$perc.pe$predicted,
                          existing$perc.age$predicted,
                          existing$perc.heart.rate$predicted,
                          existing$perc.o2$predicted,
@@ -582,8 +582,8 @@ existing$predicted <- rbind(existing$simplified$predicted,
                          existing$perc.haemoptysis$predicted,
                          existing$perc.hormone$predicted,
                          existing$perc.leg.swelling$predicted,
-                         existing$wells.permissive$predicted,
-                         existing$wells.strict$predicted,
+                         existing$wells.permissive.pe$predicted,
+                         existing$wells.strict.pe$predicted,
                          existing$wells.dvt$predicted,
                          existing$wells.alternative.permissive$predicted,
                          existing$wells.alternative.strict$predicted,
@@ -592,9 +592,9 @@ existing$predicted <- rbind(existing$simplified$predicted,
                          existing$wells.dvt.pe$predicted,
                          existing$wells.haemoptysis$predicted,
                          existing$wells.neoplasm$predicted,
-                         existing$delphi.primary$predicted,
-                         existing$delphi.sensitivity$predicted,
-                         existing$delphi.specificity$predicted,
+                         existing$delphi.primary.pe$predicted,
+                         existing$delphi.sensitivity.pe$predicted,
+                         existing$delphi.specificity.pe$predicted,
                          existing$delphi.pleuritic$predicted,
                          existing$delphi.history.dvt.pe$predicted,
                          existing$delphi.family.history$predicted,
@@ -608,7 +608,7 @@ existing$predicted <- rbind(existing$simplified$predicted,
                          existing$delphi.o2.saturation$predicted,
                          existing$delphi.heart.rate$predicted,
                          existing$delphi.respiratory.rate$predicted)
-existing$cross.tab <- rbind(existing$simplified$table,
+existing$cross.tab <- rbind(existing$simplified.pe$table,
                          existing$simplified.age$table,
                          existing$simplified.prev.dvt.pe$table,
                          existing$simplified.surgery$table,
@@ -617,7 +617,7 @@ existing$cross.tab <- rbind(existing$simplified$table,
                          existing$simplified.haemoptysis$table,
                          existing$simplified.heart.rate$table,
                          existing$simplified.pain.palpitations$table,
-                         existing$perc$table,
+                         existing$perc.pe$table,
                          existing$perc.age$table,
                          existing$perc.heart.rate$table,
                          existing$perc.o2$table,
@@ -626,8 +626,8 @@ existing$cross.tab <- rbind(existing$simplified$table,
                          existing$perc.haemoptysis$table,
                          existing$perc.hormone$table,
                          existing$perc.leg.swelling$table,
-                         existing$wells.permissive$table,
-                         existing$wells.strict$table,
+                         existing$wells.permissive.pe$table,
+                         existing$wells.strict.pe$table,
                          existing$wells.dvt$table,
                          existing$wells.alternative.permissive$table,
                          existing$wells.alternative.strict$table,
@@ -636,9 +636,9 @@ existing$cross.tab <- rbind(existing$simplified$table,
                          existing$wells.dvt.pe$table,
                          existing$wells.haemoptysis$table,
                          existing$wells.neoplasm$table,
-                         existing$delphi.primary$table,
-                         existing$delphi.sensitivity$table,
-                         existing$delphi.specificity$table,
+                         existing$delphi.primary.pe$table,
+                         existing$delphi.sensitivity.pe$table,
+                         existing$delphi.specificity.pe$table,
                          existing$delphi.haemoptysis$table,
                          existing$delphi.pleuritic$table,
                          existing$delphi.history.dvt.pe$table,
@@ -658,50 +658,50 @@ existing$cross.tab <- rbind(existing$simplified$table,
 ## for summarisation using dipep_roc(), required since the $predicted for each
 ## model has probabilities and dipep_roc() takes these and uses a supplied
 ## threshold derives sensitivity and specificity
-names(existing$simplified$fitted$data)           <- gsub('simplified.pe',
+names(existing$simplified.pe$fitted$data)           <- gsub('simplified.pe',
                                                          'predictor',
-                                                         names(existing$simplified$fitted$data))
-existing$simplified$fitted$data$name             <- 'simplified.pe'
-existing$simplified$fitted$data$predictor         <- as.character(existing$simplified$fitted$data$predictor)
-names(existing$perc$fitted$data)                 <- gsub('perc.pe',
+                                                         names(existing$simplified.pe$fitted$data))
+existing$simplified.pe$fitted$data$name             <- 'simplified.pe'
+existing$simplified.pe$fitted$data$predictor         <- as.character(existing$simplified.pe$fitted$data$predictor)
+names(existing$perc.pe$fitted$data)                 <- gsub('perc.pe',
                                                          'predictor',
-                                                         names(existing$perc$fitted$data))
-existing$perc$fitted$data$name                   <- 'perc.pe'
-existing$perc$fitted$data$predictor               <- as.character(existing$perc$fitted$data$predictor)
-names(existing$wells.permissive$fitted$data)     <- gsub('wells.permissive.pe',
+                                                         names(existing$perc.pe$fitted$data))
+existing$perc.pe$fitted$data$name                   <- 'perc.pe'
+existing$perc.pe$fitted$data$predictor               <- as.character(existing$perc.pe$fitted$data$predictor)
+names(existing$wells.permissive.pe$fitted$data)     <- gsub('wells.permissive.pe',
                                                          'predictor',
-                                                         names(existing$wells.permissive$fitted$data))
-existing$wells.permissive$fitted$data$name       <- 'wells.permissive.pe'
-existing$wells.permissive$fitted$data$predictor   <- as.character(existing$wells.permissive$fitted$data$predictor)
-names(existing$wells.strict$fitted$data)         <- gsub('wells.strict.pe',
+                                                         names(existing$wells.permissive.pe$fitted$data))
+existing$wells.permissive.pe$fitted$data$name       <- 'wells.permissive.pe'
+existing$wells.permissive.pe$fitted$data$predictor   <- as.character(existing$wells.permissive.pe$fitted$data$predictor)
+names(existing$wells.strict.pe$fitted$data)         <- gsub('wells.strict.pe',
                                                          'predictor',
-                                                         names(existing$wells.strict$fitted$data))
-existing$wells.strict$fitted$data$name           <- 'wells.strict.pe'
-existing$wells.strict$fitted$data$predictor       <- as.character(existing$wells.strict$fitted$data$predictor)
-names(existing$delphi.primary$fitted$data)       <- gsub('delphi.primary.pe',
+                                                         names(existing$wells.strict.pe$fitted$data))
+existing$wells.strict.pe$fitted$data$name           <- 'wells.strict.pe'
+existing$wells.strict.pe$fitted$data$predictor       <- as.character(existing$wells.strict.pe$fitted$data$predictor)
+names(existing$delphi.primary.pe$fitted$data)       <- gsub('delphi.primary.pe',
+                                                            'predictor',
+                                                            names(existing$delphi.primary.pe$fitted$data))
+existing$delphi.primary.pe$fitted$data$name         <- 'delphi.primary.pe'
+existing$delphi.primary.pe$fitted$data$predictor     <- as.character(existing$delphi.primary.pe$fitted$data$predictor)
+names(existing$delphi.sensitivity.pe$fitted$data)   <- gsub('delphi.sensitivity.pe',
                                                          'predictor',
-                                                         names(existing$delphi.primary$fitted$data))
-existing$delphi.primary$fitted$data$name         <- 'delphi.primary.pe'
-existing$delphi.primary$fitted$data$predictor     <- as.character(existing$delphi.primary$fitted$data$predictor)
-names(existing$delphi.sensitivity$fitted$data)   <- gsub('delphi.sensitivity.pe',
+                                                         names(existing$delphi.sensitivity.pe$fitted$data))
+existing$delphi.sensitivity.pe$fitted$data$name     <- 'delphi.sensitivity.pe'
+existing$delphi.sensitivity.pe$fitted$data$predictor <- as.character(existing$delphi.sensitivity.pe$fitted$data$predictor)
+names(existing$delphi.specificity.pe$fitted$data)   <- gsub('delphi.specificity.pe',
                                                          'predictor',
-                                                         names(existing$delphi.sensitivity$fitted$data))
-existing$delphi.sensitivity$fitted$data$name     <- 'delphi.sensitivity.pe'
-existing$delphi.sensitivity$fitted$data$predictor <- as.character(existing$delphi.sensitivity$fitted$data$predictor)
-names(existing$delphi.specificity$fitted$data)   <- gsub('delphi.specificity.pe',
-                                                         'predictor',
-                                                         names(existing$delphi.specificity$fitted$data))
-existing$delphi.specificity$fitted$data$name     <- 'delphi.specificity.pe'
-existing$delphi.specificity$fitted$data$predictor <- as.character(existing$delphi.specificity$fitted$data$predictor)
+                                                         names(existing$delphi.specificity.pe$fitted$data))
+existing$delphi.specificity.pe$fitted$data$name     <- 'delphi.specificity.pe'
+existing$delphi.specificity.pe$fitted$data$predictor <- as.character(existing$delphi.specificity.pe$fitted$data$predictor)
 
 
-existing$predicted.existing <- rbind(existing$simplified$fitted$data,
-                                     existing$perc$fitted$data,
-                                     existing$wells.permissive$fitted$data,
-                                     existing$wells.strict$fitted$data,
-                                     existing$delphi.primary$fitted$data,
-                                     existing$delphi.sensitivity$fitted$data,
-                                     existing$delphi.specificity$fitted$data) %>%
+existing$predicted.existing <- rbind(existing$simplified.pe$fitted$data,
+                                     existing$perc.pe$fitted$data,
+                                     existing$wells.permissive.pe$fitted$data,
+                                     existing$wells.strict.pe$fitted$data,
+                                     existing$delphi.primary.pe$fitted$data,
+                                     existing$delphi.sensitivity.pe$fitted$data,
+                                     existing$delphi.specificity.pe$fitted$data) %>%
                                mutate(D = first.st,
                                       M = case_when(.$predictor == 'No Simplified PE' ~ 0,
                                                     .$predictor == 'Simplified PE'    ~ 1,
