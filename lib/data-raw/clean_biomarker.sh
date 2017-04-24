@@ -1,7 +1,7 @@
 #!/bin/bash
 ## Clean the biomarker file of unnecessary headers and then
 ## clean non-numeric values and correct corrupted identifiers
-grep -v 'citrated plasma samples' biomarker_20170216.csv | \
+grep -v 'citrated plasma samples' biomarker_20170412.csv | \
     grep -v 'ETP Measured values' | \
     grep -v 'mg/l' | \
     grep -v 'Reference range' |
