@@ -104,6 +104,7 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('trimester', 'Trimester', Predictor),
                                Predictor = gsub('this.pregnancy.problems.incl.other', 'Problems with this Pregnancy (including Other)', Predictor),
                                Predictor = gsub('this.pregnancy.problems', 'Problems with this Pregnancy', Predictor),
+                               Predictor = gsub('obstetric.complications', 'Other problem with this pregnancy (VTE-related)', Predictor),
                                Predictor = gsub('surgery', 'Surgery in previous 4 weeks', Predictor),
                                Predictor = gsub('thrombo', 'Known Thrombophilia', Predictor),
                                Predictor = gsub('multiple.preg', 'Multiple Pregnancy', Predictor),
@@ -148,6 +149,8 @@ dipep_roc <- function(df        = logistic$predicted,
                                Predictor = gsub('bnp.cat', 'BNP : Dichotomised', Predictor),
                                Predictor = gsub('mrproanp', 'MRproANP', Predictor),
                                Predictor = gsub('mrproanp.cat', 'MRproANP : Dichotomised', Predictor),
+                               Predictor = gsub('crp', 'C-Reactive Protein', Predictor),
+                               Predictor = gsub('crp.cat', 'C-Reactive Protein : Dichotomised', Predictor),
                                Predictor = gsub('Step min.response', 'Lambda Min', Predictor),
                                Predictor = gsub('Step 1se.response', 'Lambda 1SE', Predictor),
                                Predictor = gsub('simplified.age', 'Geneva : Age', Predictor),
@@ -242,6 +245,8 @@ dipep_roc <- function(df        = logistic$predicted,
                                                          .$D == 'No VTE' & .$m == 0 ~ 'true_negative',
                                                          .$D == 'No VTE' & .$m == 1 ~ 'false_positive',
                                                          .$D == 'VTE'    & .$m == 0 ~ 'false_negative'))
+    ## results$counts %>% print()
+    ## table(results$counts$classification) %>% print()
     ## By term summarise counts of
     results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
                              dcast(term ~ classification) %>%
@@ -292,7 +297,6 @@ dipep_roc <- function(df        = logistic$predicted,
                                    subset = (name == x)) %>%
                                ci()
     }
-    if(lasso == TRUE) results$auc.ci <- arrange(results$auc.ci, desc(name))
     ## Extract to data frame
     results$auc.ci   <- unlist(results$auc.ci) %>%
                         as.data.frame()
@@ -305,6 +309,7 @@ dipep_roc <- function(df        = logistic$predicted,
                              name      = substr(.$t, 1, nchar(.$t) - 1)) %>%
                       dplyr::select(-t) %>%
                       spread(key = component, value = stat)
+    if(lasso == TRUE) results$auc.ci <-arrange(results$auc.ci, desc(name))
     ## Bind with all other statistics and CIs
     results$summary.stats <- cbind(results$summary.stats, results$ci, results$auc.ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
