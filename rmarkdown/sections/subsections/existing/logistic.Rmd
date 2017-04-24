@@ -62,7 +62,7 @@ delphi.specificity <- dipep_existing_sum(df                    = dipep,
 existing <- list()
 existing$simplified <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
-                                     predictor             = 'simplified',
+                                     predictor             = 'simplified.pe',
                                      model                 = 'Geneva',
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
@@ -352,7 +352,7 @@ existing$delphi.sensitivity <- dipep_glm(df                    = dipep,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
                                      exclude.missing       = FALSE)
-existing$delphi.spceificity <- dipep_glm(df                    = dipep,
+existing$delphi.specificity <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.specificity.pe',
                                      model                 = 'Delphi : Specificity',
@@ -654,6 +654,75 @@ existing$cross.tab <- rbind(existing$simplified$table,
                          existing$delphi.heart.rate$table,
                          existing$delphi.respiratory.rate$table)
 
+## Extract the data used from each overall classificiation and bind into one
+## for summarisation using dipep_roc(), required since the $predicted for each
+## model has probabilities and dipep_roc() takes these and uses a supplied
+## threshold derives sensitivity and specificity
+names(existing$simplified$fitted$data)           <- gsub('simplified.pe',
+                                                         'predictor',
+                                                         names(existing$simplified$fitted$data))
+existing$simplified$fitted$data$name             <- 'simplified.pe'
+existing$simplified$fitted$data$predictor         <- as.character(existing$simplified$fitted$data$predictor)
+names(existing$perc$fitted$data)                 <- gsub('perc.pe',
+                                                         'predictor',
+                                                         names(existing$perc$fitted$data))
+existing$perc$fitted$data$name                   <- 'perc.pe'
+existing$perc$fitted$data$predictor               <- as.character(existing$perc$fitted$data$predictor)
+names(existing$wells.permissive$fitted$data)     <- gsub('wells.permissive.pe',
+                                                         'predictor',
+                                                         names(existing$wells.permissive$fitted$data))
+existing$wells.permissive$fitted$data$name       <- 'wells.permissive.pe'
+existing$wells.permissive$fitted$data$predictor   <- as.character(existing$wells.permissive$fitted$data$predictor)
+names(existing$wells.strict$fitted$data)         <- gsub('wells.strict.pe',
+                                                         'predictor',
+                                                         names(existing$wells.strict$fitted$data))
+existing$wells.strict$fitted$data$name           <- 'wells.strict.pe'
+existing$wells.strict$fitted$data$predictor       <- as.character(existing$wells.strict$fitted$data$predictor)
+names(existing$delphi.primary$fitted$data)       <- gsub('delphi.primary.pe',
+                                                         'predictor',
+                                                         names(existing$delphi.primary$fitted$data))
+existing$delphi.primary$fitted$data$name         <- 'delphi.primary.pe'
+existing$delphi.primary$fitted$data$predictor     <- as.character(existing$delphi.primary$fitted$data$predictor)
+names(existing$delphi.sensitivity$fitted$data)   <- gsub('delphi.sensitivity.pe',
+                                                         'predictor',
+                                                         names(existing$delphi.sensitivity$fitted$data))
+existing$delphi.sensitivity$fitted$data$name     <- 'delphi.sensitivity.pe'
+existing$delphi.sensitivity$fitted$data$predictor <- as.character(existing$delphi.sensitivity$fitted$data$predictor)
+names(existing$delphi.specificity$fitted$data)   <- gsub('delphi.specificity.pe',
+                                                         'predictor',
+                                                         names(existing$delphi.specificity$fitted$data))
+existing$delphi.specificity$fitted$data$name     <- 'delphi.specificity.pe'
+existing$delphi.specificity$fitted$data$predictor <- as.character(existing$delphi.specificity$fitted$data$predictor)
+
+
+existing$predicted.existing <- rbind(existing$simplified$fitted$data,
+                                     existing$perc$fitted$data,
+                                     existing$wells.permissive$fitted$data,
+                                     existing$wells.strict$fitted$data,
+                                     existing$delphi.primary$fitted$data,
+                                     existing$delphi.sensitivity$fitted$data,
+                                     existing$delphi.specificity$fitted$data) %>%
+                               mutate(D = first.st,
+                                      M = case_when(.$predictor == 'No Simplified PE' ~ 0,
+                                                    .$predictor == 'Simplified PE'    ~ 1,
+                                                    .$predictor == 'No PERC PE' ~ 0,
+                                                    .$predictor == 'PERC PE'    ~ 1,
+                                                    .$predictor == 'No Wells PE' ~ 0,
+                                                    .$predictor == 'Wells PE'    ~ 1,
+                                                    .$predictor == 'No Delphi Primary PE' ~ 0,
+                                                    .$predictor == 'Delphi Primary PE'    ~ 1,
+                                                    .$predictor == 'No Delphi Sensitivity PE' ~ 0,
+                                                    .$predictor == 'Delphi Sensitivity PE'    ~ 1,
+                                                    .$predictor == 'No Delphi Specificity PE' ~ 0,
+                                                    .$predictor == 'Delphi Specificity PE'    ~ 1),
+                                      term = case_when(.$name == 'simplified.pe' ~ 'Simplified PE',
+                                                       .$name == 'perc.pe' ~ 'PERC PE',
+                                                       .$name == 'wells.permissive.pe' ~ 'Wells Permissive PE',
+                                                       .$name == 'wells.strict.pe' ~ 'Wells Strict PE',
+                                                       .$name == 'delphi.primary.pe' ~ 'Delphi Primary PE',
+                                                       .$name == 'delphi.sensitivity.pe' ~ 'Delphi Sensitivity PE',
+                                                       .$name == 'delphi.specificity.pe' ~ 'Delphi Specificity PE')) %>%
+                              dplyr::select(D, predictor, M, name, term)
 
 
 
