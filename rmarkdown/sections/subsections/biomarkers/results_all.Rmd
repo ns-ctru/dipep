@@ -38,6 +38,7 @@ biomarker.all$roc.other <- dipep_roc(df      = biomarker.all$predicted,
                                                  'troponin',
                                                  'nppb',
                                                  'mrproanp',
+                                                 'bnp',
                                                  'crp'),
                                      title    = 'Other Biomarkers',
                                      threshold = threshold)
