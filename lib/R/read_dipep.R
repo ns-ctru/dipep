@@ -41,7 +41,48 @@ read_dipep <- function(file            = 'Lookups.csv',
     ## we can use it subsequently for labelling variables
     if(file == 'Lookups.csv'){
         new <- mutate(new,
-                      field = gsub("_", ".", field))
+                      field = gsub("_", ".", field),
+        ## 2017-04-26 - Something has gone awry (perhaps inclusion of the Case Review in Lookups.csv now?)
+        ##              But there are now forms with the same field (30 day follow-up.csv and each of the
+        ##              case reviews).  This messes up the labelling as there are then multiple definitions
+        ##              of the levels, so rename the field to be prefixed with cr. in the case review files.
+                      field = ifelse(form == 'Case Review 1',
+                                     yes = paste0("cr1.", field),
+                                     no  = field),
+                      field = ifelse(form == 'Case Review 2',
+                                     yes = paste0("cr2.", field),
+                                     no  = field),
+                      field = ifelse(form == 'Case Review 3',
+                                     yes = paste0("cr3.", field),
+                                     no  = field))
+    }
+    ## 2017-04-26 - Following on if we are reading the case reviews we need to rename the fields
+    keep.same.names <- c('screening',
+                         'site',
+                         'site.code',
+                         'group',
+                         'event.name',
+                         'event.date',
+                         'form.name',
+                         'primary.class',
+                         'secondary.class',
+                         'img.class',
+                         'trt.class',
+                         'fup.class')
+    if(file == 'Case Review 1.csv'){
+        names(new) <- ifelse((names(new) %in% keep.same.names),
+                             yes = names(new),
+                             no  = paste0('cr1.', names(new)))
+    }
+    if(file == 'Case Review 2.csv'){
+        names(new) <- ifelse((names(new) %in% keep.same.names),
+                             yes = names(new),
+                             no  = paste0('cr2.', names(new)))
+    }
+    if(file == 'Case Review 3.csv'){
+        names(new) <- ifelse((names(new) %in% keep.same.names),
+                             yes = names(new),
+                             no  = paste0('cr3.', names(new)))
     }
     ## Convert specified dates
     if(convert.dates == TRUE){
@@ -62,10 +103,10 @@ read_dipep <- function(file            = 'Lookups.csv',
             if(subset(dictionary, field == x) %>% nrow() > 0){
                 new[[x]] <- factor(new[[x]],
                                    levels = c(subset(dictionary,
-                                                     form  == file &
+                                                     form  == gsub('\\.csv', '', file) &
                                                      field == x))$code,
                                    labels = c(subset(dictionary,
-                                                     form  == file &
+                                                     form  == gsub('\\.csv', '', file) &
                                                      field == x))$label)
             }
         }
