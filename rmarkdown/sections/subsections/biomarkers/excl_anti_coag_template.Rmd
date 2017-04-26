@@ -17,10 +17,10 @@ dplyr::filter(summary.biomarkers.excl.anti.coag$vte, Measurement == 'MEASUREMENT
     dplyr::select(-Measurement) %>%
         kable(caption = "Summary of TEMPLATE by Primary Classification")
 t <- dplyr::filter(dipep, exclude.anti.coag == "No")
-table(t$first.st, t$template) %>% kable(caption = "PE Status v TEMPLATE dichotomisation")
+table(t$first.st.vte, t$template.cat) %>% kable(caption = "PE Status v TEMPLATE dichotomisation")
 ## Group DVT with PE and plot as VTE v's gestation
-dplyr::filter(dipep, !is.na(vte) & exclude.anti.coag == 'No') %>%
-ggplot(aes(x = gestation, y = template, colour = vte)) +
+dplyr::filter(dipep, !is.na(first.st.vte) & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = gestation, y = template, colour = first.st.vte)) +
     geom_point() +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('TEMPLATE') +
@@ -28,7 +28,9 @@ ggplot(aes(x = gestation, y = template, colour = vte)) +
     ggtitle('TEMPLATE v Gestation') +
     labs(colour = 'VTE Status')
 ## Regression results
-biomarker.excl.anti.coag$template$fitted %>% summary()
 biomarker.excl.anti.coag$template$roc
+biomarker.excl.anti.coag$template$fitted %>% summary()
+## CAT2
+## CAT
 
 ```
