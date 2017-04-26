@@ -1,11 +1,12 @@
 ```{r results_existing_CHUNK, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
 ## Summarise
 RESULTS <- dipep_existing_sum(df                    = dipep,
-                                 title                 = 'SCORE',
-                                 exclude               = NULL,
-                                 exclude.non.recruited = TRUE,
-                                 exclude.dvt           = TRUE,
-                                 first.st, score.pe, score)
+                              title                 = 'SCORE',
+                              exclude               = NULL,
+                              exclude.non.recruited = TRUE,
+                              exclude.dvt           = TRUE,
+                              exclude.missing       = TRUE,
+                              first.st, score.pe, score)
 ## Plots
 RESULTS$bar.chart
 RESULTS$likert.plot
