@@ -63,7 +63,8 @@ read_dipep <- function(file            = 'Lookups.csv',
                                      no  = field),
                       field = ifelse(field %in% c('cr3.primary.class', 'cr3.secondary.class', 'cr3.img.class', 'cr3.trt.class', 'cr3.fup.class'),
                                      yes = gsub('cr3\\.', '', field),
-                                     no  = field))
+                                     no  = field),
+                      form = gsub("Woman's details", "Womans details", form))
 
     }
     ## 2017-04-26 - Following on if we are reading the case reviews we need to rename the fields
@@ -124,6 +125,11 @@ read_dipep <- function(file            = 'Lookups.csv',
                 if(file == 'This Pregnancy continued - Problems during this pregnancy.csv') file <- 'This Pregnancy continued'
                 if(file == 'This Pregnancy continued - Immobility.csv') file <- 'This Pregnancy continued'
                 if(file == 'This Pregnancy continued - Long-haul travel.csv') file <- 'This Pregnancy continued'
+                if(file == "Woman's details.csv") file <- 'Womans details'
+                if(file == "Womans_details_all.csv") file <- 'Womans details'
+                ## print(x)
+                ## print(file)
+                ## table(new[[x]]) %>% print()
                 new[[x]] <- factor(new[[x]],
                                    levels = c(subset(dictionary,
                                                      form  == gsub('\\.csv', '', file) &
@@ -131,6 +137,7 @@ read_dipep <- function(file            = 'Lookups.csv',
                                    labels = c(subset(dictionary,
                                                      form  == gsub('\\.csv', '', file) &
                                                      field == x))$label)
+                ## table(new[[x]]) %>% print()
             }
         }
     }
