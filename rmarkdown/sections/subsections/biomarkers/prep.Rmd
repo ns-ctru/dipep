@@ -513,6 +513,82 @@ biomarker.all$predicted <- rbind(biomarker.all$prothombin.time$predicted,
 ##                                  biomarker.all$d.dimer.cat$table,
 ##                                  biomarker.all$d.dimer.gestation.cat$table)
 
+## Extract the data used from each overall binary dichotomisation and bind into one
+## for summarisation using dipep_roc(), required since the $predicted for each
+## model has probabilities and dipep_roc() takes these and uses a supplied
+## threshold derives sensitivity and specificity
+biomarker.all$aptt.cat$fitted$data                              <- dipep_extract_binary(df      = biomarker.all$aptt.cat$fitted$data,
+                                                                                                   outcome = 'aptt.cat')
+biomarker.all$clauss.fibrinogen.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.all$clauss.fibrinogen.cat$fitted$data,
+                                                                                                   outcome = 'clauss.fibrinogen.cat')
+biomarker.all$ddimer.innovance.cat$fitted$data                         <- dipep_extract_binary(df      = biomarker.all$ddimer.innovance.cat$fitted$data,
+                                                                                                   outcome = 'ddimer.innovance.cat')
+biomarker.all$ddimer.elisa.cat$fitted$data                             <- dipep_extract_binary(df      = biomarker.all$ddimer.elisa.cat$fitted$data,
+                                                                                                   outcome = 'ddimer.elisa.cat')
+biomarker.all$thrombin.generation.endogenous.potential.cat$fitted$data <- dipep_extract_binary(df      = biomarker.all$thrombin.generation.endogenous.potential.cat$fitted$data,
+                                                                                                   outcome = 'thrombin.generation.endogenous.potential.cat')
+biomarker.all$thrombin.generation.peak.cat$fitted$data                 <- dipep_extract_binary(df      = biomarker.all$thrombin.generation.peak.cat$fitted$data,
+                                                                                                   outcome = 'thrombin.generation.peak.cat')
+biomarker.all$thrombin.generation.time.to.peak.cat$fitted$data         <- dipep_extract_binary(df      = biomarker.all$thrombin.generation.time.to.peak.cat$fitted$data,
+                                                                                                   outcome = 'thrombin.generation.time.to.peak.cat')
+biomarker.all$plasmin.antiplasmin.cat$fitted$data                      <- dipep_extract_binary(df      = biomarker.all$plasmin.antiplasmin.cat$fitted$data,
+                                                                                                   outcome = 'plasmin.antiplasmin.cat')
+biomarker.all$prothrombin.fragments.cat$fitted$data                    <- dipep_extract_binary(df      = biomarker.all$prothrombin.fragments.cat$fitted$data,
+                                                                                                   outcome = 'prothrombin.fragments.cat')
+biomarker.all$tissue.factor.cat$fitted$data                            <- dipep_extract_binary(df      = biomarker.all$tissue.factor.cat$fitted$data,
+                                                                                                   outcome = 'tissue.factor.cat')
+biomarker.all$troponin.cat$fitted$data                                 <- dipep_extract_binary(df      = biomarker.all$troponin.cat$fitted$data,
+                                                                                                   outcome = 'troponin.cat')
+biomarker.all$bnp.cat$fitted$data                                      <- dipep_extract_binary(df      = biomarker.all$bnp.cat$fitted$data,
+                                                                                                   outcome = 'bnp.cat')
+biomarker.all$mrproanp.cat$fitted$data                                 <- dipep_extract_binary(df      = biomarker.all$mrproanp.cat$fitted$data,
+                                                                                                   outcome = 'mrproanp.cat')
+biomarker.all$d.dimer.cat$fitted$data                                  <- dipep_extract_binary(df      = biomarker.all$d.dimer.cat$fitted$data,
+                                                                                                          outcome = 'd.dimer.cat')
+names(biomarker.all$d.dimer.cat$fitted$data) <- gsub('first.st', 'vte', names(biomarker.all$d.dimer.cat$fitted$data))
+biomarker.all$d.dimer.gestation.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.all$d.dimer.gestation.cat$fitted$data,
+                                                                                                          outcome = 'd.dimer.gestation.cat')
+names(biomarker.all$d.dimer.gestation.cat$fitted$data) <- gsub('first.st', 'vte', names(biomarker.all$d.dimer.gestation.cat$fitted$data))
+biomarker.all$crp.cat$fitted$data                                      <- dipep_extract_binary(df      = biomarker.all$crp.cat$fitted$data,
+                                                                                                   outcome = 'crp.cat')
+biomarker.all$predicted.existing <- rbind(biomarker.all$aptt.cat$fitted$data,
+                                                     biomarker.all$clauss.fibrinogen.cat$fitted$data,
+                                                     biomarker.all$ddimer.innovance.cat$fitted$data,
+                                                     biomarker.all$ddimer.elisa.cat$fitted$data,
+                                                     biomarker.all$thrombin.generation.endogenous.potential.cat$fitted$data,
+                                                     biomarker.all$thrombin.generation.peak.cat$fitted$data,
+                                                     biomarker.all$thrombin.generation.time.to.peak.cat$fitted$data,
+                                                     biomarker.all$plasmin.antiplasmin.cat$fitted$data,
+                                                     biomarker.all$prothrombin.fragments.cat$fitted$data,
+                                                     biomarker.all$tissue.factor.cat$fitted$data,
+                                                     biomarker.all$troponin.cat$fitted$data,
+                                                     biomarker.all$bnp.cat$fitted$data,
+                                                     biomarker.all$mrproanp.cat$fitted$data,
+                                                     biomarker.all$d.dimer.cat$fitted$data,
+                                                     biomarker.all$d.dimer.gestation.cat$fitted$data,
+                                                     biomarker.all$crp.cat$fitted$data) %>%
+                               mutate(D = vte,
+                                      M = case_when(.$predictor == 'Normal' ~ 0,
+                                                    .$predictor == 'Abnormal'    ~ 1),
+                                      term = case_when(.$name == 'aptt.cat' ~ 'APTT : Dichotomised',
+                                                       .$name == 'clauss.fibrinogen.cat' ~ 'Clauss Fibrinogen : Dichotomised',
+                                                       .$name == 'ddimer.innovance.cat' ~ 'D-Dimer (Innovance) : Dichotomised',
+                                                       .$name == 'ddimer.elisa.cat' ~ 'D-Dimer (ELISA) : Dichotomised',
+                                                       .$name == 'thrombin.generation.lag.time.cat' ~ 'Thrombin Generation (Lag Time) : Dichotomised',
+                                                       .$name == 'thrombin.generation.endogenous.potential.cat' ~ 'Thrombin Generation (Endogenous Potential) : Dichotomised',
+                                                       .$name == 'thrombin.generation.peak.cat' ~ 'Thrombin Generation (Peak) : Dichotomised',
+                                                       .$name == 'thrombin.generation.time.to.peak.cat' ~ 'Thrombin Generation (Time to Peak) : Dichotomised',
+                                                       .$name == 'plasmin.antiplasmin.cat' ~ 'Plasmin-antiplasmin : Dichotomised',
+                                                       .$name == 'prothrombin.fragments.cat' ~ 'Prothombin (Time) : Dichotomised',
+                                                       .$name == 'tissue.factor.cat' ~ 'Tissue Factor : Dichotomised',
+                                                       .$name == 'troponin.cat' ~ 'Troponin : Dichotomised',
+                                                       .$name == 'bnp.cat' ~ 'BNP : Dichotomised',
+                                                       .$name == 'mrproanp.cat' ~ 'MRproANP : Dichotomised',
+                                                       .$name == 'd.dimer.cat' ~ 'D-Dimer (Hospital) : Dichotomised',
+                                                       .$name == 'd.dimer.gestation.cat' ~ 'D-Dimer (Hospital) : Dichotomised (Gestation Specific)',
+                                                       .$name == 'crp.cat' ~ 'C-Reactive Protein : Dichotomised')) %>%
+                              dplyr::select(D, predictor, M, name, term)
+
 ```
 
 ```{r results_biomarker_prep_excl_anti_coag, , echo = FALSE, cache = FALSE, results = 'hide', warning = FALSE, message = FALSE, fig.width = 10, eval = TRUE}
@@ -1027,5 +1103,81 @@ biomarker.excl.anti.coag$predicted <- rbind(biomarker.excl.anti.coag$prothombin.
 ##                                  biomarker.excl.anti.coag$crp.cat$table,
 ##                                  biomarker.excl.anti.coag$d.dimer.cat$table,
 ##                                  biomarker.excl.anti.coag$d.dimer.gestation.cat$table)
+
+## Extract the data used from each overall binary dichotomisation and bind into one
+## for summarisation using dipep_roc(), required since the $predicted for each
+## model has probabilities and dipep_roc() takes these and uses a supplied
+## threshold derives sensitivity and specificity
+biomarker.excl.anti.coag$aptt.cat$fitted$data                              <- dipep_extract_binary(df      = biomarker.excl.anti.coag$aptt.cat$fitted$data,
+                                                                                                   outcome = 'aptt.cat')
+biomarker.excl.anti.coag$clauss.fibrinogen.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.excl.anti.coag$clauss.fibrinogen.cat$fitted$data,
+                                                                                                   outcome = 'clauss.fibrinogen.cat')
+biomarker.excl.anti.coag$ddimer.innovance.cat$fitted$data                         <- dipep_extract_binary(df      = biomarker.excl.anti.coag$ddimer.innovance.cat$fitted$data,
+                                                                                                   outcome = 'ddimer.innovance.cat')
+biomarker.excl.anti.coag$ddimer.elisa.cat$fitted$data                             <- dipep_extract_binary(df      = biomarker.excl.anti.coag$ddimer.elisa.cat$fitted$data,
+                                                                                                   outcome = 'ddimer.elisa.cat')
+biomarker.excl.anti.coag$thrombin.generation.endogenous.potential.cat$fitted$data <- dipep_extract_binary(df      = biomarker.excl.anti.coag$thrombin.generation.endogenous.potential.cat$fitted$data,
+                                                                                                   outcome = 'thrombin.generation.endogenous.potential.cat')
+biomarker.excl.anti.coag$thrombin.generation.peak.cat$fitted$data                 <- dipep_extract_binary(df      = biomarker.excl.anti.coag$thrombin.generation.peak.cat$fitted$data,
+                                                                                                   outcome = 'thrombin.generation.peak.cat')
+biomarker.excl.anti.coag$thrombin.generation.time.to.peak.cat$fitted$data         <- dipep_extract_binary(df      = biomarker.excl.anti.coag$thrombin.generation.time.to.peak.cat$fitted$data,
+                                                                                                   outcome = 'thrombin.generation.time.to.peak.cat')
+biomarker.excl.anti.coag$plasmin.antiplasmin.cat$fitted$data                      <- dipep_extract_binary(df      = biomarker.excl.anti.coag$plasmin.antiplasmin.cat$fitted$data,
+                                                                                                   outcome = 'plasmin.antiplasmin.cat')
+biomarker.excl.anti.coag$prothrombin.fragments.cat$fitted$data                    <- dipep_extract_binary(df      = biomarker.excl.anti.coag$prothrombin.fragments.cat$fitted$data,
+                                                                                                   outcome = 'prothrombin.fragments.cat')
+biomarker.excl.anti.coag$tissue.factor.cat$fitted$data                            <- dipep_extract_binary(df      = biomarker.excl.anti.coag$tissue.factor.cat$fitted$data,
+                                                                                                   outcome = 'tissue.factor.cat')
+biomarker.excl.anti.coag$troponin.cat$fitted$data                                 <- dipep_extract_binary(df      = biomarker.excl.anti.coag$troponin.cat$fitted$data,
+                                                                                                   outcome = 'troponin.cat')
+biomarker.excl.anti.coag$bnp.cat$fitted$data                                      <- dipep_extract_binary(df      = biomarker.excl.anti.coag$bnp.cat$fitted$data,
+                                                                                                   outcome = 'bnp.cat')
+biomarker.excl.anti.coag$mrproanp.cat$fitted$data                                 <- dipep_extract_binary(df      = biomarker.excl.anti.coag$mrproanp.cat$fitted$data,
+                                                                                                   outcome = 'mrproanp.cat')
+biomarker.excl.anti.coag$d.dimer.cat$fitted$data                                  <- dipep_extract_binary(df      = biomarker.excl.anti.coag$d.dimer.cat$fitted$data,
+                                                                                                          outcome = 'd.dimer.cat')
+names(biomarker.excl.anti.coag$d.dimer.cat$fitted$data) <- gsub('first.st', 'vte', names(biomarker.excl.anti.coag$d.dimer.cat$fitted$data))
+biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data,
+                                                                                                          outcome = 'd.dimer.gestation.cat')
+names(biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data) <- gsub('first.st', 'vte', names(biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data))
+biomarker.excl.anti.coag$crp.cat$fitted$data                                      <- dipep_extract_binary(df      = biomarker.excl.anti.coag$crp.cat$fitted$data,
+                                                                                                   outcome = 'crp.cat')
+biomarker.excl.anti.coag$predicted.existing <- rbind(biomarker.excl.anti.coag$aptt.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$clauss.fibrinogen.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$ddimer.innovance.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$ddimer.elisa.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$thrombin.generation.endogenous.potential.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$thrombin.generation.peak.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$thrombin.generation.time.to.peak.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$plasmin.antiplasmin.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$prothrombin.fragments.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$tissue.factor.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$troponin.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$bnp.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$mrproanp.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$d.dimer.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data,
+                                                     biomarker.excl.anti.coag$crp.cat$fitted$data) %>%
+                               mutate(D = vte,
+                                      M = case_when(.$predictor == 'Normal' ~ 0,
+                                                    .$predictor == 'Abnormal'    ~ 1),
+                                      term = case_when(.$name == 'aptt.cat' ~ 'APTT : Dichotomised',
+                                                       .$name == 'clauss.fibrinogen.cat' ~ 'Clauss Fibrinogen : Dichotomised',
+                                                       .$name == 'ddimer.innovance.cat' ~ 'D-Dimer (Innovance) : Dichotomised',
+                                                       .$name == 'ddimer.elisa.cat' ~ 'D-Dimer (ELISA) : Dichotomised',
+                                                       .$name == 'thrombin.generation.lag.time.cat' ~ 'Thrombin Generation (Lag Time) : Dichotomised',
+                                                       .$name == 'thrombin.generation.endogenous.potential.cat' ~ 'Thrombin Generation (Endogenous Potential) : Dichotomised',
+                                                       .$name == 'thrombin.generation.peak.cat' ~ 'Thrombin Generation (Peak) : Dichotomised',
+                                                       .$name == 'thrombin.generation.time.to.peak.cat' ~ 'Thrombin Generation (Time to Peak) : Dichotomised',
+                                                       .$name == 'plasmin.antiplasmin.cat' ~ 'Plasmin-antiplasmin : Dichotomised',
+                                                       .$name == 'prothrombin.fragments.cat' ~ 'Prothombin (Time) : Dichotomised',
+                                                       .$name == 'tissue.factor.cat' ~ 'Tissue Factor : Dichotomised',
+                                                       .$name == 'troponin.cat' ~ 'Troponin : Dichotomised',
+                                                       .$name == 'bnp.cat' ~ 'BNP : Dichotomised',
+                                                       .$name == 'mrproanp.cat' ~ 'MRproANP : Dichotomised',
+                                                       .$name == 'd.dimer.cat' ~ 'D-Dimer (Hospital) : Dichotomised',
+                                                       .$name == 'd.dimer.gestation.cat' ~ 'D-Dimer (Hospital) : Dichotomised (Gestation Specific)',
+                                                       .$name == 'crp.cat' ~ 'C-Reactive Protein : Dichotomised')) %>%
+                              dplyr::select(D, predictor, M, name, term)
 
 ```
