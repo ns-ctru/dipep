@@ -62,8 +62,10 @@ read_dipep <- function(file            = 'Lookups.csv',
             if(subset(dictionary, field == x) %>% nrow() > 0){
                 new[[x]] <- factor(new[[x]],
                                    levels = c(subset(dictionary,
+                                                     form  == file &
                                                      field == x))$code,
                                    labels = c(subset(dictionary,
+                                                     form  == file &
                                                      field == x))$label)
             }
         }
