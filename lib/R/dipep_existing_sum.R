@@ -15,7 +15,7 @@
 #'
 #' @export
 dipep_existing_sum <- function(df      = dipep,
-                               title   = 'Simplified Geneva',
+                               title   = 'Geneva',
                                exclude = NULL,
                                exclude.non.recruited = TRUE,
                                exclude.dvt       = TRUE,
@@ -213,7 +213,7 @@ dipep_existing_sum <- function(df      = dipep,
         title <- 'Wells (Strict)'
     }
     else if(grepl('simplified', vars)){
-        title <- 'Simplified Revised Geneva'
+        title <- 'Revised Geneva'
     }
     else if(grepl('delphi\\.primary', vars)){
         title <- 'Delphi (Primary)'
