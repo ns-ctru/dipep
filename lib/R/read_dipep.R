@@ -111,6 +111,19 @@ read_dipep <- function(file            = 'Lookups.csv',
         for(x in colnames(new)){
             ## ...but only if the variable is in the dictionary
             if(subset(dictionary, field == x) %>% nrow() > 0){
+                ## Now need to pull out the form name from the full filename if its one of the following
+                if(file == 'Case Review 1.csv')                 file <- 'Case Review 1'
+                if(file == 'Case Review 1 - Investigation.csv') file <- 'Case Review 1'
+                if(file == 'Case Review 2.csv')                 file <- 'Case Review 2'
+                if(file == 'Case Review 2 - Investigation.csv') file <- 'Case Review 2'
+                if(file == 'Case Review 3.csv')                 file <- 'Case Review 3'
+                if(file == 'Investigations - Investigation.csv') file <- 'Investigations'
+                if(file == 'Medical History - Medical problems.csv') file <- 'Medical History'
+                if(file == 'Medical History - Thrombophilia.csv') file <- 'Thrombophilia'
+                if(file == 'Previous pregnancies - Previous pregnancy problems.csv') file <- 'Previous pregnancies'
+                if(file == 'This Pregnancy continued - Problems during this pregnancy.csv') file <- 'This Pregnancy continued'
+                if(file == 'This Pregnancy continued - Immobility.csv') file <- 'This Pregnancy continued'
+                if(file == 'This Pregnancy continued - Long-haul travel.csv') file <- 'This Pregnancy continued'
                 new[[x]] <- factor(new[[x]],
                                    levels = c(subset(dictionary,
                                                      form  == gsub('\\.csv', '', file) &
