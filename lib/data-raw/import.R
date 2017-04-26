@@ -1509,7 +1509,6 @@ dipep <- dipep %>%
                                            yes = 'Postpartum',
                                            no  = 'Pregnant')),
            gestation = 280 - (ymd(edd) - ymd(event.date)))
-
 dipep <- dipep %>%
     mutate(bmi = weight / (height / 100)^2,
            age = year(event.date) - year.of.birth,
@@ -1762,6 +1761,8 @@ dipep <- dipep %>%
                                   yes = 'No',
                                   no  = as.character(medical.probs))
            )
+
+###### HERE
 ## Ensure everything is a factor
 dipep <- mutate(dipep,
                 bmi.cat = factor(bmi.cat,
@@ -1800,7 +1801,7 @@ dipep <- mutate(dipep,
                                      levels = c(0, 1),
                                      labels = c('No Hyperemesis', 'Hyperemesis')),
                 stillborn = factor(stillborn,
-                                   labels = c('No', 'Yes')),
+                                   levels = c('No', 'Yes')),
                 smoking.cat = factor(smoking.cat,
                                  levels = c(0, 1),
                                  labels = c('Non-smoker', 'Smoker')),
@@ -1867,6 +1868,7 @@ dipep <- mutate(dipep,
                 injury                             = factor(injury),
                 travel                             = factor(travel),
                 immobil                            = factor(immobil))
+
 ## Gestation specific categorisation (bloody confusing and seem to be derived
 ## somewhat arbitrarily without reference to DOI: 10.1111/1471-0528.12855)
 dipep <- dipep %>%
