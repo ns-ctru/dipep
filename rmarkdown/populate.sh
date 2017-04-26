@@ -40,6 +40,8 @@ sed 's/first\.st/second.st/g' sections/subsections/existing/delphi_specificity.R
 ## Logistic Regression
 sed 's/first\.st/second\.st/g' sections/subsections/results_logistic.Rmd > secondary/sections/subsections/results_logistic.Rmd
 ## Biomarkers
+sed -e "s/classification = 'first\.st/classification = 'second\.st/g" sections/subsections/biomarkers/prep.Rmd \
+    -e 's/D = first\.st/D = second\.st/g'> secondary/sections/subsections/biomarkers/prep.Rmd
 sed 's/first\.st/second\.st/g' sections/subsections/biomarkers/biomarker_summary_all.Rmd > secondary/sections/subsections/biomarkers/biomarker_summary_all.Rmd
 sed 's/first\.st/second\.st/g' sections/subsections/biomarkers/biomarker_summary_excl_anti_coag.Rmd > secondary/sections/subsections/biomarkers/biomarker_summary_excl_anti_coag.Rmd
 sed 's/first\.st/second\.st/g' sections/subsections/biomarkers/biomarker_logistic_all.Rmd > secondary/sections/subsections/biomarkers/biomarker_logistic_all.Rmd
@@ -82,6 +84,8 @@ sed 's/first\.st/third.st/g' sections/subsections/existing/delphi_specificity.Rm
 ## Logistic Regression
 sed 's/first\.st/third\.st/g' sections/subsections/results_logistic.Rmd > tertiary/sections/subsections/results_logistic.Rmd
 ## Biomarkers
+sed -e "s/classification = 'first\.st/classification = 'third\.st/g" sections/subsections/biomarkers/prep.Rmd \
+    -e 's/D = first\.st/D = third\.st/g' > tertiary/sections/subsections/biomarkers/prep.Rmd
 sed 's/first\.st/third\.st/g' sections/subsections/biomarkers/biomarker_summary_all.Rmd > tertiary/sections/subsections/biomarkers/biomarker_summary_all.Rmd
 sed 's/first\.st/third\.st/g' sections/subsections/biomarkers/biomarker_summary_excl_anti_coag.Rmd > tertiary/sections/subsections/biomarkers/biomarker_summary_excl_anti_coag.Rmd
 sed 's/first\.st/third\.st/g' sections/subsections/biomarkers/biomarker_logistic_all.Rmd > tertiary/sections/subsections/biomarkers/biomarker_logistic_all.Rmd
@@ -124,6 +128,8 @@ sed 's/first\.st/fourth.st/g' sections/subsections/existing/delphi_specificity.R
 ## Logistic Regression
 sed 's/first\.st/fourth\.st/g' sections/subsections/results_logistic.Rmd > quaternary/sections/subsections/results_logistic.Rmd
 ## Biomarkers
+sed -e "s/classification = 'first\.st/classification = 'fourth\.st/g" sections/subsections/biomarkers/prep.Rmd \
+    -e 's/D = first\.st/D = fourth\.st/g' > quaternary/sections/subsections/biomarkers/prep.Rmd
 sed 's/first\.st/fourth\.st/g' sections/subsections/biomarkers/biomarker_summary_all.Rmd > quaternary/sections/subsections/biomarkers/biomarker_summary_all.Rmd
 sed 's/first\.st/fourth\.st/g' sections/subsections/biomarkers/biomarker_summary_excl_anti_coag.Rmd > quaternary/sections/subsections/biomarkers/biomarker_summary_excl_anti_coag.Rmd
 sed 's/first\.st/fourth\.st/g' sections/subsections/biomarkers/biomarker_logistic_all.Rmd > quaternary/sections/subsections/biomarkers/biomarker_logistic_all.Rmd
