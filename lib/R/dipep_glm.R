@@ -95,17 +95,17 @@ dipep_glm <- function(df              = .data,
     else if(classification == 'secondary.dm'){
         df <- dplyr::filter(df, !is.na(secondary.dm))
     }
-    else if(classification == 'first.vte.st'){
-        df <- dplyr::filter(df, !is.na(first.vte.st))
+    else if(classification == 'first.st.vte'){
+        df <- dplyr::filter(df, !is.na(first.st.vte))
     }
-    else if(classification == 'second.vte.st'){
-        df <- dplyr::filter(df, !is.na(second.vte.st))
+    else if(classification == 'second.st.vte'){
+        df <- dplyr::filter(df, !is.na(second.st.vte))
     }
-    else if(classification == 'third.vte.st'){
-        df <- dplyr::filter(df, !is.na(third.vte.st))
+    else if(classification == 'third.st.vte'){
+        df <- dplyr::filter(df, !is.na(third.st.vte))
     }
-    else if(classification == 'fourth.vte.st'){
-        df <- dplyr::filter(df, !is.na(fourth.vte.st))
+    else if(classification == 'fourth.st.vte'){
+        df <- dplyr::filter(df, !is.na(fourth.st.vte))
     }
     ## Remove biomarker data for those on anticoagulents
     if(exclude.anti.coag == TRUE){
@@ -158,7 +158,7 @@ dipep_glm <- function(df              = .data,
                                                no  = levels)
                             ) %>%
      dplyr::filter(levels != 'Missing')
-    if(classification != 'vte'){
+    if(!(classification %in% c('first.st.vte', 'second.st.vte', 'third.st.vte', 'fourth.st.vte'))){
         results$table <- results$table[c('predictor', 'levels', 'No PE', 'PE')]
     }
     else{
