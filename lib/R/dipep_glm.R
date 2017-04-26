@@ -95,8 +95,17 @@ dipep_glm <- function(df              = .data,
     else if(classification == 'secondary.dm'){
         df <- dplyr::filter(df, !is.na(secondary.dm))
     }
-    else if(classification == 'vte'){
-        df <- dplyr::filter(df, !is.na(vte))
+    else if(classification == 'first.vte.st'){
+        df <- dplyr::filter(df, !is.na(first.vte.st))
+    }
+    else if(classification == 'second.vte.st'){
+        df <- dplyr::filter(df, !is.na(second.vte.st))
+    }
+    else if(classification == 'third.vte.st'){
+        df <- dplyr::filter(df, !is.na(third.vte.st))
+    }
+    else if(classification == 'fourth.vte.st'){
+        df <- dplyr::filter(df, !is.na(fourth.vte.st))
     }
     ## Remove biomarker data for those on anticoagulents
     if(exclude.anti.coag == TRUE){
@@ -405,9 +414,9 @@ dipep_glm <- function(df              = .data,
                                 .$term == 'mrproanp.catNormal' ~ 'MRProANP : Normal',
                                 .$term == 'mrproanp.catAbnormal' ~ 'MRProANP : Abnormal',
                                 .$term == 'mrproanp' ~ 'MRProANP',
-                                .$term == 'crp.catNormal' ~ 'Crp : Normal',
-                                .$term == 'crp.catAbnormal' ~ 'Crp : Abnormal',
-                                .$term == 'crp' ~ 'Crp',
+                                .$term == 'crp.catNormal' ~ 'C-Reactive Protein : Normal',
+                                .$term == 'crp.catAbnormal' ~ 'C-Reactive Protein : Abnormal',
+                                .$term == 'crp' ~ 'C-Reactive Protein',
                                 .$term == '\\.cat' ~ ''))
     ## Get the predicted response out
     results$augmented <- broom::augment(results$fitted, type.predict = 'response')
