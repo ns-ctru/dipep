@@ -49,12 +49,22 @@ read_dipep <- function(file            = 'Lookups.csv',
                       field = ifelse(form == 'Case Review 1',
                                      yes = paste0("cr1.", field),
                                      no  = field),
+                      field = ifelse(field %in% c('cr1.primary.class', 'cr1.secondary.class', 'cr1.img.class', 'cr1.trt.class', 'cr1.fup.class'),
+                                     yes = gsub('cr1\\.', '', field),
+                                     no  = field),
                       field = ifelse(form == 'Case Review 2',
                                      yes = paste0("cr2.", field),
                                      no  = field),
+                      field = ifelse(field %in% c('cr2.primary.class', 'cr2.secondary.class', 'cr2.img.class', 'cr2.trt.class', 'cr2.fup.class'),
+                                     yes = gsub('cr2\\.', '', field),
+                                     no  = field),
                       field = ifelse(form == 'Case Review 3',
                                      yes = paste0("cr3.", field),
+                                     no  = field),
+                      field = ifelse(field %in% c('cr3.primary.class', 'cr3.secondary.class', 'cr3.img.class', 'cr3.trt.class', 'cr3.fup.class'),
+                                     yes = gsub('cr3\\.', '', field),
                                      no  = field))
+
     }
     ## 2017-04-26 - Following on if we are reading the case reviews we need to rename the fields
     keep.same.names <- c('screening',
