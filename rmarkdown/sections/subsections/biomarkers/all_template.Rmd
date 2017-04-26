@@ -16,11 +16,12 @@ to.plot$scatter
 dplyr::filter(summary.biomarkers.all$vte, Measurement == 'MEASUREMENT') %>%
     dplyr::select(-Measurement) %>%
         kable(caption = "Summary of TEMPLATE by Primary Classification")
-t <- table(dipep$first.st, dipep$template) %>%
+## TAB1
+table(dipep$first.st.vte, dipep$template.cat) %>%
      kable(caption = 'PE Status v TEMPLATE dichotomisation')
 ## Group DVT with PE and plot as VTE v's gestation
-dplyr::filter(dipep, !is.na(vte)) %>%
-ggplot(aes(x = gestation, y = template, colour = vte)) +
+dplyr::filter(dipep, !is.na(first.st.vte)) %>%
+ggplot(aes(x = gestation, y = template, colour = first.st.vte)) +
     geom_point() +
     geom_smooth(method = 'loess') +
     xlab('Gestation (days)') + ylab('TEMPLATE') +
@@ -28,7 +29,9 @@ ggplot(aes(x = gestation, y = template, colour = vte)) +
     ggtitle('TEMPLATE v Gestation') +
     labs(colour = 'VTE Status')
 ## Regression results
-biomarker.all$template$fitted %>% summary()
 biomarker.all$template$roc
+biomarker.all$template$fitted %>% summary()
+## CAT2
+## CAT
 
 ```
