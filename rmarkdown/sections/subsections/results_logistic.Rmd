@@ -300,7 +300,7 @@ logistic$surgery <- dipep_glm(df = dipep,
                     exclude.dvt = TRUE,
                     exclude.non.recruited = TRUE,
                     exclude.missing       = FALSE)
-## Surgery
+## Cesarean
 logistic$cesarean <- dipep_glm(df = dipep,
                               classification = 'first.st',
                               predictor = 'cesarean',
@@ -865,9 +865,11 @@ to.sum.existing <- dplyr::filter(existing$cross.tab, predictor %in% c('Delphi : 
 to.sum.ddimer.all <- rbind(biomarker.all$d.dimer.cat$table,
                            biomarker.all$d.dimer.gestation.cat$table) %>%
                      mutate(predictor = paste0(predictor, ' - All'))
+names(to.sum.ddimer.all) <- gsub('VTE', 'PE', names(to.sum.ddimer.all))
 to.sum.ddimer.excl.anti.coag <- rbind(biomarker.excl.anti.coag$d.dimer.cat$table,
                                       biomarker.excl.anti.coag$d.dimer.gestation.cat$table) %>%
-                     mutate(predictor = paste0(predictor, ' - Excluding those on Anti-Coagualnts'))
+                     mutate(predictor = paste0(predictor, ' - Excluding those on Anti-Coagulants'))
+names(to.sum.ddimer.excl.anti.coag) <- gsub('VTE', 'PE', names(to.sum.ddimer.excl.anti.coag))
 to.tab <- rbind(to.sum,
                 to.sum.existing,
                 to.sum.ddimer.all,
