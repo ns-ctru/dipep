@@ -67,7 +67,7 @@ existing$simplified.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.age <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'simplified.age',
@@ -75,7 +75,7 @@ existing$simplified.age <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.prev.dvt.pe <- mutate(dipep,
                                           simplified.prev.dt.pe = ifelse(simplified.prev.dvt.pe == 3,
                                                                          yes = 1,
@@ -87,7 +87,7 @@ existing$simplified.prev.dvt.pe <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.surgery <- mutate(dipep,
                                           simplified.surgery = ifelse(simplified.surgery == 3,
                                                                          yes = 1,
@@ -99,7 +99,7 @@ existing$simplified.surgery <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.neoplasm <- mutate(dipep,
                                        simplified.neoplasm = ifelse(simplified.neoplasm == 2,
                                                            yes = 1,
@@ -111,7 +111,7 @@ existing$simplified.neoplasm <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.lower.limb.unilateral.pain <- mutate(dipep,
                                                          simplified.lower.limb.unilateral.pain = ifelse(simplified.lower.limb.unilateral.pain == 3,
                                                                          yes = 1,
@@ -123,7 +123,7 @@ existing$simplified.lower.limb.unilateral.pain <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.haemoptysis <- mutate(dipep,
                                           simplified.haemoptysis = ifelse(simplified.haemoptysis == 2,
                                                                           yes = 1,
@@ -135,7 +135,7 @@ existing$simplified.haemoptysis <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.heart.rate <- mutate(dipep,
                                        simplified.heart.rate = ifelse(simplified.heart.rate == 5,
                                                                       yes = 1,
@@ -147,7 +147,7 @@ existing$simplified.heart.rate <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$simplified.pain.palpitations <- mutate(dipep,
                                                 simplified.pain.palpitations = ifelse(simplified.pain.palpitations == 5,
                                                                                       yes = 1,
@@ -159,7 +159,7 @@ existing$simplified.pain.palpitations <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.pe',
@@ -167,7 +167,7 @@ existing$perc.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.age <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.age',
@@ -175,7 +175,7 @@ existing$perc.age <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.heart.rate <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.heart.rate',
@@ -183,7 +183,7 @@ existing$perc.heart.rate <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.o2 <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.o2',
@@ -191,7 +191,7 @@ existing$perc.o2 <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.prev.dvt.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.prev.dvt.pe',
@@ -199,7 +199,7 @@ existing$perc.prev.dvt.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.surgery <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.surgery',
@@ -207,7 +207,7 @@ existing$perc.surgery <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.haemoptysis <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.haemoptysis',
@@ -215,7 +215,7 @@ existing$perc.haemoptysis <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.hormone <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.hormone',
@@ -223,7 +223,7 @@ existing$perc.hormone <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$perc.leg.swelling <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'perc.leg.swelling',
@@ -231,7 +231,7 @@ existing$perc.leg.swelling <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.permissive.pe <-  dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'wells.permissive.pe',
@@ -239,7 +239,7 @@ existing$wells.permissive.pe <-  dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.strict.pe <-  dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'wells.strict.pe',
@@ -247,7 +247,7 @@ existing$wells.strict.pe <-  dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.dvt <- mutate(dipep,
                              wells.dvt = ifelse(wells.dvt == 3,
                                                 yes = 1,
@@ -259,7 +259,7 @@ existing$wells.dvt <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.alternative.permissive <- mutate(dipep,
                                                 wells.alternative.permissive = ifelse(wells.alternative.permissive == 3,
                                                                    yes = 1,
@@ -271,7 +271,7 @@ existing$wells.alternative.permissive <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.alternative.strict <- mutate(dipep,
                                                 wells.alternative.strict = ifelse(wells.alternative.strict == 3,
                                                                    yes = 1,
@@ -283,7 +283,7 @@ existing$wells.alternative.strict <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.heart.rate <- mutate(dipep,
                                     wells.heart.rate = ifelse(wells.heart.rate == 1.5,
                                                               yes = 1,
@@ -295,7 +295,7 @@ existing$wells.heart.rate <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.surgery.immobil <- mutate(dipep,
                                          wells.surgery.immobil = ifelse(wells.surgery.immobil == 1.5,
                                                                         yes = 1,
@@ -307,7 +307,7 @@ existing$wells.surgery.immobil <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.dvt.pe <- mutate(dipep,
                                 wells.dvt.pe = ifelse(wells.dvt.pe == 1.5,
                                                       yes = 1,
@@ -319,7 +319,7 @@ existing$wells.dvt.pe <- mutate(dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.haemoptysis <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'wells.haemoptysis',
@@ -327,7 +327,7 @@ existing$wells.haemoptysis <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$wells.neoplasm <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'wells.neoplasm',
@@ -335,7 +335,7 @@ existing$wells.neoplasm <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.primary.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.primary.pe',
@@ -343,7 +343,7 @@ existing$delphi.primary.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.sensitivity.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.sensitivity.pe',
@@ -351,7 +351,7 @@ existing$delphi.sensitivity.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.specificity.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.specificity.pe',
@@ -359,7 +359,7 @@ existing$delphi.specificity.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.haemoptysis <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.haemoptysis',
@@ -367,7 +367,7 @@ existing$delphi.haemoptysis <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.pleuritic <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.pleuritic',
@@ -375,7 +375,7 @@ existing$delphi.pleuritic <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.history.dvt.pe <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.history.dvt.pe',
@@ -383,7 +383,7 @@ existing$delphi.history.dvt.pe <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.family.history <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.family.history',
@@ -391,7 +391,7 @@ existing$delphi.family.history <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.medical.history <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.medical.history',
@@ -399,7 +399,7 @@ existing$delphi.medical.history <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.medical.history.surgery <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.medical.history.surgery',
@@ -407,7 +407,7 @@ existing$delphi.medical.history.surgery <- dipep_glm(df                    = dip
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.obstetric.complication <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.obstetric.complication',
@@ -415,7 +415,7 @@ existing$delphi.obstetric.complication <- dipep_glm(df                    = dipe
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.medical.complication <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.medical.complication',
@@ -423,7 +423,7 @@ existing$delphi.medical.complication <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.gestation <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.gestation',
@@ -431,7 +431,7 @@ existing$delphi.gestation <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.bmi <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.bmi',
@@ -439,7 +439,7 @@ existing$delphi.bmi <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.dvt <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.dvt',
@@ -447,7 +447,7 @@ existing$delphi.dvt <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.o2.saturation <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.o2.saturation',
@@ -455,7 +455,7 @@ existing$delphi.o2.saturation <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.heart.rate <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.heart.rate',
@@ -463,7 +463,7 @@ existing$delphi.heart.rate <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 existing$delphi.respiratory.rate <- dipep_glm(df                    = dipep,
                                      classification        = 'first.st',
                                      predictor             = 'delphi.respiratory.rate',
@@ -471,7 +471,7 @@ existing$delphi.respiratory.rate <- dipep_glm(df                    = dipep,
                                      exclude               = NULL,
                                      exclude.dvt           = TRUE,
                                      exclude.non.recruited = TRUE,
-                                     exclude.missing       = FALSE)
+                                     exclude.missing       = TRUE)
 
 ## Combine all thre sets of tidied output from each model
 existing$tidied <- rbind(existing$simplified.pe$tidied,
@@ -658,41 +658,20 @@ existing$cross.tab <- rbind(existing$simplified.pe$table,
 ## for summarisation using dipep_roc(), required since the $predicted for each
 ## model has probabilities and dipep_roc() takes these and uses a supplied
 ## threshold derives sensitivity and specificity
-names(existing$simplified.pe$fitted$data)           <- gsub('simplified.pe',
-                                                         'predictor',
-                                                         names(existing$simplified.pe$fitted$data))
-existing$simplified.pe$fitted$data$name             <- 'simplified.pe'
-existing$simplified.pe$fitted$data$predictor         <- as.character(existing$simplified.pe$fitted$data$predictor)
-names(existing$perc.pe$fitted$data)                 <- gsub('perc.pe',
-                                                         'predictor',
-                                                         names(existing$perc.pe$fitted$data))
-existing$perc.pe$fitted$data$name                   <- 'perc.pe'
-existing$perc.pe$fitted$data$predictor               <- as.character(existing$perc.pe$fitted$data$predictor)
-names(existing$wells.permissive.pe$fitted$data)     <- gsub('wells.permissive.pe',
-                                                         'predictor',
-                                                         names(existing$wells.permissive.pe$fitted$data))
-existing$wells.permissive.pe$fitted$data$name       <- 'wells.permissive.pe'
-existing$wells.permissive.pe$fitted$data$predictor   <- as.character(existing$wells.permissive.pe$fitted$data$predictor)
-names(existing$wells.strict.pe$fitted$data)         <- gsub('wells.strict.pe',
-                                                         'predictor',
-                                                         names(existing$wells.strict.pe$fitted$data))
-existing$wells.strict.pe$fitted$data$name           <- 'wells.strict.pe'
-existing$wells.strict.pe$fitted$data$predictor       <- as.character(existing$wells.strict.pe$fitted$data$predictor)
-names(existing$delphi.primary.pe$fitted$data)       <- gsub('delphi.primary.pe',
-                                                            'predictor',
-                                                            names(existing$delphi.primary.pe$fitted$data))
-existing$delphi.primary.pe$fitted$data$name         <- 'delphi.primary.pe'
-existing$delphi.primary.pe$fitted$data$predictor     <- as.character(existing$delphi.primary.pe$fitted$data$predictor)
-names(existing$delphi.sensitivity.pe$fitted$data)   <- gsub('delphi.sensitivity.pe',
-                                                         'predictor',
-                                                         names(existing$delphi.sensitivity.pe$fitted$data))
-existing$delphi.sensitivity.pe$fitted$data$name     <- 'delphi.sensitivity.pe'
-existing$delphi.sensitivity.pe$fitted$data$predictor <- as.character(existing$delphi.sensitivity.pe$fitted$data$predictor)
-names(existing$delphi.specificity.pe$fitted$data)   <- gsub('delphi.specificity.pe',
-                                                         'predictor',
-                                                         names(existing$delphi.specificity.pe$fitted$data))
-existing$delphi.specificity.pe$fitted$data$name     <- 'delphi.specificity.pe'
-existing$delphi.specificity.pe$fitted$data$predictor <- as.character(existing$delphi.specificity.pe$fitted$data$predictor)
+existing$simplified.pe$fitted$data         <- dipep_extract_binary(df      = existing$simplified.pe$fitted$data,
+                                                                   outcome = 'simplified.pe')
+existing$perc.pe$fitted$data               <- dipep_extract_binary(df      = existing$perc.pe$fitted$data,
+                                                                   outcome = 'perc.pe')
+existing$wells.permissive.pe$fitted$data   <- dipep_extract_binary(df      = existing$wells.permissive.pe$fitted$data,
+                                                                   outcome = 'wells.permissive.pe')
+existing$wells.strict.pe$fitted$data       <- dipep_extract_binary(df      = existing$wells.strict.pe$fitted$data,
+                                                                   outcome = 'wells.strict.pe')
+existing$delphi.primary.pe$fitted$data     <- dipep_extract_binary(df      = existing$delphi.primary.pe$fitted$data,
+                                                                   outcome = 'delphi.primary.pe')
+existing$delphi.sensitivity.pe$fitted$data <- dipep_extract_binary(df      = existing$delphi.sensitivity.pe$fitted$data,
+                                                                   outcome = 'delphi.sensitivity.pe')
+existing$delphi.specificity.pe$fitted$data <- dipep_extract_binary(df      = existing$delphi.specificity.pe$fitted$data,
+                                                                   outcome = 'delphi.specificity.pe')
 
 
 existing$predicted.existing <- rbind(existing$simplified.pe$fitted$data,
