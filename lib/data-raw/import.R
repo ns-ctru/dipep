@@ -630,6 +630,7 @@ names(master$biomarker_tidy) <- gsub('tf', 'tissue.factor', names(master$biomark
 names(master$biomarker_tidy) <- gsub('troponin.1', 'troponin', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('nppb', 'bnp', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('mproanp', 'mrproanp', names(master$biomarker_tidy))
+names(master$biomarker_tidy) <- gsub('crp', 'crp', names(master$biomarker_tidy))
 ## 2017-03-30 - Dichotomise all biomarkers
 master$biomarker_tidy <- master$biomarker_tidy %>%
     mutate(prothombin.time.cat = ifelse(prothombin.time < 11.7 | prothombin.time > 15.9,
@@ -736,6 +737,13 @@ master$biomarker_tidy <- master$biomarker_tidy %>%
            mrproanp.cat = factor(mrproanp.cat,
                                  levels = c('Normal', 'Abnormal')),
            mrproanp.cat = relevel(mrproanp.cat,
+                                  ref = 'Normal'),
+           crp.cat = ifelse(crp < 0 | crp > 3104,
+                                 yes = 'Abnormal',
+                                 no  = 'Normal'),
+           crp.cat = factor(crp.cat,
+                                 levels = c('Normal', 'Abnormal')),
+           crp.cat = relevel(crp.cat,
                                   ref = 'Normal'))
 ## Remove extrenuous columns
 master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(sample, error.message, comments, key, x))
@@ -2659,7 +2667,7 @@ missing <- cbind(dipep$screening,
                  pregnancy.miss.n,
                  med.hist.miss.n) %>%
            as.data.frame()
-raw.missing <- cbind(raw.dipep$screening,
+raw.missing <- cbind(dipep$screening,
                      raw.physiology.miss.n,
                      raw.pregnancy.miss.n,
                      raw.med.hist.miss.n) %>%
@@ -2670,15 +2678,15 @@ missing <- mutate(missing,
                   physiology.miss.n = as.numeric(physiology.miss.n),
                   pregnancy.miss.n  = as.numeric(pregnancy.miss.n),
                   med.hist.miss.n   = as.numeric(med.hist.miss.n))
-raw.missing <- mutate(missing,
+raw.missing <- mutate(raw.missing,
                       raw.physiology.miss.n = as.numeric(raw.physiology.miss.n),
                       raw.pregnancy.miss.n  = as.numeric(raw.pregnancy.miss.n),
                       raw.med.hist.miss.n   = as.numeric(raw.med.hist.miss.n))
 rm(physiology.miss.n, pregnancy.miss.n, med.hist.miss.n)
 dipep <- left_join(dipep,
-                   missing) %>%
-         left_join(.,
-                   raw.missing)
+                   missing)
+dipep <- left_join(dipep,
+                   raw.missing) %>%
          mutate(physiology.exclude = ifelse(physiology.miss.n > 1,
                                             yes = TRUE,
                                             no  = FALSE),
@@ -2713,11 +2721,26 @@ dipep <- left_join(dipep,
 ## Derive a VTE indicator to analyse biomarkers                      ##
 #######################################################################
 dipep <- dipep %>%
-         mutate(vte = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'PE'    ~ 'VTE',
+         mutate(first.vte.st = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'PE'    ~ 'VTE',
                                 .$group %in% c('Suspected PE', 'Diagnoised PE') & .$first.st == 'No PE' ~ 'No VTE',
                                 .$group %in% c('Diagnosed DVT')                                         ~ 'VTE'),
-                vte = factor(vte,
-                             levels = c('No VTE', 'VTE')))
+                first.vte.st = factor(first.vte.st,
+                                      levels = c('No VTE', 'VTE')),
+                second.vte.st = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$second.st == 'PE'    ~ 'VTE',
+                                .$group %in% c('Suspected PE', 'Diagnoised PE') & .$second.st == 'No PE' ~ 'No VTE',
+                                .$group %in% c('Diagnosed DVT')                                         ~ 'VTE'),
+                second.vte.st = factor(second.vte.st,
+                                      levels = c('No VTE', 'VTE')),
+                third.vte.st = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$third.st == 'PE'    ~ 'VTE',
+                                .$group %in% c('Suspected PE', 'Diagnoised PE') & .$third.st == 'No PE' ~ 'No VTE',
+                                .$group %in% c('Diagnosed DVT')                                         ~ 'VTE'),
+                third.vte.st = factor(third.vte.st,
+                                      levels = c('No VTE', 'VTE')),
+                fourth.vte.st = case_when(.$group %in% c('Suspected PE', 'Diagnoised PE') & .$fourth.st == 'PE'    ~ 'VTE',
+                                .$group %in% c('Suspected PE', 'Diagnoised PE') & .$fourth.st == 'No PE' ~ 'No VTE',
+                                .$group %in% c('Diagnosed DVT')                                         ~ 'VTE'),
+                fourth.vte.st = factor(fourth.vte.st,
+                                      levels = c('No VTE', 'VTE')))
 
 #######################################################################
 ## Database Specification                                            ##
