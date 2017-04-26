@@ -15,6 +15,7 @@ existing.roc <- dipep_roc(existing$predicted.existing,
                                       'delphi.specificity.pe'),
                           threshold = 0.3,
                           title = 'Existing and Delphi Scores as Binary Classifiers')
+existing.roc$plot
 existing.roc$summary.stats %>%
     kable(caption = 'Summary Statistics for existing and Delphi scores as binary classification.')
 
