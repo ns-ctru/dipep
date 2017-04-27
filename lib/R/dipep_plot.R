@@ -65,7 +65,8 @@ dipep_plot <- function(df        = dipep,
     ## Subset variables
     df <- dplyr::select_(df, .dots = lazyeval::lazy_dots(...))
     ## Rename variables so that they are standardised and I don't have to mess
-    ## around with Standard Evaluation v's Non Standard Evaluation any more!
+    ## around with Standard Evaluation v's Non Standard Evaluation any more even
+    ## though I would benefit from doing so as its really, really useful to know/use
     names(df) <- gsub('group',                                    'class',   names(df))
     names(df) <- gsub('first.st',                                 'class',   names(df))
     names(df) <- gsub('second.st',                                'class',   names(df))
@@ -90,6 +91,7 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('troponin',                                 'to.plot', names(df))
     names(df) <- gsub('bnp',                                      'to.plot', names(df))
     names(df) <- gsub('mrproanp',                                 'to.plot', names(df))
+    names(df) <- gsub('crp',                                      'to.plot', names(df))
     names(df) <- gsub('age',                                      'to.plot', names(df))
     names(df) <- gsub('bmi',                                      'to.plot', names(df))
     names(df) <- gsub('height',                                   'to.plot', names(df))
@@ -101,6 +103,33 @@ dipep_plot <- function(df        = dipep,
     names(df) <- gsub('o2.saturation',                            'to.plot', names(df))
     names(df) <- gsub('gestation',                                'to.plot', names(df))
     names(df) <- gsub('temperature',                              'to.plot', names(df))
+    ## Capture what is being plotted and use it to set outcome specific thresholds for
+    ## plotting lines on the scatter plots and histograms
+    argument <- lazyeval::lazy_dots(...)[[2]]$expr
+    if(argument == 'age')                                           line <- 35
+    else if(argument == 'aptt')                                     line <- 52
+    else if(argument == 'bmi')                                      line <- 30
+    else if(argument == 'bnp')                                      line <- 523
+    else if(argument == 'bp.diastolic')                             line <- 50
+    else if(argument == 'bp.systolic')                              line <- 90
+    else if(argument == 'clauss.fibrinogen')                        line <- 4.11
+    else if(argument == 'crp')                                      line <- 3104
+    else if(argument == 'ddimer.innovance')                         line <- 1.13
+    else if(argument == 'ddimer.elisa')                             line <- 400
+    else if(argument == 'heart.rate')                               line <- 100
+    else if(argument == 'mrproanp')                                 line <- 954
+    else if(argument == 'o2.saturation')                            line <- 95
+    else if(argument == 'plasmin.antiplasmin')                      line <- 800
+    else if(argument == 'prothombin.time')                          line <- 15.9
+    else if(argument == 'prothrombin.fragments')                    line <- 1200
+    else if(argument == 'respiratory.rate')                         line <- 24
+    else if(argument == 'thrombin.generation.endogenous.potential') line <- 1533
+    else if(argument == 'thrombin.generation.lag.time')             line <- 3.4
+    else if(argument == 'thrombin.generation.time.to.peak')         line <- 7.7
+    else if(argument == 'thrombin.generation.peak')                 line <- 475
+    else if(argument == 'tissue.factor')                            line <- 300
+    else if(argument == 'troponin')                                 line <- 2.63
+    else if(argument == 'temperature')                              line <- 37.5
     ## Convert classification to character and replace NA with 'Exclude' so it aligns
     ## with others expectation of what to see.
     if(exclude.dvt == TRUE){
@@ -127,6 +156,7 @@ dipep_plot <- function(df        = dipep,
                          xlab(title.to.plot) + ylab('N') +
                          guides(fill = guide_legend(NULL)) +
                          theme(axis.text.x = element_text(angle = 90)) +
+                         geom_vline(xintercept = line) +
                          facet_wrap(~class, ncol = ncols) + theme_bw()
     ## Generate scater plot
     results$scatter <- ggplot(df, aes(x = class,
@@ -136,6 +166,7 @@ dipep_plot <- function(df        = dipep,
                        geom_point() + geom_jitter() +
                        guides(colour = guide_legend(NULL)) +
                        xlab(title.class) + ylab(title.to.plot) +
+                       geom_errorbar(ymin = line, ymax = line, linetype = 2) +
                        theme_bw()
     return(results)
 }
