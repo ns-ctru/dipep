@@ -156,8 +156,10 @@ dipep_plot <- function(df        = dipep,
                          xlab(title.to.plot) + ylab('N') +
                          guides(fill = guide_legend(NULL)) +
                          theme(axis.text.x = element_text(angle = 90)) +
-                         geom_vline(xintercept = line) +
                          facet_wrap(~class, ncol = ncols) + theme_bw()
+    if(!is.null(line)){
+        results$histogram <- results$histogram + geom_vline(xintercept = line)
+    }
     ## Generate scater plot
     results$scatter <- ggplot(df, aes(x = class,
                                       y = to.plot,
@@ -166,7 +168,9 @@ dipep_plot <- function(df        = dipep,
                        geom_point() + geom_jitter() +
                        guides(colour = guide_legend(NULL)) +
                        xlab(title.class) + ylab(title.to.plot) +
-                       geom_errorbar(ymin = line, ymax = line, linetype = 2) +
                        theme_bw()
+    if(!is.null(line)){
+        results$histogram <- results$histogram + geom_errorbar(ymin = line, ymax = line, linetype = 2)
+    }
     return(results)
 }
