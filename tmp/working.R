@@ -1,3 +1,285 @@
+## 2017-04-27 - Lines on scatter plots and histograms
+build()
+install()
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'APTT (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, height)
+to.plot$scatter
+
+
+## 2017-04-26 - Checking changes in numbers for VTE
+print('## Primary')
+table(dipep$group, dipep$first.st.vte, useNA = 'ifany')
+print('## Secondary')
+table(dipep$group, dipep$second.st.vte, useNA = 'ifany')
+print('## Tertiary')
+table(dipep$group, dipep$third.st.vte, useNA = 'ifany')
+print('## Quaternary')
+table(dipep$group, dipep$fourth.st.vte, useNA = 'ifany')
+print('## First v Second')
+table(dipep$first.st.vte, dipep$second.st.vte, useNA = 'ifany')
+print('## First v Third')
+table(dipep$first.st.vte, dipep$third.st.vte, useNA = 'ifany')
+print('## First v Fourth')
+table(dipep$first.st.vte, dipep$fourth.st.vte, useNA = 'ifany')
+print('## Number of individuals with hospital D-Dimer by group')
+t <- dplyr::filter(dipep, !is.na(d.dimer))
+table(t$group, t$first.st.vte, useNA = 'ifany')
+
+## 2017-04-23 - Checking existing scores analyses for Primary v Secondary, purportedly "the same"
+##              Nothing to see, this was down to not modifying 'first.st' in...
+##
+##              sections/subsections/existing/logistic.Rmd
+##
+##              from the script ~/rmarkdown/populate.sh.  Now corrected and scores are different.
+
+## 2017-04-23 - Checking biomarker analyses for Primary v Secondary, purportedly "the same", this could
+##              well be down to the fact that classification hasn't changed for the subset who have
+##              biomarkers
+print('## Primary')
+table(dipep$vte, dipep$first.st, useNA = 'ifany')
+print('## Secondary')
+table(dipep$vte, dipep$second.st, useNA = 'ifany')
+print('## Tertiary')
+table(dipep$vte, dipep$third.st, useNA = 'ifany')
+print('## Quaternary')
+table(dipep$vte, dipep$fourth.st, useNA = 'ifany')
+print('## First v Third')
+table(dipep$first.st, dipep$third.st, useNA = 'ifany')
+print('## First v Third by recruitment group')
+table(dipep$first.st, dipep$third.st, dipep$group, useNA = 'ifany')
+
+## 2017-04-12 dipep_roc() - getting correct T+ve/T-ve/F-ve/F+ve
+test <- dplyr::filter(logistic$predicted, name %in% c('age.cat', 'bmi.cat'))
+
+## 2017-04-11 dipep_roc() with d.dimer.cat/d.dimer.gestation.cat
+t <- dplyr::filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
+table(t$first.st, t$age.cat)
+t <- dplyr::filter(biomarker.all$predicted, name == 'd.dimer.cat')
+table(t$D, t$M)
+t <- dplyr::filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
+table(t$first.st, t$d.dimer.gestation.cat)
+t <- dplyr::filter(biomarker.all$predicted, name == 'd.dimer.gestation.cat')
+table(t$D, t$M)
+summary(t$M)
+t$M %>% as.factor() %>% levels() %>% length()
+## Ok, need to be more intelligent about categorised individuals and threshold classification
+## Have modified dipep_roc() now testing...
+testing <- dipep_roc(df = biomarker.all$predicted,
+                                       to.plot = c('d.dimer.cat',
+                                                   'd.dimer.gestation.cat'),
+                                       threshold = 0.3,
+                                       title = 'D-Dimer (Hospital) - All')
+
+
+## 2017-04-10 ROC Area Under the Curve CIs working, but has broken dipep_rpart()
+predictor <- c(categorical, common)
+rpart.categorical <- dipep_rpart(df             = dipep,
+                                 classification = classification,
+                                 predictor      = predictor,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 legend                = FALSE,
+                                 threshold             = 0.5,
+                                 rpart.opts.method     = 'class',
+                                 rpart.opts.minsplit   = 4,
+                                 rpart.opts.minbucket  = 2,
+                                 rpart.opts.cp         = -1)
+rpart.categorical$predicted
+rpart.categorical$rpart.full.cp
+dipep_roc(df = rpart.categorical$predicted,
+          to.plot = seq(1:nrow(rpart.categorical$rpart.full.cp)),
+          threshold = 0.3,
+          lasso     = TRUE)
+
+## 2017-04-10 ROC Area Under the Curve Confidence Intervals
+test <- dplyr::filter(logistic$predicted, name %in% c('trimester', 'temperature')) %>%
+        mutate(term = factor(term),
+               name = factor(name))
+test %>% group_by(name) %>% print() summarise(auc = roc(.$D ~ .$M))
+## Doesn't really work, uses all observations and doesn't do it by
+## name, why???
+tmp.roc <- with(test, by(test, name, function(x) roc(D ~ M)))
+tmp.ci  <- with(test, by(test, name, function(x) roc(D ~ M) %>% ci()))
+tmp.roc
+tmp.ci
+## Extracting values
+t <- tmp.ci %>%
+     unlist() %>%
+     as.data.frame()
+names(t) <- 'stat'
+t$t <- rownames(t)
+t <- t %>%
+     mutate(component = case_when(grepl('1', .$t) ~ 'auc_lci',
+                                  grepl('2', .$t) ~ 'auc',
+                                  grepl('3', .$t) ~ 'auc_uci'),
+            name      = substr(.$t, 1, nchar(.$t) - 1)) %>%
+     dplyr::select(-t)
+## Check both
+check <- dipep_roc(df      = test,
+                   to.plot = c('trimester', 'temperature'),
+                   title   = 'Testing derivation of AUC CI')
+## Trimester
+check.trimester <- dipep_roc(df      = test,
+                             to.plot = c('trimester', 'temperature'),
+                             title   = 'Testing derivation of AUC CI')
+check.trimester$auc
+check.trimester$auc.ci
+## ECG
+check.temperature <- dipep_roc(df      = test,
+                          to.plot = c('temperature'),
+                          title   = 'Testing derivation of AUC CI')
+check.temperature$auc
+check.temperature$auc.ci
+
+
+## 2017-04-10 Problems during this Pregnancy
+sink('problems_this_pregnancy.txt')
+print('Overall how many problems have I derived...')
+table(dipep$group, dipep$this.pregnancy.problems)
+print('Specify 1')
+table(dipep$this.preg.problem.specify_1, dipep$group)
+print('Specify 2')
+table(dipep$this.preg.problem.specify_2, dipep$group)
+print('Specify 3')
+table(dipep$this.preg.problem.specify_3, dipep$group)
+print('Specify 4')
+table(dipep$this.preg.problem.specify_4, dipep$group)
+print('Specify 5')
+table(dipep$this.preg.problem.specify_5, dipep$group)
+print('Other 1')
+table(dipep$this.preg.problem.other_1)
+print('Other 2')
+table(dipep$this.preg.problem.other_2)
+print('Other 3')
+table(dipep$this.preg.problem.other_3)
+print('Other 4')
+table(dipep$this.preg.problem.other_4)
+print('Other 5')
+table(dipep$this.preg.problem.other_5)
+sink()
+
+
+## 2017-04-04 Thromboprophylaxis
+table(master$thromboprophylaxis$group, master$thromboprophylaxis$thromboprophylaxis,useNA = 'ifany')
+## Run 'import.csv' to BEFORE conversion to factor
+table(dipep$group, dipep$thromboprophylaxis, useNA = 'ifany')
+
+## 2017-04-04 - Gestation specific d-dimer
+table(dipep$first.st, dipep$d.dimer.gestation.cat, useNA = 'ifany')
+table(dipep$first.st, dipep$d.dimer.cat, useNA = 'ifany')
+t <- dplyr::select(dipep, exclude.anti.coag == 'No')
+table(t$first.st, t$d.dimer.gestation.cat, useNA = 'ifany')
+table(t$first.st, t$d.dimer.cat, useNA = 'ifany')
+
+## 2017-04-04 - Gestation specific d-dimer
+test <- dipep %>%
+    mutate(d.dimer.gestation.cat = case_when(.$trimester == '1st Trimester' & (.$d.dimer < .$d.dimer.low | .$d.dimer > .$d.dimer.high) ~ 'Abnormal'
+                                             ## .$trimester == 1 & (.$d.dimer < (1.5 * .$d.dimer.low) | .$d.dimer > (1.5 * .$d.dimer.high)) ~ 'Abnormal',
+                                             ## .$trimester == 2 & (.$d.dimer < (2 * .$d.dimer.low) | .$d.dimer > (2 * .$d.dimer.high)) ~ 'Abnormal',
+                                             ## .$trimester == 3   & (.$d.dimer < (2 * .$d.dimer.low) | .$d.dimer > (2 * .$d.dimer.high)) ~ 'Abnormal'
+                                             ),
+           d.dimer.gestation.cat = ifelse(is.na(d.dimer.gestation.cat),
+                                          yes = 'Normal',
+                                          no  = d.dimer.gestation.cat)
+          )
+
+## 2017-04-04 - Checking neoplasm differences
+simplified.neoplasm <- mutate(dipep,
+                              simplified.neoplasm = ifelse(simplified.neoplasm == 2,
+                                                           yes = 1,
+                                                           no  = simplified.neoplasm)) %>%
+                       dipep_glm(classification        = 'first.st',
+                                 predictor             = 'simplified.neoplasm',
+                                 model                 = 'Geneva - Neoplasm',
+                                 exclude               = NULL,
+                                 exclude.dvt           = TRUE,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.missing       = FALSE)
+wells.neoplasm <- dipep_glm(df                    = dipep,
+                            classification        = 'first.st',
+                            predictor             = 'wells.neoplasm',
+                            model                 = 'Wells - Neoplasm',
+                            exclude               = NULL,
+                            exclude.dvt           = TRUE,
+                            exclude.non.recruited = TRUE,
+                            exclude.missing       = FALSE)
+
+## 2017-03-31 - Confidence Intervals for sensitivity/specificity
+build()
+install()
+test <- dipep_roc(df      = logistic$predicted,
+                            to.plot = c('age',
+                                        'bmi',
+                                        'o2.saturation',
+                                        'bp.diastolic',
+                                        'bp.systolic',
+                                        'temperature'),
+                            title   = 'Physiology (Continuous)')
+test$summary.stats
+names(test$ci)
+
+## 2017-03-30 = Deriving hyperemesis indicator
+## Those with hyperemesis requireing admission or detailed in other
+t1 <- dplyr::filter(master$pregnancy.problems, grepl('hyperemesis', this.preg.problem.other, ignore.case = TRUE) | this.preg.problem.specify == 'Hyperemesis requiring admission') %>% dplyr::select(screening, this.preg.problem.specify, this.preg.problem.other)
+## Those flagged as having Hyperemesis
+t2 <- dplyr::filter(dipep, hyperemesis == 1) %>% dplyr::select(screening, hyperemesis)
+check <- merge(t1, t2, by = 'screening', all = TRUE)
+
+## 2017-03-29 - Checking scores using old and new
+sink('~/work/dipep/tmp/check_scores_new.txt')
+## Simplified
+print('Simplified')
+table(dipep$simplified, dipep$group)
+## Wells Permissive
+print('Wells (Permissive)')
+table(dipep$wells.permissive, dipep$group)
+## Wells Strict
+print('Wells (Strict)')
+table(dipep$wells.strict, dipep$group)
+## PERC
+print('PERC')
+table(dipep$perc, dipep$group)
+## Delphi Primary
+print('Delphi Primary')
+table(dipep$delphi.primary, dipep$group)
+## Delphi Sensitivity
+print('Delphi Sensitivity')
+table(dipep$delphi.sensitivity, dipep$group)
+## Delphi Specificity
+print('Delphi Specificity')
+table(dipep$delphi.specificity, dipep$group)
+sink()
+
+## 2017-03-29 - Confidence Intervals for sensitivity and specificity
+t <- dplyr::filter(logistic$predicted, name == 'xray.pe') %>%
+     dplyr::select(D, M) ## %>%
+     ## mutate(M = ifelse(M > 0.380,
+     ##                   yes = 'PE',
+     ##                   no  = 'No PE'),
+     ##        M = factor(M))
+
+test <- ci.se(response = t$D, predictor = t$M, specificities = 0.8) %>% as.data.frame()
+
+## 2017-03-29 - Fixing dipep_roc()
+dplyr::filter(biomarker.all$predicted, name %in% c('clauss.fibrinogen',
+                                                 'plasmin.antiplasmin',
+                                                 'tissue.factor',
+                                                 'troponin',
+                                               'nppb')) %>%
+    ggplot(aes(d = D, m = M, colour = as.factor(term))) +
+    geom_roc() +
+    ggtitle('ROC curves for ') +
+    labs(colour = 'Step...') +
+    style_roc() + theme_bw()
+
 ## 2017-03-27 - Incorporating DVT with PE for 'vte' analyses of biomarkers
 dipep_glm(df = dipep,
                                            exclude.dvt           = FALSE,
