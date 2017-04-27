@@ -2742,7 +2742,7 @@ dipep <- dipep %>%
                                 .$group %in% c('Suspected PE', 'Diagnoised PE') & .$fourth.st == 'No PE' ~ 'No VTE',
                                 .$group %in% c('Diagnosed DVT')                                         ~ 'VTE'),
                 fourth.st.vte = factor(fourth.st.vte,
-                                      levels = c('No VTE', 'VTE')))
+                                       levels = c('No VTE', 'VTE')))
 
 #######################################################################
 ## Database Specification                                            ##
