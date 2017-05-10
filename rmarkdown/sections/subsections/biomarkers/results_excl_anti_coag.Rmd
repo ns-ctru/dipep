@@ -48,7 +48,7 @@ biomarker.excl.anti.coag$roc.ddimer <- dipep_roc(df      = biomarker.excl.anti.c
                                       to.plot = c('ddimer.innovance',
                                                   'ddimer.elisa'),
                                       title    = 'D-Dimer Biomarkers',
-                                      threshold = 0.1)
+                                      threshold = 0.01)
 biomarker.excl.anti.coag$roc.ddimer$plot
 biomarker.excl.anti.coag$roc.thrombin <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
                                         to.plot = c('aptt',
@@ -81,7 +81,7 @@ rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
 ```{r results_biomarker_logistic_excl_anti_coag_performance_cat, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 ## Combine the predicted probabilities based on laboratory reference range classification and
 ## generate ROC curves/summary Statistics
-dipep_roc(biomarker.excl.anti.coag$predicted,
+dipep_roc(biomarker.excl.anti.coag$predicted.existing,
           to.plot = c('aptt.cat',
                       'bnp.cat',
                       'clauss.fibrinogen.cat',
@@ -94,7 +94,7 @@ dipep_roc(biomarker.excl.anti.coag$predicted,
                       'prothombin.time.cat',
                       'prothrombin.fragments.cat',
                       'thrombin.generation.endogenous.potential.cat',
-                      ## 'thrombin.generation.lag.time.cat',
+                      'thrombin.generation.lag.time.cat',
                       'thrombin.generation.peak.cat',
                       'thrombin.generation.time.to.peak.cat',
                       'tissue.factor.cat',
@@ -103,6 +103,10 @@ dipep_roc(biomarker.excl.anti.coag$predicted,
           title    = 'Pre-categorised biomarkers (using reference thresholds) excluding those on anti-coagulents',
           threshold = threshold)$summary.stats %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE, excluding those on anti-coagulants'))
+
+summary.biomarkers.excl.anti.coag$first.st.vte %>%
+    kable(caption = 'Summary Statistics of biomarkers by VTE Status excluding individuals receiveing anti-coagulants.')
+
 ```
 
 ```{r child = 'excl_anti_coag_aptt.Rmd', eval = TRUE}
