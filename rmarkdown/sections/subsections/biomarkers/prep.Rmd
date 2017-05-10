@@ -210,7 +210,7 @@ biomarker.all$thrombin.generation.lag.time <- dipep_glm(df = dipep,
 ##                                                             classification = 'first.st.vte',
 ##                                                             predictor      = 'thrombin.generation.lag.time.cat',
 ##                                                             model          = 'Thrombin Generation (Lag Time) : Dichotomised')
-# Thombin Generation - Endogenous Potential
+# Thrombin Generation - Endogenous Potential
 biomarker.all$thrombin.generation.endogenous.potential <- dipep_glm(df = dipep,
                                                                 exclude.dvt           = FALSE,
                                                                 exclude.non.recruited = TRUE,
@@ -227,7 +227,7 @@ biomarker.all$thrombin.generation.endogenous.potential.cat <- dipep_glm(df = dip
                                                                         classification = 'first.st.vte',
                                                                         predictor      = 'thrombin.generation.endogenous.potential.cat',
                                                                         model          = 'Thrombin Generation (Endogenous Potential) : Dichotomised')
-# Thombin Generation - Peak
+# Thrombin Generation - Peak
 biomarker.all$thrombin.generation.peak <- dipep_glm(df = dipep,
                                                     exclude.dvt           = FALSE,
                                                     exclude.non.recruited = TRUE,
@@ -244,7 +244,7 @@ biomarker.all$thrombin.generation.peak.cat <- dipep_glm(df = dipep,
                                                         classification = 'first.st.vte',
                                                         predictor      = 'thrombin.generation.peak.cat',
                                                         model          = 'Thrombin Generation (Peak) : Dichotomised')
-# Thombin Generation - Time to Peak
+# Thrombin Generation - Time to Peak
 biomarker.all$thrombin.generation.time.to.peak <- dipep_glm(df = dipep,
                                                         exclude.dvt           = FALSE,
                                                         exclude.non.recruited = TRUE,
@@ -866,14 +866,14 @@ biomarker.excl.anti.coag$thrombin.generation.peak <- dipep_glm(df = dipep,
                                                                classification = 'first.st.vte',
                                                                predictor      = 'thrombin.generation.peak',
                                                                model          = 'Thrombin Generation (Peak)')
-biomarker.excl.anti.coag$thrombin.generation.peak.cat <- dipep_glm(df = dipep,
-                                                                   exclude.dvt           = FALSE,
-                                                                   exclude.non.recruited = TRUE,
-                                                                   exclude.anti.coag     = TRUE,
-                                                                   exclude.missing       = FALSE,
-                                                                   classification = 'first.st.vte',
-                                                                   predictor      = 'thrombin.generation.peak.cat',
-                                                                   model          = 'Thrombin Generation (Peak) : Dichotomised')
+## biomarker.excl.anti.coag$thrombin.generation.peak.cat <- dipep_glm(df = dipep,
+##                                                                    exclude.dvt           = FALSE,
+##                                                                    exclude.non.recruited = TRUE,
+##                                                                    exclude.anti.coag     = TRUE,
+##                                                                    exclude.missing       = FALSE,
+##                                                                    classification = 'first.st.vte',
+##                                                                    predictor      = 'thrombin.generation.peak.cat',
+##                                                                    model          = 'Thrombin Generation (Peak) : Dichotomised')
 # Thombin Generation - Time to Peak
 biomarker.excl.anti.coag$thrombin.generation.time.to.peak <- dipep_glm(df = dipep,
                                                                        exclude.dvt           = FALSE,
