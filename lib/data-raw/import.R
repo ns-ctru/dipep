@@ -2983,3 +2983,10 @@ names(dipep_) <- gsub('this_pregnancy_problems_', 'tpp_', names(dipep_))
 write_dta(dipep_, version = 14, path = 'stata/dipep.dta')
 write_dta(dipep.README.variables$dipep, version = 14, path = 'stata/dipep_description.dta')
 rm(dipep_)
+
+## Write a CSV for Dan Pollard
+write.table(dipep,
+            file      = 'dipep.csv',
+            row.names = FALSE,
+            col.names = TRUE,
+            sep       = ",")
