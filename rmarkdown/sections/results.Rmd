@@ -28,5 +28,18 @@
 ```{r child = 'subsections/results_logistic.Rmd', eval = TRUE}
 ```
 
-```{r child = 'subsections/results_eq5d5l.Rmd', eval = TRUE}
+```{r save_results, eval = TRUE}
+## Save the results so they can be used in the HTA report
+save(logistic,
+     existing,
+     lasso.continuous,
+     lasso.categorical,
+     rpart.continuous,
+     rpart.categorical,
+     summary.biomarkers.all,
+     biomarker.all,
+     summary.biomarkers.excl.anti.coag,
+     biomarker.excl.anti.coag,
+     file = '../data/dipep_results.RData')
+
 ```
