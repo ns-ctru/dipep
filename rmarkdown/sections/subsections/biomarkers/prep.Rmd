@@ -407,7 +407,6 @@ biomarker.all$crp.cat <- dipep_glm(df = dipep,
                                         classification = 'first.st.vte',
                                         predictor      = 'crp.cat',
                                         model          = 'C-Reactive Protein : Dichotomised')
-
 ## Combine all three sets of tidied output from each model
 biomarker.all$tidied <- rbind(biomarker.all$prothombin.time$tidied,
                               biomarker.all$aptt$tidied,
@@ -571,7 +570,9 @@ biomarker.all$thrombin.generation.peak.cat$fitted$data                 <- dipep_
 biomarker.all$thrombin.generation.time.to.peak.cat$fitted$data         <- dipep_extract_binary(df      = biomarker.all$thrombin.generation.time.to.peak.cat$fitted$data,
                                                                                                    outcome = 'thrombin.generation.time.to.peak.cat')
 biomarker.all$plasmin.antiplasmin.cat$fitted$data                      <- dipep_extract_binary(df      = biomarker.all$plasmin.antiplasmin.cat$fitted$data,
-                                                                                                   outcome = 'plasmin.antiplasmin.cat')
+                                                                                               outcome = 'plasmin.antiplasmin.cat')
+biomarker.all$prothombin.time.cat$fitted$data                    <- dipep_extract_binary(df      = biomarker.all$prothombin.time.cat$fitted$data,
+                                                                                                   outcome = 'prothombin.time.cat')
 biomarker.all$prothrombin.fragments.cat$fitted$data                    <- dipep_extract_binary(df      = biomarker.all$prothrombin.fragments.cat$fitted$data,
                                                                                                    outcome = 'prothrombin.fragments.cat')
 biomarker.all$tissue.factor.cat$fitted$data                            <- dipep_extract_binary(df      = biomarker.all$tissue.factor.cat$fitted$data,
@@ -1204,6 +1205,8 @@ biomarker.excl.anti.coag$thrombin.generation.time.to.peak.cat$fitted$data       
                                                                                                    outcome = 'thrombin.generation.time.to.peak.cat')
 biomarker.excl.anti.coag$plasmin.antiplasmin.cat$fitted$data                      <- dipep_extract_binary(df      = biomarker.excl.anti.coag$plasmin.antiplasmin.cat$fitted$data,
                                                                                                    outcome = 'plasmin.antiplasmin.cat')
+biomarker.excl.anti.coag$prothombin.time.cat$fitted$data                    <- dipep_extract_binary(df      = biomarker.excl.anti.coag$prothombin.time.cat$fitted$data,
+                                                                                                   outcome = 'prothombin.time.cat')
 biomarker.excl.anti.coag$prothrombin.fragments.cat$fitted$data                    <- dipep_extract_binary(df      = biomarker.excl.anti.coag$prothrombin.fragments.cat$fitted$data,
                                                                                                    outcome = 'prothrombin.fragments.cat')
 biomarker.excl.anti.coag$tissue.factor.cat$fitted$data                            <- dipep_extract_binary(df      = biomarker.excl.anti.coag$tissue.factor.cat$fitted$data,
