@@ -369,7 +369,7 @@ biomarker.all$d.dimer.cat <- dipep_glm(df = dipep,
                                     exclude.non.recruited = TRUE,
                                     exclude.anti.coag     = FALSE,
                                     exclude.missing       = FALSE,
-                                    classification = 'first.st.vte',
+                                    classification = 'first.st',
                                     predictor      = 'd.dimer.cat',
                                     model          = 'D-Dimer (Hospital) : Dichotomised')
 ## D-Dimer (Hospital) - Binary
@@ -378,7 +378,7 @@ biomarker.all$d.dimer.gestation.cat <- dipep_glm(df = dipep,
                                     exclude.non.recruited = TRUE,
                                     exclude.anti.coag     = FALSE,
                                     exclude.missing       = FALSE,
-                                    classification = 'first.st.vte',
+                                    classification = 'first.st',
                                     predictor      = 'd.dimer.gestation.cat',
                                     model          = 'D-Dimer (Hospital) : Dichotomised (Gestation Specific)')
 ## D-Dimer (Hospital) - Continuous
@@ -387,7 +387,7 @@ biomarker.all$d.dimer <- dipep_glm(df = dipep,
                                    exclude.non.recruited = TRUE,
                                    exclude.anti.coag     = FALSE,
                                    exclude.missing       = FALSE,
-                                   classification = 'first.st.vte',
+                                   classification = 'first.st',
                                    predictor      = 'd.dimer',
                                    model          = 'D-Dimer (Hospital) : Continuous')
 # Crp
@@ -584,8 +584,10 @@ biomarker.all$mrproanp.cat$fitted$data                                 <- dipep_
                                                                                                    outcome = 'mrproanp.cat')
 biomarker.all$d.dimer.cat$fitted$data                                  <- dipep_extract_binary(df      = biomarker.all$d.dimer.cat$fitted$data,
                                                                                                           outcome = 'd.dimer.cat')
+names(biomarker.all$d.dimer.cat$fitted$data) <- gsub('first.st', 'first.st.vte', names(biomarker.all$d.dimer.cat$fitted$data))
 biomarker.all$d.dimer.gestation.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.all$d.dimer.gestation.cat$fitted$data,
                                                                                                           outcome = 'd.dimer.gestation.cat')
+names(biomarker.all$d.dimer.gestation.cat$fitted$data) <- gsub('first.st', 'first.st.vte', names(biomarker.all$d.dimer.gestation.cat$fitted$data))
 biomarker.all$crp.cat$fitted$data                                      <- dipep_extract_binary(df      = biomarker.all$crp.cat$fitted$data,
                                                                                                    outcome = 'crp.cat')
 biomarker.all$predicted.existing <- rbind(biomarker.all$aptt.cat$fitted$data,
@@ -997,7 +999,7 @@ biomarker.excl.anti.coag$d.dimer.cat <- dipep_glm(df = dipep,
                                     exclude.non.recruited = TRUE,
                                     exclude.anti.coag     = TRUE,
                                     exclude.missing       = FALSE,
-                                    classification = 'first.st.vte',
+                                    classification = 'first.st',
                                     predictor      = 'd.dimer.cat',
                                     model          = 'D-Dimer (Hospital) : Dichotomised')
 ## D-Dimer (Hospital) - Continuous
@@ -1006,7 +1008,7 @@ biomarker.excl.anti.coag$d.dimer <- dipep_glm(df = dipep,
                                    exclude.non.recruited = TRUE,
                                    exclude.anti.coag     = TRUE,
                                    exclude.missing       = FALSE,
-                                   classification = 'first.st.vte',
+                                   classification = 'first.st',
                                    predictor      = 'd.dimer',
                                    model          = 'D-Dimer (Hospital) : Continuous')
 ## D-Dimer (Hospital) - Binary (Gestation)
@@ -1015,7 +1017,7 @@ biomarker.excl.anti.coag$d.dimer.gestation.cat <- dipep_glm(df = dipep,
                                     exclude.non.recruited = TRUE,
                                     exclude.anti.coag     = TRUE,
                                     exclude.missing       = FALSE,
-                                    classification = 'first.st.vte',
+                                    classification = 'first.st',
                                     predictor      = 'd.dimer.gestation.cat',
                                     model          = 'D-Dimer (Hospital) : Dichotomised (Gestation Specific)')
 # Crp
@@ -1184,7 +1186,7 @@ biomarker.excl.anti.coag$predicted <- rbind(biomarker.excl.anti.coag$prothombin.
 ## for summarisation using dipep_roc(), required since the $predicted for each
 ## model has probabilities and dipep_roc() takes these and uses a supplied
 ## threshold derives sensitivity and specificity
-biomarker.excl.anti.coag$aptt.cat$fitted$data                              <- dipep_extract_binary(df      = biomarker.excl.anti.coag$aptt.cat$fitted$data,
+biomarker.excl.anti.coag$aptt.cat$fitted$data                                     <- dipep_extract_binary(df      = biomarker.excl.anti.coag$aptt.cat$fitted$data,
                                                                                                    outcome = 'aptt.cat')
 biomarker.excl.anti.coag$clauss.fibrinogen.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.excl.anti.coag$clauss.fibrinogen.cat$fitted$data,
                                                                                                    outcome = 'clauss.fibrinogen.cat')
@@ -1212,8 +1214,10 @@ biomarker.excl.anti.coag$mrproanp.cat$fitted$data                               
                                                                                                    outcome = 'mrproanp.cat')
 biomarker.excl.anti.coag$d.dimer.cat$fitted$data                                  <- dipep_extract_binary(df      = biomarker.excl.anti.coag$d.dimer.cat$fitted$data,
                                                                                                           outcome = 'd.dimer.cat')
+names(biomarker.excl.anti.coag$d.dimer.cat$fitted$data) <- gsub('first.st', 'first.st.vte', names(biomarker.excl.anti.coag$d.dimer.cat$fitted$data))
 biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data                        <- dipep_extract_binary(df      = biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data,
                                                                                                           outcome = 'd.dimer.gestation.cat')
+names(biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data) <- gsub('first.st', 'first.st.vte', names(biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data))
 biomarker.excl.anti.coag$crp.cat$fitted$data                                      <- dipep_extract_binary(df      = biomarker.excl.anti.coag$crp.cat$fitted$data,
                                                                                                    outcome = 'crp.cat')
 biomarker.excl.anti.coag$predicted.existing <- rbind(biomarker.excl.anti.coag$aptt.cat$fitted$data,
