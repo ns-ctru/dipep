@@ -10,7 +10,7 @@ dvt.ddimer.missing    <- dplyr::filter(dipep, group == 'Diagnosed DVT' & is.na(d
 dvt.n <- dplyr::filter(dipep, group == 'Diagnosed DVT') %>% nrow()
 
 ## Number with d.dimer recorded but no d.dimer.high
-missing.d.dimer.high <- dplyr::filter(dipep, !is.na(d.dimer), & is.na(d.dimer.high)) %>% nrow()
+missing.d.dimer.high <- dplyr::filter(dipep, !is.na(d.dimer) & is.na(d.dimer.high)) %>% nrow()
 
 ```
 
@@ -19,7 +19,7 @@ D-Dimer assays from the multitude of independant hospitals/laboratories are anal
 The number of available samples from each of the cohorts and the observed assays are summarised in the tables below by recruitment group and primary classification based on case review.
 
 
-```{r ddimer_summary, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = FALSE}
+```{r ddimer_summary, , echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
 dipep_summarise(df           = dipep,
                 grouping     = 'group',
                 group.as.col = TRUE,
@@ -32,18 +32,36 @@ dipep_summarise(df           = dipep,
     dplyr::select(-Measurement) %>%
     kable(caption = 'D-Dimer assays recorded at hospital by recruitment group.')
 
-dipep_summarise(df           = dipep,
-                grouping     = 'first.st',
-                group.as.col = TRUE,
-                exclude               = NULL,
-                exclude.non.recruited = TRUE,
-                exclude.dvt           = TRUE,
-                exclude.anti.coag     = FALSE,
-                exclude.missing       = FALSE,
-                d.dimer) %>%
-    dplyr::select(-Measurement) %>%
-    kable(caption = 'D-Dimer assays recorded at hospital by recruitment Primary case review allocation. Excludes Non-recruited cohort.')
+## dipep_summarise(df           = dipep,
+##                 grouping     = 'first.st',
+##                 group.as.col = TRUE,
+##                 exclude               = NULL,
+##                 exclude.non.recruited = TRUE,
+##                 exclude.dvt           = TRUE,
+##                 exclude.anti.coag     = FALSE,
+##                 exclude.missing       = FALSE,
+##                 d.dimer) %>%
+##     dplyr::select(-Measurement) %>%
+##     kable(caption = 'D-Dimer assays recorded at hospital by recruitment Primary case review allocation. Excludes Non-recruited cohort.')
 
 ```
 
-The site specific 'reference ranges' (i.e. the nth percentile) were used to classify each measurement into 'Normal'  if it was within the recorded range or 'Abnormal' if it is outside the recorded range and this dichotomised variable is used to assess the predictive value of the D-Dimer assays.  There were `r missing.d.dimer.high` individuals from the UKOSS cohort who had a recorded D-Dimer assay but for whom the reference range was not recorded.  These individuals are therefore excluded from subsequent analyses as they can not be classified.
+The site specific 'reference ranges' (i.e. the nth percentile) were used to classify each measurement into 'Normal'  if it was within the recorded range or 'Abnormal' if it is outside the recorded range and this dichotomised variable is used to assess the predictive value of the D-Dimer assays.  There were `r missing.d.dimer.high` individuals from the UKOSS cohort who had a recorded D-Dimer assay but for whom the reference range was not recorded.  These individuals are therefore excluded from subsequent analyses as they can not be classified.  It should also be noted that the majority of these D-Dimer measurements are classified as `Abnormal` when compared to the laboratories reported reference range, this has a particular impact when analyses are restricted to those individuals who had not received anti-coagulation medication prior to blood samples being taken as only one individual is considered `Normal`.
+
+**NB** No one in the `Diagnosed DVT` group had hospital D-Dimer assay data available.  This means that unlike the other biomarkers the outcome is *not* VTE, but PE.
+
+**NB** The sum of numbers of PE and No PE in the summary table does not match the sum of the numbers in the dichotomisation table because some individuals do *not* have site-specific reference ranges available and could not therefore be classified.
+
+```{r child = 'all_ddimer_cat.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_ddimer_cat.Rmd', eval = TRUE}
+```
+
+
+
+```{r child = 'all_ddimer_gestation_cat.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_ddimer_gestation_cat.Rmd', eval = TRUE}
+```
