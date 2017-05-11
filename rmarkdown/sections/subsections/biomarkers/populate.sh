@@ -144,7 +144,8 @@ sed -e 's/template/d.dimer.cat/g' all_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' \
     -e 's/##### MEASUREMENT/##### All/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/first\.st\.vte, d\.dimer\.cat/first\.st, d\.dimer/g' \
+    -e 's/first\.st\.vte/first\.st/g' \
+    -e 's/first\.st\.first\.st/first\.st/g' \
     -e 's/y = d\.dimer\.cat/y = d.dimer/g' \
     -e 's/\.cat\.cat/.cat/g' \
     -e 's/VTE Status/PE Status/g' \
@@ -153,7 +154,8 @@ sed -e 's/template/d.dimer.cat/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary/g' \
     -e 's/##### MEASUREMENT/##### Excluding those on Anti-Coagulants/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/first\.st\.vte, d\.dimer\.cat/first\.st, d\.dimer/g' \
+    -e 's/first\.st\.vte/first\.st/g' \
+    -e 's/first\.st\.first\.st/first\.st/g' \
     -e 's/y = d\.dimer\.cat/y = d\.dimer/g' \
     -e 's/\.cat\.cat/.cat/g' \
     -e 's/VTE Status/PE Status/g' \
@@ -173,8 +175,9 @@ sed -e 's/template/d.dimer.gestation.cat/g' all_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary (Gestation Specific)/g' \
     -e 's/##### MEASUREMENT/##### All - Gestation Specific/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/first\.st\.vte, d\.dimer\.gestation.cat/first\.st, d\.dimer/g' \
-    -e 's/y = d\.dimer\.cat/y = d.dimer/g' \
+    -e 's/first\.st\.vte/first\.st/g' \
+    -e 's/first\.st, d\.dimer\.gestation\.cat/first\.st, d\.dimer/g' \
+    -e 's/y = d\.dimer\.gestation\.cat/y = d.dimer/g' \
     -e 's/\.cat\.cat/.cat/g' \
     -e 's/VTE Status/PE Status/g' \
     -e 's/##### D-Dimer (Hospital) : Binary/##### All/g' > all_ddimer_gestation_cat.Rmd
@@ -182,8 +185,9 @@ sed -e 's/template/d.dimer.gestation.cat/g' excl_anti_coag_template.Rmd \
     -e 's/TEMPLATE/D-Dimer (Hospital) : Binary (Gestation Specific)/g' \
     -e 's/##### MEASUREMENT/##### Excluding those on Anti-Coagulants - Gestation Specific/g' \
     -e 's/MEASUREMENT/D-Dimer (Hospital)/g' \
-    -e 's/first\.st\.vte, d\.dimer\.gestation\.cat/first\.st, d\.dimer/g' \
-    -e 's/y = d\.dimer\.cat/y = d\.dimer/g' \
+    -e 's/first\.st\.vte/first\.st/g' \
+    -e 's/first\.st, d\.dimer\.gestation\.cat/first\.st, d\.dimer/g' \
+    -e 's/y = d\.dimer\.gestation\.cat/y = d\.dimer/g' \
     -e 's/\.cat\.cat/.cat/g' \
     -e 's/VTE Status/PE Status/g' \
     -e 's/##### D-Dimer (Hospital) : Binary/##### Excluding those on Anticoagulants/g' > excl_anti_coag_ddimer_gestation_cat.Rmd
