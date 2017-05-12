@@ -16,10 +16,13 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
 ## Redo subsetting, include temperature and O2 Saturation
 to.sum <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
           dplyr::select(term, estimate, lci, uci, p.value)
+          ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+## names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'OR', 'OR Lower CI', 'OR Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
       caption = 'Point estimates, 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
+      ## caption = 'Point estimates and 95% CIs, OR and 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
 rm(to.sum)
 
 ```
