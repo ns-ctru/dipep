@@ -846,7 +846,7 @@ names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
       caption = 'Point estimates, 95% CIs, and p-values for Univariable Regression')
-      ## caption = 'Point estimates, 95% CIs, OR and 95% CIs and p-values for Univariable Regression')
+      ## caption = 'Point estimates and 95% CIs, OR and 95% CIs and p-values for Univariable Regression')
 rm(to.sum)
 
 ```
