@@ -185,12 +185,25 @@ dipep_glm <- function(df              = .data,
                          model = model)
     names(results$ci) <- gsub('2.5 %',  'lci', names(results$ci))
     names(results$ci) <- gsub('97.5 %', 'uci', names(results$ci))
+    ## Calculate the diagonal co-variance, required for correct SE of OR
+    results$var.diag <- diag(vcov(results$fitted)) %>%
+        as.data.frame()
+    results$var.diag <- mutate(results$var.diag,
+                               term = rownames(results$var.diag))
+    names(results$var.diag) <- gsub('\\.', 'var.diag', names(results$var.diag))
     ## Use Broom to sweep up/tidy the results
     results$tidied    <- broom::tidy(results$fitted)
-    ## Merge in the CI
+    ## Merge in the CI and diagonal co-variance
     results$tidied <- left_join(results$tidied,
-                                results$ci)
-
+                                results$ci) %>%
+                      left_join(.,
+                                results$var.diag)
+    ## Calculate OR and the Taylor series-based delta CIs
+    results$tidied <- results$tidied %>%
+                      mutate(or     = exp(estimate),
+                             or.se  = sqrt(or^2 * var.diag),
+                             or.lci = or - (1.96 * or.se),
+                             or.uci = or + (1.96 * or.se))
     results$tidied <- results$tidied %>%
         mutate(term = case_when(.$term == '(Intercept)' ~  '(Intercept)',
                                 .$term == 'simplified.peSimplified PE' ~  'Revised Geneva',
