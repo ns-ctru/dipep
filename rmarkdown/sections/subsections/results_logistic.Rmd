@@ -792,7 +792,7 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
 to.sum <- dplyr::filter(logistic$tidied, term != '(Intercept)') %>%
-          dplyr::select(term, estimate, lci, uci, p.value)
+          dplyr::select(term, estimate, lci, uci, p.value, or, or.lci, or.uci)
 ## Select the results from logistic regression of Existing scores for combininig
 to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                  dplyr::filter(term %in% c('Delphi : Medical History (Hospital Admission, Surgery or Injury)',
@@ -800,33 +800,33 @@ to.sum.delphi <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                                            'Delphi : Medical Complications',
                                            'Delphi : Obstetric Complications',
                                            'Delphi : Gestation')) %>%
-                 dplyr::select(term, estimate, lci, uci, p.value) %>%
-                 ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                 ## dplyr::select(term, estimate, lci, uci, p.value) %>%
+                 dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
                  mutate(term = gsub('Medical History (Hospital Admission, Surgery or Injury)', 'Hospital Admission, Surgery or Injury', term))
 to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Geneva : Neoplasm',
                                                'Geneva : Unilateral lower limb pain',
                                                'Geneva : Pain on limb palpitation')) %>%
                      ## dplyr::select(term, estimate, lci, uci, p.value)
-                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Wells : PE most likely diagnosis (Permissive)',
                                                'Wells : PE most likely diagnosis (Strict)',
                                                'Wells : Neoplasm')) %>%
                      ## dplyr::select(term, estimate, lci, uci, p.value)
-                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('PERC : Exogenous Estrogen',
                                                'PERC : Unilateral Leg Swelling',
                                                'PERC : Previous DVT/PE')) %>%
                      ## dplyr::select(term, estimate, lci, uci, p.value)
-                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
 to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
                                                'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
                      mutate(term = paste0(term, ' - All')) %>%
                      ## dplyr::select(term, estimate, lci, uci, p.value)
-                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
 to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
                                                'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
