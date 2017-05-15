@@ -108,11 +108,6 @@ dipep_roc(biomarker.all$predicted.existing,
     kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 ```
 
-```{r results_biomarker_logistic_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
-summary.biomarkers.all$first.st.vte %>%
-    kable(caption = 'Summary Statistics of biomarkers by VTE Status.')
-
-```
 
 ```{r results_biomarker_logistic_all_performance_continuous, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
 ## Combine the predicted probabilities based on laboratory reference range classification and
@@ -142,6 +137,12 @@ dipep_roc(biomarker.all$predicted,
 
 
 ```{r child = 'all_sensitivity_and_specificity.Rmd', eval = TRUE}
+```
+
+```{r results_biomarker_logistic_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
+summary.biomarkers.all$first.st.vte %>%
+    kable(caption = 'Summary Statistics of biomarkers by VTE Status.')
+
 ```
 
 ```{r child = 'all_aptt.Rmd', eval = TRUE}
