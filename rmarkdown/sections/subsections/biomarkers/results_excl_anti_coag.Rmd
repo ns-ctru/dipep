@@ -106,6 +106,37 @@ dipep_roc(biomarker.excl.anti.coag$predicted.existing,
           title    = 'Pre-categorised biomarkers (using reference thresholds) excluding those on anti-coagulents',
           threshold = threshold)$summary.stats %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE, excluding those on anti-coagulants'))
+```
+
+```{r results_biomarker_logistic_excl_anti_coag_performance_continuous, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
+## Combine the predicted probabilities based on laboratory reference range classification and
+## generate ROC curves/summary Statistics
+dipep_roc(biomarker.excl.anti.coag$predicted,
+          to.plot = c('aptt',
+                      'bnp',
+                      'clauss.fibrinogen',
+                      ## 'd.dimer',
+                      ## 'd.dimer.gestation',
+                      'ddimer.elisa',
+                      'ddimer.innovance',
+                      'mrproanp',
+                      'plasmin.antiplasmin',
+                      'prothombin.time',
+                      'prothrombin.fragments',
+                      'thrombin.generation.endogenous.potential',
+                      'thrombin.generation.lag.time',
+                      'thrombin.generation.peak',
+                      'thrombin.generation.time.to.peak',
+                      'tissue.factor',
+                      'troponin',
+                      'crp'),
+          title    = 'Continuous biomarker performance excluding those on anti-coagulents',
+          threshold = threshold)$summary.stats %>%
+    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE, excluding those on anti-coagulants'))
+```
+
+```{r results_biomarker_logistic_excl_anti_coag_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
+
 
 summary.biomarkers.excl.anti.coag$first.st.vte %>%
     kable(caption = 'Summary Statistics of biomarkers by VTE Status excluding individuals receiveing anti-coagulants.')
