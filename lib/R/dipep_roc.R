@@ -250,26 +250,32 @@ dipep_roc <- function(df        = logistic$predicted,
                                                          .$D == 'No VTE' & .$m == 0 ~ 'true_negative',
                                                          .$D == 'No VTE' & .$m == 1 ~ 'false_positive',
                                                          .$D == 'VTE'    & .$m == 0 ~ 'false_negative'))
-    ## Sometimes there are no true_positive/true_negative/false_positive/false_negative which means
-    ## the next section won't run.  Conditionally check and add as zeros if not present
-    if(!('true_positive' %in% names(results$counts))){
-        results$counts$true_positive <- 0
-    }
-    if(!('true_negative' %in% names(results$counts))){
-        results$counts$true_negative <- 0
-    }
-    if(!('false_positive' %in% names(results$counts))){
-        results$counts$false_positive <- 0
-    }
-    if(!('false_negative' %in% names(results$counts))){
-        results$counts$false_negative <- 0
-    }
     ## results$counts %>% print()
     ## table(results$counts$classification) %>% print()
     ## By term summarise counts of
     results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
-                             dcast(term ~ classification) %>%
-                             mutate(sensitivity = true_positive  / (true_positive + false_negative),
+        dcast(term ~ classification)
+        ## Sometimes there are no true_positive/true_negative/false_positive/false_negative which means
+    ## the next section won't run.  Conditionally check and add as zeros if not present
+    names(results$summary.stats) %>% print()
+    if(!('true_positive' %in% names(results$summary.stats))){
+        print('Adding true positive')
+        results$summary.stats$true_positive <- 0
+    }
+    if(!('true_negative' %in% names(results$summary.stats))){
+        print('Adding true negative')
+        results$summary.stats$true_negative <- 0
+    }
+    if(!('false_positive' %in% names(results$summary.stats))){
+        print('Adding false positive')
+        results$summary.stats$false_positive <- 0
+    }
+    if(!('false_negative' %in% names(results$summary.stats))){
+        print('Adding false negative')
+        results$summary.stats$false_negative <- 0
+    }
+    names(results$counts) %>% print()
+    results$summary.stats <- mutate(sensitivity = true_positive  / (true_positive + false_negative),
                                     specificity = true_negative  / (true_negative + false_positive),
                                     ppv         = true_positive  / (true_positive + false_positive),
                                     npv         = true_negative  / (true_negative + false_negative),
