@@ -64,6 +64,9 @@ dipep_roc <- function(df        = logistic$predicted,
                                                                 x.measure = 'npv')
         results$rocr.performance.auc <- ROCR::performance(prediction,
                                                               measure = 'auc')
+        results$rocr.performance.acc.err <- ROCR::performance(prediction,
+                                                              measure   = 'acc',
+                                                              x.measure = 'err')
         ## Make a data frame of the results
         results$rocr.performance.df <- data.frame(cut  = results$rocr.performance.tpr.fpr@alpha.values[[1]],
                                                   fpr  = results$rocr.performance.tpr.fpr@x.values[[1]],
@@ -73,25 +76,31 @@ dipep_roc <- function(df        = logistic$predicted,
                                                   spec = results$rocr.performance.sens.spec@x.values[[1]],
                                                   sens = results$rocr.performance.sens.spec@y.values[[1]],
                                                   npv  = results$rocr.performance.ppv.npv@x.values[[1]],
-                                                  ppv  = results$rocr.performance.ppv.npv@y.values[[1]])
+                                                  ppv  = results$rocr.performance.ppv.npv@y.values[[1]],
+                                                  err  = results$rocr.performance.acc.err@x.values[[1]],
+                                                  acc  = results$rocr.performance.acc.err@y.values[[1]]) %>%
+                                       mutate(auc = results$rocr.performance.auc@y.values[[1]])
         results$rocr.performance.df$term <- to.plot
         ## Extract the cut-point for the specified threshold
         t <- dplyr::filter(results$rocr.performance.df,
                            sens >= rocr)
         results$rocr.performance.threshold <- t[1,]
         results$rocr.performance <- list()
-        results$rocr.performance$cut  <- results$rocr.performance.theshold$cut
-        results$rocr.performance$fpr  <- results$rocr.performance.theshold$fpr
-        results$rocr.performance$tpr  <- results$rocr.performance.theshold$tpr
-        results$rocr.performance$fnr  <- results$rocr.performance.theshold$fnr
-        results$rocr.performance$tnr  <- results$rocr.performance.theshold$tnr
-        results$rocr.performance$sens <- results$rocr.performance.theshold$sens
-        results$rocr.performance$spec <- results$rocr.performance.theshold$spec
-        results$rocr.performance$ppv  <- results$rocr.performance.theshold$ppv
-        results$rocr.performance$npv  <- results$rocr.performance.theshold$npv
+        results$rocr.performance$cut  <- results$rocr.performance.threshold$cut
+        results$rocr.performance$fpr  <- results$rocr.performance.threshold$fpr
+        results$rocr.performance$tpr  <- results$rocr.performance.threshold$tpr
+        results$rocr.performance$fnr  <- results$rocr.performance.threshold$fnr
+        results$rocr.performance$tnr  <- results$rocr.performance.threshold$tnr
+        results$rocr.performance$sens <- results$rocr.performance.threshold$sens
+        results$rocr.performance$spec <- results$rocr.performance.threshold$spec
+        results$rocr.performance$ppv  <- results$rocr.performance.threshold$ppv
+        results$rocr.performance$npv  <- results$rocr.performance.threshold$npv
+        ## IMPORTANT - Use the cutpoint for probability associated with a minimum sensitivty of 95%
+        ##             and adjust the threshold to be this
+        threshold <- results$rocr.performance$cut
         ## Add in a name for the term
         results$rocr.performance.threshold <- results$rocr.performance.threshold %>%
-            mutate(name = case_when(.$term == '(Intercept)' ~  '(Intercept)',
+            mutate(term = case_when(.$term == '(Intercept)' ~  '(Intercept)',
                                     .$term == 'simplified.peSimplified PE' ~  'Revised Geneva',
                                     .$term == 'simplified.peNo Simplified PE' ~  'Revised Geneva',
                                     .$term == 'simplified.pe' ~  'Revised Geneva',
@@ -502,9 +511,9 @@ dipep_roc <- function(df        = logistic$predicted,
                             thresholds,
                             by = c('name'))
         results$df <- results$df %>%
-            mutate(threshold = case_when(.$n_probs == 2 & .$M == .$min ~ 1,
-                                         .$n_probs == 2 & .$M == .$max ~ 0,
-                                         .$n_probs != 2                ~ threshold))
+                      mutate(threshold = case_when(.$n_probs == 2 & .$M == .$min ~ 1,
+                                                   .$n_probs == 2 & .$M == .$max ~ 0,
+                                                   .$n_probs != 2                ~ threshold))
     }
     ## Classify people based on the threshold
     results$df <- results$df %>%
@@ -546,15 +555,30 @@ dipep_roc <- function(df        = logistic$predicted,
     if(!('false_negative' %in% names(results$summary.stats))){
         results$summary.stats$false_negative <- 0
     }
-    results$summary.stats <- results$summary.stats %>%
-                             mutate(sensitivity = true_positive  / (true_positive + false_negative),
-                                    specificity = true_negative  / (true_negative + false_positive),
-                                    ppv         = true_positive  / (true_positive + false_positive),
-                                    npv         = true_negative  / (true_negative + false_negative),
-                                    fpr         = false_positive / (true_negative + false_positive),
-                                    fnr         = false_negative / (true_positive + false_negative),
-                                    fdr         = false_positive / (true_positive + false_positive),
-                                    accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative))
+    if(!is.null(results$rocr.performance.threshold)){
+        head(results$summary.stats) %>% print()
+        head(results$rocr.performance.threshold) %>% print()
+        results$summary.stats <- left_join(results$summary.stats,
+                                           results$rocr.performance.threshold)
+        names(results$summary.stats) <- gsub('sens', 'sensitivity', names(results$summary.stats))
+        names(results$summary.stats) <- gsub('spec', 'specificity', names(results$summary.stats))
+        names(results$summary.stats) <- gsub('acc', 'accuracy', names(results$summary.stats))
+        names(results$summary.stats) <- gsub('err', 'error', names(results$summary.stats))
+        results$summary.stats <- dplyr::select(results$summary.stats, -tpr, -auc)
+    }
+    else{
+        results$summary.stats <- results$summary.stats %>%
+            mutate(sensitivity = true_positive  / (true_positive + false_negative),
+                   specificity = true_negative  / (true_negative + false_positive),
+                   ppv         = true_positive  / (true_positive + false_positive),
+                   npv         = true_negative  / (true_negative + false_negative),
+                   fpr         = false_positive / (true_negative + false_positive),
+                   fnr         = false_negative / (true_positive + false_negative),
+                   fdr         = false_positive / (true_positive + false_positive),
+                   accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative),
+                   error       = (false_positive + false_negative) / (true_positive + false_positive + true_negative + false_negative),
+                   cut         = threshold)
+    }
     ## CIs for sensitivty and specificity
     results$test <- results$summary.stats
     ## head(results$summary.stats) %>% print()
@@ -613,11 +637,11 @@ dipep_roc <- function(df        = logistic$predicted,
                                            auc, auc_lci, auc_uci,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
-                                           fpr, fnr, fdr, accuracy)
+                                           accuracy, error, cut)
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
                                       'Specificity', 'Specificity Lower CI', 'Specificity Upper CI',
-                                      'FPR', 'FNR', 'FDR', 'Accuracy')
+                                      'Accuracy', 'Error', 'Probability Threshold')
     return(results)
 }
