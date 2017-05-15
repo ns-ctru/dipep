@@ -807,32 +807,32 @@ to.sum.simplified <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Geneva : Neoplasm',
                                                'Geneva : Unilateral lower limb pain',
                                                'Geneva : Pain on limb palpitation')) %>%
-                     dplyr::select(term, estimate, lci, uci, p.value)
-                     ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     ## dplyr::select(term, estimate, lci, uci, p.value)
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
 to.sum.wells <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('Wells : PE most likely diagnosis (Permissive)',
                                                'Wells : PE most likely diagnosis (Strict)',
                                                'Wells : Neoplasm')) %>%
-                     dplyr::select(term, estimate, lci, uci, p.value)
-                     ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     ## dplyr::select(term, estimate, lci, uci, p.value)
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
 to.sum.perc <- dplyr::filter(existing$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('PERC : Exogenous Estrogen',
                                                'PERC : Unilateral Leg Swelling',
                                                'PERC : Previous DVT/PE')) %>%
-                     dplyr::select(term, estimate, lci, uci, p.value)
-                     ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     ## dplyr::select(term, estimate, lci, uci, p.value)
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
 to.sum.ddimer.all <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
                                                'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
                      mutate(term = paste0(term, ' - All')) %>%
-                     dplyr::select(term, estimate, lci, uci, p.value)
-                     ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
+                     ## dplyr::select(term, estimate, lci, uci, p.value)
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value) %>%
 to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
                      dplyr::filter(term %in% c('D-Dimer (Hospital) : Abnormal',
                                                'D-Dimer (Hospital Gestation Specific) : Abnormal')) %>%
                      mutate(term = paste0(term, ' - Excluding those on Anti-Coagulants')) %>%
-                     dplyr::select(term, estimate, lci, uci, p.value)
-                     ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
+                     ## dplyr::select(term, estimate, lci, uci, p.value)
+                     dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
                 to.sum.simplified,
@@ -841,12 +841,12 @@ to.sum <- rbind(to.sum,
                 to.sum.ddimer.all,
                 to.sum.ddimer.excl.anti.coag) %>%
           arrange(term)
-names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
-## names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'OR', 'OR Lower CI', 'OR Upper CI', 'P-Value')
+## names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'OR', 'OR Lower CI', 'OR Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
-      caption = 'Point estimates, 95% CIs, and p-values for Univariable Regression')
-      ## caption = 'Point estimates and 95% CIs, OR and 95% CIs and p-values for Univariable Regression')
+      ## caption = 'Point estimates, 95% CIs, and p-values for Univariable Regression')
+      caption = 'Point estimates and 95% CIs, OR and 95% CIs and p-values for Univariable Regression')
 rm(to.sum)
 
 ```
