@@ -630,12 +630,16 @@ dipep_roc <- function(df        = logistic$predicted,
                       spread(key = component, value = stat)
     if(lasso == TRUE) results$auc.ci <-arrange(results$auc.ci, desc(name))
     ## Bind with all other statistics and CIs
+    head(results$ci) %>% print()
+    head(results$auc.ci) %>% print()
+    head(results$summary.stats) %>% print()
     results$summary.stats <- cbind(results$summary.stats, results$ci, results$auc.ci) %>%
                              dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
                                            auc, auc_lci, auc_uci,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
                                            accuracy, error, cut)
+    head(results$summary.stats) %>% print()
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
