@@ -636,7 +636,6 @@ dipep_roc <- function(df        = logistic$predicted,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
                                            accuracy, error, cut)
-    head(results$summary.stats) %>% print()
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
