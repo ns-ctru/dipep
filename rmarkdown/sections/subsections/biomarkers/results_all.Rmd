@@ -14,14 +14,14 @@ ggplot(to.sum, aes(term, estimate, colour = term)) +
     theme_bw() + theme(legend.position = 'none')
 ## Redo subsetting, include temperature and O2 Saturation
 to.sum <- dplyr::filter(biomarker.all$tidied, term != '(Intercept)') %>%
-          dplyr::select(term, estimate, lci, uci, p.value)
-          ## dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
-names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
-## names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'OR', 'OR Lower CI', 'OR Upper CI', 'P-Value')
+          ## dplyr::select(term, estimate, lci, uci, p.value)
+          dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
+## names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'OR', 'OR Lower CI', 'OR Upper CI', 'P-Value')
 kable(to.sum,
       digits  = 3,
-      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
-      ## caption = 'Point estimates and 95% CIs, OR and 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
+      ## caption = 'Point estimates, 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
+      caption = 'Point estimates and 95% CIs, OR and 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
 rm(to.sum)
 
 ```
@@ -129,7 +129,7 @@ dipep_roc(biomarker.all$predicted,
                       'tissue.factor',
                       'troponin',
                       'crp'),
-          title    = 'Pre-categorised biomarkers (using reference thresholds)',
+          title    = 'Continuous biomarkers performance',
           threshold = threshold)$summary.stats %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 
