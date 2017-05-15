@@ -250,6 +250,20 @@ dipep_roc <- function(df        = logistic$predicted,
                                                          .$D == 'No VTE' & .$m == 0 ~ 'true_negative',
                                                          .$D == 'No VTE' & .$m == 1 ~ 'false_positive',
                                                          .$D == 'VTE'    & .$m == 0 ~ 'false_negative'))
+    ## Sometimes there are no true_positive/true_negative/false_positive/false_negative which means
+    ## the next section won't run.  Conditionally check and add as zeros if not present
+    if(!('true_positive' %in% names(results$counts))){
+        results$counts$true_positive <- 0
+    }
+    if(!('true_negative' %in% names(results$counts))){
+        results$counts$true_negative <- 0
+    }
+    if(!('false_positive' %in% names(results$counts))){
+        results$counts$false_positive <- 0
+    }
+    if(!('false_negative' %in% names(results$counts))){
+        results$counts$false_negative <- 0
+    }
     ## results$counts %>% print()
     ## table(results$counts$classification) %>% print()
     ## By term summarise counts of
