@@ -84,7 +84,70 @@ rbind(biomarker.all$roc.other$summary.stats,
 ## Combine the predicted probabilities based on laboratory reference range classification and
 ## generate ROC curves/summary Statistics
 dipep_roc(biomarker.all$predicted.existing,
-          to.plot = c('aptt.cat',
+          to.plot = c('aptt',
+                      'bnp',
+                      'clauss.fibrinogen',
+                      ## 'd.dimer',
+                      ## 'd.dimer.gestation',
+                      'ddimer.elisa',
+                      'ddimer.innovance',
+                      'mrproanp',
+                      'plasmin.antiplasmin',
+                      'prothombin.time',
+                      'prothrombin.fragments',
+                      'thrombin.generation.endogenous.potential',
+                      'thrombin.generation.lag.time',
+                      'thrombin.generation.peak',
+                      'thrombin.generation.time.to.peak',
+                      'tissue.factor',
+                      'troponin',
+                      'crp',
+                      'aptt.cat',
+                      'bnp.cat',
+                      'clauss.fibrinogen.cat',
+                      ## 'd.dimer.cat',
+                      ## 'd.dimer.gestation.cat',
+                      'ddimer.elisa.cat',
+                      'ddimer.innovance.cat',
+                      'mrproanp.cat',
+                      'plasmin.antiplasmin.cat',
+                      'prothombin.time.cat',
+                      'prothrombin.fragments.cat',
+                      'thrombin.generation.endogenous.potential.cat',
+                      'thrombin.generation.lag.time.cat',
+                      'thrombin.generation.peak.cat',
+                      'thrombin.generation.time.to.peak.cat',
+                      'tissue.factor.cat',
+                      'troponin.cat',
+                      'crp.cat'),
+          title    = 'Pre-categorised biomarkers (using reference thresholds)',
+          threshold = threshold)$summary.stats %>%
+    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
+```
+
+```{r results_biomarker_logistic_all_performance_continuous, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
+## Combine the predicted probabilities based on laboratory reference range classification and
+## generate ROC curves/summary Statistics
+dipep_roc(biomarker.all$predicted.existing,
+          to.plot = c('aptt',
+                      'bnp',
+                      'clauss.fibrinogen',
+                      ## 'd.dimer',
+                      ## 'd.dimer.gestation',
+                      'ddimer.elisa',
+                      'ddimer.innovance',
+                      'mrproanp',
+                      'plasmin.antiplasmin',
+                      'prothombin.time',
+                      'prothrombin.fragments',
+                      'thrombin.generation.endogenous.potential',
+                      'thrombin.generation.lag.time',
+                      'thrombin.generation.peak',
+                      'thrombin.generation.time.to.peak',
+                      'tissue.factor',
+                      'troponin',
+                      'crp',
+                      'aptt.cat',
                       'bnp.cat',
                       'clauss.fibrinogen.cat',
                       ## 'd.dimer.cat',
@@ -106,6 +169,7 @@ dipep_roc(biomarker.all$predicted.existing,
           threshold = threshold)$summary.stats %>%
     kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 
+```{r results_biomarker_logistic_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 summary.biomarkers.all$first.st.vte %>%
     kable(caption = 'Summary Statistics of biomarkers by VTE Status.')
 
