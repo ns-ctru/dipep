@@ -77,8 +77,8 @@ dipep_roc <- function(df        = logistic$predicted,
         results$rocr.performance.df$term = to.plot
         ## Extract the cut-point for the specified threshold
         t <- dplyr::filter(results$rocr.performance.df,
-                           sens = rocr)
-        results$rocr.performance.theshold <- t[1,]
+                           sens >= rocr)
+        results$rocr.performance.threshold <- t[1,]
         results$rocr.performance$cut  <- results$rocr.performance.theshold$cut
         results$rocr.performance$fpr  <- results$rocr.performance.theshold$fpr
         results$rocr.performance$tpr  <- results$rocr.performance.theshold$tpr
