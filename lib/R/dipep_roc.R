@@ -15,6 +15,7 @@
 #' @param ci.method Method for calculating Confidence Interval (default is \code{wilson}, i.e. score-test-based).
 #' @param labels Whether to apply labels to the ROC curve (option passed to \code{geom_roc()}).
 #' @param lasso Logical if predicted values are from steps of a LASSO, forces numbering to be numeric
+#' @param rocr Theshold for sensitivity for which the associated specificity is to be derived using the \code{ROCR} package.
 #'
 #' @export
 dipep_roc <- function(df        = logistic$predicted,
@@ -25,6 +26,7 @@ dipep_roc <- function(df        = logistic$predicted,
                       ci.method = 'exact',
                       labels    = FALSE,
                       lasso     = FALSE,
+                      rocr      = NULL,
                       ...){
     results <- list()
     if(lasso == TRUE){
@@ -41,6 +43,52 @@ dipep_roc <- function(df        = logistic$predicted,
                  D = as.character(D),
                  D = factor(D),
                  name = factor(name))
+    ## If a threshold for sensitivity has been supplied then use ROCR to determine the values
+    if(!is.null(rocr) & length(to.plot) == 1){
+        prediction <- ROCR::prediction(predictions = df$M,
+                                       labels      = df$D)
+        results$rocr.performance.tpr.fpr <- ROCR::performance(prediction,
+                                                              measure   = 'tpr',
+                                                              x.measure = 'fpr')
+        results$rocr.performance.tnr.fnr <- ROCR::performance(prediction,
+                                                              measure   = 'tnr',
+                                                              x.measure = 'fnr')
+        results$rocr.performance.tnr.fnr <- ROCR::performance(prediction,
+                                                              measure   = 'tnr',
+                                                              x.measure = 'fnr')
+        results$rocr.performance.sens.spec <- ROCR::performance(prediction,
+                                                                measure   = 'sens',
+                                                                x.measure = 'spec')
+        results$rocr.performance.ppv.npv <- ROCR::performance(prediction,
+                                                                measure   = 'ppv',
+                                                                x.measure = 'npv')
+        results$rocr.performance.auc <- ROCR::performance(prediction,
+                                                              measure = 'auc')
+        ## Make a data frame of the results
+        results$rocr.performance.df <- data.frame(cut  = results$rocr.performance.tpr.fpr@alpha.values[[1]],
+                                                  fpr  = results$rocr.performance.tpr.fpr@x.values[[1]],
+                                                  tpr  = results$rocr.performance.tpr.fpr@y.values[[1]],
+                                                  tnr  = results$rocr.performance.tnr.fnr@x.values[[1]],
+                                                  fnr  = results$rocr.performance.tnr.fnr@y.values[[1]],
+                                                  spec = results$rocr.performance.sens.spec@x.values[[1]],
+                                                  sens = results$rocr.performance.sens.spec@y.values[[1]],
+                                                  npv  = results$rocr.performance.ppv.npv@x.values[[1]],
+                                                  ppv  = results$rocr.performance.ppv.npv@y.values[[1]])
+        results$rocr.performance.df$term = to.plot
+        ## Extract the cut-point for the specified threshold
+        t <- dplyr::filter(results$rocr.performance.df,
+                           sens = rocr)
+        results$rocr.performance.theshold <- t[1,]
+        results$rocr.performance$cut  <- results$rocr.performance.theshold$cut
+        results$rocr.performance$fpr  <- results$rocr.performance.theshold$fpr
+        results$rocr.performance$tpr  <- results$rocr.performance.theshold$tpr
+        results$rocr.performance$fnr  <- results$rocr.performance.theshold$fnr
+        results$rocr.performance$tnr  <- results$rocr.performance.theshold$tnr
+        results$rocr.performance$sens <- results$rocr.performance.theshold$sens
+        results$rocr.performance$spec <- results$rocr.performance.theshold$spec
+        results$rocr.performance$ppv  <- results$rocr.performance.theshold$ppv
+        results$rocr.performance$npv  <- results$rocr.performance.theshold$npv
+    }
     ## Generate plot
     results$plot <- ggplot(df,
                     aes(d = D, m = M, colour = as.factor(term))) +
