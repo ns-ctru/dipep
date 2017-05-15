@@ -556,8 +556,6 @@ dipep_roc <- function(df        = logistic$predicted,
         results$summary.stats$false_negative <- 0
     }
     if(!is.null(results$rocr.performance.threshold)){
-        head(results$summary.stats) %>% print()
-        head(results$rocr.performance.threshold) %>% print()
         results$summary.stats <- left_join(results$summary.stats,
                                            results$rocr.performance.threshold)
         names(results$summary.stats) <- gsub('sens', 'sensitivity', names(results$summary.stats))
