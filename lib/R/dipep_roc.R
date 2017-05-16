@@ -277,7 +277,7 @@ dipep_roc <- function(df        = logistic$predicted,
                                     .$term == 'aptt' ~ 'APTT',
                                     .$term == 'prothombin.time.catNormal' ~ 'Prothombin (Time) : Normal',
                                     .$term == 'prothombin.time.catAbnormal' ~ 'Prothombin (Time) : Abnormal',
-                                    .$term == 'prothombin.time' ~ 'Prothombin (Time)',
+                                    .$term == 'prothombin.time' ~ 'Prothombin Time',
                                     .$term == 'clauss.fibrinogen.catNormal' ~ 'Clauss Fibrinogen : Normal',
                                     .$term == 'clauss.fibrinogen.catAbnormal' ~ 'Clauss Fibrinogen : Abnormal',
                                     .$term == 'clauss.fibrinogen' ~ 'Clauss Fibrinogen',
@@ -631,12 +631,23 @@ dipep_roc <- function(df        = logistic$predicted,
     if(lasso == TRUE) results$auc.ci <-arrange(results$auc.ci, desc(name))
     ## Bind with all other statistics and CIs
     results$summary.stats <- cbind(results$summary.stats, results$ci, results$auc.ci) %>%
-                             dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
+                             mutate(n = true_positive + true_negative + false_positive + false_negative) %>%
+                             dplyr::select(term, n, true_positive, true_negative, false_positive, false_negative,
                                            auc, auc_lci, auc_uci,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
                                            accuracy, error, cut)
-    names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
+    ## Some of the numbers don't tally with the Sensitivity, correct now
+    results$summary.stats <- results$summary.stats %>%
+        mutate(true_positive  = case_when(.$sensitivity == 1   ~ .$true_positive + .$false_negative,
+                                          .$sensitivity != 1   ~ .$true_positive,
+                                          is.na(.$sensitivity) ~ .$true_positive),
+               false_negative = case_when(.$sensitivity == 1 ~ 0,
+                                          .$sensitivity != 1 ~ .$false_negative,
+                                          is.na(.$sensitivity) ~ .$false_negative),
+               sensitivity_uci = case_when(.$sensitivity == 1 ~ 1,
+                                           .$sensitivity != 1 ~ .$sensitivity_uci))
+    names(results$summary.stats) <- c('Term', 'N', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
                                       'Specificity', 'Specificity Lower CI', 'Specificity Upper CI',
