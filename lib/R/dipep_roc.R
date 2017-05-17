@@ -84,9 +84,9 @@ dipep_roc <- function(df        = logistic$predicted,
         ## Extract the cut-point for the specified threshold
         results$t <- dplyr::filter(results$rocr.performance.df,
                            sens >= rocr)
-        results$rocr.performance.threshold <- results$t[2,]
+        results$rocr.performance.threshold <- results$t[1,]
         results$rocr.performance <- list()
-        results$rocr.performance$cut  <- results$rocr.performance.threshold[1,1]
+        results$rocr.performance$cut  <- results$rocr.performance.threshold$cut
         results$rocr.performance$fpr  <- results$rocr.performance.threshold$fpr
         results$rocr.performance$tpr  <- results$rocr.performance.threshold$tpr
         results$rocr.performance$fnr  <- results$rocr.performance.threshold$fnr
@@ -527,8 +527,6 @@ dipep_roc <- function(df        = logistic$predicted,
                       complete(term, D, m, fill = list(.n = NA)) %>%
                       group_by(term, D, m) %>%
         summarise(n = sum(.n, na.rm = TRUE))
-    ## print('Step 0')
-    ## results$counts %>% print()
     results$counts <- ungroup(results$counts) %>%
                       mutate(classification  = case_when(.$D == 'PE'    & .$m == 1  ~ 'true_positive',
                                                          .$D == 'No PE' & .$m == 0  ~ 'true_negative',
@@ -538,13 +536,9 @@ dipep_roc <- function(df        = logistic$predicted,
                                                          .$D == 'No VTE' & .$m == 0 ~ 'true_negative',
                                                          .$D == 'No VTE' & .$m == 1 ~ 'false_positive',
                                                          .$D == 'VTE'    & .$m == 0 ~ 'false_negative'))
-    ## results$counts %>% print()
-    ## table(results$counts$classification) %>% print()
     ## By term summarise counts of
     results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
         dcast(term ~ classification)
-    ## print('Step 1')
-    ## results$summary.stats %>% print()
         ## Sometimes there are no true_positive/true_negative/false_positive/false_negative which means
     ## the next section won't run.  Conditionally check and add as zeros if not present
     if(!('true_positive' %in% names(results$summary.stats))){
@@ -560,9 +554,6 @@ dipep_roc <- function(df        = logistic$predicted,
         results$summary.stats$false_negative <- 0
     }
     if(!is.null(results$rocr.performance.threshold)){
-        ## print('Step 2')
-        ## results$summary.stats %>% print()
-        results$rocr.performance.threshold %>% print()
         results$summary.stats <- left_join(results$summary.stats,
                                            results$rocr.performance.threshold)
         names(results$summary.stats) <- gsub('sens', 'sensitivity', names(results$summary.stats))
@@ -570,8 +561,6 @@ dipep_roc <- function(df        = logistic$predicted,
         names(results$summary.stats) <- gsub('acc', 'accuracy', names(results$summary.stats))
         names(results$summary.stats) <- gsub('err', 'error', names(results$summary.stats))
         results$summary.stats <- dplyr::select(results$summary.stats, -tpr, -auc)
-        ## print('Step 3')
-        ## results$summary.stats %>% print()
     }
     else{
         results$summary.stats <- results$summary.stats %>%
@@ -588,7 +577,6 @@ dipep_roc <- function(df        = logistic$predicted,
     }
     ## CIs for sensitivty and specificity
     results$test <- results$summary.stats
-    ## head(results$summary.stats) %>% print()
     ci.sensitivity <- binconf(x = results$summary.stats$true_positive,
                               n = results$summary.stats$true_positive + results$summary.stats$false_negative,
                               alpha = alpha,
@@ -646,19 +634,11 @@ dipep_roc <- function(df        = logistic$predicted,
                                            specificity, specificity_lci, specificity_uci,
                                            accuracy, error, cut)
     ## Some of the numbers don't tally with the Sensitivity, correct now
-    ## results$summary.stats %>% print()
     results$summary.stats <- results$summary.stats %>%
         ## No idea why using the threshold mis-classifies one person each time??
-        mutate(true_positive  = case_when(.$sensitivity == 1   ~ .$true_positive + .$false_negative,
-                                          .$sensitivity != 1   ~ .$true_positive + 1, ## Correction needed to match
-                                          is.na(.$sensitivity) ~ .$true_positive),
-               false_negative = case_when(.$sensitivity == 1 ~ 0,
-                                          .$sensitivity != 1 ~ .$false_negative - 1, ## Correction needed to match
-                                          is.na(.$sensitivity) ~ .$false_negative),
-               sensitivity_uci = case_when(.$sensitivity == 1 ~ 1,
+        mutate(sensitivity_uci = case_when(.$sensitivity == 1 ~ 1,
                                            .$sensitivity != 1 ~ .$sensitivity_uci),
                n = true_positive + true_negative + false_positive + false_negative)
-    ## results$summary.stats %>% print()
     names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
