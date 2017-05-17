@@ -82,11 +82,11 @@ dipep_roc <- function(df        = logistic$predicted,
                                        mutate(auc = results$rocr.performance.auc@y.values[[1]])
         results$rocr.performance.df$term <- to.plot
         ## Extract the cut-point for the specified threshold
-        t <- dplyr::filter(results$rocr.performance.df,
+        results$t <- dplyr::filter(results$rocr.performance.df,
                            sens >= rocr)
-        results$rocr.performance.threshold <- t[1,]
+        results$rocr.performance.threshold <- results$t[2,]
         results$rocr.performance <- list()
-        results$rocr.performance$cut  <- results$rocr.performance.threshold$cut
+        results$rocr.performance$cut  <- results$rocr.performance.threshold[1,1]
         results$rocr.performance$fpr  <- results$rocr.performance.threshold$fpr
         results$rocr.performance$tpr  <- results$rocr.performance.threshold$tpr
         results$rocr.performance$fnr  <- results$rocr.performance.threshold$fnr
@@ -517,7 +517,7 @@ dipep_roc <- function(df        = logistic$predicted,
     }
     ## Classify people based on the threshold
     results$df <- results$df %>%
-                  mutate(m = ifelse(.$M > .$threshold,
+                  mutate(m = ifelse(.$M >= .$threshold,
                                     yes = 1,
                                     no  = 0),
                          .n = 1)
@@ -526,7 +526,9 @@ dipep_roc <- function(df        = logistic$predicted,
         ## missing then sum to zero because they are removed
                       complete(term, D, m, fill = list(.n = NA)) %>%
                       group_by(term, D, m) %>%
-                      summarise(n = sum(.n, na.rm = TRUE))
+        summarise(n = sum(.n, na.rm = TRUE))
+    ## print('Step 0')
+    ## results$counts %>% print()
     results$counts <- ungroup(results$counts) %>%
                       mutate(classification  = case_when(.$D == 'PE'    & .$m == 1  ~ 'true_positive',
                                                          .$D == 'No PE' & .$m == 0  ~ 'true_negative',
@@ -540,7 +542,9 @@ dipep_roc <- function(df        = logistic$predicted,
     ## table(results$counts$classification) %>% print()
     ## By term summarise counts of
     results$summary.stats <- dplyr::select(results$counts, term, classification, n) %>%
-                             dcast(term ~ classification)
+        dcast(term ~ classification)
+    ## print('Step 1')
+    ## results$summary.stats %>% print()
         ## Sometimes there are no true_positive/true_negative/false_positive/false_negative which means
     ## the next section won't run.  Conditionally check and add as zeros if not present
     if(!('true_positive' %in% names(results$summary.stats))){
@@ -556,6 +560,9 @@ dipep_roc <- function(df        = logistic$predicted,
         results$summary.stats$false_negative <- 0
     }
     if(!is.null(results$rocr.performance.threshold)){
+        ## print('Step 2')
+        ## results$summary.stats %>% print()
+        results$rocr.performance.threshold %>% print()
         results$summary.stats <- left_join(results$summary.stats,
                                            results$rocr.performance.threshold)
         names(results$summary.stats) <- gsub('sens', 'sensitivity', names(results$summary.stats))
@@ -563,6 +570,8 @@ dipep_roc <- function(df        = logistic$predicted,
         names(results$summary.stats) <- gsub('acc', 'accuracy', names(results$summary.stats))
         names(results$summary.stats) <- gsub('err', 'error', names(results$summary.stats))
         results$summary.stats <- dplyr::select(results$summary.stats, -tpr, -auc)
+        ## print('Step 3')
+        ## results$summary.stats %>% print()
     }
     else{
         results$summary.stats <- results$summary.stats %>%
@@ -631,26 +640,29 @@ dipep_roc <- function(df        = logistic$predicted,
     if(lasso == TRUE) results$auc.ci <-arrange(results$auc.ci, desc(name))
     ## Bind with all other statistics and CIs
     results$summary.stats <- cbind(results$summary.stats, results$ci, results$auc.ci) %>%
-                             mutate(n = true_positive + true_negative + false_positive + false_negative) %>%
-                             dplyr::select(term, n, true_positive, true_negative, false_positive, false_negative,
+                             dplyr::select(term, true_positive, true_negative, false_positive, false_negative,
                                            auc, auc_lci, auc_uci,
                                            sensitivity, sensitivity_lci, sensitivity_uci,
                                            specificity, specificity_lci, specificity_uci,
                                            accuracy, error, cut)
     ## Some of the numbers don't tally with the Sensitivity, correct now
+    ## results$summary.stats %>% print()
     results$summary.stats <- results$summary.stats %>%
+        ## No idea why using the threshold mis-classifies one person each time??
         mutate(true_positive  = case_when(.$sensitivity == 1   ~ .$true_positive + .$false_negative,
-                                          .$sensitivity != 1   ~ .$true_positive,
+                                          .$sensitivity != 1   ~ .$true_positive + 1, ## Correction needed to match
                                           is.na(.$sensitivity) ~ .$true_positive),
                false_negative = case_when(.$sensitivity == 1 ~ 0,
-                                          .$sensitivity != 1 ~ .$false_negative,
+                                          .$sensitivity != 1 ~ .$false_negative - 1, ## Correction needed to match
                                           is.na(.$sensitivity) ~ .$false_negative),
                sensitivity_uci = case_when(.$sensitivity == 1 ~ 1,
-                                           .$sensitivity != 1 ~ .$sensitivity_uci))
-    names(results$summary.stats) <- c('Term', 'N', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
+                                           .$sensitivity != 1 ~ .$sensitivity_uci),
+               n = true_positive + true_negative + false_positive + false_negative)
+    ## results$summary.stats %>% print()
+    names(results$summary.stats) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve',
                                       'AUC', 'AUC Lower CI', 'AUC Upper CI',
                                       'Sensitivity', 'Sensitivity Lower CI', 'Sensitivity Upper CI',
                                       'Specificity', 'Specificity Lower CI', 'Specificity Upper CI',
-                                      'Accuracy', 'Error', 'Probability Threshold')
+                                      'Accuracy', 'Error', 'Probability Threshold', 'N')
     return(results)
 }
