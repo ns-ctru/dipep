@@ -631,6 +631,12 @@ names(master$biomarker_tidy) <- gsub('troponin.1', 'troponin', names(master$biom
 names(master$biomarker_tidy) <- gsub('nppb', 'bnp', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('mproanp', 'mrproanp', names(master$biomarker_tidy))
 names(master$biomarker_tidy) <- gsub('crp', 'crp', names(master$biomarker_tidy))
+## UNCONFIRMED - But it looks like a value of '-1' has been used to indicate missing data
+##               Convert those to true missing now.
+## NB - Requested confirmation from Kiran via email (2017-02-02 @ 13:26; Subject :
+##      Fwd: DiPep - expert elicitation exercise) and despite a response from Kiran
+##      (2017-02-02 @ 18:14) this aspect was not addressed.
+master$biomarker_tidy[master$biomarker_tidy == -1] <- NA
 ## 2017-03-30 - Dichotomise all biomarkers
 master$biomarker_tidy <- master$biomarker_tidy %>%
     mutate(prothombin.time.cat = ifelse(prothombin.time > 15.9,
@@ -747,12 +753,6 @@ master$biomarker_tidy <- master$biomarker_tidy %>%
                                   ref = 'Normal'))
 ## Remove extrenuous columns
 master$biomarker_tidy <- dplyr::select(master$biomarker_tidy, -c(sample, error.message, comments, key, x))
-## UNCONFIRMED - But it looks like a value of '-1' has been used to indicate missing data
-##               Convert those to true missing now.
-## NB - Requested confirmation from Kiran via email (2017-02-02 @ 13:26; Subject :
-##      Fwd: DiPep - expert elicitation exercise) and despite a response from Kiran
-##      (2017-02-02 @ 18:14) this aspect was not addressed.
-master$biomarker_tidy[master$biomarker_tidy == -1] <- NA
 #######################################################################
 ## biomarker_anticoag_exclusions_clean.csv                           ##
 #######################################################################
