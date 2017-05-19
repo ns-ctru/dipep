@@ -833,13 +833,26 @@ to.sum.ddimer.excl.anti.coag <- dplyr::filter(biomarker.excl.anti.coag$tidied, t
                      mutate(term = paste0(term, ' - Excluding those on Anti-Coagulants')) %>%
                      ## dplyr::select(term, estimate, lci, uci, p.value)
                      dplyr::select(term, estimate, lci, uci, or, or.lci, or.uci, p.value)
+
+to.sum.ddimer <- rbind(to.sum.ddimer.all,
+                       to.sum.ddimer.excl.anti.coag) %>%
+    mutate(or = ifelse(term == 'D-Dimer (Hospital) : Abnormal - Excluding those on Anti-Coagulants',
+                       yes = NA,
+                       no  = or),
+           or.lci = ifelse(term == 'D-Dimer (Hospital) : Abnormal - Excluding those on Anti-Coagulants',
+                       yes = NA,
+                       no  = or.lci),
+           or.uci = ifelse(term == 'D-Dimer (Hospital) : Abnormal - Excluding those on Anti-Coagulants',
+                       yes = NA,
+                       no  = or.uci))
+rm(to.sum.ddimer.all, to.sum.ddimer.excl.anti.coag)
+
 to.sum <- rbind(to.sum,
                 to.sum.delphi,
                 to.sum.simplified,
                 to.sum.wells,
                 to.sum.perc,
-                to.sum.ddimer.all,
-                to.sum.ddimer.excl.anti.coag) %>%
+                to.sum.ddimer) %>%
           arrange(term)
 ## names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
 names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'OR', 'OR Lower CI', 'OR Upper CI', 'P-Value')
