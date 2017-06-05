@@ -202,7 +202,7 @@ dipep_glm <- function(df              = .data,
     results$tidied <- results$tidied %>%
                       mutate(or     = exp(estimate),
                              ## or.se  = sqrt(or^2 * var.diag),
-                             ## or.se  = exp(estimate) * std.error,
+                             or.se  = exp(estimate) * std.error,
                              ## or.lci = or - (1.96 * or.se),
                              ## or.uci = or + (1.96 * or.se))
                              ## 2017-06-05 : Changed in light of QC with m.bradburn@sheffield.ac.uk
