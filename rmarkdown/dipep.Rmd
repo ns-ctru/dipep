@@ -6,6 +6,7 @@ bibliography: sections/bibliography.bib
 ---
 
 ```{r setup, echo = FALSE, eval = TRUE}
+library(dipep)
 ##opts_chunk$set(dev = 'pdf')
 opts_chunk$set(cache.path = 'cache/',
                width    = 200,
