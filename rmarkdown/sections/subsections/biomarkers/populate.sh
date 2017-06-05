@@ -117,26 +117,26 @@ sed -e 's/template/bnp/g' excl_anti_coag_template.Rmd \
 
 ## Troponin
 sed -e 's/template/troponin/g' all_template.Rmd \
-    -e 's/TEMPLATE/Troponin (ng/ml)/g' \
+    -e 's/TEMPLATE/Troponin (ng\/ml)/g' \
     -e 's/MEASUREMENT/Troponin/g' > all_troponin.Rmd
 sed -e 's/template/troponin/g' excl_anti_coag_template.Rmd \
-    -e 's/TEMPLATE/Troponin (ng/ml)/g' \
+    -e 's/TEMPLATE/Troponin (ng\/ml)/g' \
     -e 's/MEASUREMENT/Troponin/g'  > excl_anti_coag_troponin.Rmd
 
 ## Tissure Factor
 sed -e 's/template/tissue.factor/g' all_template.Rmd \
-    -e 's/TEMPLATE/Tissue Factor (pg/ml)/g' \
+    -e 's/TEMPLATE/Tissue Factor (pg\/ml)/g' \
     -e 's/MEASUREMENT/Tissue Factor/g'  > all_tissue_factor.Rmd
 sed -e 's/template/tissue.factor/g' excl_anti_coag_template.Rmd \
-    -e 's/TEMPLATE/Tissue Factor (pg/ml)/g' \
+    -e 's/TEMPLATE/Tissue Factor (pg\/ml)/g' \
     -e 's/MEASUREMENT/Tissue Factor/g' > excl_anti_coag_tissue_factor.Rmd
 
 ## PF 1+2
 sed -e 's/template/prothrombin.fragments/g' all_template.Rmd \
-    -e 's/TEMPLATE/PF 1 + 2 (pmol/l)/g' \
+    -e 's/TEMPLATE/PF 1 + 2 (pmol\/l)/g' \
     -e 's/MEASUREMENT/PF 1 + 2/g' > all_prothrombin_fragments.Rmd
 sed -e 's/template/prothrombin.fragments/g' excl_anti_coag_template.Rmd \
-    -e 's/TEMPLATE/PF 1 + 2 (pmol/l)/g' \
+    -e 's/TEMPLATE/PF 1 + 2 (pmol\/l)/g' \
     -e 's/MEASUREMENT/PF 1 + 2/g' > excl_anti_coag_prothrombin_fragments.Rmd
 
 ## D-Dimer (Hospital) - Binary
