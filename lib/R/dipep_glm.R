@@ -201,9 +201,13 @@ dipep_glm <- function(df              = .data,
     ## Calculate OR and the Taylor series-based delta CIs
     results$tidied <- results$tidied %>%
                       mutate(or     = exp(estimate),
-                             or.se  = sqrt(or^2 * var.diag),
-                             or.lci = or - (1.96 * or.se),
-                             or.uci = or + (1.96 * or.se))
+                             ## or.se  = sqrt(or^2 * var.diag),
+                             ## or.se  = exp(estimate) * std.error,
+                             ## or.lci = or - (1.96 * or.se),
+                             ## or.uci = or + (1.96 * or.se))
+                             ## Changed in light of QC
+                             or.lci = exp(lci),
+                             or.uci = exp(uci))
     results$tidied <- results$tidied %>%
         mutate(term = case_when(.$term == '(Intercept)' ~  '(Intercept)',
                                 .$term == 'simplified.peSimplified PE' ~  'Revised Geneva',
