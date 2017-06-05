@@ -205,7 +205,7 @@ dipep_glm <- function(df              = .data,
                              ## or.se  = exp(estimate) * std.error,
                              ## or.lci = or - (1.96 * or.se),
                              ## or.uci = or + (1.96 * or.se))
-                             ## Changed in light of QC
+                             ## 2017-06-05 : Changed in light of QC with m.bradburn@sheffield.ac.uk
                              or.lci = exp(lci),
                              or.uci = exp(uci))
     results$tidied <- results$tidied %>%
