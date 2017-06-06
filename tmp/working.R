@@ -1,3 +1,46 @@
+## 2017-06-05 Checking existing scores as binary...
+t <- dplyr::filter(dipep, group %in% c('Diagnosed PE', 'Suspected PE'))
+table(t$perc.pe, t$first.st)
+table(t$perc.pe, t$first.st, t$missing.exclude)
+
+## 2017-05-19 CIs for the Odds Ratio
+age <- dipep_glm(df = dipep,
+                          classification = 'first.st',
+                          predictor      = 'age',
+                          model          = 'Age',
+                    exclude = NULL,
+                    exclude.dvt = TRUE,
+                    exclude.non.recruited = TRUE,
+                    exclude.missing       = FALSE)
+logistic$age$tidied
+age$tidied
+
+## 2017-05-11 - D-Dimer Hospotal reported differently between
+##
+##              Results > Biomarkers > Hopsital D-Dimer v Results > Logisitc
+##
+## Calculated in ../sections/subsections/biomarker/prep.Rmd in
+
+
+## 2017-05-10 - Why aren't biomarkers working...
+biomarker.excl.anti.coag$aptt.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$clauss.fibrinogen.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$ddimer.innovance.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$ddimer.elisa.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$thrombin.generation.endogenous.potential.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$thrombin.generation.peak.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$thrombin.generation.time.to.peak.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$plasmin.antiplasmin.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$prothombin.time.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$prothrombin.fragments.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$tissue.factor.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$troponin.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$bnp.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$mrproanp.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$d.dimer.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted$data %>% names()
+biomarker.excl.anti.coag$crp.cat$fitted$data %>% names()
+
 ## 2017-04-27 - Lines on scatter plots and histograms
 build()
 install()
