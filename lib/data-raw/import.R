@@ -1495,6 +1495,7 @@ dipep.raw <- mutate(dipep.raw,
 ## 2017-03-02 - Some preg.post are missing which messes up derivation of Trimester.
 ##              For some reason doesn't work if this is in the same mutate(), hence
 ##              its extraction.
+dplyr::select(dipep, screening, d.dimer, d.dimer.unt, d.dimer.ugl, d.dimer.low, d.dimer.high) %>% dplyr::filter(screening %in% c('S15/03'))
 dipep <- dipep %>%
     mutate(edd       = ifelse(edd == '',
                               yes = NA,
@@ -1751,16 +1752,6 @@ dipep <- dipep %>%
            ## d.dimer.cat = ifelse(d.dimer < d.dimer.low | d.dimer > d.dimer.high,
            ##                      yes = 'Abnormal',
            ##                      no  = 'Normal')
-           d.dimer.cat = case_when(is.na(.$d.dimer)                                ~ '',
-                                   ## is.na(.$d.dimer.low)                            ~ '',
-                                   is.na(.$d.dimer.high)                           ~ '',
-                                   .$d.dimer > .$d.dimer.high  ~ 'Abnormal',
-                                   .$d.dimer <= .$d.dimer.high ~ 'Normal'),
-                                   ## .$d.dimer <  .$d.dimer.low | .$d.dimer >  .$d.dimer.high ~ 'Abnormal',
-                                   ## .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
-           d.dimer.cat = ifelse(d.dimer.cat == '' | is.na(trimester),
-                                yes = NA,
-                                no  = d.dimer.cat),
            ## 2017-04-10 - Missed out recoding two variables (picked up by Mike)
            thromboprophylaxis = ifelse(is.na(thromboprophylaxis),
                                        yes = 'No',
@@ -1768,7 +1759,20 @@ dipep <- dipep %>%
            medical.probs = ifelse(is.na(medical.probs),
                                   yes = 'No',
                                   no  = as.character(medical.probs))
-           )
+           ) %>%
+    mutate(d.dimer.cat = case_when(is.na(.$d.dimer)                                ~ '',
+                                   ## is.na(.$d.dimer.low)                            ~ '',
+                                   is.na(.$d.dimer.high)                           ~ '',
+                                   .$d.dimer > .$d.dimer.high  ~ 'Abnormal',
+                                   .$d.dimer <= .$d.dimer.high ~ 'Normal'),
+                                   ## .$d.dimer <  .$d.dimer.low | .$d.dimer >  .$d.dimer.high ~ 'Abnormal',
+                                   ## .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
+           ## 2017-06-08 - Remove clause for trimester being present
+           ## d.dimer.cat = ifelse(d.dimer.cat == '' | is.na(trimester),
+           d.dimer.cat = ifelse(d.dimer.cat == '',
+                                yes = NA,
+                                no  = d.dimer.cat))
+dplyr::select(dipep, screening, d.dimer, d.dimer.unt, d.dimer.ugl, d.dimer.cat, d.dimer.low, d.dimer.high) %>% dplyr::filter(screening %in% c('S15/03'))
 
 ###### HERE
 ## Ensure everything is a factor
