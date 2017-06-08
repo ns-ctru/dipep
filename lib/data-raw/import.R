@@ -875,6 +875,8 @@ t3 <- dplyr::select(master$presenting.features,
                     diagnosis.post,
                     likely.diagnosis,
                     d.dimer,
+                    d.dimer.unt,
+                    d.dimer.ugl,
                     d.dimer.low,
                     d.dimer.high)
 ## Thrombotic Event
@@ -1742,6 +1744,10 @@ dipep <- dipep %>%
            admitted.hospital = ifelse(is.na(admitted.hospital),
                                       yes = 'No',
                                       no  = as.character(admitted.hospital)),
+           ## 2017-06-08 : Transfer d.dimer.ugl to d.dimer if present
+           d.dimer = ifelse(is.na(d.dimer) & !is.na(d.dimer.ugl),
+                            yes = d.dimer.ugl,
+                            no  = d.dimer),
            ## d.dimer.cat = ifelse(d.dimer < d.dimer.low | d.dimer > d.dimer.high,
            ##                      yes = 'Abnormal',
            ##                      no  = 'Normal')
