@@ -1752,10 +1752,12 @@ dipep <- dipep %>%
            ##                      yes = 'Abnormal',
            ##                      no  = 'Normal')
            d.dimer.cat = case_when(is.na(.$d.dimer)                                ~ '',
-                                   is.na(.$d.dimer.low)                            ~ '',
+                                   ## is.na(.$d.dimer.low)                            ~ '',
                                    is.na(.$d.dimer.high)                           ~ '',
-                                   .$d.dimer <  .$d.dimer.low | .$d.dimer >  .$d.dimer.high ~ 'Abnormal',
-                                   .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
+                                   .$d.dimer > .$d.dimer.high  ~ 'Abnormal',
+                                   .$d.dimer <= .$d.dimer.high ~ 'Normal')
+                                   ## .$d.dimer <  .$d.dimer.low | .$d.dimer >  .$d.dimer.high ~ 'Abnormal',
+                                   ## .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
            d.dimer.cat = ifelse(d.dimer.cat == '' | is.na(trimester),
                                 yes = NA,
                                 no  = d.dimer.cat),
