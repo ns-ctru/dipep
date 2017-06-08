@@ -1755,7 +1755,7 @@ dipep <- dipep %>%
                                    ## is.na(.$d.dimer.low)                            ~ '',
                                    is.na(.$d.dimer.high)                           ~ '',
                                    .$d.dimer > .$d.dimer.high  ~ 'Abnormal',
-                                   .$d.dimer <= .$d.dimer.high ~ 'Normal')
+                                   .$d.dimer <= .$d.dimer.high ~ 'Normal'),
                                    ## .$d.dimer <  .$d.dimer.low | .$d.dimer >  .$d.dimer.high ~ 'Abnormal',
                                    ## .$d.dimer >= .$d.dimer.low & .$d.dimer <= .$d.dimer.high ~ 'Normal'),
            d.dimer.cat = ifelse(d.dimer.cat == '' | is.na(trimester),
