@@ -13,6 +13,7 @@ opts_chunk$set(cache.path = 'cache/',
                fig.width  = 8,
                warning = FALSE,
                message = FALSE)
+opts_chunk$set(fig.path = 'biomarker_figures/figures')
 options(digits = 3)
 ## Ensure anchors are assessed first
 ## opts_knit$set(eval.after = 'echo')
