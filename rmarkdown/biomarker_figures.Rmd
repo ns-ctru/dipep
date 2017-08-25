@@ -95,7 +95,8 @@ continuous  <- c('age',
 
 ```
 
-```{r notifications, echo = FALSE, eval = TRUE}
+```{r load, echo = FALSE, eval = TRUE}
+load('data/dipep_results.RData')
 
 ```
 
