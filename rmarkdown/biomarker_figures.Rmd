@@ -4,7 +4,7 @@ output: word_document
 bibliography: sections/bibliography.bib
 ---
 
-```{r setup, echo = FALSE, eval = TRUE}
+```{r setup, echo = FALSE, results = 'hide', eval = TRUE}
 library(dipep)
 ##opts_chunk$set(dev = 'pdf')
 opts_chunk$set(cache.path = 'cache/',
@@ -30,7 +30,7 @@ exclusions <- c('N04/04', 'N04/05', 'N04/06')
 
 ```
 
-```{r backup, echo = FALSE, eval = TRUE}
+```{r backup, echo = FALSE, results = 'hide', eval = TRUE}
 ## Make a backup of current output based on time stamp by obtaining the
 ## modified time of the existing file and constructing a command to
 ## copy this to the sub-directory 'arch/' modifying the filename to include
@@ -95,7 +95,7 @@ continuous  <- c('age',
 
 ```
 
-```{r load, echo = FALSE, eval = TRUE}
+```{r load, echo = FALSE, results = 'hide', eval = TRUE}
 load('data/dipep_results.RData')
 
 ```
