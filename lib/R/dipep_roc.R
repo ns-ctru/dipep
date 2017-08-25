@@ -37,6 +37,10 @@ dipep_roc <- function(df        = logistic$predicted,
     else{
         df <- dplyr::filter(df, name %in% to.plot)
     }
+    ## Paste the title if one is specified
+    if(title != ''){
+        title <- paste0(('ROC curves for ', title))
+    }
     ## Refactor the 'D' variable (as we sometimes have VTE as outcome and sometimes have PE and
     ## geom_roc() only allows two levels).
     df <- mutate(df,
@@ -331,7 +335,7 @@ dipep_roc <- function(df        = logistic$predicted,
     results$plot <- ggplot(df,
                     aes(d = D, m = M, colour = as.factor(term))) +
                     geom_roc(labels = labels) +
-                    ggtitle(paste0('ROC curves for ', title)) +
+                    ggtitle(title) +
                     labs(colour = 'Step...') +
                     style_roc() + theme_bw() ## +
     ## guides(guide = guide_legend(title = 'Predictor...'))
