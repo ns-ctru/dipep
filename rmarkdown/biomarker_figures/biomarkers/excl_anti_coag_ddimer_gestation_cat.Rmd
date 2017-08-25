@@ -1,0 +1,36 @@
+##### Excluding those on Anti-Coagulants - Gestation Specific
+
+```{r results_biomarker_excl_anti_coag_d.dimer.gestation.cat, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = TRUE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'D-Dimer (Hospital) : Binary (Gestation Specific)',
+                      title.class           = 'Primary Classification',
+                      first.st, d.dimer)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st, Measurement == 'D-Dimer (Hospital)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of D-Dimer (Hospital) : Binary (Gestation Specific) by Primary Classification")
+t <- dplyr::filter(dipep, exclude.anti.coag == "No")
+table(t$first.st, t$d.dimer.gestation.cat) %>% kable(caption = "PE Status v D-Dimer (Hospital) : Binary (Gestation Specific) dichotomisation")
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st) & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = gestation, y = d.dimer, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer (Hospital) : Binary (Gestation Specific)') +
+    theme_bw() +
+    ggtitle('D-Dimer (Hospital) : Binary (Gestation Specific) v Gestation') +
+    labs(colour = 'PE Status')
+## Regression results
+biomarker.excl.anti.coag$d.dimer.gestation.cat$roc
+biomarker.excl.anti.coag$d.dimer.gestation.cat$fitted %>% summary()
+## CAT2
+## CAT
+
+```

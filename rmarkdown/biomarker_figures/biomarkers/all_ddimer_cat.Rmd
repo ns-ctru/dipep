@@ -1,0 +1,37 @@
+##### All
+
+```{r results_biomarker_all_d.dimer.cat, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'D-Dimer (Hospital) : Binary',
+                      title.class           = 'Primary Classification',
+                      first.st, d.dimer)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st, Measurement == 'D-Dimer (Hospital)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of D-Dimer (Hospital) : Binary by Primary Classification")
+## TAB1
+table(dipep$first.st, dipep$d.dimer.cat) %>%
+     kable(caption = 'PE Status v D-Dimer (Hospital) : Binary dichotomisation')
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st)) %>%
+ggplot(aes(x = gestation, y = d.dimer, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer (Hospital) : Binary') +
+    theme_bw() +
+    ggtitle('D-Dimer (Hospital) : Binary v Gestation') +
+    labs(colour = 'PE Status')
+## Regression results
+biomarker.all$d.dimer.cat$roc
+biomarker.all$d.dimer.cat$fitted %>% summary()
+## CAT2
+## CAT
+
+```

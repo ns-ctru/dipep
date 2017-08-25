@@ -1,0 +1,239 @@
+##### Gestation  {.tabset .tabset-fade .tabset-pills}
+
+A possibly useful reference when considering D-Dimer is *Gestation-specific D-dimer reference ranges: a cross-sectional study*(@murphy2015).
+
+###### D-Dimer ELISA
+
+Crude plot of D-Dimer (ELISA) levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_ddimer_elisa, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = ddimer.elisa, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer - ELISA (ng/l)') +
+    theme_bw() +
+    ggtitle('D-Dimer - ELISA v Gestation') +
+    labs(colour = 'Primary Classification')
+
+```
+
+###### D-Dimer Innovance
+
+Crude plot of D-Dimer (Innovance) levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_ddimer_innovan, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = ddimer.innovance, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer - Innovance (mg/l)') +
+    theme_bw() +
+    ggtitle('D-Dimer - Innovance v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### APTT
+
+Crude plot of APTT levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_aptt, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = aptt, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('APTT (Min)') +
+    theme_bw() +
+    ggtitle('APTT v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Prothombin (Time)
+
+Crude plot of Prothombin (Time) levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_prothombin, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = prothombin.time, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Prothombin Time (Min)') +
+    theme_bw() +
+    ggtitle('Prothombin Time v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Clauss Fibrinogen
+
+Crude plot of Clauss Fibrinogen levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_clauss_fibrinogen, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = clauss.fibrinogen, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Clauss Fibrinogen (g/l)') +
+    theme_bw() +
+    ggtitle('Clauss Fibrinogen v Gestation') +
+    labs(colour = 'Primary Classification')
+
+```
+
+###### Thrombin Generation Lag Time
+
+Crude plot of Thrombin Generation Lag Time levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_thrombin_generation_lag_time, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = thrombin.generation.lag.time, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Thrombin Generation Lag Time (Min)') +
+    theme_bw() +
+    ggtitle('Thrombin Generation Lag Time v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Thrombin Generation Endogenous Potential
+
+Crude plot of Thrombin Generation Endogenous Potential levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_thrombin_generation_endogenous_potential, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = thrombin.generation.endogenous.potential, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Thrombin Generation Endogenous Potential (Min)') +
+    theme_bw() +
+    ggtitle('Thrombin Generation Endogenous Potential v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Thrombin Generation Peak
+
+Crude plot of Thrombin Generation Peak levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_thrombin_generation_peak, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = thrombin.generation.peak, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Thrombin Generation Peak (nM)') +
+    theme_bw() +
+    ggtitle('Thrombin Generation Peak v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Thrombin Generation Time to Peak
+
+Crude plot of Thrombin Generation Time to Peak levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_thrombin_generation_time_to_peak, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = thrombin.generation.time.to.peak, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Thrombin Generation Time To Peak (Min)') +
+    theme_bw() +
+    ggtitle('Thrombin Generation Time to Peak v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Plasmin Antiplasmin
+
+Crude plot of Plasmin Antiplasmin levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_plasmin_antiplasmin, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = plasmin.antiplasmin, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Plasmin Antiplasmin (sec)') +
+    theme_bw() +
+    ggtitle('Plasmin Antiplasmin v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### NPPB
+
+Crude plot of NPPB levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_nppb, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = nppb, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('NPPB (pg/ml)') +
+    theme_bw() +
+    ggtitle('NPPB v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### MRProANP
+
+Crude plot of MRProANP levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_mrproanp, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('MRProANP (pmol/l)') +
+    theme_bw() +
+    ggtitle('MRProANP  v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### Tissue Factor
+
+Crude plot of Tissue Factor levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_tissue_factor, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = mrproanp, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Tissue Factor ()') +
+    theme_bw() +
+    ggtitle('Tissue Factor v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```
+
+###### PF 1 + 2
+
+Crude plot of PF 1 + 2 levels by length of gestation.  Currently includes women who are post-partum, but excludes Non recruited women.
+
+```{r results_biomarker_all_gestation_prothrombin_fragments, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+dplyr::filter(dipep, group %in% c('Suspected PE', 'Diagnosed PE')) %>%
+ggplot(aes(x = gestation, y = prothrombin.fragments, colour = first.st)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('PF 1 + 2 ()') +
+    theme_bw() +
+    ggtitle('PF 1 + 2 v Gestation') +
+    labs(colour = 'Primary Classification')
+
+
+```

@@ -1,0 +1,41 @@
+#### Delphi - Specificity
+
+The Delphi Consensus panel derived three scores, the version which seeks to maximise specificity has been applied to the data and is summarised below.
+```{r results_existing_delphi.specificity, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+## Summarise
+delphi.specificity <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'Delphi Specificity Score',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 first.st, delphi.specificity.pe, delphi.specificity)
+## Plots
+delphi.specificity$bar.chart
+delphi.specificity$likert.plot
+## Tables
+kable(delphi.specificity$summary.table,
+      caption = 'Summary of Delphi Specificity Score',
+      digits = 3)
+kable(delphi.specificity$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi Specificity Score.')
+kable(delphi.specificity$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the Delphi Specificity Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+The Delphi Specificity Score has also been analysed using the calculated delphi.specificitys rather than dichotomisation, the ROC curve below shows its performance treating the Delphi Specificity Score as a categorical variable.
+
+```{r results_existing_delphi.specificity_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+delphi.specificity$roc.cat.plot
+
+```
+
+Whilst the ROC curve below shows its performance treating the Delphi Specificity Score as a continuous variable.
+
+```{r results_existing_delphi.specificity_extra2, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+delphi.specificity$roc.con.plot
+
+```

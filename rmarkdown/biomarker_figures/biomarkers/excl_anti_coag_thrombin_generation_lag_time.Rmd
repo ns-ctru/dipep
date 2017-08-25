@@ -1,0 +1,36 @@
+##### Thrombin Generation (Lag Time)
+
+```{r results_biomarker_excl_anti_coag_thrombin.generation.lag.time, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = TRUE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'Thrombin Generation - Lag Time (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.lag.time)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st.vte, Measurement == 'Thrombin Generation (Lag Time)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of Thrombin Generation - Lag Time (min) by Primary Classification")
+t <- dplyr::filter(dipep, exclude.anti.coag == "No")
+table(t$first.st.vte, t$thrombin.generation.lag.time.cat) %>% kable(caption = "PE Status v Thrombin Generation - Lag Time (min) dichotomisation")
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte) & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = gestation, y = thrombin.generation.lag.time, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Thrombin Generation - Lag Time (min)') +
+    theme_bw() +
+    ggtitle('Thrombin Generation - Lag Time (min) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.excl.anti.coag$thrombin.generation.lag.time$roc
+biomarker.excl.anti.coag$thrombin.generation.lag.time$fitted %>% summary()
+## CAT2
+## CAT
+
+```

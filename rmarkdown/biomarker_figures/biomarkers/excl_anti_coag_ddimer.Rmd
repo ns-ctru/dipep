@@ -1,0 +1,36 @@
+##### D-Dimer (Hospital)
+
+```{r results_biomarker_excl_anti_coag_d.dimer, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = TRUE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'D-Dimer (Hospital) : Continuous',
+                      title.class           = 'Primary Classification',
+                      first.st, d.dimer)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.excl.anti.coag$first.st.vte, Measurement == 'D-Dimer (Hospital)') %>%
+    dplyr::select(-Measurement, -DVT) %>%
+        kable(caption = "Summary of D-Dimer (Hospital) : Continuous by Primary Classification")
+t <- dplyr::filter(dipep, exclude.anti.coag == "No")
+table(t$first.st.vte, t$d.dimer.cat) %>% kable(caption = "PE Status v D-Dimer (Hospital) : Continuous dichotomisation")
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte) & exclude.anti.coag == 'No') %>%
+ggplot(aes(x = gestation, y = d.dimer, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('D-Dimer (Hospital) : Continuous') +
+    theme_bw() +
+    ggtitle('D-Dimer (Hospital) : Continuous v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.excl.anti.coag$d.dimer$roc
+biomarker.excl.anti.coag$d.dimer$fitted %>% summary()
+## CAT2
+## CAT
+
+```

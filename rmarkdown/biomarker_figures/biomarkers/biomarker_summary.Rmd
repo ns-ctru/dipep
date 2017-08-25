@@ -1,0 +1,329 @@
+#### Descriptive Summaries (All) {.tabset .tabset-fade .tabset-pills}
+
+Biomarkers are summarised below on the basis of the primary classification of Pulmonary Embolism status.  Histograms of the distribution within each classification (`PE`, `No PE` or `Exclude`) are displayed followed by a table showing the number, mean, standard deviation, median and inter-quartile range and the minimum and maximum values observed.  No formal statistical tests for differences are shown since these are provided by the Logistic Regression analyses.
+
+**IMPORTANT** Because of the exclusion of a large amount of Thrombin biomarker data by virtue of individuals (N = `r dplyr::filter(master$biomarker_exclusions_clean, exclude.anti.coag == 'Yes') %>% nrow()`) having received anti-coagulants prior to their blood sample being taken there is a large degree of variation in the y-axis scale of the following histograms.
+
+```{r  demographics_biomarker_all_summary, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+summary.biomarkers <- list()
+summary.biomarkers$first.st <- dipep_summarise(df           = dipep,
+                      	                  grouping     = 'first.st',
+                      	                  group.as.col = TRUE,
+                                          exclude               = NULL,
+                                          exclude.non.recruited = TRUE,
+                                          exclude.dvt           = TRUE,
+                                          exclude.anti.coag     = FALSE,
+                      	                  prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
+                                          thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                          thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                          ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                          tissue.factor, troponin,
+                                          nppb, mrproanp)
+summary.biomarkers$second.st <- dipep_summarise(df           = dipep,
+                                                grouping     = 'second.st',
+                                                group.as.col = TRUE,
+                                                exclude               = NULL,
+                                                exclude.non.recruited = TRUE,
+                                                exclude.dvt           = TRUE,
+                                                exclude.anti.coag     = FALSE,
+                                                prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
+                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                                tissue.factor, troponin,
+                                                nppb, mrproanp)
+summary.biomarkers$third.st <- dipep_summarise(df           = dipep,
+                                               grouping     = 'third.st',
+                                               group.as.col = TRUE,
+                                               exclude               = NULL,
+                                               exclude.non.recruited = TRUE,
+                                               exclude.dvt           = TRUE,
+                                               exclude.anti.coag     = FALSE,
+                                               prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
+                                               thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                               thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                               ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                               tissue.factor, troponin,
+                                               nppb, mrproanp)
+summary.biomarkers$fourth.st <- dipep_summarise(df           = dipep,
+                                                grouping     = 'fourth.st',
+                                                group.as.col = TRUE,
+                                                exclude               = NULL,
+                                                exclude.non.recruited = TRUE,
+                                                exclude.dvt           = TRUE,
+                                                exclude.anti.coag     = FALSE,
+                                                prothombin.time, aptt, clauss.fibrinogen, ddimer.innovance,
+                                                thrombin.generation.lag.time, thrombin.generation.endogenous.potential,
+                                                thrombin.generation.peak, thrombin.generation.time.to.peak,
+                                                ddimer.elisa, plasmin.antiplasmin, prothrombin.fragments,
+                                                tissue.factor, troponin,
+                                                nppb, mrproanp)
+
+```
+
+##### APTT
+
+```{r  demographics_biomarker_all_aptt_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot         = 'aptt (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, aptt)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'APTT') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of APTT by Primary Classification')
+
+```
+
+##### Prothombin (Time)
+
+```{r  demographics_biomarker_all_prothombin_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Prothombin (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, prothombin.time)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Prothombin (Time)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of Prothombin (Time) by Primary Classification')
+
+```
+
+##### Clauss Fibrinogen
+
+```{r  demographics_biomarker_all_clauss_fibrinogen_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Clauss Fibrinogen (g/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, clauss.fibrinogen)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Clauss Fibrinogen') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of Clauss Fibrinogen by Primary Classification')
+
+```
+
+##### D-Dimer (Innovance)
+
+```{r  demographics_biomarker_all_ddimer_innovan_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'D-Dimer - Innovance (mg/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, ddimer.innovance)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'D-Dimer (Innovance)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of D-Dimer (Innovance) by Primary Classification')
+
+```
+
+##### D-Dimer (ELISA)
+
+```{r  demographics_biomarker_all_ddimer_elisa_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'D-Dimer - ELISA (ng/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, ddimer.elisa)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'D-Dimer (ELISA)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Summary of D-Dimer (ELISA) by Primary Classification')
+
+```
+
+##### Thrombin Generation (Lag Time)
+
+```{r  demographics_biomarker_all_thrombin_generation_lag_time_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Thrombin Generation - Lag Time (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.lag.time)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Lag Time)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Thrombin Generation (Lag Time)')
+
+```
+
+##### Thrombin Generation (Endogenous Potential)
+
+```{r  demographics_biomarker_all_thrombin_generation_endogenous_potential_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Thrombin Generation - Endogenous Potential (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.endogenous.potential)
+to.plot$histogram
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Endogenous Potential)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Thrombin Generation (Endogenous Potential)')
+to.plot$scatter
+
+```
+
+##### Thrombin Generation (Time to Peak)
+
+```{r  demographics_biomarker_all_thrombin_generation_time_to_peak_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Thrombin Generation - Time to Peak (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.time.to.peak)
+to.plot$histogram
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Time to Peak)') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Thrombin Generation (Time to Peak)')
+to.plot$scatter
+
+```
+
+##### Thrombin Generation (Peak)
+
+```{r  demographics_biomarker_all_thrombin_generation_peak_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Thrombin Generation - Peak (nM)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.peak)
+to.plot$histogram
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Thrombin Generation (Peak)') %>%
+    dplyr::select(-Measurement) %>%
+    kable(caption = 'Thrombin Generation (Peak)')
+to.plot$scatter
+
+```
+
+##### Plasmin Antiplasmin
+
+```{r  demographics_biomarker_all_plasmin_antiplasmin_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Plasmin Antiplasmin (sec)',
+                      title.class           = 'Primary Classification',
+                      first.st, plasmin.antiplasmin)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Plasmin (Antiplasmin)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Plasmin Antiplasmin')
+
+```
+
+
+##### Natriuertic Peptide
+
+```{r  demographics_biomarker_all_natriuertic_peptide_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'NPPB (pg/ml)',
+                      title.class           = 'Primary Classification',
+                      first.st, nppb)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'NPPB') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'NPPB')
+
+```
+
+##### MRproANP
+
+```{r  demographics_biomarker_all_mrproanp_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'MRproANP (pmol/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, mrproanp)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'MRproANP') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'MRproANP')
+
+```
+
+##### Tissue Factor
+
+```{r  demographics_biomarker_all_mrproanp_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'Tissue Factor',
+                      title.class           = 'Primary Classification',
+                      first.st, tissue.factor)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'Tissue Factor') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'Tissue Factor')
+
+```
+
+##### PF 1 + 2
+
+```{r  demographics_biomarker_all_mrproanp_primary_class, echo = FALSE, cache = FALSE, results = 'markup', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = TRUE,
+                      exclude.anti.coag     = FALSE,
+                      title.to.plot       = 'PF 1 + 2',
+                      title.class           = 'Primary Classification',
+                      first.st, prothrombin.fragments)
+to.plot$histogram
+to.plot$scatter
+dplyr::filter(summary.biomarkers$first.st, Measurement == 'PF 1 + 2') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = 'PF 1 + 2')
+
+```

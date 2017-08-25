@@ -1,0 +1,37 @@
+##### PF 1 + 2
+
+```{r results_biomarker_all_prothrombin.fragments, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'PF 1 + 2 (pmol/l)',
+                      title.class           = 'Primary Classification',
+                      first.st, prothrombin.fragments)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st.vte, Measurement == 'PF 1 + 2') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of PF 1 + 2 (pmol/l) by Primary Classification")
+## TAB1
+table(dipep$first.st.vte, dipep$prothrombin.fragments.cat) %>%
+     kable(caption = 'PE Status v PF 1 + 2 (pmol/l) dichotomisation')
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte)) %>%
+ggplot(aes(x = gestation, y = prothrombin.fragments, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('PF 1 + 2 (pmol/l)') +
+    theme_bw() +
+    ggtitle('PF 1 + 2 (pmol/l) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.all$prothrombin.fragments$roc
+biomarker.all$prothrombin.fragments$fitted %>% summary()
+## CAT2
+## CAT
+
+```

@@ -1,0 +1,3 @@
+### Miscellaneous Requests
+
+This section covers miscellaneous requests for checks, tables, graphs and analyses not covered in the Statistical Analaysis Plan.

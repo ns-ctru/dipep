@@ -1,0 +1,73 @@
+### Biomarkers {.tabset .tabset-fade .tabset-pills}
+
+
+**NB** - Only the `Suspected PE` group had blood samples assayed for this work in a standardised laboratory setting.  The D-Dimer measurements for individuals identified as `Diagnosed PE` from the UKOSS cohort suffer from heterogeneity in laboratories and reagents.
+
+The nomenclature for biomarkers used in the Statistical Analysis Plan were not used in the resulting data that was provided by [Kiran Parmar](mailto:kiran.parmar@kcl.ac.uk)
+
+Table: Abbreviations used in supplied biomarker assays
+
+| Biomarker                              | Abbreviations                   | Tab                                |
+|:---------------------------------------|:--------------------------------|:-----------------------------------|
+| Activated partial thromboplastin time  | APTT SP liquid                  | APTT |
+| Clauss Fibrinogen                      | Clauss Fibrinogen               | Clauss Fibrinogen |
+| Troponin I                             | Troponin I                      | Troponin |
+| B-type Natriuretic Peptide             | NPPB                            | NPPB |
+| MRProANP                               | MRProANP                        | MRProANP |
+| Thrombin Generation                    | ttPeak                          | Thrombin Generation (Time to Peak) |
+|                                        | Peak                            | Thrombin Generation (Peak) |
+|                                        | ETP                             | Thrombin Generation (Endogenous Potential) |
+|                                        | Lagtime                         | Thrombin Generation (Lag Time) |
+| Plasmin Antiplasmin                    | PAP                             | Plasmin Antiplasmin |
+| Soluble Tissue Factor                  | TF                              | Tissue Factor |
+| D-Dimer latex aglutination (Innovance) | D-Dimer innovance latex test    | D-Dimer (Innovance) |
+| D-Dimer (ELISA)                        | D-Dimer Eliza Zymutest (Hyphen) | D-Dimer (ELISA) |
+| Prothrombin Time                       | PT                              | Prothrombin |
+| Prothrombin Fragments 1 + 2            | PF 1 + 2                        | PF 1 + 2 |
+
+
+```{r child = 'biomarkers/prep.Rmd', eval = TRUE}
+```
+
+#### All Assays {.tabset .tabset-fade .tabset-pills}
+
+```{r child = 'biomarkers/results_all.Rmd', eval = TRUE}
+```
+
+
+#### Excluding those on Anti-Coagulants  {.tabset .tabset-fade .tabset-pills}
+
+```{r child = 'biomarkers/results_excl_anti_coag.Rmd', eval = TRUE}
+```
+
+#### D-Dimer (Hospital)   {.tabset .tabset-fade .tabset-pills}
+
+```{r child = 'biomarkers/ddimer.Rmd', eval = FALSE}
+```
+
+
+
+
+
+
+
+```{r child = 'biomarkers/biomarker_summary_all.Rmd', eval = FALSE}
+```
+
+```{r child = 'biomarkers/biomarker_logistic_all.Rmd', eval = FALSE}
+```
+
+```{r child = 'biomarkers/gestation_all.Rmd', eval = FALSE}
+```
+
+```{r child = 'biomarkers/biomarker_summary_excl_anti_coag.Rmd', eval = FALSE}
+```
+
+```{r child = 'biomarkers/biomarker_logistic_excl_anti_coag.Rmd', eval = FALSE}
+```
+
+```{r child = 'biomarkers/gestation_excl_anti_coag.Rmd', eval = FALSE}
+```
+
+```{r child = 'biomarkers/ddimer.Rmd', eval = FALSE}
+```

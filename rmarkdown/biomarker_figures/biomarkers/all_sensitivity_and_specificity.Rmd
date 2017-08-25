@@ -1,0 +1,130 @@
+<!-- ##### Sensitivity and Specificity -->
+
+The table below details the sensitivity and specificity (and all other metrics) for each biomarker with a specific cut-point that maintains sensitivity of at least 95%.
+
+```{r results_biomarker_all_sensitivity_specificity_prep, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Set arbitrary theshold, not really used here as ROCR is used internally using the
+## specified sensitivity theshold.
+##
+## See https://stackoverflow.com/questions/16347507/obtaining-threshold-values-from-a-roc-curve
+## Extract summary stats table for each biomarker
+## APTT
+theshold <- 0.1
+summary.stats <- list()
+summary.stats$aptt <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('aptt'),
+                                title    = 'APTT biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## BNP
+summary.stats$bnp <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('bnp'),
+                                title    = 'BNP biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## CLAUSS.FIBRINOGEN
+summary.stats$clauss.fibrinogen <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('clauss.fibrinogen'),
+                                title    = 'Clauss Fibrinogen biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## DDIMER.ELISA
+summary.stats$ddimer.elisa <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('ddimer.elisa'),
+                                title    = 'D-Dimer ELISA biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## DDIMER.INNOVANCE
+summary.stats$ddimer.innovance <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('ddimer.innovance'),
+                                title    = 'D-Dimer Innovance biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## MRPROANP
+summary.stats$mrproanp <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('mrproanp'),
+                                title    = 'MRProANP biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## PLASMIN.ANTIPLASMIN
+summary.stats$plasmin.antiplasmin <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('plasmin.antiplasmin'),
+                                title    = 'Plasmin.Antiplasmin biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## PROTHOMBIN.TIME
+summary.stats$prothombin.time <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('prothombin.time'),
+                                title    = 'Prothombin Time biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## PROTHROMBIN.FRAGMENT
+summary.stats$prothrombin.fragments <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('prothrombin.fragments'),
+                                title    = 'Prothrombin Fragment biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## THROMBIN.GENERATION.ENDOGENOUS.POTENTIAL
+summary.stats$thrombin.generation.endogenous.potential <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('thrombin.generation.endogenous.potential'),
+                                title    = 'Thrombin Generation Endogenous Potential biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## THROMBIN.GENERATION.LAG.TIME
+summary.stats$thrombin.generation.lag.time <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('thrombin.generation.lag.time'),
+                                title    = 'Thrombin Generation Lag Time biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## THROMBIN.GENERATION.PEAK
+summary.stats$thrombin.generation.peak <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('thrombin.generation.peak'),
+                                title    = 'Thrombin Generation Peak biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## THROMBIN.GENERATION.TIME.TO.PEAK
+summary.stats$thrombin.generation.time.to.peak <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('thrombin.generation.time.to.peak'),
+                                title    = 'Thrombin Generation Time to Peak biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## TISSUE.FACTOR
+summary.stats$tissue.factor <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('tissue.factor'),
+                                title    = 'Tissue Factor biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## TROPONIN
+summary.stats$troponin <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('troponin'),
+                                title    = 'Troponin biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## CRP
+summary.stats$crp <- dipep_roc(biomarker.all$predicted,
+                                to.plot = c('crp'),
+                                title    = 'C-Reactive Protein biomarker performance',
+                                threshold = threshold,
+                                rocr      = 0.95)
+## Bind all together....
+rbind(summary.stats$aptt$summary.stats,
+      summary.stats$bnp$summary.stats,
+      summary.stats$clauss.fibrinogen$summary.stats,
+      summary.stats$ddimer.elisa$summary.stats,
+      summary.stats$ddimer.innovance$summary.stats,
+      summary.stats$mrproanp$summary.stats,
+      summary.stats$plasmin.antiplasmin$summary.stats,
+      summary.stats$prothombin.time$summary.stats,
+      summary.stats$prothrombin.fragments$summary.stats,
+      summary.stats$thrombin.generation.endogenous.potential$summary.stats,
+      summary.stats$thrombin.generation.lag.time$summary.stats,
+      summary.stats$thrombin.generation.peak$summary.stats,
+      summary.stats$thrombin.generation.time.to.peak$summary.stats,
+      summary.stats$tissue.factor$summary.stats,
+      summary.stats$troponin$summary.stats,
+      summary.stats$crp$summary.stats) %>%
+    arrange(Term) %>%
+    kable(digits = 3,
+          caption = 'Summary Statistics for Continuous Biomarkers for a minimum sensitivity of 95%')
+
+```

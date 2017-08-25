@@ -1,0 +1,37 @@
+##### C-Reactive Protein
+
+```{r results_biomarker_all_crp, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'C-Reactive Protein (ng/ml)',
+                      title.class           = 'Primary Classification',
+                      first.st, crp)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st.vte, Measurement == 'C-Reactive Protein') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of C-Reactive Protein (ng/ml) by Primary Classification")
+## TAB1
+table(dipep$first.st.vte, dipep$crp.cat) %>%
+     kable(caption = 'PE Status v C-Reactive Protein (ng/ml) dichotomisation')
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte)) %>%
+ggplot(aes(x = gestation, y = crp, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('C-Reactive Protein (ng/ml)') +
+    theme_bw() +
+    ggtitle('C-Reactive Protein (ng/ml) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.all$crp$roc
+biomarker.all$crp$fitted %>% summary()
+## CAT2
+## CAT
+
+```

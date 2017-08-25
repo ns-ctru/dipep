@@ -1,0 +1,37 @@
+##### Tissue Factor
+
+```{r results_biomarker_all_tissue.factor, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'Tissue Factor (pg/ml)',
+                      title.class           = 'Primary Classification',
+                      first.st, tissue.factor)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st.vte, Measurement == 'Tissue Factor') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of Tissue Factor (pg/ml) by Primary Classification")
+## TAB1
+table(dipep$first.st.vte, dipep$tissue.factor.cat) %>%
+     kable(caption = 'PE Status v Tissue Factor (pg/ml) dichotomisation')
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte)) %>%
+ggplot(aes(x = gestation, y = tissue.factor, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Tissue Factor (pg/ml)') +
+    theme_bw() +
+    ggtitle('Tissue Factor (pg/ml) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.all$tissue.factor$roc
+biomarker.all$tissue.factor$fitted %>% summary()
+## CAT2
+## CAT
+
+```

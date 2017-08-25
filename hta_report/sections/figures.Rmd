@@ -1,0 +1,6 @@
+## Figures
+
+> ADD TABLE AND FIGURE OF UNIVARIATE LOGISTIC REGRESSION
+
+```{r figure_logistic_figure, echo = FALSE, warning = FALSE, messages = FALSE, eval = TRUE}
+```

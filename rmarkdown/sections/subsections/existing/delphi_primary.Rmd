@@ -1,0 +1,41 @@
+#### Delphi - Primary
+
+The Delphi Consensus panel derived three scores, the primary one which seeks to balance sensitivity and specificity has been applied to the data and is summarised below.
+```{r results_existing_delphi.primary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+## Summarise
+delphi.primary <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'Delphi Primary Score',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 first.st, delphi.primary.pe, delphi.primary)
+## Plots
+delphi.primary$bar.chart
+delphi.primary$likert.plot
+## Tables
+kable(delphi.primary$summary.table,
+      caption = 'Summary of Delphi Primary Score',
+      digits = 3)
+kable(delphi.primary$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi Primary Score.')
+kable(delphi.primary$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the Delphi Primary Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+The Delphi Primary Score has also been analysed using the calculated delphi.primarys rather than dichotomisation, the ROC curve below shows its performance treating the Delphi Primary Score as a categorical variable.
+
+```{r results_existing_delphi.primary_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+delphi.primary$roc.cat.plot
+
+```
+
+Whilst the ROC curve below shows its performance treating the Delphi Primary Score as a continuous variable.
+
+```{r results_existing_delphi.primary_extra2, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+delphi.primary$roc.con.plot
+
+```

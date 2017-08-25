@@ -1,0 +1,102 @@
+### EQ-5D-5L
+
+```{r eq5d5l_summary, echo = FALSE, cache = FALSE, results = 'hide', eval = TRUE}
+## Number of completed and unavailable EQ5D-5L responses
+n_eq5d5l_complete <- filter(dipep,
+                            !is.na(mobility) &
+                            !is.na(anxiety.depression) &
+                            !is.na(self.care) &
+                            !is.na(usual.activity) &
+                            !is.na(pain.discomfort) &
+                            !is.na(health.scale.number)) %>% nrow()
+n_eq5d5l_missing <- filter(dipep,
+                           is.na(mobility) &
+                           is.na(anxiety.depression) &
+                           is.na(self.care) &
+                           is.na(usual.activity) &
+                           is.na(pain.discomfort) &
+                           is.na(health.scale.number)) %>% nrow()
+## Data frame to summarise
+eq5d <- filter(dipep,
+               !is.na(mobility) &
+               !is.na(anxiety.depression) &
+               !is.na(self.care) &
+               !is.na(usual.activity) &
+               !is.na(pain.discomfort) &
+               !is.na(health.scale.number)) %>%
+        dplyr::select(screening,
+                      group,
+                      pe,
+                      mobility,
+                      self.care,
+                      anxiety.depression,
+                      usual.activity,
+                      pain.discomfort,
+                      health.scale.number)
+
+```
+
+The vast majority of study participants (n = `r n_eq5d5l_missing`) did not complete the [EQ-5D-5L](http://www.euroqol.org/eq-5d-products/eq-5d-5l.html) questionnaire and there are only `r n_eq5d5l_complete` complete responses across all six fields all of whom are individuals with Suspected Pulmonary Embolisms.  These responses are summarised in the tables and figures below.
+
+```{r eq5d5l_plot, echo = FALSE, cache = FALSE, results = 'hide', warning = FALSE, fig.width = 10, eval = TRUE}
+to.plot <- dplyr::select(eq5d,
+                         mobility,
+                         self.care,
+                         anxiety.depression,
+                         usual.activity,
+                         pain.discomfort)
+names(to.plot) <- c("Mobility", "Self Care", "Anxiety/Depression", "Usual Activity", "Pain/Discomfort")
+likert(to.plot) %>%
+    plot(centered = FALSE) + ggtitle(paste0('EQ-5D-5L Scores repsonses for ',
+                                            n_eq5d5l_complete,
+                                            ' individuals with Suspected PE'))
+
+```
+
+```{r eq5d5l_table, echo = FALSE, cache = FALSE, results = 'markup', eval = TRUE}
+to.table <- to.plot %>% summary() %>% data.frame() %>% dplyr::select(-Var1)
+names(to.table) <- c('Dimension', 'freq')
+mutate(to.table,
+       n        = substr(freq,
+                         start = regexpr(freq, pattern = ':') + 1,
+                         stop  = nchar(freq)) %>% as.numeric(),
+       response = substr(freq,
+                         start = 1,
+                         stop  = regexpr(freq, pattern = ':') - 1)) %>%
+    mutate(response = gsub("^\\s+|\\s+$", "", response)) %>% ## Remove trailing white space
+    dplyr::select(-freq) %>%
+    dcast(Dimension ~ response, value.var = 'n') %>%
+    dplyr::select(Dimension, None, Slight, Moderate, Severe, Extreme) %>%
+    kable(caption = paste0('Counts of observed EQ-5D-5L responses for ',
+                           n_eq5d5l_complete,
+                           ' individuals with Suspected PE'))
+rm(to.plot, to.table)
+all <- summarise(eq5d,
+                 N      = sum(!is.na(health.scale.number)),
+                 Mean   = mean(health.scale.number, na.rm = TRUE),
+                 SD     = sd(health.scale.number, na.rm = TRUE),
+                 Lower  = quantile(health.scale.number, probs = 0.25, na.rm = TRUE),
+                 Median = quantile(health.scale.number, probs = 0.5, na.rm = TRUE),
+                 Upper  = quantile(health.scale.number, probs = 0.25, na.rm = TRUE),
+                 Min    = min(health.scale.number, na.rm = TRUE),
+                 Max    = max(health.scale.number, na.rm = TRUE)) %>%
+       mutate(Status = 'All')
+by.group <- group_by(eq5d, pe) %>%
+            summarise(N      = sum(!is.na(health.scale.number)),
+                      Mean   = mean(health.scale.number, na.rm = TRUE),
+                      SD     = sd(health.scale.number, na.rm = TRUE),
+                      Lower  = quantile(health.scale.number, probs = 0.25, na.rm = TRUE),
+                      Median = quantile(health.scale.number, probs = 0.5, na.rm = TRUE),
+                      Upper  = quantile(health.scale.number, probs = 0.25, na.rm = TRUE),
+                      Min    = min(health.scale.number, na.rm = TRUE),
+                      Max    = max(health.scale.number, na.rm = TRUE)) %>%
+            rename("Status" = pe)
+rbind(all, by.group) %>%
+dplyr::select(Status, N, Mean, SD, Lower, Median, Upper, Min, Max) %>%
+kable(caption = paste0('Summary of Health Scale Number EQ-5D-5L responses for ',
+                           n_eq5d5l_complete,
+                           ' individuals with Suspected PE'),
+      digits = 3)
+rm(all, by.group)
+
+```

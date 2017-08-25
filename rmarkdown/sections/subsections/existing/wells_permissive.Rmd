@@ -1,0 +1,43 @@
+#### Wells Score (Permissive)
+
+The Wells Score (@wells2001) is summarised below.  An [online calculator](https://www.mdcalc.com/wells-criteria-pulmonary-embolism) is available.  A score $> 4$ is taken as indicative of PE.
+
+**NB** - Permissive means that for the item "*Pulmonary embolism is the most or equally likely diagnosis*" that "*Possibly PE*" have been included.
+```{r results_existing_wells_permissive, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+## Summarise
+wells.permissive <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'Wells Score (Permissive)',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 first.st, wells.permissive.pe, wells.permissive)
+## Plots
+wells.permissive$bar.chart
+wells.permissive$likert.plot
+## Tables
+kable(wells.permissive$summary.table,
+      caption = 'Summary of Wells Score (Permissive)',
+      digits = 3)
+kable(wells.permissive$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Wells Score (Permissive).')
+kable(wells.permissive$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the Wells Score (Permissive) for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+The Wells Score (Permissive) has also been analysed using the calculated wells.permissives rather than dichotomisation, the ROC curve below shows its performance treating the Wells Score (Permissive) as a categorical variable.
+
+```{r results_existing_wells_permissive_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+wells.permissive$roc.cat.plot
+
+```
+
+Whilst the ROC curve below shows its performance treating the Wells Score (Permissive) as a continuous variable.
+
+```{r results_existing_wells_permissive_extra2, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+wells.permissive$roc.con.plot
+
+```

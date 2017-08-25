@@ -1,0 +1,29 @@
+### Codes and Abbreviations
+
+Various codes are used in this study, they are detailed in this section.
+
+#### Abbreviations
+
+Where possible abbreviations have been avoided in this report, but some commonly used abbreviations across the study which may be found are listed in the table below.
+
+: Abbreviations used in the DiPEP study.
+| Abbreviation | Description  |
+|:-------------|:-------------|
+| PE           | Pulmonary Embolism |
+
+#### Classification of Pulmonary Embolism
+
+The case review of participants to determine classification of individuals as having Pulmonary Embolism or not or whether to exclude individuals generated a number of codes.
+
+: Classifiers used in determining individuals with or without Pulmonary Embolism or for exclusion.
+| Classifier | Code  | Description            |
+|:-----------|:-----:|:-----------------------|
+| Imaging    | `I1a` | Imaging is reported as showing Pulmonary Embolism (including any qualified statement suggesting probable Pulmonary Embolism but excluding isolated sub-segemental Pulmonary Embolism) or DVT |
+|            | `I1b` | Imaging only shows isolated sub-segmental Pulmonary Embolism. |
+|            | `I2`  | Imgaing is reported as equivocal/uninterpretable/indeterminate. |
+|            | `I3`  | Imaging is reported as negative for Pulmonary Embolism. |
+|            | `I4`  | No imaging available. |
+| Therapy    | `T1`  | Therapeutic anticoagulation for more than one week. |
+|            | `T2`  | Anything 'less' than `T1`. |
+| Follow-Up  | `F1`  | Subsequent Pulmonary Embolism diagnosis during 30-day follow-up or confirmed at surgery or post-mortem. |
+|            | `F2`  | No subsequent Pulmonary Embolism diagnosis during 30-day follow-up. |

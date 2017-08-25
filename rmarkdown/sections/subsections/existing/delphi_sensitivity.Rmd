@@ -1,0 +1,41 @@
+#### Delphi - Sensitivity
+
+The Delphi Consensus panel derived three scores, the version which seeks to maximise sensitivity has been applied to the data and is summarised below.
+```{r results_existing_delphi.sensitivity, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+## Summarise
+delphi.sensitivity <- dipep_existing_sum(df                    = dipep,
+                                 title                 = 'Delphi Sensitivity Score',
+                                 exclude               = NULL,
+                                 exclude.non.recruited = TRUE,
+                                 exclude.dvt           = TRUE,
+                                 exclude.missing       = TRUE,
+                                 first.st, delphi.sensitivity.pe, delphi.sensitivity)
+## Plots
+delphi.sensitivity$bar.chart
+delphi.sensitivity$likert.plot
+## Tables
+kable(delphi.sensitivity$summary.table,
+      caption = 'Summary of Delphi Sensitivity Score',
+      digits = 3)
+kable(delphi.sensitivity$table,
+      digits  = 3,
+      caption = 'Pulmonary Embolism status compared to predicted status based on Delphi Sensitivity Score.')
+kable(delphi.sensitivity$performance.table,
+      digits  = 3,
+      caption = 'Performance indicators for the Delphi Sensitivity Score for Pulmonary Embolism applied retrospectively to the DiPEP data.')
+
+```
+
+The Delphi Sensitivity Score has also been analysed using the calculated delphi.sensitivitys rather than dichotomisation, the ROC curve below shows its performance treating the Delphi Sensitivity Score as a categorical variable.
+
+```{r results_existing_delphi.sensitivity_extra, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+delphi.sensitivity$roc.cat.plot
+
+```
+
+Whilst the ROC curve below shows its performance treating the Delphi Sensitivity Score as a continuous variable.
+
+```{r results_existing_delphi.sensitivity_extra2, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 10, results = 'markdown', eval = TRUE}
+delphi.sensitivity$roc.con.plot
+
+```

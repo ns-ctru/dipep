@@ -1,0 +1,37 @@
+##### Thrombin Generation (Time to Peak)
+
+```{r results_biomarker_all_thrombin.generation.time.to.peak, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'Thrombin Generation - Time To Peak (min)',
+                      title.class           = 'Primary Classification',
+                      first.st, thrombin.generation.time.to.peak)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st.vte, Measurement == 'Thrombin Generation (Time to Peak)') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of Thrombin Generation - Time To Peak (min) by Primary Classification")
+## TAB1
+table(dipep$first.st.vte, dipep$thrombin.generation.time.to.peak.cat) %>%
+     kable(caption = 'PE Status v Thrombin Generation - Time To Peak (min) dichotomisation')
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte)) %>%
+ggplot(aes(x = gestation, y = thrombin.generation.time.to.peak, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Thrombin Generation - Time To Peak (min)') +
+    theme_bw() +
+    ggtitle('Thrombin Generation - Time To Peak (min) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.all$thrombin.generation.time.to.peak$roc
+biomarker.all$thrombin.generation.time.to.peak$fitted %>% summary()
+## CAT2
+## CAT
+
+```

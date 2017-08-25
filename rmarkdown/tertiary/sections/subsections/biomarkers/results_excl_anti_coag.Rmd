@@ -1,0 +1,263 @@
+##### Summary
+
+The point-estimate and 95% Confidence Intervals from univariable logistic regression are plotted and tabulated below.
+
+```{r results_biomarker_logistic_excl_anti_coag_summary, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+to.sum <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
+          dplyr::filter(!grepl('Abnormal', term)) %>%
+          dplyr::filter(!grepl('Hospital Continuous', term)) %>%
+          dplyr::select(term, estimate, lci, uci, p.value)
+ggplot(to.sum, aes(term, estimate, colour = term)) +
+    geom_point() + geom_errorbar(aes(ymin = lci, ymax = uci)) +
+    coord_flip() + geom_hline(yintercept = 0) +
+    xlab('Predictor') + ylab('Estimate') +
+    ggtitle('Point Estimate and 95% CI for Univariable Logistic Regression of Biomarkers') +
+    theme_bw() + theme(legend.position = 'none')
+## Redo subsetting, include temperature and O2 Saturation
+to.sum <- dplyr::filter(biomarker.excl.anti.coag$tidied, term != '(Intercept)') %>%
+          dplyr::select(term, estimate, lci, uci, p.value)
+names(to.sum) <- c('Term', 'Estimate', 'Lower CI', 'Upper CI', 'P-Value')
+kable(to.sum,
+      digits  = 3,
+      caption = 'Point estimates, 95% CIs and p-values for Univariable Regression of Continuous and Dichotomised Biomarkers')
+rm(to.sum)
+
+```
+
+###### ROC Curves
+
+[Sensitivity and Specificity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) are not absolute since each individual is assigned a probability from the logistic regression model and it is then down to the investigator to decide what threshold ($0 < x < 1$ if not exponentiated) should be used to classify someone as having a Pulmonary Embolism.  A simple way of visualising the sensitivity and specificity for different thresholds is via a [Receiver Operating Characteristic Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) which plots the [false-positive rate](https://en.wikipedia.org/wiki/False_positive_rate) against the true positive rate.  The following graph shows the curves for the different univariable logistic regression models.
+
+```{r results_biomarker_logistic_excl_anti_coag_roc, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## This uses the geom_roc() ggplot2 extension from the ploROC package
+## ROC for continuous variables
+threshold <- 0.1
+biomarker.excl.anti.coag$roc.other <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
+                                     to.plot = c('clauss.fibrinogen',
+                                                 'plasmin.antiplasmin',
+                                                 'tissue.factor',
+                                                 'troponin',
+                                                 'nppb',
+                                                 'mrproanp',
+                                                 'bnp',
+                                                 'crp'),
+                                     title    = 'Other Biomarkers',
+                                     threshold = threshold)
+biomarker.excl.anti.coag$roc.other$plot
+biomarker.excl.anti.coag$roc.ddimer <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
+                                      to.plot = c('ddimer.innovance',
+                                                  'ddimer.elisa'),
+                                      title    = 'D-Dimer Biomarkers',
+                                      threshold = 0.05)
+biomarker.excl.anti.coag$roc.ddimer$plot
+biomarker.excl.anti.coag$roc.thrombin <- dipep_roc(df      = biomarker.excl.anti.coag$predicted,
+                                        to.plot = c('aptt',
+                                                    'prothombin.time',
+                                                    'thrombin.generation.lag.time',
+                                                    'thrombin.generation.endogenous.potential',
+                                                    'thrombin.generation.peak',
+                                                    'thrombin.generation.time.to.peak',
+                                                    'prothrombin.fragments'),
+                                        title    = 'Thrombin/Prothombin Biomarkers',
+                                        threshold = threshold)
+biomarker.excl.anti.coag$roc.thrombin$plot
+
+```
+
+<!-- The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.1` but marker specific cut points based on the ROC curves displayed above are preferable. -->
+
+The performance of dichotomising the biomarkers based on the supplied reference ranges is summarised below.
+
+```{r results_biomarker_logistic_excl_anti_coag_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
+rbind(biomarker.excl.anti.coag$roc.other$summary.stats,
+      biomarker.excl.anti.coag$roc.ddimer$summary.stats,
+      biomarker.excl.anti.coag$roc.thrombin$summary.stats) %>%
+    ## dplyr::select(-PPV, -NPV) %>%
+    kable(caption = paste0('Summary Statistics for Biomarkers using p > ', threshold, ' to classify predicted probabilities as PE.'))
+
+
+```
+
+```{r results_biomarker_logistic_excl_anti_coag_performance_cat, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
+## auc <- cbind(c('aptt.cat',
+##                'bnp.cat',
+##                'clauss.fibrinogen.cat',
+##                'd.dimer.cat',
+##                'd.dimer.gestation.cat',
+##                'ddimer.elisa.cat',
+##                'ddimer.innovance.cat',
+##                'mrproanp.cat',
+##                'plasmin.antiplasmin.cat',
+##                'prothombin.time.cat',
+##                'prothrombin.fragments.cat',
+##                'thrombin.generation.endogenous.potential.cat',
+##                'thrombin.generation.lag.time.cat',
+##                'thrombin.generation.peak.cat',
+##                'thrombin.generation.time.to.peak.cat',
+##                'tissue.factor.cat',
+##                'troponin.cat'),
+##              c(biomarker.excl.anti.coag$aptt.cat$auc$AUC,
+##                biomarker.excl.anti.coag$bnp.cat$auc$AUC,
+##                biomarker.excl.anti.coag$clauss.fibrinogen.cat$auc$AUC,
+##                biomarker.excl.anti.coag$d.dimer.cat$auc$AUC,
+##                biomarker.excl.anti.coag$d.dimer.gestation.cat$auc$AUC,
+##                biomarker.excl.anti.coag$ddimer.elisa$auc$AUC,
+##                biomarker.excl.anti.coag$ddimer.innovance$auc$AUC,
+##                biomarker.excl.anti.coag$mrproanp.cat$auc$AUC,
+##                biomarker.excl.anti.coag$plasmin.antiplasmin.cat$auc$AUC,
+##                biomarker.excl.anti.coag$prothombin.time.cat$auc$AUC,
+##                biomarker.excl.anti.coag$prothrombin.fragments.cat$auc$AUC,
+##                biomarker.excl.anti.coag$thrombin.generation.endogenous.potential.cat$auc$AUC,
+##                biomarker.excl.anti.coag$thrombin.generation.lag.time.cat$auc$AUC,
+##                biomarker.excl.anti.coag$thrombin.generation.peak.cat$auc$AUC,
+##                biomarker.excl.anti.coag$thrombin.generation.time.to.peak.cat$auc$AUC,
+##                biomarker.excl.anti.coag$tissue.factor.cat$auc$AUC,
+##                biomarker.excl.anti.coag$troponin.cat$auc$AUC)) %>%
+##     as.data.frame()
+## names(auc) <- c('biomarker', 'auc')
+## auc <- mutate(auc,
+##               auc = as.numeric(auc))
+
+## t <- dipep %>%
+##      dplyr::filter(exclude.anti.coag == 'No') %>%
+##      dplyr::select(screening,
+##                    first.st,
+##                    aptt.cat,
+##                    bnp.cat,
+##                    clauss.fibrinogen.cat,
+##                    d.dimer.cat,
+##                    d.dimer.gestation.cat,
+##                    ddimer.elisa.cat,
+##                    ddimer.innovance.cat,
+##                    mrproanp.cat,
+##                    plasmin.antiplasmin.cat,
+##                    prothombin.time.cat,
+##                    prothrombin.fragments.cat,
+##                    thrombin.generation.endogenous.potential.cat,
+##                    thrombin.generation.lag.time.cat,
+##                    thrombin.generation.peak.cat,
+##                    thrombin.generation.time.to.peak.cat,
+##                    tissue.factor.cat,
+##                    troponin.cat) %>%
+##      gather(key = biomarker, value = class, aptt.cat:troponin.cat) %>%
+##      group_by(first.st, biomarker, class) %>%
+##      summarise(n = n()) %>%
+##      dplyr::filter(!is.na(class)) %>%
+##      dplyr::filter(!is.na(first.st)) %>%
+##      ungroup() %>%
+##      mutate(classification = case_when(.$first.st == 'PE'    & .$class == 'Abnormal'  ~ 'true_positive',
+##                                        .$first.st == 'No PE' & .$class == 'Normal'    ~ 'true_negative',
+##                                        .$first.st == 'No PE' & .$class == 'Abnormal'  ~ 'false_positive',
+##                                        .$first.st == 'PE'    & .$class == 'Normal'    ~ 'false_negative')) %>%
+##      dplyr::select(biomarker, n, classification) %>%
+##      spread(key = classification, value = n, fill = 0) %>%
+##      mutate(sensitivity = true_positive  / (true_positive + false_negative),
+##             specificity = true_negative  / (true_negative + false_positive),
+##             ppv         = true_positive  / (true_positive + false_positive),
+##             npv         = true_negative  / (true_negative + false_negative),
+##             fpr         = false_positive / (true_negative + false_positive),
+##             fnr         = false_negative / (true_positive + false_negative),
+##             fdr         = false_positive / (true_positive + false_positive),
+##             accuracy    = (true_positive + true_negative) / (true_positive + false_positive + true_negative + false_negative)) %>%
+##      mutate(Term = case_when(.$biomarker == 'aptt.cat' ~ 'APTT : Dichotomised',
+##                              .$biomarker == 'bnp.cat' ~ 'BNP : Dichotomised',
+##                              .$biomarker == 'clauss.fibrinogen.cat' ~ 'Clauss Fibrinogen : Dichotomised',
+##                              .$biomarker == 'd.dimer.cat' ~ 'D-Dimer (Hospital) : Dichotomised',
+##                              .$biomarker == 'd.dimer.gestation.cat' ~ 'D-Dimer (Hospital) : Dichotomised (Gestation Specific)',
+##                              .$biomarker == 'ddimer.elisa.cat' ~ 'D-Dimer (ELISA) : Dichotomised',
+##                              .$biomarker == 'ddimer.innovance.cat' ~ 'D-Dimer (Innovance) : Dichotomised',
+##                              .$biomarker == 'mrproanp.cat' ~ 'MRProANP : Dichotomised',
+##                              .$biomarker == 'plasmin.antiplasmin.cat' ~ 'Plasmin-antiplasmin : Dichotomised',
+##                              .$biomarker == 'prothombin.time.cat' ~ 'Prothrombin Time : Dichotomised',
+##                              .$biomarker == 'prothrombin.fragments.cat' ~ 'Prothrombin Fragments : Dichotomised',
+##                              .$biomarker == 'thrombin.generation.endogenous.potential.cat' ~ 'Thrombin Generation - Endogenous Potential : Dichotomised',
+##                              .$biomarker == 'thrombin.generation.lag.time.cat' ~ 'Thrombin Generation - Lag Time : Dichotomised',
+##                              .$biomarker == 'thrombin.generation.peak.cat' ~ 'Thrombin Generation - Peak : Dichotomised',
+##                              .$biomarker == 'thrombin.generation.time.to.peak.cat' ~ 'Thrombin Generation - Time To Peak : Dichotomised',
+##                              .$biomarker == 'tissue.factor.cat' ~ 'Tissue Factor : Dichotomised',
+##                              .$biomarker == 'troponin.cat' ~ 'Troponin : Dichotomised')) %>%
+##      left_join(., auc) %>%
+##      dplyr::select(Term, true_positive, true_negative, false_positive, false_negative, auc,
+##                    sensitivity, specificity,
+##                    ## ppv, npv,
+##                    fpr, fnr, fdr, accuracy)
+## names(t) <- c('Term', 'True +ve', 'True -ve', 'False +ve', 'False -ve', 'AUC', 'Sensitivity', 'Specificity',
+##               ## 'PPV', 'NPV',
+##               'FPR', 'FNR', 'FDR', 'Accuracy')
+## ## dplyr::select(t, -PPV, -NPV) %>%
+## kable(t,
+##       caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
+
+## Combine the predicted probabilities based on laboratory reference range classification and
+## generate ROC curves/summary Statistics
+dipep_roc(biomarker.all$predicted,
+          to.plot = c('aptt.cat',
+                      'bnp.cat',
+                      'clauss.fibrinogen.cat',
+                      ## 'd.dimer.cat',
+                      ## 'd.dimer.gestation.cat',
+                      'ddimer.elisa.cat',
+                      'ddimer.innovance.cat',
+                      'mrproanp.cat',
+                      'plasmin.antiplasmin.cat',
+                      'prothombin.time.cat',
+                      'prothrombin.fragments.cat',
+                      'thrombin.generation.endogenous.potential.cat',
+                      ## 'thrombin.generation.lag.time.cat',
+                      'thrombin.generation.peak.cat',
+                      'thrombin.generation.time.to.peak.cat',
+                      'tissue.factor.cat',
+                      'troponin.cat',
+                      'crp.cat'),
+          title    = 'Pre-categorised biomarkers (using reference thresholds) excluding those on anti-coagulents',
+          threshold = threshold)$summary.stats %>%
+    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE, excluding those on anti-coagulents'))
+```
+
+```{r child = 'excl_anti_coag_aptt.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_clauss_fibrinogen.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_prothombin_time.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_ddimer_innovance.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_ddimer_elisa.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_thrombin_generation_lag_time.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_thrombin_generation_endogenous_potential.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_thrombin_generation_peak.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_thrombin_generation_time_to_peak.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_plasmin_antiplasmin.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_mrproanp.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_bnp.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_tissue_factor.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_prothrombin_fragments.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_troponin.Rmd', eval = TRUE}
+```
+
+```{r child = 'excl_anti_coag_crp.Rmd', eval = TRUE}
+```

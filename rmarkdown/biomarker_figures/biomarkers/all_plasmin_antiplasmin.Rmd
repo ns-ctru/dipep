@@ -1,0 +1,37 @@
+##### Plasmin-antiplasmin
+
+```{r results_biomarker_all_plasmin.antiplasmin, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'Plasmin-antiplasmin (sec)',
+                      title.class           = 'Primary Classification',
+                      first.st, plasmin.antiplasmin)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st.vte, Measurement == 'Plasmin-antiplasmin') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of Plasmin-antiplasmin (sec) by Primary Classification")
+## TAB1
+table(dipep$first.st.vte, dipep$plasmin.antiplasmin.cat) %>%
+     kable(caption = 'PE Status v Plasmin-antiplasmin (sec) dichotomisation')
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(first.st.vte)) %>%
+ggplot(aes(x = gestation, y = plasmin.antiplasmin, colour = first.st.vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('Plasmin-antiplasmin (sec)') +
+    theme_bw() +
+    ggtitle('Plasmin-antiplasmin (sec) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.all$plasmin.antiplasmin$roc
+biomarker.all$plasmin.antiplasmin$fitted %>% summary()
+## CAT2
+## CAT
+
+```

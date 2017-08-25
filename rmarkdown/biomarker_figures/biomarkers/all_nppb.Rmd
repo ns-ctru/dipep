@@ -1,0 +1,32 @@
+##### NPPB
+
+```{r results_biomarker_all_nppb, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## Box and Whisker Plot
+to.plot <- dipep_plot(df      = dipep,
+                      exclude = NULL,
+                      exclude.non.recruited = TRUE,
+                      exclude.dvt           = FALSE,
+                      exclude.anti.coag     = FALSE,
+                      exclude.missing       = FALSE,
+                      title.to.plot         = 'NPPB (pg/ml)',
+                      title.class           = 'Primary Classification',
+                      first.st, nppb)
+to.plot$scatter
+## Summary Table
+dplyr::filter(summary.biomarkers.all$first.st, Measurement == 'NPPB') %>%
+    dplyr::select(-Measurement) %>%
+        kable(caption = "Summary of NPPB (pg/ml) by Primary Classification")
+## Group DVT with PE and plot as VTE v's gestation
+dplyr::filter(dipep, !is.na(vte)) %>%
+ggplot(aes(x = gestation, y = nppb, colour = vte)) +
+    geom_point() +
+    geom_smooth(method = 'loess') +
+    xlab('Gestation (days)') + ylab('NPPB (pg/ml)') +
+    theme_bw() +
+    ggtitle('NPPB (pg/ml) v Gestation') +
+    labs(colour = 'VTE Status')
+## Regression results
+biomarker.all$nppb$fitted %>% summary()
+biomarker.all$nppb$roc
+
+```
