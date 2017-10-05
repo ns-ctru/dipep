@@ -185,28 +185,38 @@ Diastolic Blood Pressure						| $\ge 60$                                        
 Diastolic Blood Pressure						| $< 60$                                                   | 1                   | `bp.diastolic`
 Temperature										| $\le 37.4$                                               | 0                   | `temperature`
 Temperature										| $> 37.4$                                                 | 1                   | `temperature`
-D-Dimers (ELISA)								| $< `d.dimer.high`$   | 0                   | `d.dimer.cat`
-D-Dimers (ELISA)								| $\ge `d.dimer.high`$ | 1                   | `d.dimer.cat`
-D-Dimers (latex agglutination)					| $< X$   | 0                   | `?`
-D-Dimers (latex agglutination)					| $\ge X$ | 1                   | `?`
-Plasmin-antiplasmin Assay (PAP)					| $< X$   | 0                   | `?`
-Plasmin-antiplasmin Assay (PAP)					| $\ge X$ | 1                   | `?`
-Prothombin Fragmen 1+2 (PF 1+2)					| $< X$   | 0                   | `?`
-Prothombin Fragmen 1+2 (PF 1+2)					| $\ge X$ | 1                   | `?`
-Thrombin Generation								| $< X$   | 0                   | `?`
-Thrombin Generation								| $\ge X$ | 1                   | `?`
-Prothombin Time (PT)							| $< X$   | 0                   | `?`
-Prothombin Time (PT)							| $\ge X$ | 1                   | `?`
-Activated Partial Thromboplastin Time (APTT)	| $< X$   | 0                   | `?`
-Activated Partial Thromboplastin Time (APTT)    | $\ge X$ | 1                   | `?`
-Clauss Fibrinogen								| $< X$   | 0                   | `?`
-Clauss Fibrinogen								| $\ge X$ | 1                   | `?`
-Soluble Tissue Factor (sTF)						| $< X$   | 0                   | `?`
-Soluble Tissue Factor (sTF)						| $\ge X$ | 1                   | `?`
-Troponin I										| $< X$   | 0                   | `?`
-Troponin I										| $\ge X$ | 1                   | `?`
-B-Type Natriuretic Peptide						| $< X$   | 0                   | `?`
-B-Type Natriuretic Peptide						| $\ge X$ | 1                   | `?`
+D-Dimers (ELISA)								| $\le  400$| 0                   | `d.dimer.cat`
+D-Dimers (ELISA)								| $>    400$| 1                   | `d.dimer.cat`
+D-Dimers (latex agglutination)					| $\le 1.13$| 0                   | `?`
+D-Dimers (latex agglutination)					| $>   1.13$| 1                   | `?`
+Plasmin-antiplasmin Assay (PAP)					| $\le  800$| 0                   | `plasmin.antiplasmin.cat`
+Plasmin-antiplasmin Assay (PAP)					| $>    800$| 1                   | `plasmin.antiplasmin.cat`
+Prothombin Fragmen 1+2 (PF 1+2)					| $\le 1200$| 0                   | `prothrombin.fragments.cat`
+Prothombin Fragmen 1+2 (PF 1+2)					| $>   1200$| 1                   | `prothrombin.fragments.cat`
+Thrombin Generation (Lag Time)  				| $\le 3.4$ | 0                   | `thrombin.generation.lag.time.cat`
+Thrombin Generation	(Lag Time)					| $>   3.4$ | 1                   | `thrombin.generation.lag.time.cat`
+Thrombin Generation	(Peak)						| $\le 475$   | 0                   | `thrombin.generation.peak.cat`
+Thrombin Generation	(Peak)						| $>   475$ | 1                   | `thrombin.generation.peak.cat`
+Thrombin Generation	(Time to Peak)				| $\le 7.7$ | 0                   | `thrombin.generation.time.to.peak.cat`
+Thrombin Generation	(Time to Peak)				| $>   7.7$ | 1                   | `thrombin.generation.time.to.peak.cat`
+Thrombin Generation	(Endogenous Potential)		| $\le 1533$| 0                   | `thrombin.generation.endogenous.potential.cat`
+Thrombin Generation	(Endogenous Potential)		| $>   1533$| 1                   | `thrombin.generation.endogenous.potential.cat`
+Prothombin Time (PT)							| $\le 15.9$| 0                   | `prothombin.time.cat`
+Prothombin Time (PT)							| $>   15.9$| 1                   | `prothombin.time.cat`
+Activated Partial Thromboplastin Time (APTT)	| $\le 52$  | 0                   | `aptt.cat`
+Activated Partial Thromboplastin Time (APTT)    | $>   52$  | 1                   | `aptt.cat`
+Clauss Fibrinogen								| $\le 4.11$| 0                   | `clauss.fibrinogen.cat`
+Clauss Fibrinogen								| $>   4.11$| 1                   | `clauss.fibrinogen.cat`
+Soluble Tissue Factor (sTF)						| $\le 300$ | 0                   | `tissue.factor.cat`
+Soluble Tissue Factor (sTF)						| $>   300$ | 1                   | `tissue.factor.cat`
+Troponin I										| $\le 2.63$| 0                   | `troponin.cat`
+Troponin I										| $>   2.63$| 1                   | `troponin.cat`
+B-Type Natriuretic Peptide						| $\le 523$ | 0                   | `bnp.cat`
+B-Type Natriuretic Peptide						| $>   523$ | 1                   | `bnp.cat`
+C-Reactive Protein      						| $\le 3104$| 0                   | `crp.cat`
+C-Reactive Protein	        					| $>   3104$| 1                   | `crp.cat`
+MRproAMP                						| $\le 954$ | 0                   | `mrproanp.cat`
+MRproAMP	                					| $>   954$ | 1                   | `mrproanp.cat`
 
 ### Model Assessment
 
