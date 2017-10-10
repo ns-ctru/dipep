@@ -67,10 +67,10 @@ biomarker.all$roc.thrombin$plot
 
 ```
 
-The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable.
+<!-- The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable. -->
 
 
-```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
+```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
 rbind(biomarker.all$roc.other$summary.stats,
       biomarker.all$roc.ddimer$summary.stats,
       biomarker.all$roc.thrombin$summary.stats) %>%
@@ -79,6 +79,35 @@ rbind(biomarker.all$roc.other$summary.stats,
 
 
 ```
+
+```{r results_biomarker_logistic_all_performance_continuous, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
+## Combine the predicted probabilities based on laboratory reference range classification and
+## generate ROC curves/summary Statistics
+dipep_roc(biomarker.all$predicted,
+          to.plot = c('aptt',
+                      'bnp',
+                      'clauss.fibrinogen',
+                      ## 'd.dimer',
+                      ## 'd.dimer.gestation',
+                      'ddimer.elisa',
+                      'ddimer.innovance',
+                      'mrproanp',
+                      'plasmin.antiplasmin',
+                      'prothombin.time',
+                      'prothrombin.fragments',
+                      'thrombin.generation.endogenous.potential',
+                      'thrombin.generation.lag.time',
+                      'thrombin.generation.peak',
+                      'thrombin.generation.time.to.peak',
+                      'tissue.factor',
+                      'troponin',
+                      'crp'),
+          title    = 'Continuous biomarkers performance',
+          threshold = threshold)$summary.stats %>%
+    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
+
+```
+
 ###### ROC Curves - Pre-defined Laboratory Thresholds
 
 The performance of dichotomising the biomarkers based on the supplied reference ranges from the laboratory are summarised below.
@@ -147,31 +176,6 @@ dipep_roc(biomarker.all$predicted.existing,
 ```
 
 
-```{r results_biomarker_logistic_all_performance_continuous, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
-## Combine the predicted probabilities based on laboratory reference range classification and
-## generate ROC curves/summary Statistics
-dipep_roc(biomarker.all$predicted,
-          to.plot = c('aptt',
-                      'bnp',
-                      'clauss.fibrinogen',
-                      ## 'd.dimer',
-                      ## 'd.dimer.gestation',
-                      'ddimer.elisa',
-                      'ddimer.innovance',
-                      'mrproanp',
-                      'plasmin.antiplasmin',
-                      'prothombin.time',
-                      'prothrombin.fragments',
-                      'thrombin.generation.endogenous.potential',
-                      'thrombin.generation.lag.time',
-                      'thrombin.generation.peak',
-                      'thrombin.generation.time.to.peak',
-                      'tissue.factor',
-                      'troponin',
-                      'crp'),
-          title    = 'Continuous biomarkers performance',
-          threshold = threshold)$summary.stats %>%
-    kable(caption = paste0('Summary Statistics for Biomarkers using Laboratory Reference Ranges to classify biomarker assays as Normal/Abnormal for predicting PE.'))
 
 
 ```{r child = 'all_sensitivity_and_specificity.Rmd', eval = TRUE}
