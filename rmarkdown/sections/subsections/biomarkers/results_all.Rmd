@@ -67,9 +67,8 @@ biomarker.all$roc.thrombin$plot
 
 ```
 
-<!-- The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable. -->
+The performance of biomarkers in making predictions is summarised in terms of the Sensitivity, Specificity, Positive Predictive Value (PPV), Negative Predictive Value (NPV), False Positive Rate (FPR), False Negative Rate (FNR), False Discovery Rate (FDR) and Accuracy for the biomarkers.  In order to do this a threshold for classifying the predicted probability of PE based on the logistic regression is required.  This would arbitrarily be set to `p < 0.5` however in this setting the predicted probabilities are *all* below 0.5, meaning no one would be predicted to have a PE if that threshold were used.  At present that condition is relaxed to `p < 0.15` but marker specific cut points based on the ROC curves displayed above are preferable.
 
-The performance of dichotomising the biomarkers based on the supplied reference ranges is summarised below.
 
 ```{r results_biomarker_logistic_all_performance, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = FALSE}
 rbind(biomarker.all$roc.other$summary.stats,
@@ -80,6 +79,45 @@ rbind(biomarker.all$roc.other$summary.stats,
 
 
 ```
+###### ROC Curves - Pre-defined Laboratory Thresholds
+
+```{r results_biomarker_logistic_all_roc_cat, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 10, results = 'markup', eval = TRUE}
+## This uses the geom_roc() ggplot2 extension from the ploROC package
+## ROC for continuous variables
+threshold <- 0.15
+biomarker.all$roc.other <- dipep_roc(df      = biomarker.all$predicted.existing,
+                                     to.plot = c('clauss.fibrinogen.cat',
+                                                 'plasmin.antiplasmin.cat',
+                                                 'tissue.factor.cat',
+                                                 'troponin.cat',
+                                                 'nppb.cat',
+                                                 'mrproanp.cat',
+                                                 'bnp.cat',
+                                                 'crp.cat'),
+                                     title    = 'Other Biomarkers',
+                                     threshold = threshold)
+biomarker.all$roc.other$plot
+biomarker.all$roc.ddimer <- dipep_roc(df      = biomarker.all$predicted.existing,
+                                      to.plot = c('ddimer.innovance.cat',
+                                                  'ddimer.elisa.cat'),
+                                      title    = 'D-Dimer Biomarkers',
+                                      threshold = threshold)
+biomarker.all$roc.ddimer$plot
+biomarker.all$roc.thrombin <- dipep_roc(df      = biomarker.all$predicted.existing,
+                                        to.plot = c('aptt',
+                                                    'prothombin.time.cat',
+                                                    'thrombin.generation.lag.time.cat',
+                                                    'thrombin.generation.endogenous.potential.cat',
+                                                    'thrombin.generation.peak.cat',
+                                                    'thrombin.generation.time.to.peak.cat',
+                                                    'prothrombin.fragments.cat'),
+                                        title    = 'Thrombin/Prothombin Biomarkers',
+                                        threshold = threshold)
+biomarker.all$roc.thrombin$plot
+
+```
+
+The performance of dichotomising the biomarkers based on the supplied reference ranges from the laboratory are summarised below.
 
 ```{r results_biomarker_logistic_all_performance_cat, echo = FALSE, cache = FALSE, warning = FALSE, message = FALSE, results = 'markup', eval = TRUE}
 ## Combine the predicted probabilities based on laboratory reference range classification and
